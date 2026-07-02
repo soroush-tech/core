@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { buildImageArgs, buildRunArgs, runSandbox, type SandboxOptions } from './docker'
+import {
+  buildImageArgs,
+  buildRunArgs,
+  closeResult,
+  runSandbox,
+  type SandboxOptions,
+} from './docker'
 
 const opts: SandboxOptions = {
   imageTag: 'soroush-bench:latest',
@@ -105,5 +111,18 @@ describe('runSandbox', () => {
     const exec = vi.fn().mockResolvedValueOnce(0).mockResolvedValueOnce(137)
     await expect(runSandbox(opts, exec)).rejects.toThrow(/benchmark run failed with exit code 137/)
     expect(exec).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('closeResult', () => {
+  it('returns the exit code when the process exited normally', () => {
+    expect(closeResult('docker', 0, null)).toBe(0)
+    expect(closeResult('docker', 137, null)).toBe(137)
+  })
+
+  it('throws when the process was killed by a signal (null exit code)', () => {
+    expect(() => closeResult('docker', null, 'SIGKILL')).toThrow(
+      /docker was terminated by signal SIGKILL/
+    )
   })
 })

@@ -76,34 +76,27 @@ export function isBenchConfig(value: unknown): value is Readonly<BenchConfig> {
   )
 }
 
-/**
- * Validates and freezes a benchmark definition. Authored in a `*.bench.ts`
- * file and `export default`-ed; the `soroush-bench` CLI loads that default export
- * inside the pinned container. A plain-object export works too — the harness runs
- * it through defineBench (see {@link isBenchConfig}), so no import is required.
- */
-export default function defineBench(config: BenchConfig): Readonly<BenchConfig> {
-  if (typeof config.name !== 'string' || config.name.trim() === '') {
-    throw new TypeError('defineBench: `name` must be a non-empty string')
-  }
-
-  const caseEntries = Object.entries(config.cases ?? {})
-  if (caseEntries.length < 2) {
+function validateCases(cases: BenchConfig['cases'] | undefined): void {
+  const entries = Object.entries(cases ?? {})
+  if (entries.length < 2) {
     throw new TypeError('defineBench: `cases` must define at least two cases to compare')
   }
-  for (const [key, fn] of caseEntries) {
+  for (const [key, fn] of entries) {
     if (typeof fn !== 'function') {
       throw new TypeError(`defineBench: case "${key}" must be a function`)
     }
   }
+}
 
-  for (const [alias, spec] of Object.entries(config.packages ?? {})) {
+function validatePackages(packages: BenchConfig['packages'] | undefined): void {
+  for (const [alias, spec] of Object.entries(packages ?? {})) {
     if (typeof spec !== 'string' || spec.trim() === '') {
       throw new TypeError(`defineBench: package "${alias}" must map to a non-empty install spec`)
     }
   }
+}
 
-  const options = config.options ?? {}
+function validateOptions(options: BenchOptions): void {
   if (
     options.gc !== undefined &&
     options.gc !== false &&
@@ -122,6 +115,21 @@ export default function defineBench(config: BenchConfig): Readonly<BenchConfig> 
   if (cpus !== undefined && (!Number.isFinite(cpus) || cpus <= 0)) {
     throw new TypeError('defineBench: `options.sandbox.cpus` must be a positive number')
   }
+}
+
+/**
+ * Validates and freezes a benchmark definition. Authored in a `*.bench.ts`
+ * file and `export default`-ed; the `soroush-bench` CLI loads that default export
+ * inside the pinned container. A plain-object export works too — the harness runs
+ * it through defineBench (see {@link isBenchConfig}), so no import is required.
+ */
+export default function defineBench(config: BenchConfig): Readonly<BenchConfig> {
+  if (typeof config.name !== 'string' || config.name.trim() === '') {
+    throw new TypeError('defineBench: `name` must be a non-empty string')
+  }
+  validateCases(config.cases)
+  validatePackages(config.packages)
+  validateOptions(config.options ?? {})
 
   const defined = { ...config }
   Object.defineProperty(defined, DEFINED, { value: true })

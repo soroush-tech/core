@@ -69,7 +69,13 @@ const extract = (results: RunResults): Row[] =>
       alloc: b.runs[0]?.stats?.heap?.avg,
       gc: b.runs[0]?.stats?.gc?.avg,
     }))
-    .filter((r): r is Row => typeof r.avg === 'number' && typeof r.p75 === 'number')
+    .filter((r): r is Row => {
+      if (typeof r.avg === 'number' && typeof r.p75 === 'number') return true
+      // A case with no stats means mitata produced none (e.g. it threw) — surface
+      // it so a missing row isn't mistaken for a case that was never registered.
+      console.warn(`bench: no timing stats for "${r.label}" — omitted from the report`)
+      return false
+    })
 
 // defineBench `options` supply defaults; the matching CLI flag overrides each.
 const options = config.options ?? {}
@@ -78,9 +84,11 @@ const md = process.argv.includes('--md')
 // gc: `--gc-inner` forces 'inner'; otherwise config.options.gc (mitata default 'once').
 const gcMode = process.argv.includes('--gc-inner') ? 'inner' : options.gc
 const registrar =
-  gcMode !== undefined
-    ? (name: string, fn: () => unknown) => void bench(name, fn).gc(gcMode)
-    : bench
+  gcMode === undefined
+    ? bench
+    : (name: string, fn: () => unknown) => {
+        bench(name, fn).gc(gcMode)
+      }
 const register = () => registerCases(config, modules, registrar)
 
 // rounds: `--rounds N` overrides config.options.rounds (default 1).

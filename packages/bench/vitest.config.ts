@@ -6,9 +6,11 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       include: ['src/**/*.ts'],
-      // The executable entrypoints are impure process/Docker/mitata glue that
-      // runs on the host (bin) or in-container (harness), not under vitest. All
-      // of their logic lives in the covered modules (cli, docker, runner).
+      // Accepted coverage exception: the two executable entrypoints are impure
+      // glue that never runs under vitest — bin.ts spawns Docker on the host,
+      // harness.ts runs in-container under mitata. Their decision logic is
+      // extracted into covered modules (cli, docker incl. `closeResult`, runner),
+      // leaving only unconditional I/O wiring here; everything else stays at 100%.
       exclude: ['src/bin.ts', 'src/harness.ts'],
       thresholds: { 100: true },
     },

@@ -77,6 +77,18 @@ export interface Exec {
   (command: string, args: string[]): Promise<number>
 }
 
+/**
+ * Interpret a child process's `close` event. A `null` exit code means the child
+ * was killed by a signal (Ctrl-C, OOM-kill, docker itself terminated); surface
+ * that as a failure instead of silently mapping it to success (exit 0).
+ */
+export function closeResult(command: string, code: number | null, signal: string | null): number {
+  if (code === null) {
+    throw new Error(`${command} was terminated by signal ${signal}`)
+  }
+  return code
+}
+
 /** Builds the image then runs the pinned benchmark; throws on a non-zero exit. */
 export async function runSandbox(opts: SandboxOptions, exec: Exec): Promise<void> {
   const buildCode = await exec('docker', buildImageArgs(opts))

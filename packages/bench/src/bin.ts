@@ -3,13 +3,20 @@ import { spawn } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { main, type SandboxDefaults } from './cli'
+import { closeResult } from './docker'
 
 /** Real process runner: inherits stdio so Docker/mitata output streams through. */
 const exec = (command: string, args: string[]): Promise<number> =>
   new Promise((resolvePromise, reject) => {
     const child = spawn(command, args, { stdio: 'inherit' })
     child.on('error', reject)
-    child.on('close', (code) => resolvePromise(code ?? 0))
+    child.on('close', (code, signal) => {
+      try {
+        resolvePromise(closeResult(command, code, signal))
+      } catch (error) {
+        reject(error)
+      }
+    })
   })
 
 // Import the bench file on the host to read its `options.sandbox` defaults.
