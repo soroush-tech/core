@@ -18,6 +18,7 @@ export default defineConfig({
     css: 'src/css/index.ts',
     'theme-get': 'src/theme-get/index.ts',
     props: 'src/props/index.ts',
+    'prop-types': 'src/prop-types/index.ts',
     'should-forward-prop': 'src/should-forward-prop/index.ts',
   },
   format: ['esm', 'cjs'],
