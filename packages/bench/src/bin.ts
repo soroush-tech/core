@@ -35,9 +35,9 @@ const loadSandbox = async (benchFile: string): Promise<SandboxDefaults> => {
 // dist/bin.mjs lives one level below the package root (which holds the Dockerfile).
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
-main(process.argv.slice(2), { cwd: process.cwd(), packageRoot, exec, loadSandbox }).catch(
-  (error: unknown) => {
-    console.error(error instanceof Error ? error.message : error)
-    process.exitCode = 1
-  }
-)
+try {
+  await main(process.argv.slice(2), { cwd: process.cwd(), packageRoot, exec, loadSandbox })
+} catch (error) {
+  console.error(error instanceof Error ? error.message : error)
+  process.exitCode = 1
+}

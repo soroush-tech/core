@@ -10,26 +10,22 @@ export function installSpecs(packages: BenchConfig['packages'] = {}): string[] {
 }
 
 /** Injected resolver: resolve an alias from `installDir` and import its module. */
-export interface ModuleResolver {
-  (alias: string): Promise<unknown>
-}
+export type ModuleResolver = (alias: string) => Promise<unknown>
 
 /** Resolves every declared alias to its module namespace via the resolver. */
 export async function loadModules(
-  packages: BenchConfig['packages'] = {},
+  packages: BenchConfig['packages'],
   resolve: ModuleResolver
 ): Promise<Record<string, unknown>> {
   const modules: Record<string, unknown> = {}
-  for (const alias of Object.keys(packages)) {
+  for (const alias of Object.keys(packages ?? {})) {
     modules[alias] = await resolve(alias)
   }
   return modules
 }
 
 /** The subset of mitata the runner depends on; injected so it stays testable. */
-export interface BenchRegistrar {
-  (name: string, fn: () => unknown | Promise<unknown>): void
-}
+export type BenchRegistrar = (name: string, fn: () => unknown) => void
 
 /**
  * Registers each case with the bench registrar, wrapping it so it is called
@@ -65,7 +61,8 @@ export function formatDeltas(means: CaseMean[]): string {
   const fastest = Math.min(...means.map((m) => m.avg))
   const rows = means.map(({ label, avg }) => {
     const pct = (avg / fastest - 1) * 100
-    return `  ${label} — ${pct === 0 ? 'fastest' : `+${pct.toFixed(1)}% slower`}`
+    const delta = pct === 0 ? 'fastest' : `+${pct.toFixed(1)}% slower`
+    return `  ${label} — ${delta}`
   })
   return ['delta vs fastest:', ...rows].join('\n')
 }
@@ -112,7 +109,8 @@ export function formatMarkdown(rows: CaseRow[]): string {
   const allocCell = (alloc: number | undefined): string => {
     if (alloc === undefined) return '—'
     const pct = (alloc / leastAlloc - 1) * 100
-    return `${formatBytes(alloc)} (${pct === 0 ? 'least' : `+${pct.toFixed(1)}%`})`
+    const delta = pct === 0 ? 'least' : `+${pct.toFixed(1)}%`
+    return `${formatBytes(alloc)} (${delta})`
   }
 
   const header = ['case', 'avg', 'p75', 'alloc/iter', ...(showGc ? ['gc/iter'] : []), 'vs fastest']

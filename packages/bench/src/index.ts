@@ -11,8 +11,8 @@ export interface BenchContext {
   modules: Record<string, unknown>
 }
 
-/** A single function under test. Receives the {@link BenchContext}. */
-export type BenchCase = (ctx: BenchContext) => unknown | Promise<unknown>
+/** A single function under test (sync or async). Receives the {@link BenchContext}. */
+export type BenchCase = (ctx: BenchContext) => unknown
 
 /**
  * Per-bench run defaults. Each is a default that the matching CLI flag overrides

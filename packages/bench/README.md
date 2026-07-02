@@ -304,7 +304,7 @@ The default export is `defineBench`; everything else is a named export.
 | `defineBench(config)` | function (default) | Validates and freezes a `BenchConfig` (non-empty `name`, ≥ 2 `cases`). Optional — a plain-object export works too. |
 | `isBenchConfig(x)`    | function           | Type guard — `true` if `x` was produced by `defineBench` (used internally to skip re-validating).                  |
 | `BenchConfig`         | type               | The bench definition: `name`, optional `packages`, `cases`, optional `options`.                                    |
-| `BenchCase`           | type               | One function under test: `(ctx: BenchContext) => unknown \| Promise<unknown>`.                                     |
+| `BenchCase`           | type               | One function under test (sync or async): `(ctx: BenchContext) => unknown`.                                         |
 | `BenchContext`        | type               | The `{ modules }` object every case receives — each `packages` alias resolved to its module namespace.             |
 | `BenchOptions`        | type               | Run defaults: `gc`, `rounds`, `warmup`, and `sandbox` (see below). Each is overridden by the matching CLI flag.    |
 

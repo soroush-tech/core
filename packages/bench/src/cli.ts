@@ -71,25 +71,31 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
     switch (arg) {
       case '--cpu':
       case '--cpus':
-        opts.cpus = parseCpus(argv[(i += 1)])
+        i += 1
+        opts.cpus = parseCpus(argv[i])
         break
       case '--cpuset':
-        opts.cpuset = requireValue(argv[(i += 1)], '--cpuset')
+        i += 1
+        opts.cpuset = requireValue(argv[i], '--cpuset')
         break
       case '--memory':
-        opts.memory = requireValue(argv[(i += 1)], '--memory')
+        i += 1
+        opts.memory = requireValue(argv[i], '--memory')
         break
       case '--tag':
-        opts.imageTag = requireValue(argv[(i += 1)], '--tag')
+        i += 1
+        opts.imageTag = requireValue(argv[i], '--tag')
         break
       case '--mount':
-        mounts.push(requireValue(argv[(i += 1)], '--mount'))
+        i += 1
+        mounts.push(requireValue(argv[i], '--mount'))
         break
       case '--md':
         md = true
         break
       case '--rounds':
-        opts.rounds = parseRounds(argv[(i += 1)])
+        i += 1
+        opts.rounds = parseRounds(argv[i])
         break
       case '--gc-inner':
         gcInner = true

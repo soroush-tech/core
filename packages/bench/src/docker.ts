@@ -73,9 +73,7 @@ export function buildRunArgs(opts: SandboxOptions): string[] {
 }
 
 /** Injected process runner; resolves with the child's exit code. */
-export interface Exec {
-  (command: string, args: string[]): Promise<number>
-}
+export type Exec = (command: string, args: string[]) => Promise<number>
 
 /**
  * Interpret a child process's `close` event. A `null` exit code means the child
