@@ -41,7 +41,7 @@
   "devDependencies": {
     "@emotion/css-prettifier": "^1.2.0",
     "husky": "^9.1.7",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.4",
     "pretty-quick": "^4.2.2"
   },
   "packageManager": "pnpm@10.13.1"
