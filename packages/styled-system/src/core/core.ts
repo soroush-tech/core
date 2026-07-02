@@ -29,7 +29,9 @@ export interface Props {
   [key: string]: unknown
 }
 
-export type Transform = (value: unknown, scale?: unknown, props?: Props) => unknown
+// Loose by design, matching @styled-system/core's `(value: any, scale?: any) => any`.
+// Keeps consumer transforms like `(val) => MAP[val] ?? MAP.center` valid without casts.
+export type Transform = (value: any, scale?: any, props?: Props) => any
 
 export interface StyleFn {
   (value: unknown, scale?: unknown, props?: Props): StyleObject | undefined
