@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'labs/*'
   - '!examples/*'
   - 'workers/*'
 

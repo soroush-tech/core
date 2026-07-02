@@ -1,0 +1,3 @@
+# Labs are local scratch: ignore every subdirectory (each is a throwaway
+# experiment). Only this file and README.md are tracked.
+*/
