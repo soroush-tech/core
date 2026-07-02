@@ -1,0 +1,12 @@
+{
+  "name": "@soroush.tech/bench-examples",
+  "private": true,
+  "type": "module",
+  "description": "Runnable @soroush.tech/bench example benchmarks, consuming the published npm package.",
+  "scripts": {
+    "bench": "soroush-bench"
+  },
+  "dependencies": {
+    "@soroush.tech/bench": "^1.0.0"
+  }
+}
