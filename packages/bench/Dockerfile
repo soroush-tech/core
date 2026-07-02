@@ -12,3 +12,8 @@ RUN npm install -g tsx@^4
 ENV NODE_OPTIONS=--expose-gc
 
 WORKDIR /repo
+
+# Drop root: the image's built-in unprivileged `node` user suffices — /bench (the
+# writable tmpfs) is world-writable (mode 1777) and everything else is read-only
+# or global, so package installs and the harness still run. — S6471
+USER node

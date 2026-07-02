@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
+import { dirname } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { bench, boxplot, run, summary } from 'mitata'
 import defineBench, { isBenchConfig, type BenchConfig } from './index'
@@ -16,6 +17,11 @@ import {
 /** Writable tmpfs the sandbox mounts; aliased package versions install here. */
 const INSTALL_DIR = '/bench'
 
+// Resolve npm by absolute path (it ships beside node in the sandbox image) rather
+// than looking it up on PATH, so the command can't be shadowed by a writable-dir
+// entry planting a fake `npm`. — S4036
+const npm = `${dirname(process.execPath)}/npm`
+
 // Accept both forms of default export: a plain object (no `@soroush.tech/bench`
 // import — truly install-free with `npx`), or `defineBench({ … })`. Validate the
 // plain object here; pass an already-defined config through untouched.
@@ -25,8 +31,8 @@ const config = isBenchConfig(loaded) ? loaded : defineBench(loaded)
 
 const specs = installSpecs(config.packages)
 if (specs.length > 0) {
-  spawnSync('npm', ['init', '-y'], { cwd: INSTALL_DIR, stdio: 'inherit' })
-  const installed = spawnSync('npm', ['install', '--no-audit', '--no-fund', ...specs], {
+  spawnSync(npm, ['init', '-y'], { cwd: INSTALL_DIR, stdio: 'inherit' })
+  const installed = spawnSync(npm, ['install', '--no-audit', '--no-fund', ...specs], {
     cwd: INSTALL_DIR,
     stdio: 'inherit',
   })
