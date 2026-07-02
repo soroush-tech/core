@@ -16,6 +16,7 @@ describe('aggregator', () => {
     expect(typeof ss.zIndex).toBe('function')
     expect(typeof ss.style).toBe('function')
     expect(typeof ss.variant).toBe('function')
+    expect(typeof ss.themeGet).toBe('function')
   })
 
   it('aliases borders to border and box/textShadow to shadow', () => {
