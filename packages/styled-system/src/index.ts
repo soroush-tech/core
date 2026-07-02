@@ -40,7 +40,7 @@ export {
   shadow as textShadow,
 } from '@soroush.tech/styled-system/shadow'
 export { variant, buttonStyle, textStyle, colorStyle } from '@soroush.tech/styled-system/variant'
-export { themeGet } from '@soroush.tech/styled-system/theme-get'
+export { themeGet, default } from '@soroush.tech/styled-system/theme-get'
 export { style } from './style'
 export * from './types'
 

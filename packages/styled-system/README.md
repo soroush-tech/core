@@ -38,10 +38,10 @@ pnpm add @soroush.tech/styled-system
 yarn add @soroush.tech/styled-system
 ```
 
-`@emotion/is-prop-valid` (`^1.4.0`) is a peer dependency used only by the
-[`should-forward-prop`](#subpath-imports) entry — install it if you import that subpath.
-You bring your own CSS-in-JS library (Emotion, styled-components, …); the core carries
-neither at runtime.
+`@emotion/is-prop-valid` (`^1.4.0`, peer) and `prop-types` (`^15.8.1`, optional peer) are
+each used by a single [subpath](#subpath-imports) — `should-forward-prop` and `prop-types`
+respectively. Install one only if you import that subpath. You bring your own CSS-in-JS
+library (Emotion, styled-components, …); the core carries neither at runtime.
 
 ## Usage
 
@@ -110,11 +110,15 @@ Subpaths mirror the original `@styled-system/*` packages:
 import { css } from '@soroush.tech/styled-system/css'
 import { themeGet } from '@soroush.tech/styled-system/theme-get'
 import { pick, omit } from '@soroush.tech/styled-system/props'
+import propTypes, { createPropTypes } from '@soroush.tech/styled-system/prop-types'
 import shouldForwardProp, {
   createShouldForwardProp,
   props,
 } from '@soroush.tech/styled-system/should-forward-prop'
 ```
+
+`themeGet` is also re-exported from the package root (as both a named and the default
+export), so `import { themeGet } from '@soroush.tech/styled-system'` works too.
 
 ## Drop-in via alias
 
@@ -126,8 +130,9 @@ Existing `styled-system` users can swap with a package-manager alias — no code
 }
 ```
 
-`@styled-system/should-forward-prop` maps to the
-`@soroush.tech/styled-system/should-forward-prop` subpath.
+Every `@styled-system/*` satellite maps 1:1 to the matching
+`@soroush.tech/styled-system/*` subpath — e.g. `@styled-system/should-forward-prop`,
+`@styled-system/prop-types`, `@styled-system/theme-get`, `@styled-system/css`.
 
 ## Documentation
 
