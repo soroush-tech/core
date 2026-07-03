@@ -25,12 +25,13 @@ A full-screen background canvas with CSS grid-line decoration rendered via two `
 
 ## Props
 
-| Prop       | Type                    | Default    | Description                                            |
-| ---------- | ----------------------- | ---------- | ------------------------------------------------------ |
-| `scanline` | `boolean`               | `false`    | Renders a fixed scanline sweep animation over the grid |
-| `variant`  | `'line' \| 'dot'`       | `'line'`   | Background pattern — intersecting lines or radial dots |
-| `height`   | `ViewProps['height']`   | `'100vh'`  | Override the default full-viewport height              |
-| `overflow` | `ViewProps['overflow']` | `'hidden'` | Override the default overflow clipping                 |
+| Prop        | Type                    | Default    | Description                                            |
+| ----------- | ----------------------- | ---------- | ------------------------------------------------------ |
+| `scanline`  | `boolean`               | `false`    | Renders a fixed scanline sweep animation over the grid |
+| `spotlight` | `boolean`               | `true`     | Cursor-following radial highlight over the viewport    |
+| `variant`   | `'line' \| 'dot'`       | `'line'`   | Background pattern — intersecting lines or radial dots |
+| `height`    | `ViewProps['height']`   | `'100vh'`  | Override the default full-viewport height              |
+| `overflow`  | `ViewProps['overflow']` | `'hidden'` | Override the default overflow clipping                 |
 
 All other `ViewProps` are inherited from `View` (space, layout, color, border, position).
 
@@ -39,5 +40,6 @@ All other `ViewProps` are inherited from `View` (space, layout, color, border, p
 ## Notes
 
 - Children should be `position="absolute"` (or use CSS `position: absolute`) to layer over the background.
+- The `spotlight` overlay is `position: fixed` and viewport-wide, driven by the `useSpotlight` hook (pointer coordinates are written to CSS custom properties, so mouse movement never re-renders React). Pass `spotlight={false}` on decorative/nested Blueprints to avoid a duplicate overlay and listener.
 - The grid-line gradient uses the hex-suffix opacity pattern: `${theme.border.primary}0D` = 5% opacity.
 - Custom CSS (`styled` template) is intentional here: `background-image` and `background-size` cannot be expressed as styled-system props.

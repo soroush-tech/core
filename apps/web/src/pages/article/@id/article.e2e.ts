@@ -42,3 +42,17 @@ test('client-routes to an article that was not prerendered without crashing', as
   await expect(page).toHaveURL('/article/published-after-build')
   await expect(page.getByText('This is mocked article content for e2e tests.')).toBeVisible()
 })
+
+// GitHub Pages fallback: a COLD hard-load (page.goto, not in-app nav) of a non-prerendered
+// article. On the static host there is no index.html for it, so GitHub Pages — and `serve` in
+// the e2e preview — return the prerendered 404.html (the _error page). Vike must then boot
+// client routing, re-resolve the URL, run data() in the browser (dataIsomorph) and render the
+// article, instead of leaving the visitor on the 404 screen. Only meaningful against the static
+// preview build (E2E_COVERAGE=true → `pnpm build && pnpm preview:e2e`); the dev server SSRs
+// every route and would pass this trivially without touching 404.html.
+test('hard-loads a non-prerendered article via the 404.html fallback', async ({ page }) => {
+  await page.goto('/article/published-after-build')
+
+  await expect(page).toHaveURL('/article/published-after-build')
+  await expect(page.getByText('This is mocked article content for e2e tests.')).toBeVisible()
+})

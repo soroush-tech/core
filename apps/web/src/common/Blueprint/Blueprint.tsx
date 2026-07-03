@@ -3,10 +3,13 @@ import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Flex, type FlexProps } from 'src/theme/Flex'
 import { alpha } from 'src/theme/utils'
+import { useSpotlight } from './hooks/useSpotlight'
 
 export interface BlueprintProps extends FlexProps {
   /** Renders a fixed scanline sweep animation. Default: false. */
   scanline?: boolean
+  /** Renders a cursor-following radial highlight over the viewport. Default: true. */
+  spotlight?: boolean
   /** Background pattern. 'line' = intersecting lines (default). 'dot' = radial dot grid. */
   variant?: 'line' | 'dot'
   as?: ElementType
@@ -31,6 +34,20 @@ const BlueprintRoot = styled(Flex, { label: 'Blueprint' })<{ variant?: 'line' | 
   background-size: 40px 40px;
 `
 
+// A cursor-following radial highlight. `useSpotlight` feeds it pointer coordinates
+// via CSS custom properties so mouse movement never triggers a React re-render.
+const Spotlight = styled('div', { label: 'Spotlight' })`
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    ${({ theme }) => alpha(theme.border.primary, 0.05)} 0%,
+    transparent 40%
+  );
+`
+
 const ScanlineLine = styled('span', { label: 'ScanlineLine' })`
   position: absolute;
   top: 0;
@@ -49,14 +66,18 @@ const Content = styled(Flex)`
 
 export function Blueprint({
   scanline = false,
+  spotlight = true,
   variant = 'line',
   height,
   overflow = 'hidden',
   children,
   ...rest
 }: Readonly<BlueprintProps>) {
+  const spotlightRef = useSpotlight()
+
   return (
     <BlueprintRoot height={height} overflow={overflow} variant={variant} {...rest}>
+      {spotlight && <Spotlight ref={spotlightRef} aria-hidden />}
       {scanline && <ScanlineLine />}
       <Content>{children}</Content>
     </BlueprintRoot>

@@ -93,6 +93,23 @@ describe('Blueprint', () => {
     })
   })
 
+  describe('spotlight', () => {
+    it('renders the spotlight overlay by default', () => {
+      const { container } = renderWithTheme(<Blueprint />)
+      expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
+    })
+
+    it('does not render the spotlight overlay when spotlight is false', () => {
+      const { container } = renderWithTheme(<Blueprint spotlight={false} />)
+      expect(container.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument()
+    })
+
+    it('does not forward the spotlight prop to the DOM', () => {
+      renderWithTheme(<Blueprint data-testid="blueprint" spotlight />)
+      expect(screen.getByTestId('blueprint')).not.toHaveAttribute('spotlight')
+    })
+  })
+
   describe('theme tokens', () => {
     it('applies background.primary as background-color', () => {
       renderWithTheme(<Blueprint data-testid="blueprint" />)
