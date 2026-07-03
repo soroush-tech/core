@@ -3,6 +3,9 @@
 
 export type CssObject = Record<string, unknown>
 
+/** Upstream `@styled-system/css` name for {@link CssObject}. */
+export type CSSObject = CssObject
+
 export interface CssTheme {
   breakpoints?: (string | number)[]
   [key: string]: unknown

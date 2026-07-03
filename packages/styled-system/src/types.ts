@@ -1,8 +1,8 @@
 // First-class TypeScript types — the public surface that replaces @types/styled-system.
 // Foundation types (Theme, ResponsiveValue, ThemeValue, ObjectOrArray) and the
 // generic, theme-scale-aware prop interfaces mirror @types/styled-system@5.1.25 so this
-// package is a drop-in replacement. The one deviation: ThemeValue's inference helper
-// uses `unknown` instead of the original's `any`.
+// package is a drop-in replacement — including upstream's deliberately loose `any` on the
+// props-facing surface, so consumers hit no strict-type friction.
 //
 // Structure mirrors upstream: one atomic interface per CSS property, with each grouped
 // interface composing them via `extends`. Consumers can import either the group
@@ -11,7 +11,7 @@
 // `boxShadow`/`textShadow` and `fontWeight` additionally accept `string` theme keys.
 import type * as CSS from 'csstype'
 
-export type ObjectOrArray<T, K extends keyof never = keyof never> =
+export type ObjectOrArray<T, K extends keyof any = keyof any> =
   | T[]
   | Record<K, T | Record<K, T> | T[]>
 
@@ -43,7 +43,7 @@ export interface Theme<TLength = TLengthStyledSystem> {
 
 export type RequiredTheme = Required<Theme>
 
-export type ThemeValue<K extends keyof ThemeType, ThemeType, TVal = unknown> =
+export type ThemeValue<K extends keyof ThemeType, ThemeType, TVal = any> =
   NonNullable<ThemeType[K]> extends TVal[]
     ? number
     : NonNullable<ThemeType[K]> extends Record<infer E, TVal>
@@ -206,10 +206,11 @@ export interface FontSizeProps<
   fontSize?: ResponsiveValue<TVal, ThemeType>
 }
 
-// Widened over upstream: also accepts `string` theme keys.
+// `string | number` so it resolves against both object-keyed and array-indexed
+// theme.fontWeights scales, plus raw CSS font-weight values (e.g. `700`, `'bold'`).
 export interface FontWeightProps<
   ThemeType extends Theme = RequiredTheme,
-  TVal = ThemeValue<'fontWeights', ThemeType> | string,
+  TVal = ThemeValue<'fontWeights', ThemeType> | string | number,
 > {
   fontWeight?: ResponsiveValue<TVal, ThemeType>
 }
@@ -623,14 +624,15 @@ export interface GridProps<ThemeType extends Theme = RequiredTheme>
 // shadow
 // ---------------------------------------------------------------------------
 
-// Widened over upstream: also accepts `string` theme keys.
+// `string | number` so it resolves against both object-keyed (`{ sm, md }`) and
+// array-indexed (`[…]`) theme.shadows scales, plus raw CSS values.
 export interface BoxShadowProps<ThemeType extends Theme = RequiredTheme> {
-  boxShadow?: ResponsiveValue<CSS.Property.BoxShadow | string, ThemeType>
+  boxShadow?: ResponsiveValue<CSS.Property.BoxShadow | string | number, ThemeType>
 }
 
-// Widened over upstream: also accepts `string` theme keys.
+// `string | number` so it resolves against both object-keyed and array-indexed scales.
 export interface TextShadowProps<ThemeType extends Theme = RequiredTheme> {
-  textShadow?: ResponsiveValue<CSS.Property.TextShadow | string, ThemeType>
+  textShadow?: ResponsiveValue<CSS.Property.TextShadow | string | number, ThemeType>
 }
 
 export interface ShadowProps<ThemeType extends Theme = RequiredTheme>
