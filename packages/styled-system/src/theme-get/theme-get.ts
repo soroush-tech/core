@@ -5,6 +5,6 @@ import { get } from '@soroush.tech/styled-system/core'
 export const themeGet =
   (path: string | Array<string | number>, fallback: any = null) =>
   (props: any): any =>
-    get(props.theme, path as string, fallback)
+    get(props.theme, Array.isArray(path) ? path.join('.') : path, fallback)
 
 export default themeGet
