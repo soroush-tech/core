@@ -8,6 +8,9 @@ export interface VariantOptions {
   key?: string
 }
 
+/** Upstream `@types/styled-system` name for {@link VariantOptions}. */
+export type VariantArgs = VariantOptions
+
 export const variant = (options: VariantOptions = {}): Parser => {
   const { scale, prop = 'variant', variants = {}, key } = options
   const useCss = Object.keys(variants).length > 0

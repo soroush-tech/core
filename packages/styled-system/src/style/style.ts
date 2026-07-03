@@ -16,6 +16,9 @@ export interface StyleOptions {
   properties?: string[]
 }
 
+/** Upstream `@types/styled-system` name for {@link StyleOptions}. */
+export type LowLevelStyleFunctionArguments = StyleOptions
+
 // v4 style() API shim.
 export const style = ({
   prop,

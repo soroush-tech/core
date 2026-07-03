@@ -22,6 +22,9 @@ export {
   type SystemConfig,
   type ParserConfig,
   type Transform,
+  type styleFn,
+  type Config,
+  type ConfigFunction,
 } from '@soroush.tech/styled-system/core'
 // Note: the public `Theme` type is re-exported from ./types (below), not ./core.
 
@@ -39,8 +42,15 @@ export {
   shadow as boxShadow,
   shadow as textShadow,
 } from '@soroush.tech/styled-system/shadow'
-export { variant, buttonStyle, textStyle, colorStyle } from '@soroush.tech/styled-system/variant'
-export { style } from './style'
+export {
+  variant,
+  buttonStyle,
+  textStyle,
+  colorStyle,
+  type VariantArgs,
+  type VariantOptions,
+} from '@soroush.tech/styled-system/variant'
+export { style, type LowLevelStyleFunctionArguments, type StyleOptions } from './style'
 export * from './types'
 
 // Single-prop functions, mirroring the upstream aggregator's destructured exports.

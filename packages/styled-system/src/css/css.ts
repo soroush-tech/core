@@ -1,14 +1,14 @@
 // Typed rewrite of @styled-system/css (styled-system v5).
 // Standalone — does not depend on ./core; carries its own get/responsive/scales.
 
-export type CssObject = Record<string, unknown>
+export type CSSObject = Record<string, unknown>
 
 export interface CssTheme {
   breakpoints?: (string | number)[]
   [key: string]: unknown
 }
 
-type CssArg = CssObject | ((theme: CssTheme) => CssObject)
+type CssArg = CSSObject | ((theme: CssTheme) => CSSObject)
 
 // based on https://github.com/developit/dlv
 export const get = (
@@ -161,9 +161,9 @@ const transforms = [
 )
 
 export const responsive =
-  (styles: CssObject) =>
-  (theme: CssTheme): CssObject => {
-    const next: CssObject = {}
+  (styles: CSSObject) =>
+  (theme: CssTheme): CSSObject => {
+    const next: CSSObject = {}
     const breakpoints = get(theme, 'breakpoints', defaultBreakpoints) as (string | number)[]
     const mediaQueries = [null, ...breakpoints.map((n) => `@media screen and (min-width: ${n})`)]
 
@@ -185,7 +185,7 @@ export const responsive =
           next[key] = slice[i]
           continue
         }
-        const block = (next[media] as CssObject) || {}
+        const block = (next[media] as CSSObject) || {}
         next[media] = block
         if (slice[i] == null) continue
         block[key] = slice[i]
@@ -197,12 +197,12 @@ export const responsive =
 
 export const css =
   (args: CssArg) =>
-  (props: Record<string, unknown> = {}): CssObject => {
+  (props: Record<string, unknown> = {}): CSSObject => {
     const theme: CssTheme = {
       ...defaultTheme,
       ...((props.theme as CssTheme) || (props as CssTheme)),
     }
-    let result: CssObject = {}
+    let result: CSSObject = {}
     const obj = typeof args === 'function' ? args(theme) : args
     const styles = responsive(obj)(theme)
 

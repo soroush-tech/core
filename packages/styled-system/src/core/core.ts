@@ -4,7 +4,7 @@ import type * as CSS from 'csstype'
 
 // Internal shape of the objects parsers build up (arbitrary CSS keys → values or
 // nested media-query/selector objects). Kept loose for the implementation.
-export type StyleObject = Record<string, unknown>
+export type StyleObject = Record<string, any>
 
 type CSSLength = string | number
 
@@ -21,22 +21,23 @@ export interface CSSObject extends CSS.Properties<CSSLength>, CSS.PropertiesHyph
 export interface Theme {
   breakpoints?: readonly (string | number)[] | Record<string, string | number>
   disableStyledSystemCache?: boolean
-  [key: string]: unknown
+  [key: string]: any
 }
 
 export interface Props {
   theme?: Theme
-  [key: string]: unknown
+  [key: string]: any
 }
 
-// Loose by design, matching @styled-system/core's `(value: any, scale?: any) => any`.
-// Keeps consumer transforms like `(val) => MAP[val] ?? MAP.center` valid without casts.
-export type Transform = (value: any, scale?: any, props?: Props) => any
+// Loose by design, matching @styled-system/core's `(value: any, scale?: any, props: any) => any`.
+// Props stays an internal helper; public signatures use `any` so consumer transforms and
+// CSS-in-JS interpolations don't hit strict-props friction (mirrors upstream).
+export type Transform = (value: any, scale?: any, props?: any) => any
 
 export interface StyleFn {
-  (value: unknown, scale?: unknown, props?: Props): StyleObject | undefined
+  (value: any, scale?: any, props?: any): StyleObject | undefined
   scale?: string
-  defaults?: unknown
+  defaults?: any
 }
 
 export interface ConfigStyle {
@@ -44,11 +45,16 @@ export interface ConfigStyle {
   properties?: string[]
   scale?: string
   transform?: Transform
-  defaultScale?: unknown
+  defaultScale?: any
 }
 
 export type SystemConfig = Record<string, boolean | StyleFn | ConfigStyle>
 export type ParserConfig = Record<string, StyleFn>
+
+// Upstream @types/styled-system names, aliased to our engine types for drop-in imports.
+export type styleFn = Parser
+export type Config = SystemConfig
+export type ConfigFunction = StyleFn
 
 interface ParserCache {
   breakpoints?: readonly (string | number)[] | Record<string, string | number>
