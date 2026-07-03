@@ -1,11 +1,9 @@
-# soroush.tech
-
 **Personal portfolio of Masoud Soroush**  
 [https://soroush.tech](https://soroush.tech)
 
-This repository is my digital home — a place to share article posts, showcase my
-portfolio, and write about web development, tooling, performance, design
-systems, and anything else worth sharing as I grow and learn.
+This repository is my digital home — a place to share expertise, showcase my
+portfolio, staisfied opensource community and develop tools, talk about performance, design
+and anything else worth sharing as I grow and learn.
 
 It is organized as a **pnpm workspace monorepo**: the website is one app among
 its own shared tooling packages and (soon) backend workers.
