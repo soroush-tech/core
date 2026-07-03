@@ -117,9 +117,6 @@ import shouldForwardProp, {
 } from '@soroush.tech/styled-system/should-forward-prop'
 ```
 
-`themeGet` is also re-exported from the package root (as both a named and the default
-export), so `import { themeGet } from '@soroush.tech/styled-system'` works too.
-
 ## Drop-in via alias
 
 Existing `styled-system` users can swap with a package-manager alias — no code changes:
@@ -130,9 +127,19 @@ Existing `styled-system` users can swap with a package-manager alias — no code
 }
 ```
 
-Every `@styled-system/*` satellite maps 1:1 to the matching
-`@soroush.tech/styled-system/*` subpath — e.g. `@styled-system/should-forward-prop`,
-`@styled-system/prop-types`, `@styled-system/theme-get`, `@styled-system/css`.
+The satellite `@styled-system/*` packages don't need separate aliases — import them as
+subpaths off the aliased `styled-system` name, and they resolve through this package's
+`exports`:
+
+```ts
+import themeGet from 'styled-system/theme-get'
+import propTypes from 'styled-system/prop-types'
+import { css } from 'styled-system/css'
+import shouldForwardProp from 'styled-system/should-forward-prop'
+```
+
+Types resolve under both modern module resolution (`node16`/`nodenext`/`bundler`, via
+`exports`) and classic `node` (via `typesVersions`).
 
 ## Documentation
 

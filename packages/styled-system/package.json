@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/styled-system",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "description": "Maintained, first-class-TypeScript rewrite of styled-system — responsive, theme-aware style props for CSS-in-JS. Drop-in replacement for styled-system v5.",
   "keywords": [
     "styled-system",
@@ -237,7 +237,62 @@
     },
     "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
-    "types": "./dist/index.d.mts"
+    "types": "./dist/index.d.mts",
+    "typesVersions": {
+      "*": {
+        "core": [
+          "./dist/core.d.cts"
+        ],
+        "space": [
+          "./dist/space.d.cts"
+        ],
+        "color": [
+          "./dist/color.d.cts"
+        ],
+        "layout": [
+          "./dist/layout.d.cts"
+        ],
+        "typography": [
+          "./dist/typography.d.cts"
+        ],
+        "flexbox": [
+          "./dist/flexbox.d.cts"
+        ],
+        "grid": [
+          "./dist/grid.d.cts"
+        ],
+        "background": [
+          "./dist/background.d.cts"
+        ],
+        "border": [
+          "./dist/border.d.cts"
+        ],
+        "position": [
+          "./dist/position.d.cts"
+        ],
+        "shadow": [
+          "./dist/shadow.d.cts"
+        ],
+        "variant": [
+          "./dist/variant.d.cts"
+        ],
+        "css": [
+          "./dist/css.d.cts"
+        ],
+        "theme-get": [
+          "./dist/theme-get.d.cts"
+        ],
+        "props": [
+          "./dist/props.d.cts"
+        ],
+        "prop-types": [
+          "./dist/prop-types.d.cts"
+        ],
+        "should-forward-prop": [
+          "./dist/should-forward-prop.d.cts"
+        ]
+      }
+    }
   },
   "scripts": {
     "build": "tsdown",
