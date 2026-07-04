@@ -1,3 +1,9 @@
+// Self-hosted webfonts, bundled by Vite and served from our own origin so they load within the
+// CSP's `default-src 'self'`. Space Grotesk (body/heading) and JetBrains Mono (mono): variable
+// `wght` axis — one file covers every weight, which also satisfies `font-synthesis: none` (no
+// missing weights to synthesize).
+import '@fontsource-variable/space-grotesk/wght.css'
+import '@fontsource-variable/jetbrains-mono/wght.css'
 import { css, type Theme } from 'src/theme'
 
 const globalStyles = (theme: Theme) => css`
