@@ -34,4 +34,11 @@ describe('useSpotlight', () => {
 
     expect(removeSpy).toHaveBeenCalledWith('mousemove', expect.any(Function))
   })
+
+  it('does not attach the listener when disabled', () => {
+    const addSpy = vi.spyOn(window, 'addEventListener')
+    renderHook(() => useSpotlight(false))
+
+    expect(addSpy).not.toHaveBeenCalledWith('mousemove', expect.any(Function))
+  })
 })

@@ -13,15 +13,16 @@ const NON_PRERENDERED_ROUTE = /^\/article\/[^/]+\/?$/
 // hands back 404.html; we boot client routing to re-resolve the real URL — running data() in the
 // browser via dataIsomorph — so refresh / deep-link renders the article instead of the 404 screen.
 function ErrorPage() {
-  const { urlPathname, isClientSideNavigation } = usePageContext()
+  const { urlPathname, urlOriginal, isClientSideNavigation } = usePageContext()
 
   useEffect(() => {
     // Only bootstrap on the initial cold load; guarding on isClientSideNavigation stops a client
-    // re-render landing back here (a genuine 404) from re-firing navigate() in a loop.
+    // re-render landing back here (a genuine 404) from re-firing navigate() in a loop. Navigate
+    // with urlOriginal so any query string / hash on the deep link is preserved.
     if (!isClientSideNavigation && NON_PRERENDERED_ROUTE.test(urlPathname)) {
-      navigate(urlPathname)
+      navigate(urlOriginal)
     }
-  }, [isClientSideNavigation, urlPathname])
+  }, [isClientSideNavigation, urlPathname, urlOriginal])
 
   return (
     <Layout>

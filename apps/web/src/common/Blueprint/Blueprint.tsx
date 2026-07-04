@@ -73,7 +73,7 @@ export function Blueprint({
   children,
   ...rest
 }: Readonly<BlueprintProps>) {
-  const spotlightRef = useSpotlight()
+  const spotlightRef = useSpotlight(spotlight)
 
   return (
     <BlueprintRoot height={height} overflow={overflow} variant={variant} {...rest}>
