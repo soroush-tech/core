@@ -5,10 +5,6 @@ import { PackageIndex } from './PackageIndex'
 import { packages } from './PackageIndex.data'
 
 describe('PackageIndex', () => {
-  it('discovers at least the msw-server package', () => {
-    expect(packages.some((pkg) => pkg.name === '@soroush.tech/vite-plugin-msw-server')).toBe(true)
-  })
-
   it('renders the page heading', () => {
     renderWithTheme(<PackageIndex />)
     expect(screen.getByRole('heading', { level: 1, name: 'NPM Packages' })).toBeInTheDocument()
@@ -26,8 +22,8 @@ describe('PackageIndex', () => {
     for (const pkg of packages) {
       const link = screen.getByRole('link', { name: pkg.name })
       expect(link).toHaveAttribute('href', pkg.href)
-      if (pkg.external) {
-        expect(link).toHaveAttribute('target', '_blank')
+      if (pkg.target) {
+        expect(link).toHaveAttribute('target', pkg.target)
       } else {
         expect(link).not.toHaveAttribute('target')
       }

@@ -14,5 +14,5 @@ maintain; adding a package (or its detail page) updates the index automatically.
 
 - Page `<h1>` is "NPM Packages"; each `DomainCard` renders the package name as its `<h2>` title.
 - One card per row; the whole `DomainCard` is wrapped in a `Link` (`aria-label={name}`). It links to
-  the package's **detail page** when one exists, otherwise to its **npm page** (`external` → new tab).
+  the package's **detail page** when one exists, otherwise to its **npm page** (opens in a new tab).
 - Each card shows the version as the `DomainCard` `badge`; keyword tags come from `package.json`.

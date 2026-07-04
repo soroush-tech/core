@@ -42,7 +42,7 @@ export function PackageIndex() {
               <Link
                 key={pkg.name}
                 href={pkg.href}
-                target={pkg.external ? '_blank' : undefined}
+                target={pkg.target}
                 aria-label={pkg.name}
                 underline="none"
                 display="block"
