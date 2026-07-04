@@ -45,7 +45,9 @@ describe('main.tsx', () => {
     vi.resetModules()
   })
 
-  it('renders the app inside Providers and StrictMode', async () => {
+  // Importing main.tsx renders the whole app tree, which can exceed the 5s default when the
+  // full monorepo suite runs cold under load — give it generous headroom to avoid flaky timeouts.
+  it('renders the app inside Providers and StrictMode', { timeout: 20_000 }, async () => {
     // Import the module to trigger the rendering
     await import('./main.tsx')
 
