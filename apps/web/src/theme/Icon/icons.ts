@@ -4,9 +4,11 @@ import AnalyticsIcon from 'src/assets/icons/analytics.svg?react'
 import ArchitectureIcon from 'src/assets/icons/architecture.svg?react'
 import ArrowBackIcon from 'src/assets/icons/arrow_back.svg?react'
 import ArrowForwardIcon from 'src/assets/icons/arrow_forward.svg?react'
+import CheckIcon from 'src/assets/icons/check.svg?react'
 import CloudDoneIcon from 'src/assets/icons/cloud_done.svg?react'
 import CloseIcon from 'src/assets/icons/close.svg?react'
 import CodeIcon from 'src/assets/icons/code.svg?react'
+import ContentCopyIcon from 'src/assets/icons/content_copy.svg?react'
 import CookieIcon from 'src/assets/icons/cookie.svg?react'
 import DatabaseIcon from 'src/assets/icons/database.svg?react'
 import DesktopWindowsIcon from 'src/assets/icons/desktop_windows.svg?react'
@@ -43,9 +45,11 @@ export const icons = {
   architecture: ArchitectureIcon,
   arrow_back: ArrowBackIcon,
   arrow_forward: ArrowForwardIcon,
+  check: CheckIcon,
   cloud_done: CloudDoneIcon,
   close: CloseIcon,
   code: CodeIcon,
+  content_copy: ContentCopyIcon,
   cookie: CookieIcon,
   database: DatabaseIcon,
   desktop_windows: DesktopWindowsIcon,

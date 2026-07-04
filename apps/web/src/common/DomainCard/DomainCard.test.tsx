@@ -31,6 +31,12 @@ describe('DomainCard', () => {
       renderWithTheme(<DomainCard {...defaultProps} index={10} />)
       expect(screen.getByText('#10')).toBeInTheDocument()
     })
+
+    it('renders a custom badge in place of the index when provided', () => {
+      renderWithTheme(<DomainCard {...defaultProps} badge="v1.2.3" />)
+      expect(screen.getByText('v1.2.3')).toBeInTheDocument()
+      expect(screen.queryByText('#01')).not.toBeInTheDocument()
+    })
   })
 
   describe('content', () => {
@@ -92,6 +98,17 @@ describe('DomainCard', () => {
       renderWithTheme(<DomainCard {...defaultProps} featured />)
       const heading = screen.getByText('REAL-TIME SYSTEMS')
       expect(heading).toBeInTheDocument()
+    })
+  })
+
+  describe('children slot', () => {
+    it('renders footer children when provided', () => {
+      renderWithTheme(
+        <DomainCard {...defaultProps}>
+          <button type="button">Action</button>
+        </DomainCard>
+      )
+      expect(screen.getByRole('button', { name: 'Action' })).toBeInTheDocument()
     })
   })
 

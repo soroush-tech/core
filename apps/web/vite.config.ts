@@ -52,6 +52,9 @@ export default defineConfig({
   resolve: {
     alias: {
       src: resolve(__dirname, './src'),
+      // Repo-root packages dir, so package pages can import a package's README as a raw
+      // string (`packages/<name>/README.md?raw`) instead of a brittle `../../../../` path.
+      packages: resolve(__dirname, '../../packages'),
     },
   },
   server: {

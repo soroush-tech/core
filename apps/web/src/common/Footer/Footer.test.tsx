@@ -60,9 +60,12 @@ describe('Footer', () => {
       )
     })
 
-    it('renders AI Automation link to /about', () => {
+    it('renders Experience Graph link to /experience', () => {
       renderWithTheme(<Footer />)
-      expect(screen.getByRole('link', { name: 'AI Automation' })).toHaveAttribute('href', '/about/')
+      expect(screen.getByRole('link', { name: 'Experience Graph' })).toHaveAttribute(
+        'href',
+        '/experience/'
+      )
     })
 
     it('renders Contacts link to /contact', () => {
@@ -81,7 +84,7 @@ describe('Footer', () => {
       renderWithTheme(<Footer />)
       expect(screen.getByRole('link', { name: 'GitHub Repository' })).toHaveAttribute(
         'href',
-        'https://github.com/soroushm'
+        'https://github.com/soroush-tech'
       )
     })
 
@@ -90,9 +93,12 @@ describe('Footer', () => {
       expect(screen.getByRole('link', { name: 'NPM Packages' })).toHaveAttribute('href', '/npm/')
     })
 
-    it('renders Technical Wiki link', () => {
+    it('renders LinkedIn link', () => {
       renderWithTheme(<Footer />)
-      expect(screen.getByRole('link', { name: 'Technical Wiki' })).toHaveAttribute('href', '/wiki/')
+      expect(screen.getByRole('link', { name: 'LinkedIn' })).toHaveAttribute(
+        'href',
+        'https://www.linkedin.com/in/masoud-soroush-4139b152'
+      )
     })
 
     it('opens external links in a new tab', () => {

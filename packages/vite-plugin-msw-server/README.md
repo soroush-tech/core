@@ -7,7 +7,7 @@
 [![types included](https://img.shields.io/npm/types/@soroush.tech/vite-plugin-msw-server.svg)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server)
 [![license](https://img.shields.io/npm/l/@soroush.tech/vite-plugin-msw-server.svg)](./LICENSE)
 
-A Vite plugin that starts an [msw](https://mswjs.io)/node mock server inside the Vite
+A Vite plugin that starts an [msw/node](https://mswjs.io/docs/integrations/node) mock server inside the Vite
 process, so **server-side** data fetching resolves against your mocks during:
 
 - `vite dev` (SSR `data()` hooks), and
