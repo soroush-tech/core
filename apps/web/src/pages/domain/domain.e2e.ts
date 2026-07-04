@@ -33,6 +33,6 @@ test('about page links through to the domain page', async ({ page }) => {
 
   await page.getByRole('link', { name: 'ALL_DOMAINS' }).click()
 
-  await expect(page).toHaveURL(/\/domain$/)
+  await expect(page).toHaveURL(/\/domain\/$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('DOMAINS')
 })

@@ -51,7 +51,7 @@ export function CallToAction() {
           </Typography>
           <Flex flexDirection={['column', 'row']} gap={3} justifyContent="center">
             <Button
-              href="/contact"
+              href="/contact/"
               variant="contained"
               color="primary"
               size="lg"

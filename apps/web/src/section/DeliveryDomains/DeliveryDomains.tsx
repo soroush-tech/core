@@ -37,7 +37,7 @@ export function DeliveryDomains() {
           </View>
 
           <Link
-            href="/domain"
+            href="/domain/"
             variant="button"
             color="primary"
             underline="hover"

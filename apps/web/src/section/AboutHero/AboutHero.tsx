@@ -120,7 +120,7 @@ export function AboutHero() {
           </Typography>
           <Flex flexDirection="row" flexWrap="wrap" gap={4}>
             <Button
-              href="/domain"
+              href="/domain/"
               variant="contained"
               size="lg"
               endIcon={<Icon name="terminal" color="inherit" size="1rem" />}

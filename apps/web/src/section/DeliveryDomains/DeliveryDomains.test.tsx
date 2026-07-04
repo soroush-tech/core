@@ -20,7 +20,7 @@ describe('DeliveryDomains', () => {
 
     it('links to the full domain page', () => {
       renderWithTheme(<DeliveryDomains />)
-      expect(screen.getByRole('link', { name: 'ALL_DOMAINS' })).toHaveAttribute('href', '/domain')
+      expect(screen.getByRole('link', { name: 'ALL_DOMAINS' })).toHaveAttribute('href', '/domain/')
     })
   })
 

@@ -1,5 +1,6 @@
 import AccountTreeIcon from 'src/assets/icons/account_tree.svg?react'
 import AdsClickIcon from 'src/assets/icons/ads_click.svg?react'
+import AnalyticsIcon from 'src/assets/icons/analytics.svg?react'
 import ArchitectureIcon from 'src/assets/icons/architecture.svg?react'
 import ArrowBackIcon from 'src/assets/icons/arrow_back.svg?react'
 import ArrowForwardIcon from 'src/assets/icons/arrow_forward.svg?react'
@@ -31,12 +32,14 @@ import SpeedIcon from 'src/assets/icons/speed.svg?react'
 import StacksIcon from 'src/assets/icons/stacks.svg?react'
 import TerminalIcon from 'src/assets/icons/terminal.svg?react'
 import VisibilityIcon from 'src/assets/icons/visibility.svg?react'
+import WarningIcon from 'src/assets/icons/warning.svg?react'
 import WebAssetIcon from 'src/assets/icons/web_asset.svg?react'
 
 /** Registry of available icons, keyed by their asset file name. */
 export const icons = {
   account_tree: AccountTreeIcon,
   ads_click: AdsClickIcon,
+  analytics: AnalyticsIcon,
   architecture: ArchitectureIcon,
   arrow_back: ArrowBackIcon,
   arrow_forward: ArrowForwardIcon,
@@ -68,6 +71,7 @@ export const icons = {
   stacks: StacksIcon,
   terminal: TerminalIcon,
   visibility: VisibilityIcon,
+  warning: WarningIcon,
   web_asset: WebAssetIcon,
 } as const
 

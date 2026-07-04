@@ -53,6 +53,7 @@ export interface Theme {
     backdrop: string
     /** App bar / sticky header surface. Light in light theme; `backdrop` stays dark for scrims. */
     appBar: string
+    glass: string
     modal: string
     default: string
     primary: string
@@ -317,6 +318,7 @@ export const light: Theme = {
   background: {
     backdrop: blackAlpha[500],
     appBar: alpha(lightSurface[100], 0.8),
+    glass: alpha(lightSurface[100], 0.3),
     modal: lightSurface[100],
     default: lightSurface[700],
     primary: lightSurface[400], // #f9f9f9
@@ -399,6 +401,7 @@ export const dark: Theme = {
   background: {
     backdrop: blackAlpha[700],
     appBar: blackAlpha[700],
+    glass: blackAlpha[300],
     modal: kineticSurface[800],
     default: kineticSurface[600],
     primary: kineticSurface[900],

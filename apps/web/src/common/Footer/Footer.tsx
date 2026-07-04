@@ -10,16 +10,16 @@ import { Blockquote } from 'src/common/Blockquote'
 import { alpha } from 'src/theme/utils'
 
 const DIRECTORIES = [
-  { href: '/design/system', label: 'Design System' },
-  { href: '/domain', label: 'Delivery Domain' },
-  { href: '/about', label: 'AI Automation' },
-  { href: '/contact', label: 'Contacts' },
+  { href: '/design/system/', label: 'Design System' },
+  { href: '/domain/', label: 'Delivery Domain' },
+  { href: '/about/', label: 'AI Automation' },
+  { href: '/contact/', label: 'Contacts' },
 ]
 
 const CONNECTIVITY = [
   { href: 'https://github.com/soroushm', target: '_blank', label: 'GitHub Repository' },
-  { href: '/npm', label: 'NPM Packages' },
-  { href: 'wiki', label: 'Technical Wiki' },
+  { href: '/npm/', label: 'NPM Packages' },
+  { href: '/wiki/', label: 'Technical Wiki' },
 ]
 
 // single-side top border — View's borderColor applies to all four sides

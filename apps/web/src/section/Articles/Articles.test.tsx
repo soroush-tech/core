@@ -35,8 +35,8 @@ import { formatDate } from './utils'
 describe('Articles', () => {
   it('renders a link for each gist', () => {
     renderWithTheme(<Articles />)
-    expect(screen.getByRole('link', { name: 'First Post' })).toHaveAttribute('href', '/article/1')
-    expect(screen.getByRole('link', { name: 'Second Post' })).toHaveAttribute('href', '/article/2')
+    expect(screen.getByRole('link', { name: 'First Post' })).toHaveAttribute('href', '/article/1/')
+    expect(screen.getByRole('link', { name: 'Second Post' })).toHaveAttribute('href', '/article/2/')
   })
 
   it('renders the owner avatar for each gist', () => {

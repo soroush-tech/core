@@ -41,7 +41,7 @@ export function Hero() {
 
       <Flex mt={2} flexDirection={['column', 'row']} gap={3}>
         <Button
-          href="/contact"
+          href="/contact/"
           variant="contained"
           color="primary"
           size="lg"

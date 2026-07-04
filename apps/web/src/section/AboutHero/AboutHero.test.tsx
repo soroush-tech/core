@@ -32,7 +32,7 @@ describe('AboutHero', () => {
       renderWithTheme(<AboutHero />)
       expect(screen.getByRole('link', { name: 'VIEW_EXPERTISE' })).toHaveAttribute(
         'href',
-        '/domain'
+        '/domain/'
       )
     })
 

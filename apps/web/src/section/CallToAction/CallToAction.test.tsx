@@ -47,7 +47,7 @@ describe('CallToAction', () => {
       renderWithTheme(<CallToAction />)
       const cta = screen.getByRole('link', { name: /Contact Now/i })
       expect(cta).toBeInTheDocument()
-      expect(cta).toHaveAttribute('href', '/contact')
+      expect(cta).toHaveAttribute('href', '/contact/')
     })
   })
 })
