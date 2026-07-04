@@ -19,7 +19,7 @@ function ErrorPage() {
     // Only bootstrap on the initial cold load; guarding on isClientSideNavigation stops a client
     // re-render landing back here (a genuine 404) from re-firing navigate() in a loop.
     if (!isClientSideNavigation && NON_PRERENDERED_ROUTE.test(urlPathname)) {
-      void navigate(urlPathname)
+      navigate(urlPathname)
     }
   }, [isClientSideNavigation, urlPathname])
 

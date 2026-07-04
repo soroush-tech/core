@@ -19,8 +19,8 @@ export function useSpotlight<T extends HTMLElement = HTMLDivElement>() {
       element.style.setProperty('--spotlight-y', `${event.clientY}px`)
     }
 
-    window.addEventListener('mousemove', handleMove)
-    return () => window.removeEventListener('mousemove', handleMove)
+    globalThis.addEventListener('mousemove', handleMove)
+    return () => globalThis.removeEventListener('mousemove', handleMove)
   }, [])
 
   return ref
