@@ -34,7 +34,7 @@ export function Articles() {
         >
           <Avatar size="md" src={gist.owner.avatar_url} alt={authorName(gist.owner.login)} />
           <Flex flexDirection="column" gap={1}>
-            <NavLink color="primary" fontSize={4} href={`/article/${gist.id}`}>
+            <NavLink color="primary" fontSize={4} href={`/article/${gist.id}/`}>
               {gist.description}
             </NavLink>
             <Flex flexDirection="row" alignItems="center" gap={1}>

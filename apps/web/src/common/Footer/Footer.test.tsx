@@ -48,7 +48,7 @@ describe('Footer', () => {
       renderWithTheme(<Footer />)
       expect(screen.getByRole('link', { name: 'Design System' })).toHaveAttribute(
         'href',
-        '/design/system'
+        '/design/system/'
       )
     })
 
@@ -56,18 +56,18 @@ describe('Footer', () => {
       renderWithTheme(<Footer />)
       expect(screen.getByRole('link', { name: 'Delivery Domain' })).toHaveAttribute(
         'href',
-        '/domain'
+        '/domain/'
       )
     })
 
     it('renders AI Automation link to /about', () => {
       renderWithTheme(<Footer />)
-      expect(screen.getByRole('link', { name: 'AI Automation' })).toHaveAttribute('href', '/about')
+      expect(screen.getByRole('link', { name: 'AI Automation' })).toHaveAttribute('href', '/about/')
     })
 
     it('renders Contacts link to /contact', () => {
       renderWithTheme(<Footer />)
-      expect(screen.getByRole('link', { name: 'Contacts' })).toHaveAttribute('href', '/contact')
+      expect(screen.getByRole('link', { name: 'Contacts' })).toHaveAttribute('href', '/contact/')
     })
   })
 
@@ -87,12 +87,12 @@ describe('Footer', () => {
 
     it('renders NPM Packages link', () => {
       renderWithTheme(<Footer />)
-      expect(screen.getByRole('link', { name: 'NPM Packages' })).toHaveAttribute('href', '/npm')
+      expect(screen.getByRole('link', { name: 'NPM Packages' })).toHaveAttribute('href', '/npm/')
     })
 
     it('renders Technical Wiki link', () => {
       renderWithTheme(<Footer />)
-      expect(screen.getByRole('link', { name: 'Technical Wiki' })).toHaveAttribute('href', 'wiki')
+      expect(screen.getByRole('link', { name: 'Technical Wiki' })).toHaveAttribute('href', '/wiki/')
     })
 
     it('opens external links in a new tab', () => {

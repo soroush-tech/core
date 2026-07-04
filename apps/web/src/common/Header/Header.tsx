@@ -23,9 +23,9 @@ export interface HeaderProps {
 
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/experience', label: 'Experience' },
-  { href: '/articles', label: 'Articles' },
+  { href: '/about/', label: 'About' },
+  { href: '/experience/', label: 'Experience' },
+  { href: '/articles/', label: 'Articles' },
 ]
 
 const MOBILE_BREAKPOINT = '768px'

@@ -36,7 +36,7 @@ test('syncs all head meta on client-side navigation (not just the title)', async
   await page.evaluate(() => ((window as Window & { __noReload?: boolean }).__noReload = true))
 
   await page.getByRole('link', { name: 'Mock Article Title' }).click()
-  await expect(page).toHaveURL('/article/mock-gist-id')
+  await expect(page).toHaveURL('/article/mock-gist-id/')
   expect(await page.evaluate(() => (window as Window & { __noReload?: boolean }).__noReload)).toBe(
     true
   )
