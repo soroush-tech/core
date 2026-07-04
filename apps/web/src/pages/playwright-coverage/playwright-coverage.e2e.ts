@@ -15,4 +15,7 @@ test('playwright-coverage package page renders the hero and README body, with me
   )
   // The README body is rendered (its title/badges are stripped, `##` sections remain).
   await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible()
+
+  // Wait for the client app to hydrate so +Page executes (captured by e2e coverage).
+  await page.waitForLoadState('networkidle')
 })

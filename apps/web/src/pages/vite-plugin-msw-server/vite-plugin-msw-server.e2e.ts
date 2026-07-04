@@ -13,4 +13,7 @@ test('package page renders the hero and README body, with meta', async ({ page }
   )
   // The README body is rendered (its title/badges are stripped, `##` sections remain).
   await expect(page.getByRole('heading', { name: 'Install' })).toBeVisible()
+
+  // Wait for the client app to hydrate so +Page executes (captured by e2e coverage).
+  await page.waitForLoadState('networkidle')
 })
