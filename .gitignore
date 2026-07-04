@@ -58,3 +58,4 @@ storybook-static
 test-results
 .vitest-attachments
 __screenshots__/
+examples/

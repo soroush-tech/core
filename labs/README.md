@@ -4,7 +4,7 @@ Scratch space for **in-repo experiments** that consume the `@soroush.tech/*`
 packages directly from source — quick benchmarks, spikes, repros, and demos you
 don't want to publish or wire into an app.
 
-Unlike [`examples/`](../examples) (which is **excluded** from the workspace and
+Unlike the [`examples`](https://github.com/soroush-tech/examples) repo (which is **excluded** from the workspace and
 pins **published npm** versions), everything under `labs/` **is** a workspace
 member: each subdirectory is its own private package that depends on the local
 packages via `workspace:*`, so you edit a package and the lab sees the change
