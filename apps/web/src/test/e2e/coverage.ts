@@ -8,7 +8,7 @@ import playwrightCoverage from '@soroush.tech/playwright-coverage'
  */
 export const e2eCoverage = playwrightCoverage({
   enabled: process.env.E2E_COVERAGE === 'true',
-  include: ['src/pages/**/+Page.{ts,tsx,jsx,js}'],
+  include: ['src/pages/**/+Page.{tsx,jsx}'],
   report: {
     name: 'E2E Coverage',
     outputDir: './coverage/e2e',

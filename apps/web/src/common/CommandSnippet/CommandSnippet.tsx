@@ -20,10 +20,18 @@ export function CommandSnippet({ command, ...rest }: Readonly<CommandSnippetProp
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    void navigator.clipboard.writeText(command).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), COPIED_RESET_MS)
-    })
+    // Clipboard is unavailable in insecure/unsupported contexts, and writeText can reject
+    // (e.g. permission denied) — guard both so the handler never throws or leaves the UI stuck.
+    if (!navigator.clipboard?.writeText) return
+    void navigator.clipboard
+      .writeText(command)
+      .then(() => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), COPIED_RESET_MS)
+      })
+      .catch(() => {
+        // Clipboard write failed; leave the button in its idle state.
+      })
   }
 
   return (

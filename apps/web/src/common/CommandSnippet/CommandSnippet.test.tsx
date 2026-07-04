@@ -45,6 +45,21 @@ describe('CommandSnippet', () => {
     }
   })
 
+  it('does nothing when the clipboard API is unavailable', () => {
+    Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
+    renderWithTheme(<CommandSnippet command="npm i pkg" />)
+    fireEvent.click(screen.getByRole('button', { name: 'Copy command' }))
+    expect(screen.getByRole('button', { name: 'Copy command' })).toBeInTheDocument()
+  })
+
+  it('stays idle when the clipboard write is rejected', async () => {
+    writeText.mockRejectedValue(new Error('denied'))
+    renderWithTheme(<CommandSnippet command="npm i pkg" />)
+    fireEvent.click(screen.getByRole('button', { name: 'Copy command' }))
+    await act(async () => {})
+    expect(screen.getByRole('button', { name: 'Copy command' })).toBeInTheDocument()
+  })
+
   it('forwards passthrough props to the container', () => {
     renderWithTheme(<CommandSnippet command="npm i pkg" data-testid="snippet" />)
     expect(screen.getByTestId('snippet')).toBeInTheDocument()
