@@ -155,7 +155,7 @@ Full docs live in [`docs/`](./docs/README.md):
 - [TypeScript](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/typescript.md)
 - [Guides](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/guides/index.md)
 
-Runnable demos live in [`examples/styled-system/`](https://github.com/soroush-tech/soroush.tech/tree/main/examples/styled-system).
+Runnable demos live in the [examples repo](https://github.com/soroush-tech/examples/tree/main/styled-system).
 
 ## License
 

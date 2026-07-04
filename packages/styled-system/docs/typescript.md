@@ -77,4 +77,4 @@ Swap via a package-manager alias — no code or type changes:
 ```
 
 A runnable, `tsc`-verified example lives in
-[`examples/styled-system/typescript`](../../../examples/styled-system/typescript).
+[`styled-system/typescript`](https://github.com/soroush-tech/examples/tree/main/styled-system/typescript).
