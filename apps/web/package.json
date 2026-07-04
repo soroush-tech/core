@@ -35,6 +35,7 @@
     "test:coverage:browser": "vitest run --project=unit-browser --coverage",
     "test:coverage:ui": "vitest run --coverage --project=unit && open coverage/lcov-report/index.html",
     "coverage:check": "node scripts/coverage-check.ts",
+    "coverage:check:e2e": "node scripts/coverage-check.ts --file=coverage/e2e/lcov.info",
     "storybook": "cross-env NODE_ENV=storybook storybook dev -p 6006",
     "prebuild": "tsc -b",
     "build": "vite build",

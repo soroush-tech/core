@@ -11,6 +11,7 @@
  *   pnpm coverage:check                                # check every file in the report
  *   pnpm coverage:check --threshold=90 src/common      # custom threshold (default 100)
  *   pnpm coverage:check --file=coverage/e2e/lcov.info  # parse the e2e report instead
+ *   pnpm coverage:check:e2e                            # ^ shorthand: check the e2e report
  */
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
