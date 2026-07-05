@@ -316,8 +316,16 @@ jobs:
           CI: true
         run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
 
+      # On a cache miss, download the browser binaries (+ Linux system deps).
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm --filter @soroush/web exec playwright install --with-deps
+
+      # On a cache hit the binaries are restored, but Linux system libs live
+      # outside the cache — reinstall just those (fast, no binary download).
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true' && runner.os == 'Linux'
+        run: pnpm --filter @soroush/web exec playwright install-deps
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
