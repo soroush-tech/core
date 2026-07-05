@@ -51,14 +51,11 @@ describe('Header', () => {
   })
 
   describe('navigation', () => {
-    it('renders Home, About, Experience, and Articles nav links', () => {
+    it('renders Home, About, Packages, and Articles nav links', () => {
       renderWithTheme(<Header />)
       expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
       expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about/')
-      expect(screen.getByRole('link', { name: 'Experience' })).toHaveAttribute(
-        'href',
-        '/experience/'
-      )
+      expect(screen.getByRole('link', { name: 'Packages' })).toHaveAttribute('href', '/npm/')
       expect(screen.getByRole('link', { name: 'Articles' })).toHaveAttribute('href', '/articles/')
     })
 

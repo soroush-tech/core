@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/bench",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Run A/B function and package-version benchmarks inside a CPU/RAM-pinned Docker sandbox for stable, low-noise numbers. Built on mitata.",
   "keywords": [
     "benchmark",
@@ -14,7 +14,7 @@
   ],
   "author": "Masoud Soroush <masoud@soroush.tech>",
   "license": "MIT",
-  "homepage": "https://github.com/soroush-tech/soroush.tech/tree/main/packages/bench#readme",
+  "homepage": "https://soroush.tech/bench/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/soroush-tech/soroush.tech.git",

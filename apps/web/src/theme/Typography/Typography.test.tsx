@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from 'src/test/utils/wrapper'
-import { dark, typography } from 'src/theme/themes'
+import { dark, typography, fonts } from 'src/theme/themes'
 import { Typography, type TypographyVariant, type TextColorToken } from '../Typography'
 
 describe('Typography', () => {
@@ -213,18 +213,14 @@ describe('Typography', () => {
     })
 
     describe('fontFamily', () => {
-      it('fontFamily="heading" applies Space Grotesk', () => {
+      it('fontFamily="heading" applies the Space Grotesk stack', () => {
         renderWithTheme(<Typography fontFamily="heading">heading font</Typography>)
-        expect(screen.getByText('heading font')).toHaveStyle({
-          fontFamily: "'Space Grotesk', sans-serif",
-        })
+        expect(screen.getByText('heading font')).toHaveStyle({ fontFamily: fonts.heading })
       })
 
-      it('fontFamily="mono" applies monospace stack', () => {
+      it('fontFamily="mono" applies the monospace stack', () => {
         renderWithTheme(<Typography fontFamily="mono">mono font</Typography>)
-        expect(screen.getByText('mono font')).toHaveStyle({
-          fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
-        })
+        expect(screen.getByText('mono font')).toHaveStyle({ fontFamily: fonts.mono })
       })
     })
   })

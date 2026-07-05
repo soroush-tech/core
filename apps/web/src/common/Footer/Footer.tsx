@@ -12,14 +12,20 @@ import { alpha } from 'src/theme/utils'
 const DIRECTORIES = [
   { href: '/design/system/', label: 'Design System' },
   { href: '/domain/', label: 'Delivery Domain' },
-  { href: '/about/', label: 'AI Automation' },
-  { href: '/contact/', label: 'Contacts' },
+  { href: '/experience/', label: 'Experience Graph' },
 ]
 
 const CONNECTIVITY = [
-  { href: 'https://github.com/soroushm', target: '_blank', label: 'GitHub Repository' },
+  { href: '/contact/', label: 'Contacts' },
+  { href: 'https://github.com/soroush-tech', target: '_blank', label: 'GitHub Repository' },
   { href: '/npm/', label: 'NPM Packages' },
-  { href: '/wiki/', label: 'Technical Wiki' },
+  {
+    href: 'https://www.linkedin.com/in/masoud-soroush-4139b152',
+    target: '_blank',
+    label: 'LinkedIn',
+  },
+
+  // { href: '/wiki/', label: 'Technical Wiki' },
 ]
 
 // single-side top border — View's borderColor applies to all four sides

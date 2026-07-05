@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import styled from '@emotion/styled'
 import { Card } from 'src/theme/Card'
 import { Flex } from 'src/theme/Flex'
@@ -13,6 +13,8 @@ export interface Images {
 
 export interface DomainCardProps {
   index: number
+  /** Overrides the default `#NN` corner badge (e.g. a version like `v0.2.0`). */
+  badge?: string
   title: string
   description: string
   tags: string[]
@@ -21,6 +23,8 @@ export interface DomainCardProps {
   featured?: boolean
   style?: CSSProperties
   className?: string
+  /** Optional footer content rendered on the card below the tags (e.g. an action button). */
+  children?: ReactNode
 }
 
 // Custom CSS: :hover pseudo-selector, img descendant selector, and bracket
@@ -58,6 +62,7 @@ const TagChip = styled(Typography, { label: 'TagChip' })`
 
 export function DomainCard({
   index,
+  badge: badgeProp,
   title,
   description,
   tags,
@@ -66,8 +71,9 @@ export function DomainCard({
   featured = false,
   style,
   className,
+  children,
 }: Readonly<DomainCardProps>) {
-  const badge = `#${String(index).padStart(2, '0')}`
+  const badge = badgeProp ?? `#${String(index).padStart(2, '0')}`
   // Featured image is full-width when the card is stacked, then a fixed box once it
   // switches to a row at 52em — keep this in sync with the layout props below.
   const imageSizes = featured ? '(min-width: 52em) 480px, (min-width: 40em) 360px, 100vw' : '360px'
@@ -153,6 +159,7 @@ export function DomainCard({
               </TagChip>
             ))}
           </Flex>
+          {children && <Flex mt={4}>{children}</Flex>}
         </Flex>
       </Flex>
     </CardRoot>

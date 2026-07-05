@@ -45,6 +45,7 @@ export default defineConfig({
     alias: [
       { find: /^msw$/, replacement: resolve(__dirname, 'node_modules/msw') },
       { find: 'src', replacement: resolve(__dirname, './src') },
+      { find: 'packages', replacement: resolve(__dirname, '../../packages') },
     ],
   },
   test: {
@@ -78,6 +79,7 @@ export default defineConfig({
           alias: [
             { find: /^msw$/, replacement: resolve(__dirname, 'node_modules/msw') },
             { find: 'src', replacement: resolve(__dirname, './src') },
+            { find: 'packages', replacement: resolve(__dirname, '../../packages') },
           ],
         },
         plugins: mockPlugins,

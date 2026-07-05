@@ -172,9 +172,10 @@ default download location differs per platform).
 | 11  | Browser coverage → Codecov        | ubuntu                      | `test:coverage:browser` → upload `flags: browser`                                                                                                          |
 | 12  | Publish to Chromatic              | ubuntu, not `renovate[bot]` | `chromaui/action@latest`, `buildScriptName: build:storybook`, `onlyChanged: true`, `exitZeroOnChanges: true`; exposes `storybookUrl`                       |
 | 13  | Storybook coverage → Codecov      | ubuntu                      | `test:coverage:storybook` with `SB_URL: <chromatic url>` → upload `flags: storybook`                                                                       |
-| 14  | E2E (Chromium) coverage → Codecov | ubuntu                      | `test:coverage:e2e` → upload `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                                                                      |
-| 15  | E2E Firefox                       | windows                     | `test:e2e:firefox`                                                                                                                                         |
-| 16  | E2E WebKit                        | macOS                       | `test:e2e:webkit`                                                                                                                                          |
+| 14  | Web coverage (merged) → Codecov   | ubuntu                      | `test:coverage` (unit + browser + storybook in one V8 pass) with `SB_URL` → upload `flags: web`; the flag `.codecov.yml` gates patch/project on            |
+| 15  | E2E (Chromium) coverage → Codecov | ubuntu                      | `test:coverage:e2e` → upload `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                                                                      |
+| 16  | E2E Firefox                       | windows                     | `test:e2e:firefox`                                                                                                                                         |
+| 17  | E2E WebKit                        | macOS                       | `test:e2e:webkit`                                                                                                                                          |
 
 Each engine runs on its native OS; macOS (≈10× cost) is reserved for WebKit. E2E
 runs read `VITE_BASE_URL` from repo `vars`.

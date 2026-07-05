@@ -166,9 +166,11 @@ export const letterSpacings = {
 }
 
 export const fonts = {
-  body: "'Space Grotesk', sans-serif",
-  heading: "'Space Grotesk', sans-serif",
-  mono: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
+  // 'X Variable' is the self-hosted @fontsource-variable family; the plain name is a fallback
+  // for anyone who has it installed locally, then the generic family.
+  body: "'Space Grotesk Variable', 'Space Grotesk', sans-serif",
+  heading: "'Space Grotesk Variable', 'Space Grotesk', sans-serif",
+  mono: "'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
 }
 
 export const fontWeights = {

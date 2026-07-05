@@ -57,6 +57,13 @@ const edits = [
         ]),
       },
       {
+        // Package flags in the patch-status gate (coverage.status.patch.default.flags).
+        // The app/worker flags (web, e2e, api) are hand-managed above these markers.
+        start: '# gen:codecov-patch-flags start',
+        end: '# gen:codecov-patch-flags end',
+        lines: allPackages.map((name) => `- ${name}`),
+      },
+      {
         start: '# gen:codecov-components start',
         end: '# gen:codecov-components end',
         lines: allPackages.flatMap((name) => [

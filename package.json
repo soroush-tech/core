@@ -36,6 +36,7 @@
     "test:e2e:firefox": "pnpm --filter @soroush/web test:e2e:firefox",
     "test:e2e:webkit": "pnpm --filter @soroush/web test:e2e:webkit",
     "coverage:check": "pnpm --filter @soroush/web coverage:check",
+    "coverage:check:e2e": "pnpm --filter @soroush/web coverage:check:e2e",
     "deploy": "pnpm --filter @soroush/web deploy"
   },
   "devDependencies": {
