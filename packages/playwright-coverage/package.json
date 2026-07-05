@@ -63,15 +63,15 @@
     "monocart-coverage-reports": "^2"
   },
   "dependencies": {
-    "picomatch": "^4.0.0"
+    "picomatch": "^4.0.5"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.61.1",
     "@soroush.tech/eslint-config": "workspace:*",
     "@types/node": "^24.13.2",
-    "@types/picomatch": "^4.0.0",
+    "@types/picomatch": "^4.0.3",
     "@vitest/coverage-v8": "^4.1.9",
-    "eslint": "^10.5.0",
+    "eslint": "^10.6.0",
     "globals": "^17.7.0",
     "monocart-coverage-reports": "^2.12.12",
     "tsdown": "^0.22.3",
