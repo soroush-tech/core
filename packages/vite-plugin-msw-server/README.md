@@ -114,8 +114,9 @@ Node, where msw's browser worker can't reach. Two flavors:
   rendered once at build time into static HTML. The same server-side fetching runs in the
   **build process**. The plugin makes that deterministic: prerendering resolves against
   mocks, so your static output never depends on a live API being reachable at build time.
-  This holds when the framework prerenders **inside the Vite build** (Astro, Vike, vanilla
-  Vite SSR). Some frameworks prerender in a separate process (SvelteKit, Nuxt) — there the
+  This holds when the framework prerenders **inside the Vite build** (Astro, Vike, React
+  Router v7, vanilla Vite SSR). Some frameworks prerender in a separate process (SvelteKit,
+  Nuxt) — there the
   build step isn't covered even though `vite dev` is. See the [support matrix](#framework-support).
 
 Both happen **inside the Vite/Node process**, which is exactly where the plugin's
@@ -133,22 +134,24 @@ is never even imported when disabled).
 The plugin only affects requests made **in the same process as Vite**. Whether that covers
 your SSR/prerender depends on where the framework runs them:
 
-| Framework                           | `vite dev` (SSR) | `vite build` (SSG) | Notes                                                                 |
-| ----------------------------------- | :--------------: | :----------------: | --------------------------------------------------------------------- |
-| [Astro](https://astro.build)        |        ✅        |         ✅         | prerender runs inside the Vite build                                  |
-| [Vike](https://vike.dev)            |        ✅        |         ✅         | prerender runs inside the Vite build                                  |
-| vanilla Vite SSR                    |        ✅        |         ✅         | when your prerender runs in the build process                         |
-| [SvelteKit](https://kit.svelte.dev) |        ✅        |         ❌         | prerender runs in a separate process                                  |
-| [Remix (Vite)](https://remix.run)   |        ✅        |         —          | no built-in prerender; prod is `remix-serve`                          |
-| [Nuxt](https://nuxt.com)            |        ❌        |         ❌         | Nitro SSR is a separate process — start msw in a Nitro plugin instead |
-| [Next.js](https://nextjs.org)       |        ❌        |         ❌         | not Vite-based — use msw via `instrumentation.ts`                     |
+| Framework                                  | `vite dev` (SSR) | `vite build` (SSG) | Notes                                                                 |
+| ------------------------------------------ | :--------------: | :----------------: | --------------------------------------------------------------------- |
+| [Astro](https://astro.build)               |        ✅        |         ✅         | prerender runs inside the Vite build                                  |
+| [Vike](https://vike.dev)                   |        ✅        |         ✅         | prerender runs inside the Vite build                                  |
+| [React Router v7](https://reactrouter.com) |        ✅        |         ✅         | `prerender` runs inside the Vite build                                |
+| vanilla Vite SSR                           |        ✅        |         ✅         | when your prerender runs in the build process                         |
+| [SvelteKit](https://kit.svelte.dev)        |        ✅        |         ❌         | prerender runs in a separate process                                  |
+| [Remix v2 (Vite)](https://remix.run)       |        ✅        |         —          | no in-Vite prerender; use React Router v7 for SSG                     |
+| [Nuxt](https://nuxt.com)                   |        ❌        |         ❌         | Nitro SSR is a separate process — start msw in a Nitro plugin instead |
+| [Next.js](https://nextjs.org)              |        ❌        |         ❌         | not Vite-based — use msw via `instrumentation.ts`                     |
 
 Runnable examples for the supported frameworks — [Astro][ex-astro], [Vike][ex-vike],
-[SvelteKit][ex-sveltekit], and [Remix][ex-remix] — live in the
-[examples repo](https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server).
+[React Router v7][ex-react-router], [SvelteKit][ex-sveltekit], and [Remix][ex-remix] — live
+in the [examples repo](https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server).
 
 [ex-astro]: https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server/astro
 [ex-vike]: https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server/vike
+[ex-react-router]: https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server/react-router
 [ex-sveltekit]: https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server/sveltekit
 [ex-remix]: https://github.com/soroush-tech/examples/tree/main/vite-plugin-msw-server/remix
 
@@ -196,6 +199,12 @@ process — can't intercept those requests. Start msw from a Nitro plugin instea
 Dev-time SSR, yes. Their production and prerender steps run outside the Vite process
 (SvelteKit prerenders separately; Remix serves via `remix-serve`), so the build isn't covered.
 See the [support matrix](#framework-support).
+
+**Does it work with React Router v7?**
+Yes — fully. Its `prerender` option runs loaders inside the Vite build, so both dev SSR and
+build-time SSG are covered, the same as Astro and Vike. It's the way to get plugin-covered SSG
+in the React ecosystem (Remix v2's `remix-ssg` uses the classic, non-Vite compiler, which the
+plugin can't hook).
 
 **Which Node versions are supported?**
 Any Node that your msw version supports. `msw/node` hooks Node's HTTP layer, so it runs
