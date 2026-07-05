@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@soroush.tech/vite-plugin-msw-server.svg)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server)
 [![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/vite-plugin-msw-server.svg)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server)
-[![coverage](https://codecov.io/gh/soroush-tech/soroush.tech/branch/main/graph/badge.svg?flag=vite-plugin-msw-server)](https://app.codecov.io/gh/soroush-tech/soroush.tech?flags%5B0%5D=vite-plugin-msw-server)
+[![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=vite-plugin-msw-server)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=vite-plugin-msw-server)
 [![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/vite-plugin-msw-server.svg)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server)
 [![types included](https://img.shields.io/npm/types/@soroush.tech/vite-plugin-msw-server.svg)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server)
 [![license](https://img.shields.io/npm/l/@soroush.tech/vite-plugin-msw-server.svg)](./LICENSE)

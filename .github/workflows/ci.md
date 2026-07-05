@@ -164,18 +164,19 @@ default download location differs per platform).
 | 3   | Setup Node                        | all                         | deps cache via `cache: <manager>`                                                                                                                          |
 | 4   | **Restore Playwright cache**      | all                         | `actions/cache/restore@v5`, id `playwright-cache`, path `ms-playwright`, key `${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}` |
 | 5   | Install                           | all                         | `${manager} ${command}`, `CI: true`                                                                                                                        |
-| 6   | Install Playwright browsers       | all                         | `pnpm --filter @soroush/web exec playwright install --with-deps` (idempotent; re-downloads only what's missing)                                            |
-| 7   | **Save Playwright cache**         | all                         | `actions/cache/save@v5`, `if: always() && steps.playwright-cache.outputs.cache-hit != 'true'`, same key                                                    |
-| 8   | Build project                     | ubuntu                      | `${runner} run build` with `SKIP_PRERENDER: 'true'`                                                                                                        |
-| 9   | Run Test                          | all                         | `${runner} --filter @soroush/web test` (the non-coverage unit/component run on every OS)                                                                   |
-| 10  | Unit coverage → Codecov           | ubuntu                      | `test:coverage:unit` → upload `flags: unit`                                                                                                                |
-| 11  | Browser coverage → Codecov        | ubuntu                      | `test:coverage:browser` → upload `flags: browser`                                                                                                          |
-| 12  | Publish to Chromatic              | ubuntu, not `renovate[bot]` | `chromaui/action@latest`, `buildScriptName: build:storybook`, `onlyChanged: true`, `exitZeroOnChanges: true`; exposes `storybookUrl`                       |
-| 13  | Storybook coverage → Codecov      | ubuntu                      | `test:coverage:storybook` with `SB_URL: <chromatic url>` → upload `flags: storybook`                                                                       |
-| 14  | Web coverage (merged) → Codecov   | ubuntu                      | `test:coverage` (unit + browser + storybook in one V8 pass) with `SB_URL` → upload `flags: web`; the flag `.codecov.yml` gates patch/project on            |
-| 15  | E2E (Chromium) coverage → Codecov | ubuntu                      | `test:coverage:e2e` → upload `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                                                                      |
-| 16  | E2E Firefox                       | windows                     | `test:e2e:firefox`                                                                                                                                         |
-| 17  | E2E WebKit                        | macOS                       | `test:e2e:webkit`                                                                                                                                          |
+| 6   | Install Playwright browsers       | cache miss                  | `if: cache-hit != 'true'` → `pnpm --filter @soroush/web exec playwright install --with-deps` (downloads binaries + Linux system deps)                      |
+| 7   | Install Playwright system deps    | cache hit, Linux            | `if: cache-hit == 'true' && runner.os == 'Linux'` → `playwright install-deps` (apt libs only, no binary download; browsers came from the cache)            |
+| 8   | **Save Playwright cache**         | all                         | `actions/cache/save@v5`, `if: always() && steps.playwright-cache.outputs.cache-hit != 'true'`, same key                                                    |
+| 9   | Build project                     | ubuntu                      | `${runner} run build` with `SKIP_PRERENDER: 'true'`                                                                                                        |
+| 10  | Run Test                          | all                         | `${runner} --filter @soroush/web test` (the non-coverage unit/component run on every OS)                                                                   |
+| 11  | Unit coverage → Codecov           | ubuntu                      | `test:coverage:unit` → upload `flags: unit`                                                                                                                |
+| 12  | Browser coverage → Codecov        | ubuntu                      | `test:coverage:browser` → upload `flags: browser`                                                                                                          |
+| 13  | Publish to Chromatic              | ubuntu, not `renovate[bot]` | `chromaui/action@latest`, `buildScriptName: build:storybook`, `onlyChanged: true`, `exitZeroOnChanges: true`; exposes `storybookUrl`                       |
+| 14  | Storybook coverage → Codecov      | ubuntu                      | `test:coverage:storybook` with `SB_URL: <chromatic url>` → upload `flags: storybook`                                                                       |
+| 15  | Web coverage (merged) → Codecov   | ubuntu                      | `test:coverage` (unit + browser + storybook in one V8 pass) with `SB_URL` → upload `flags: web`; the flag `.codecov.yml` gates patch/project on            |
+| 16  | E2E (Chromium) coverage → Codecov | ubuntu                      | `test:coverage:e2e` → upload `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                                                                      |
+| 17  | E2E Firefox                       | windows                     | `test:e2e:firefox`                                                                                                                                         |
+| 18  | E2E WebKit                        | macOS                       | `test:e2e:webkit`                                                                                                                                          |
 
 Each engine runs on its native OS; macOS (≈10× cost) is reserved for WebKit. E2E
 runs read `VITE_BASE_URL` from repo `vars`.
@@ -219,7 +220,8 @@ env:
   with:
     path: ${{ github.workspace }}/ms-playwright
     key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-# … install deps, then `playwright install --with-deps` …
+# … install deps, then on a miss `playwright install --with-deps`,
+#   on a hit `playwright install-deps` (Linux only) …
 # save (only on a miss, even if later steps fail)
 - uses: actions/cache/save@v5
   if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
@@ -230,8 +232,10 @@ env:
 
 Why the **restore/save split** instead of a single `actions/cache`:
 
-- `playwright install --with-deps` always runs (it's idempotent and also installs OS
-  deps), so binaries are correct whether the cache hit or missed.
+- The download is guarded on the cache result: on a **miss**, `playwright install
+--with-deps` fetches the browser binaries (and Linux system deps); on a **hit**, the
+  binaries are already restored, so we run only `playwright install-deps` on Linux
+  (apt libs live outside the cache) and skip installation entirely on Windows/macOS.
 - `save` runs only on a miss (`cache-hit != 'true'`) and with `if: always()`, so a
   freshly downloaded set is persisted even if a later test step fails.
 

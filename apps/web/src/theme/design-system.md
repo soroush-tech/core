@@ -158,12 +158,7 @@ const MyBase = styled('div', { shouldForwardProp })<MyComponentProps>(
   flexbox,
   border,
   position,
-  ({ customProp }) =>
-    customProp
-      ? {
-          /* css */
-        }
-      : {}
+  ({ customProp }) => (customProp ? {/* css */} : {})
 )
 ```
 

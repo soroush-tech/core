@@ -7,5 +7,5 @@ export const hero: PackageHeroProps = {
     'Mock the server side of your app in end-to-end tests — point Playwright or Cypress at Vite and your SSR data loaders resolve against msw handlers instead of a live API. Deterministic, no seeded backend, no network flake.',
   install: 'npm i -D @soroush.tech/vite-plugin-msw-server msw',
   npmUrl: 'https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server',
-  repoUrl: 'https://github.com/soroush-tech/soroush.tech/tree/main/packages/vite-plugin-msw-server',
+  repoUrl: 'https://github.com/soroush-tech/core/tree/main/packages/vite-plugin-msw-server',
 }

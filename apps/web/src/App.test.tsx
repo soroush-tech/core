@@ -44,7 +44,7 @@ describe('App', () => {
     renderWithTheme(<App />)
     expect(screen.getByAltText('Soroush GitHub').closest('a')).toHaveAttribute(
       'href',
-      'https://github.com/soroush-tech/soroush.tech'
+      'https://github.com/soroush-tech/core'
     )
   })
 })

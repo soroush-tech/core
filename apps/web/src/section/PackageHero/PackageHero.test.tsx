@@ -8,7 +8,7 @@ const props = {
   tagline: 'Run an msw/node mock server during dev and SSG/SSR builds.',
   install: 'npm i -D @soroush.tech/vite-plugin-msw-server msw',
   npmUrl: 'https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server',
-  repoUrl: 'https://github.com/soroush-tech/soroush.tech/tree/main/packages/vite-plugin-msw-server',
+  repoUrl: 'https://github.com/soroush-tech/core/tree/main/packages/vite-plugin-msw-server',
 }
 
 describe('PackageHero', () => {

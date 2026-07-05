@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@soroush.tech/bench.svg)](https://www.npmjs.com/package/@soroush.tech/bench)
 [![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/bench.svg)](https://www.npmjs.com/package/@soroush.tech/bench)
-[![coverage](https://codecov.io/gh/soroush-tech/soroush.tech/branch/main/graph/badge.svg?flag=bench)](https://app.codecov.io/gh/soroush-tech/soroush.tech?flags%5B0%5D=bench)
+[![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=bench)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=bench)
 [![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/bench.svg)](https://www.npmjs.com/package/@soroush.tech/bench)
 [![types included](https://img.shields.io/npm/types/@soroush.tech/bench.svg)](https://www.npmjs.com/package/@soroush.tech/bench)
 [![license](https://img.shields.io/npm/l/@soroush.tech/bench.svg)](./LICENSE)

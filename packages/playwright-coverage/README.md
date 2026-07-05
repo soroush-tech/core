@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
 [![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
-[![coverage](https://codecov.io/gh/soroush-tech/soroush.tech/branch/main/graph/badge.svg?flag=playwright-coverage)](https://app.codecov.io/gh/soroush-tech/soroush.tech?flags%5B0%5D=playwright-coverage)
+[![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=playwright-coverage)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=playwright-coverage)
 [![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
 [![types included](https://img.shields.io/npm/types/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
 [![license](https://img.shields.io/npm/l/@soroush.tech/playwright-coverage.svg)](./LICENSE)

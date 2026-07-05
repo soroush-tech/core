@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Questions & Discussions
-    url: https://github.com/soroush-tech/soroush.tech/discussions
+    url: https://github.com/soroush-tech/core/discussions
     about: Please use Discussions for questions, ideas, or general feedback.
   - name: Documentation
     url: https://soroush.tech/storybook

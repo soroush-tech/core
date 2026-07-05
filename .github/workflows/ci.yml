@@ -222,7 +222,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/${{ matrix.dir }}/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: ${{ matrix.flag }}
           name: ${{ matrix.dir }}
 
@@ -264,7 +264,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./workers/api/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: api
           name: api
 
@@ -316,8 +316,16 @@ jobs:
           CI: true
         run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
 
+      # On a cache miss, download the browser binaries (+ Linux system deps).
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm --filter @soroush/web exec playwright install --with-deps
+
+      # On a cache hit the binaries are restored, but Linux system libs live
+      # outside the cache — reinstall just those (fast, no binary download).
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true' && runner.os == 'Linux'
+        run: pnpm --filter @soroush/web exec playwright install-deps
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
@@ -352,7 +360,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: unit
           name: Unit
 
@@ -369,7 +377,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: browser
           name: Browser
 
@@ -399,7 +407,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: storybook
           name: Storybook
 
@@ -424,7 +432,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: web
           name: Web
 
@@ -452,7 +460,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/e2e/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: e2e
           name: E2E
 
