@@ -59,7 +59,7 @@
     "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
-    "@playwright/test": "^1",
+    "@playwright/test": "^1.61.1",
     "monocart-coverage-reports": "^2"
   },
   "dependencies": {
