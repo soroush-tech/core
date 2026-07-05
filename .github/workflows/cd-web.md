@@ -66,14 +66,14 @@ Output: `web` (`'true'`/`'false'`). The missing-file fallback means a manual dis
 
 | #   | Step                   | Detail                                                                                                            |
 | --- | ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout               | `actions/checkout@v5`                                                                                             |
+| 1   | Checkout               | `actions/checkout@v7`                                                                                             |
 | 2   | Read Node.js version   | `cat .nvmrc` → `$GITHUB_ENV` (`NODE_VERSION`); fails if `.nvmrc` is missing                                       |
 | 3   | Detect package manager | shell `if` on lockfile → `manager` / `command` / `runner`                                                         |
-| 4   | Setup pnpm             | `pnpm/action-setup@v5`, `if manager == 'pnpm'`                                                                    |
-| 5   | Setup Node             | `actions/setup-node@v5`, `node-version: $NODE_VERSION`, `cache: <manager>` (deps cache — see [Caching](#caching)) |
+| 4   | Setup pnpm             | `pnpm/action-setup@v6`, `if manager == 'pnpm'`                                                                    |
+| 5   | Setup Node             | `actions/setup-node@v6`, `node-version: $NODE_VERSION`, `cache: <manager>` (deps cache — see [Caching](#caching)) |
 | 6   | Install                | `${manager} ${command}`                                                                                           |
 | 7   | Build project          | `${runner} run build` with the production env below                                                               |
-| 8   | Upload artifact        | `actions/upload-pages-artifact@v3`, `path: ./apps/web/build/client`                                               |
+| 8   | Upload artifact        | `actions/upload-pages-artifact@v5`, `path: ./apps/web/build/client`                                               |
 
 Build env (from repo `secrets`/`vars`):
 
@@ -96,13 +96,13 @@ step output).
 
 | #   | Step                   | Detail                                                                                              |
 | --- | ---------------------- | --------------------------------------------------------------------------------------------------- |
-| 1   | Deploy to GitHub Pages | `actions/deploy-pages@v4` (id `deployment`); publishes the uploaded artifact and returns `page_url` |
+| 1   | Deploy to GitHub Pages | `actions/deploy-pages@v5` (id `deployment`); publishes the uploaded artifact and returns `page_url` |
 
 ---
 
 ## Caching
 
-Only the **dependency store** is cached, via `setup-node@v5` with `cache: <manager>`
+Only the **dependency store** is cached, via `setup-node@v6` with `cache: <manager>`
 in the `build` job — keyed off the `pnpm-lock.yaml` hash, same mechanism as CI. There
 is no Playwright cache here (no browser tests run during deploy), and the Pages
 artifact is a one-shot upload, not a cache.
