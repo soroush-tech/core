@@ -18,13 +18,7 @@ import {
 
 /** The semantic color keys of `theme.palette`. */
 export type PaletteColor =
-  | 'default'
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'error'
-  | 'info'
-  | 'warning'
+  'default' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning'
 
 export interface Theme {
   name: string
