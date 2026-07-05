@@ -17,11 +17,11 @@
   "homepage": "https://soroush.tech/bench/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/soroush-tech/soroush.tech.git",
+    "url": "git+https://github.com/soroush-tech/core.git",
     "directory": "packages/bench"
   },
   "bugs": {
-    "url": "https://github.com/soroush-tech/soroush.tech/issues"
+    "url": "https://github.com/soroush-tech/core/issues"
   },
   "type": "module",
   "sideEffects": false,

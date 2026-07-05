@@ -37,7 +37,7 @@ function App() {
           </a>
         </View>
         <View m={0.5}>
-          <a href="https://github.com/soroush-tech/soroush.tech">
+          <a href="https://github.com/soroush-tech/core">
             <img width={36} height={36} src={GitHub} alt="Soroush GitHub" />
           </a>
         </View>

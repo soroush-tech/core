@@ -16,11 +16,11 @@
   "homepage": "https://soroush.tech/styled-system/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/soroush-tech/soroush.tech.git",
+    "url": "git+https://github.com/soroush-tech/core.git",
     "directory": "packages/styled-system"
   },
   "bugs": {
-    "url": "https://github.com/soroush-tech/soroush.tech/issues"
+    "url": "https://github.com/soroush-tech/core/issues"
   },
   "type": "module",
   "sideEffects": false,

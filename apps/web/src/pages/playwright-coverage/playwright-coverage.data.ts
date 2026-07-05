@@ -7,5 +7,5 @@ export const hero: PackageHeroProps = {
   tagline: pkg.description,
   install: `npm i -D ${pkg.name}`,
   npmUrl: `https://www.npmjs.com/package/${pkg.name}`,
-  repoUrl: 'https://github.com/soroush-tech/soroush.tech/tree/main/packages/playwright-coverage',
+  repoUrl: 'https://github.com/soroush-tech/core/tree/main/packages/playwright-coverage',
 }

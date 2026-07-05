@@ -222,7 +222,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/${{ matrix.dir }}/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: ${{ matrix.flag }}
           name: ${{ matrix.dir }}
 
@@ -264,7 +264,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./workers/api/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: api
           name: api
 
@@ -360,7 +360,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: unit
           name: Unit
 
@@ -377,7 +377,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: browser
           name: Browser
 
@@ -407,7 +407,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: storybook
           name: Storybook
 
@@ -432,7 +432,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: web
           name: Web
 
@@ -460,7 +460,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/e2e/lcov.info
-          slug: soroush-tech/soroush.tech
+          slug: soroush-tech/core
           flags: e2e
           name: E2E
 

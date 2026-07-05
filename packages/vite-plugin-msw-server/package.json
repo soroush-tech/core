@@ -18,11 +18,11 @@
   "homepage": "https://soroush.tech/vite-plugin-msw-server/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/soroush-tech/soroush.tech.git",
+    "url": "git+https://github.com/soroush-tech/core.git",
     "directory": "packages/vite-plugin-msw-server"
   },
   "bugs": {
-    "url": "https://github.com/soroush-tech/soroush.tech/issues"
+    "url": "https://github.com/soroush-tech/core/issues"
   },
   "type": "module",
   "sideEffects": false,

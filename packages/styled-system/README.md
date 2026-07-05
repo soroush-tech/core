@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
 [![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
-[![coverage](https://codecov.io/gh/soroush-tech/soroush.tech/branch/main/graph/badge.svg?flag=styled-system)](https://app.codecov.io/gh/soroush-tech/soroush.tech?flags%5B0%5D=styled-system)
+[![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=styled-system)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=styled-system)
 [![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
 [![types included](https://img.shields.io/npm/types/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
 [![license](https://img.shields.io/npm/l/@soroush.tech/styled-system.svg)](./LICENSE)
@@ -145,18 +145,18 @@ Types resolve under both modern module resolution (`node16`/`nodenext`/`bundler`
 
 Full docs live in [`docs/`](./docs/README.md):
 
-- [Getting Started](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/getting-started.md)
-- [Responsive Styles](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/responsive-styles.md)
-- [How it Works](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/how-it-works.md)
-- [Custom Props](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/custom-props.md)
-- [Variants](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/variants.md)
-- [API](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/api.md)
-- [Reference Table](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/table.md)
-- [TypeScript](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/typescript.md)
-- [Guides](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/docs/guides/index.md)
+- [Getting Started](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/getting-started.md)
+- [Responsive Styles](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/responsive-styles.md)
+- [How it Works](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/how-it-works.md)
+- [Custom Props](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/custom-props.md)
+- [Variants](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/variants.md)
+- [API](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/api.md)
+- [Reference Table](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/table.md)
+- [TypeScript](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/typescript.md)
+- [Guides](https://github.com/soroush-tech/core/tree/main/packages/styled-system/docs/guides/index.md)
 
 Runnable demos live in the [examples repo](https://github.com/soroush-tech/examples/tree/main/styled-system).
 
 ## License
 
-MIT — a rewrite of styled-system (© 2017–2021 Brent Jackson), see [`LICENSE`](https://github.com/soroush-tech/soroush.tech/tree/main/packages/styled-system/LICENSE).
+MIT — a rewrite of styled-system (© 2017–2021 Brent Jackson), see [`LICENSE`](https://github.com/soroush-tech/core/tree/main/packages/styled-system/LICENSE).

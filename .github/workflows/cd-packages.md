@@ -79,7 +79,7 @@ CI-passed main branch, even though the dispatch UI lets you pick any ref.
 Auth is [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers) — no
 `NPM_TOKEN` anywhere. Per run, GitHub mints a short-lived id-token (the
 `id-token: write` permission) and npm verifies it against the package's trusted
-publisher (repo `soroush-tech/soroush.tech`, workflow `cd-packages.yml`, environment
+publisher (repo `soroush-tech/core`, workflow `cd-packages.yml`, environment
 `cd-packages`). Requirements / gotchas:
 
 - **One-time bootstrap:** a package must exist on npm before a trusted publisher can be
