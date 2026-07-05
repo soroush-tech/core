@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/playwright-coverage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Collect per-test V8 code coverage from Playwright e2e runs and aggregate it to lcov via monocart-coverage-reports.",
   "keywords": [
     "playwright",
@@ -14,7 +14,7 @@
   ],
   "author": "Masoud Soroush <masoud@soroush.tech>",
   "license": "MIT",
-  "homepage": "https://github.com/soroush-tech/soroush.tech/tree/main/packages/playwright-coverage#readme",
+  "homepage": "https://soroush.tech/playwright-coverage/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/soroush-tech/soroush.tech.git",

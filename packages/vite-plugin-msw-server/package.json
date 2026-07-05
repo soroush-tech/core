@@ -1,7 +1,7 @@
 {
   "name": "@soroush.tech/vite-plugin-msw-server",
-  "version": "0.2.0",
-  "description": "Vite plugin that runs an msw/node mock server during dev and SSG/SSR builds, so server-side data fetching and prerendering resolve against mocks.",
+  "version": "1.0.0",
+  "description": "Make server-side rendering deterministic in end-to-end tests: an msw/node mock server inside Vite, so SSR loaders and SSG prerendering resolve against your mocks instead of a live API.",
   "keywords": [
     "vite",
     "vite-plugin",
@@ -15,7 +15,7 @@
   ],
   "author": "Masoud Soroush <masoud@soroush.tech>",
   "license": "MIT",
-  "homepage": "https://github.com/soroush-tech/soroush.tech/tree/main/packages/vite-plugin-msw-server#readme",
+  "homepage": "https://soroush.tech/vite-plugin-msw-server/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/soroush-tech/soroush.tech.git",
