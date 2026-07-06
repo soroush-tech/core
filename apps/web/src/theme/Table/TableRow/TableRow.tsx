@@ -2,18 +2,18 @@ import { type HTMLAttributes } from 'react'
 import {
   styled,
   type Theme,
+  type PaletteColor,
   createShouldForwardProp,
   props,
   space,
   border,
   system,
-  get,
   type SpaceProps,
   type BorderProps,
 } from 'src/theme'
 
-/** Valid values for the color prop — derived from theme.text keys. */
-export type TableRowColorToken = keyof Theme['text']
+/** Palette color driving the hover/selected shading — a `theme.palette` key. */
+export type TableRowColor = PaletteColor
 
 /** Valid values for the bg prop — derived from theme.background keys. */
 export type TableRowBackgroundToken = keyof Theme['background']
@@ -26,31 +26,48 @@ export interface TableRowProps
     Omit<HTMLAttributes<HTMLTableRowElement>, 'color'>,
     SpaceProps<Theme>,
     Omit<BorderProps<Theme>, 'borderColor' | 'borderRadius'> {
-  /** Resolves against theme.text */
-  color?: TableRowColorToken
+  /**
+   * Palette color for the hover/selected shading — maps to `theme.palette[color]`
+   * (hover → `.light`, selected → `.dark`, both with `contrastText`). Default: `'primary'`.
+   */
+  color?: TableRowColor
   /** Resolves against theme.background */
   bg?: TableRowBackgroundToken
   /** Resolves against theme.border — light · primary · dark */
   borderColor?: TableRowBorderColorToken
-  /** Shades the row on hover with `theme.background.secondary`. Default: `false`. */
+  /** Shades the row on hover with `theme.palette[color].light`. Default: `false`. */
   isHoverable?: boolean
-  /** Applies the selected shading (`theme.background.grid`). Default: `false`. */
+  /** Fills the row with `theme.palette[color].dark` + contrast text. Default: `false`. */
   isSelected?: boolean
 }
 
 const shouldForwardProp = createShouldForwardProp([...props, 'isHoverable', 'isSelected'])
 
 const colorSystem = system({
-  color: { property: 'color', scale: 'text' },
   bg: { property: 'backgroundColor', scale: 'background' },
   borderColor: { property: 'borderColor', scale: 'border' },
 })
 
-const hoverStyle = ({ isHoverable, theme }: TableRowProps & { theme?: Theme }) =>
-  isHoverable ? { '&:hover': { backgroundColor: get(theme, 'background.secondary') } } : {}
+// Hover/selected fill the row from the palette (like Button): the light shade on
+// hover, the dark shade when selected, both paired with the palette's contrastText.
+const hoverStyle = ({ isHoverable, color = 'primary', theme }: TableRowProps & { theme: Theme }) =>
+  isHoverable
+    ? {
+        '&:hover': {
+          backgroundColor: theme.palette[color].light,
+          color: theme.palette[color].contrastText,
+        },
+      }
+    : {}
 
-const selectedStyle = ({ isSelected, theme }: TableRowProps & { theme?: Theme }) =>
-  isSelected ? { backgroundColor: get(theme, 'background.grid') } : {}
+const selectedStyle = ({
+  isSelected,
+  color = 'primary',
+  theme,
+}: TableRowProps & { theme: Theme }) =>
+  isSelected
+    ? { backgroundColor: theme.palette[color].dark, color: theme.palette[color].contrastText }
+    : {}
 
 export const TableRow = styled('tr', { label: 'TableRow', shouldForwardProp })<TableRowProps>(
   space,

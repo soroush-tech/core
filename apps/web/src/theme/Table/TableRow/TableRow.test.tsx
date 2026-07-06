@@ -22,17 +22,18 @@ describe('TableRow', () => {
     expect(screen.getByTestId('row').tagName).toBe('DIV')
   })
 
-  it('applies the selected shading when isSelected is set', () => {
+  it('applies the selected shading from the primary palette by default', () => {
     renderRow(<TableRow isSelected data-testid="row" />)
     expect(screen.getByTestId('row')).toHaveStyle({
-      backgroundColor: dark.background.grid,
+      backgroundColor: dark.palette.primary.dark,
+      color: dark.palette.primary.contrastText,
     })
   })
 
   it('does not shade an unselected row', () => {
     renderRow(<TableRow data-testid="row" />)
     expect(screen.getByTestId('row')).not.toHaveStyle({
-      backgroundColor: dark.background.grid,
+      backgroundColor: dark.palette.primary.dark,
     })
   })
 
@@ -51,13 +52,32 @@ describe('TableRow', () => {
     expect(hasHoverRule).toBe(true)
   })
 
-  it('applies bg, color, and borderColor theme tokens', () => {
-    renderRow(<TableRow bg="paper" color="secondary" borderColor="light" data-testid="row" />)
+  it('applies bg and borderColor theme tokens', () => {
+    renderRow(<TableRow bg="paper" borderColor="light" data-testid="row" />)
     expect(screen.getByTestId('row')).toHaveStyle({
       backgroundColor: dark.background.paper,
-      color: dark.text.secondary,
       borderColor: dark.border.light,
     })
+  })
+
+  it('drives hover and selected shading from the color palette prop', () => {
+    renderRow(<TableRow isHoverable isSelected color="secondary" data-testid="row" />)
+    const row = screen.getByTestId('row')
+    // selected → the palette's dark shade + contrast text
+    expect(row).toHaveStyle({
+      backgroundColor: dark.palette.secondary.dark,
+      color: dark.palette.secondary.contrastText,
+    })
+    // a :hover rule exists for the row (jsdom can't apply :hover)
+    const rowClasses = Array.from(row.classList)
+    const allRules = Array.from(document.styleSheets).flatMap((sheet) => Array.from(sheet.cssRules))
+    const hasHoverRule = allRules.some(
+      (rule) =>
+        rowClasses.some((cls) => rule.cssText.includes(cls)) &&
+        rule.cssText.includes(':hover') &&
+        rule.cssText.includes('background-color')
+    )
+    expect(hasHoverRule).toBe(true)
   })
 
   it('forwards HTML attributes without leaking custom props to the DOM', () => {

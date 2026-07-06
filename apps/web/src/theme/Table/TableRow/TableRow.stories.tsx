@@ -8,7 +8,7 @@ import {
   borderStyle,
   borderColor,
 } from 'src/theme/utils/test/storiesArgs'
-import { textColorTokens } from 'src/theme/utils/test/storiesOptions'
+import { buttonColorTokens } from 'src/theme/utils/test/storiesOptions'
 import { Table } from 'src/theme/Table/Table'
 import { TableHead } from 'src/theme/Table/TableHead'
 import { TableBody } from 'src/theme/Table/TableBody'
@@ -45,19 +45,20 @@ const meta: Meta<typeof TableRow> = {
   argTypes: {
     isHoverable: {
       control: 'boolean',
-      description: 'Shades the row on hover with `theme.background.secondary`.',
+      description: 'Shades the row on hover with `theme.palette[color].light`.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     isSelected: {
       control: 'boolean',
-      description: 'Applies the selected shading (`theme.background.grid`).',
+      description: 'Fills the row with `theme.palette[color].dark` + contrast text.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     color: {
       control: { type: 'select' },
-      options: textColorTokens,
-      description: 'Text color — resolves against `theme.text`.',
-      table: { category: 'Color' },
+      options: buttonColorTokens,
+      description:
+        'Palette color for the hover/selected shading — resolves against `theme.palette`.',
+      table: { category: 'Color', defaultValue: { summary: 'primary' } },
     },
     bg,
     borderColor,
