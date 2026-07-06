@@ -14,7 +14,7 @@ const meta: Meta<typeof ButtonGroup> = {
   component: ButtonGroup,
   tags: ['autodocs'],
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
     controls: {
       include: ['variant', 'color', 'size', 'orientation', 'borderRadius', 'disabled', 'fullWidth'],
     },
@@ -134,7 +134,7 @@ export const Vertical: Story = {
 
 export const FullWidth: Story = {
   render: () => (
-    <ButtonGroup fullWidth aria-label="Full-width button group" style={{ minWidth: '480px' }}>
+    <ButtonGroup fullWidth aria-label="Full-width button group">
       {buttons}
     </ButtonGroup>
   ),
