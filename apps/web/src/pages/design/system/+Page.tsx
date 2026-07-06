@@ -19,6 +19,7 @@ import { TypographyCard } from './components/TypographyCard'
 import { FontCard } from './components/FontCard'
 import { TypographyColorCard } from './components/TypographyColorCard'
 import { InteractiveColorSizeCard } from './components/InteractiveColorSizeCard'
+import { TableCard } from './components/TableCard'
 
 export default function SystemDesignPage() {
   return (
@@ -100,6 +101,14 @@ export default function SystemDesignPage() {
           <Flex flexDirection={['column', 'row']} gap={4}>
             <TypographyColorCard />
             <InteractiveColorSizeCard />
+          </Flex>
+        </View>
+
+        {/* ── 06. Data Display ─────────────────────────────────────────── */}
+        <View as="section" mb={8} id="data-display">
+          <Headline title="06 . Data Display" />
+          <Flex flexDirection={['column', 'row']} gap={4}>
+            <TableCard />
           </Flex>
         </View>
       </View>
