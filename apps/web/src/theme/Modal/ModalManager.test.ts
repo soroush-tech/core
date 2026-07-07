@@ -95,6 +95,17 @@ describe('ModalManager — aria-hidden siblings', () => {
     expect(modal.mount.hasAttribute('aria-hidden')).toBe(false)
   })
 
+  it('leaves siblings visible when disableAriaHidden is set, and skips unhiding on removal', () => {
+    const sibling = document.createElement('section')
+    container.append(sibling)
+    const manager = new ModalManager()
+    const modal = makeModal()
+    manager.add(modal, container, true)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+    manager.remove(modal)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+  })
+
   it('restores siblings when the last modal is removed', () => {
     const sibling = document.createElement('section')
     container.append(sibling)

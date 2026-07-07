@@ -25,6 +25,8 @@ export interface ModalProps {
   portalContainer?: HTMLElement | (() => HTMLElement | null) | null
   /** Lock body scroll while open. Default: true. */
   shouldLockScroll?: boolean
+  /** Skip `aria-hidden` on background content — for non-modal popovers whose trigger stays focused. Default: false. */
+  disableAriaHidden?: boolean
   /** Move focus into the modal on open. Default: true. */
   shouldAutoFocus?: boolean
   /** Trap Tab focus within the modal. Default: true. */
@@ -77,6 +79,7 @@ export function Modal({
   shouldUsePortal = true,
   portalContainer,
   shouldLockScroll = true,
+  disableAriaHidden = false,
   shouldAutoFocus = true,
   shouldTrapFocus = true,
   shouldEnforceFocus = true,
@@ -89,6 +92,7 @@ export function Modal({
     onClose,
     container: portalContainer,
     disableScrollLock: !shouldLockScroll,
+    disableAriaHidden,
   })
 
   if (!shouldKeepMounted && !isOpen) {
