@@ -8,7 +8,7 @@ import { Table } from './Table'
 
 /** Exposes the TableContext the Table provides to descendants. */
 function ContextProbe() {
-  const { size, cellPadding, hasStickyHeader } = useContext(TableContext)
+  const { size, cellPadding, hasStickyHeader, color } = useContext(TableContext)
   return (
     <tbody>
       <tr>
@@ -17,6 +17,7 @@ function ContextProbe() {
           data-size={size}
           data-cell-padding={cellPadding}
           data-sticky={String(hasStickyHeader)}
+          data-color={color}
         />
       </tr>
     </tbody>
@@ -64,11 +65,12 @@ describe('Table', () => {
     expect(probe).toHaveAttribute('data-size', 'md')
     expect(probe).toHaveAttribute('data-cell-padding', 'normal')
     expect(probe).toHaveAttribute('data-sticky', 'false')
+    expect(probe).not.toHaveAttribute('data-color')
   })
 
-  it('broadcasts explicit size, cellPadding, and hasStickyHeader via TableContext', () => {
+  it('broadcasts explicit size, cellPadding, hasStickyHeader, and color via TableContext', () => {
     renderWithTheme(
-      <Table size="sm" cellPadding="none" hasStickyHeader>
+      <Table size="sm" cellPadding="none" hasStickyHeader color="secondary">
         <ContextProbe />
       </Table>
     )
@@ -76,13 +78,13 @@ describe('Table', () => {
     expect(probe).toHaveAttribute('data-size', 'sm')
     expect(probe).toHaveAttribute('data-cell-padding', 'none')
     expect(probe).toHaveAttribute('data-sticky', 'true')
+    expect(probe).toHaveAttribute('data-color', 'secondary')
   })
 
-  it('applies bg and color theme tokens', () => {
-    renderWithTheme(<Table bg="paper" color="secondary" data-testid="table" />)
+  it('applies the bg theme token', () => {
+    renderWithTheme(<Table bg="paper" data-testid="table" />)
     expect(screen.getByTestId('table')).toHaveStyle({
       backgroundColor: dark.background.paper,
-      color: dark.text.secondary,
     })
   })
 

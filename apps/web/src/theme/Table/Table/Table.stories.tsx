@@ -19,7 +19,7 @@ import {
 import {
   tableSizeTokens,
   tableCellPaddingTokens,
-  textColorTokens,
+  buttonColorTokens,
 } from 'src/theme/utils/test/storiesOptions'
 import { TableContainer } from 'src/theme/Table/TableContainer'
 import { TableHead } from 'src/theme/Table/TableHead'
@@ -178,9 +178,10 @@ const meta: Meta<typeof Table> = {
     },
     color: {
       control: { type: 'select' },
-      options: textColorTokens,
-      description: 'Text color — resolves against `theme.text`.',
-      table: { category: 'Color' },
+      options: buttonColorTokens,
+      description:
+        "Palette color for descendant rows' hover/selected shading — broadcast to `TableRow`s via `TableContext`; a row's own `color` wins.",
+      table: { category: 'Visual' },
     },
     bg,
     p,

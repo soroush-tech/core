@@ -9,6 +9,8 @@ export interface TableContextValue {
   size?: keyof Theme['sizes']
   cellPadding?: TableCellPadding
   hasStickyHeader?: boolean
+  /** Palette color for descendant rows' hover/selected shading — a row's own `color` wins. */
+  color?: keyof Theme['palette']
   /** Hides inactive sort icons (revealed on hover/focus). */
   shouldHideSortIcon?: boolean
   /** Truncates overflowing cell text with an ellipsis. */
