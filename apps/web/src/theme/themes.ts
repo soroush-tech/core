@@ -79,6 +79,10 @@ export interface Theme {
   radii: Record<'sq' | 'sm' | 'md' | 'lg', string>
   borderWidths: Record<'none' | 'thin' | 'base' | 'thick', string>
   avatar: Record<'sm' | 'md' | 'lg' | 'xl', string>
+  /** Skeleton placeholder tokens. `highlight` is the wave-animation shimmer band. */
+  skeleton: {
+    highlight: string
+  }
   sizes: typeof sizes
   colorScheme: 'light' | 'dark'
   blur: string
@@ -342,6 +346,9 @@ export const light: Theme = {
     primary: forestGreen[600],
     dark: forestGreen[800],
   },
+  skeleton: {
+    highlight: alpha(lightSurface[100], 0.65),
+  },
   logoFilter: 'brightness(0)',
   portraitBlend: 'multiply',
   portraitOpacity: 1,
@@ -425,6 +432,9 @@ export const dark: Theme = {
     light: alpha(kineticGreen[100], 0.1),
     primary: kineticGreen[500],
     dark: kineticGreen[800],
+  },
+  skeleton: {
+    highlight: alpha(kineticSurface[500], 0.65),
   },
   logoFilter: 'brightness(0) invert(1)',
   portraitBlend: 'screen',
