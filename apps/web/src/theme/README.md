@@ -59,15 +59,15 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 
 ### Content & data display
 
-| Component      | Purpose                                                                               |
-| -------------- | ------------------------------------------------------------------------------------- |
-| `Typography`   | Text with variant → element mapping — the reference implementation for all components |
-| `Link`         | Anchor with theme-aware styling                                                       |
-| `Icon`         | Icon renderer                                                                         |
-| `Image`        | Image with styled-system props                                                        |
-| `Avatar`       | User/entity avatar                                                                    |
-| `Table`        | Data table                                                                            |
-| `ColorPalette` | Renders palette swatches (docs/Storybook aid)                                         |
+| Component      | Purpose                                                                                                                                                                                                                    |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Typography`   | Text with variant → element mapping — the reference implementation for all components                                                                                                                                      |
+| `Link`         | Anchor with theme-aware styling                                                                                                                                                                                            |
+| `Icon`         | Icon renderer                                                                                                                                                                                                              |
+| `Image`        | Image with styled-system props                                                                                                                                                                                             |
+| `Avatar`       | User/entity avatar                                                                                                                                                                                                         |
+| `Table`        | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `src/theme/Table` |
+| `ColorPalette` | Renders palette swatches (docs/Storybook aid)                                                                                                                                                                              |
 
 ### Inputs & forms
 
@@ -105,7 +105,17 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 
 ## Theme tokens
 
-Components never hardcode colors or sizes — props resolve against scales on the `Theme` object: `text`, `background`, `space`, `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacings`, `fonts`, `radii`. Prop types are derived from the interface (`keyof Theme['text']`), so adding a token to `themes.ts` propagates everywhere automatically. See [`design-system.md`](./design-system.md) for the full scale table and the palette rules.
+Components never hardcode colors or sizes — props resolve against scales on the `Theme` object:
+
+| Group              | Scales                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| Color              | `palette` (main/light/dark/contrastText per color) · `text` · `background` · `border` · `colorScheme` |
+| Typography         | `typography` (variant map) · `fonts` · `fontSizes` · `fontWeights` · `lineHeights` · `letterSpacings` |
+| Space & shape      | `space` · `sizes` · `radii` · `borderWidths` · `shadows`                                              |
+| Component scales   | `avatar` (size steps) · `skeleton` (wave highlight)                                                   |
+| Layering & effects | `zOrder` (appBar/drawer/modal) · `blur` · `logoFilter` · `portraitBlend` · `portraitOpacity`          |
+
+Prop types are derived from the interface (`keyof Theme['text']`), so adding a token to `themes.ts` propagates everywhere automatically. See [`design-system.md`](./design-system.md) for the full scale table and the palette rules.
 
 ---
 
