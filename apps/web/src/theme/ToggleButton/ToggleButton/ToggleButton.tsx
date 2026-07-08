@@ -22,7 +22,7 @@ export interface ToggleButtonProps extends Omit<
 
 interface ToggleButtonRootProps {
   isSelected?: boolean
-  color?: ButtonProps['color']
+  color?: NonNullable<ButtonProps['color']>
 }
 
 // Layered over Button's `outlined` styles (the wrapper's styles win). Selected:

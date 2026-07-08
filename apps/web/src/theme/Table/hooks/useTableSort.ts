@@ -41,7 +41,7 @@ export function useTableSort<K extends string>(
         onClick: () => {
           const direction: TableSortLabelDirection = directions[key] === 'asc' ? 'desc' : 'asc'
           setActiveKey(key)
-          setDirections((prev) => ({ ...prev, [key]: direction }))
+          setDirections({ ...directions, [key]: direction })
           onChange?.(key, direction)
         },
       },

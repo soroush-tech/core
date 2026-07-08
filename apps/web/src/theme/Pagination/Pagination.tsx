@@ -53,21 +53,23 @@ const defaultGetItemAriaLabel = (
 
 const shouldForwardProp = createShouldForwardProp([...props])
 
+const PaginationNav = styled('nav', {
+  label: 'PaginationNav',
+  shouldForwardProp,
+})<SpaceProps<Theme>>(space)
+
 const PaginationList = styled('ul', {
   label: 'Pagination',
   shouldForwardProp,
-})<SpaceProps<Theme>>(
-  {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    gap: '0.25rem',
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-  },
-  space
-)
+})({
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  gap: '0.25rem',
+  listStyle: 'none',
+  margin: 0,
+  padding: 0,
+})
 
 export function Pagination({
   count,
@@ -104,7 +106,7 @@ export function Pagination({
   })
 
   return (
-    <nav aria-label={ariaLabel} {...rest}>
+    <PaginationNav aria-label={ariaLabel} {...rest}>
       <PaginationList>
         {items.map((item, index) => {
           const isEllipsis = item.type === 'start-ellipsis' || item.type === 'end-ellipsis'
@@ -128,6 +130,6 @@ export function Pagination({
           )
         })}
       </PaginationList>
-    </nav>
+    </PaginationNav>
   )
 }

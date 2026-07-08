@@ -31,7 +31,7 @@ import { TableSortLabel } from 'src/theme/Table/TableSortLabel'
 import { TableControl } from 'src/theme/Table/TableControl'
 import { useTablePagination } from 'src/theme/Table/hooks/useTablePagination'
 import { useTableSelection } from 'src/theme/Table/hooks/useTableSelection'
-import { useTableSort } from 'src/theme/Table/hooks/useTableSort'
+import { useTableSort, type TableSortMap } from 'src/theme/Table/hooks/useTableSort'
 import { TablePagination } from 'src/theme/Table/TablePagination'
 import { Checkbox } from 'src/theme/Checkbox'
 import { Typography } from 'src/theme/Typography'
@@ -52,6 +52,26 @@ const deployments = [
   { service: 'metrics', region: 'sin1', status: 'degraded', latency: 176 },
 ]
 
+// Sortable Service/Region/Status/Latency header cells — shared by the tables below
+// (SelectableTable prepends a checkbox cell before these).
+function ServiceHeadCells({ sort }: Readonly<{ sort: TableSortMap<'service' | 'latency'> }>) {
+  return (
+    <>
+      <TableCell sortDirection={sort.service.isActive ? sort.service.direction : undefined}>
+        <TableSortLabel {...sort.service}>Service</TableSortLabel>
+      </TableCell>
+      <TableCell>Region</TableCell>
+      <TableCell>Status</TableCell>
+      <TableCell
+        align="right"
+        sortDirection={sort.latency.isActive ? sort.latency.direction : undefined}
+      >
+        <TableSortLabel {...sort.latency}>Latency (ms)</TableSortLabel>
+      </TableCell>
+    </>
+  )
+}
+
 /** Sortable deployments table — extra children (e.g. a TableFooter) render after the body. */
 function DeploymentsTable({ children, ...tableProps }: Readonly<TableProps>) {
   const sort = useTableSort(['service', 'latency'])
@@ -60,17 +80,7 @@ function DeploymentsTable({ children, ...tableProps }: Readonly<TableProps>) {
     <Table {...tableProps}>
       <TableHead>
         <TableRow>
-          <TableCell sortDirection={sort.service.isActive ? sort.service.direction : undefined}>
-            <TableSortLabel {...sort.service}>Service</TableSortLabel>
-          </TableCell>
-          <TableCell>Region</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell
-            align="right"
-            sortDirection={sort.latency.isActive ? sort.latency.direction : undefined}
-          >
-            <TableSortLabel {...sort.latency}>Latency (ms)</TableSortLabel>
-          </TableCell>
+          <ServiceHeadCells sort={sort} />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -238,17 +248,7 @@ function SelectableTable() {
               aria-label="Select all deployments"
             />
           </TableCell>
-          <TableCell sortDirection={sort.service.isActive ? sort.service.direction : undefined}>
-            <TableSortLabel {...sort.service}>Service</TableSortLabel>
-          </TableCell>
-          <TableCell>Region</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell
-            align="right"
-            sortDirection={sort.latency.isActive ? sort.latency.direction : undefined}
-          >
-            <TableSortLabel {...sort.latency}>Latency (ms)</TableSortLabel>
-          </TableCell>
+          <ServiceHeadCells sort={sort} />
         </TableRow>
       </TableHead>
       <TableBody>

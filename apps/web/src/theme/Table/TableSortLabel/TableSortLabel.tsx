@@ -83,9 +83,10 @@ const SortIcon = styled(Icon, { shouldForwardProp: shouldForwardIconProp })<{
   }),
   // Active → fully opaque · inactive + hidden → invisible (hover reveals) ·
   // inactive + visible → dimmed.
-  ({ isActive, shouldHideSortIcon }) => ({
-    opacity: isActive ? 1 : shouldHideSortIcon ? 0 : 0.5,
-  })
+  ({ isActive, shouldHideSortIcon }) => {
+    const inactiveOpacity = shouldHideSortIcon ? 0 : 0.5
+    return { opacity: isActive ? 1 : inactiveOpacity }
+  }
 )
 
 export function TableSortLabel({
@@ -111,7 +112,6 @@ export function TableSortLabel({
     >
       {children}
       <SortIcon
-        className="sort-icon"
         name={iconName}
         size="1em"
         color="inherit"
@@ -119,6 +119,7 @@ export function TableSortLabel({
         isActive={isActive}
         shouldHideSortIcon={resolvedHideSortIcon}
         {...iconProps}
+        className="sort-icon"
       />
     </SortLabelRoot>
   )

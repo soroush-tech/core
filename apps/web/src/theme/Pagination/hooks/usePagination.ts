@@ -76,21 +76,19 @@ export function usePagination({
 
   // Page items are raw numbers here; the string members are only nav/ellipsis
   // types, so `'page'` never appears — excluding it lets `navTargets[item]` narrow.
+  const startEllipsisFallback: Array<Exclude<PaginationItemType, 'page'> | number> =
+    boundaryCount + 1 < count - boundaryCount ? [boundaryCount + 1] : []
+  const endEllipsisFallback: Array<Exclude<PaginationItemType, 'page'> | number> =
+    count - boundaryCount > boundaryCount ? [count - boundaryCount] : []
   const itemList: Array<Exclude<PaginationItemType, 'page'> | number> = [
     ...(shouldShowFirstButton ? (['first'] as const) : []),
     ...(shouldHidePrevButton ? [] : (['previous'] as const)),
     ...startPages,
-    ...(siblingsStart > boundaryCount + 2
-      ? (['start-ellipsis'] as const)
-      : boundaryCount + 1 < count - boundaryCount
-        ? [boundaryCount + 1]
-        : []),
+    ...(siblingsStart > boundaryCount + 2 ? (['start-ellipsis'] as const) : startEllipsisFallback),
     ...range(siblingsStart, siblingsEnd),
     ...(siblingsEnd < count - boundaryCount - 1
       ? (['end-ellipsis'] as const)
-      : count - boundaryCount > boundaryCount
-        ? [count - boundaryCount]
-        : []),
+      : endEllipsisFallback),
     ...endPages,
     ...(shouldHideNextButton ? [] : (['next'] as const)),
     ...(shouldShowLastButton ? (['last'] as const) : []),

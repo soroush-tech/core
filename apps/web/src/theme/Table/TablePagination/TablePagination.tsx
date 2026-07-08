@@ -46,8 +46,10 @@ export interface TablePaginationProps extends Omit<
 
 const DEFAULT_ROWS_PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
-const defaultDisplayedRowsLabel = ({ from, to, count }: TablePaginationDisplayedRowsInfo) =>
-  `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`
+const defaultDisplayedRowsLabel = ({ from, to, count }: TablePaginationDisplayedRowsInfo) => {
+  const countLabel = count !== -1 ? count : `more than ${to}`
+  return `${from}–${to} of ${countLabel}`
+}
 
 const defaultGetItemAriaLabel = (type: TablePaginationActionType) => `Go to ${type} page`
 
@@ -87,12 +89,9 @@ export function TablePagination({
   const hasRowsPerPageSelector = selectOptions.length >= 2
 
   const from = count === 0 ? 0 : page * rowsPerPage + 1
-  const to =
-    rowsPerPage === -1
-      ? count
-      : count === -1
-        ? (page + 1) * rowsPerPage
-        : Math.min(count, (page + 1) * rowsPerPage)
+  const boundedTo =
+    count === -1 ? (page + 1) * rowsPerPage : Math.min(count, (page + 1) * rowsPerPage)
+  const to = rowsPerPage === -1 ? count : boundedTo
 
   return (
     <TableCell variant="footer" as={as} colSpan={colSpan} {...rest}>

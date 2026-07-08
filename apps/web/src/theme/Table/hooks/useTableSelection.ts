@@ -15,6 +15,10 @@ export interface TableSelectionRowProps {
   onChange: () => void
 }
 
+// Flips one key in/out of the selection; the set gives an O(1) membership check.
+const toggleKey = <K>(selected: K[], selectedSet: Set<K>, key: K): K[] =>
+  selectedSet.has(key) ? selected.filter((item) => item !== key) : [...selected, key]
+
 export interface TableSelection<K extends string | number> {
   /** Currently selected keys. */
   selected: K[]
@@ -44,8 +48,9 @@ export function useTableSelection<K extends string | number>(
 ): TableSelection<K> {
   const [selected, setSelected] = useState<K[]>([])
 
-  // Join is a stable identity for inline key arrays across renders.
-  const keysKey = keys.join('')
+  // Stable identity for inline key arrays across renders; JSON.stringify avoids
+  // the delimiter collisions a plain join would produce (e.g. ['1','23'] vs ['12','3']).
+  const keysKey = JSON.stringify(keys)
 
   return useMemo(() => {
     const selectedSet = new Set(selected)
@@ -69,10 +74,7 @@ export function useTableSelection<K extends string | number>(
       },
       row: (key: K) => ({
         checked: selectedSet.has(key),
-        onChange: () =>
-          update(
-            selectedSet.has(key) ? selected.filter((item) => item !== key) : [...selected, key]
-          ),
+        onChange: () => update(toggleKey(selected, selectedSet, key)),
       }),
       clear: () => update([]),
     }

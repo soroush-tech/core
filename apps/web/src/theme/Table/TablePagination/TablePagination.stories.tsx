@@ -1,5 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { bg, p, m } from 'src/theme/utils/test/storiesArgs'
+import {
+  bg,
+  p,
+  m,
+  paginationCount,
+  shouldShowFirstButton,
+  shouldShowLastButton,
+} from 'src/theme/utils/test/storiesArgs'
 import {
   tableSizeTokens,
   tableCellPaddingTokens,
@@ -49,11 +56,7 @@ const meta: Meta<typeof TablePagination> = {
     rowsPerPage: 10,
   },
   argTypes: {
-    count: {
-      control: { type: 'number', min: -1 },
-      description: 'Total number of rows; `-1` = unknown (server-side pagination).',
-      table: { category: 'Content' },
-    },
+    count: paginationCount,
     page: {
       control: { type: 'number', min: 0 },
       description: 'Zero-based current page (controlled).',
@@ -69,16 +72,8 @@ const meta: Meta<typeof TablePagination> = {
       description: 'Disables all controls.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
-    shouldShowFirstButton: {
-      control: 'boolean',
-      description: 'Shows the first-page button.',
-      table: { category: 'Behavior', defaultValue: { summary: 'false' } },
-    },
-    shouldShowLastButton: {
-      control: 'boolean',
-      description: 'Shows the last-page button.',
-      table: { category: 'Behavior', defaultValue: { summary: 'false' } },
-    },
+    shouldShowFirstButton,
+    shouldShowLastButton,
     rowsPerPageLabel: {
       control: 'text',
       description: 'Label for the rows-per-page selector.',

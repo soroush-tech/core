@@ -23,7 +23,9 @@ export interface TableControlProps<T, K extends string = string> {
 const defaultSortFunction = <T,>(a: T, b: T, orderBy: string): number => {
   const first = (a as Record<string, unknown>)[orderBy] as string | number
   const second = (b as Record<string, unknown>)[orderBy] as string | number
-  return first > second ? 1 : -1
+  if (first < second) return -1
+  if (first > second) return 1
+  return 0
 }
 
 /**

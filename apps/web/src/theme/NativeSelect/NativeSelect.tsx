@@ -7,12 +7,12 @@ import {
   createShouldForwardProp,
   props,
   space,
-  variant,
   get,
   type SpaceProps,
   type LayoutProps,
   system,
 } from 'src/theme'
+import { inputVariantStyles } from 'src/theme/utils/inputVariantStyles'
 
 export type NativeSelectColor = keyof Theme['palette']
 export type NativeSelectTextColor = keyof Theme['text']
@@ -104,22 +104,6 @@ const baseStyle = {
   transition: 'border-color 0.15s ease',
 }
 
-// Mirrors TextInput's variant rules so mixed forms look uniform.
-const variantStyles = variant({
-  prop: 'variant',
-  variants: {
-    outlined: { borderRadius: 'sq', borderWidth: 'thin', borderStyle: 'solid' },
-    default: { borderRadius: 'sq', borderStyle: 'none' },
-    underline: {
-      borderRadius: 'sq',
-      borderStyle: 'none',
-      borderBottomWidth: 'thin',
-      borderBottomStyle: 'solid',
-    },
-    text: { borderRadius: 'sq', borderStyle: 'none' },
-  },
-})
-
 const backgroundStyle = ({
   textColor = 'primary',
   bg = 'terminal',
@@ -151,9 +135,13 @@ const focusWithinColor = ({
 })
 
 // Keyboard-only focus ring on the wrapper (the inner select keeps `outline: none`).
-const focusVisibleRing = ({ theme }: NativeSelectRootProps & { theme?: Theme }) => ({
+const focusVisibleRing = ({
+  color = 'primary',
+  error,
+  theme,
+}: NativeSelectRootProps & { theme?: Theme }) => ({
   '&:has(:focus-visible)': {
-    outline: `2px solid ${get(theme, 'palette.primary.main')}`,
+    outline: `2px solid ${error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`)}`,
     outlineOffset: '2px',
   },
 })
@@ -179,7 +167,7 @@ const NativeSelectRoot = styled('div', {
   shouldForwardProp,
 })<NativeSelectRootProps>(
   baseStyle,
-  variantStyles,
+  inputVariantStyles,
   borderRadiusStyle,
   colorBorder,
   focusWithinColor,
@@ -313,8 +301,9 @@ export function NativeSelect({
   }
 
   // With a placeholder, an empty selection must resolve to the placeholder option.
+  const placeholderFallback = placeholder !== undefined ? '' : undefined
   const uncontrolledDefault =
-    value === undefined ? (defaultValue ?? (placeholder !== undefined ? '' : undefined)) : undefined
+    value === undefined ? (defaultValue ?? placeholderFallback) : undefined
 
   return (
     <NativeSelectRoot

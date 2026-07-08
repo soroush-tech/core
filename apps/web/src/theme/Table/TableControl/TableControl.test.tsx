@@ -98,6 +98,37 @@ describe('TableControl', () => {
     expect(bodyRowNames()).toEqual(['worker', 'api', 'cron', 'web', 'edge'])
   })
 
+  it('treats equal values as equal (comparator returns 0), keeping their relative order', () => {
+    const tied: Service[] = [
+      { name: 'alpha', latency: 50 },
+      { name: 'bravo', latency: 50 },
+      { name: 'carol', latency: 10 },
+    ]
+    function TiedHarness() {
+      const sort = useTableSort(['latency'])
+      return (
+        <Table>
+          <thead>
+            <tr>
+              <TableCell>
+                <TableSortLabel {...sort.latency}>Latency</TableSortLabel>
+              </TableCell>
+            </tr>
+          </thead>
+          <TableBody data-testid="body">
+            <TableControl data={tied} sort={sort}>
+              {renderRow}
+            </TableControl>
+          </TableBody>
+        </Table>
+      )
+    }
+    renderWithTheme(<TiedHarness />)
+    // desc by latency: the two tied 50s stay in input order, then 10.
+    fireEvent.click(screen.getByRole('button', { name: 'Latency' }))
+    expect(bodyRowNames()).toEqual(['alpha', 'bravo', 'carol'])
+  })
+
   it('passes the active key to sortFunction so each column can use different logic', () => {
     // name → sort by string length; anything else → numeric latency value.
     const sortFunction = (a: Service, b: Service, orderBy: string) =>

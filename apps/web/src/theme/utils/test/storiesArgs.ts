@@ -4,10 +4,12 @@ import {
   borderRadiiTokens,
   borderStyleTokens,
   borderWidthTokens,
+  buttonColorTokens,
   cursorTokens,
   displayTokens,
   positionTokens,
   spaceTokens,
+  tableSizeTokens,
 } from 'src/theme/utils/test/storiesOptions'
 
 // ─── Visual ──────────────────────────────────────────────────────────────────
@@ -140,4 +142,46 @@ export const borderRadius = {
   options: borderRadiiTokens,
   description: 'Border radius — resolves from `theme.radii`: sm (4px) · md (8px) · lg (16px).',
   table: { category: 'Visual', type: { summary: 'sm | md | lg' } },
+} as const
+
+// ─── Pagination ────────────────────────────────────────────────────────────
+// Shared by the Pagination + PaginationItem + TablePagination story families.
+export const paginationColor = {
+  control: { type: 'select' },
+  options: buttonColorTokens,
+  description: 'Selected-item color — resolves against `theme.palette`.',
+  table: { category: 'Visual', defaultValue: { summary: 'primary' } },
+} as const
+export const paginationVariant = {
+  control: { type: 'select' },
+  options: ['text', 'outlined'],
+  description: 'Item style.',
+  table: { category: 'Visual', defaultValue: { summary: 'text' } },
+} as const
+export const paginationShape = {
+  control: { type: 'select' },
+  options: ['circular', 'rounded'],
+  description: 'Item corner shape.',
+  table: { category: 'Visual', defaultValue: { summary: 'circular' } },
+} as const
+export const paginationSize = {
+  control: { type: 'select' },
+  options: tableSizeTokens,
+  description: 'Item density — resolves against `theme.sizes`.',
+  table: { category: 'Layout', defaultValue: { summary: 'md' } },
+} as const
+export const paginationCount = {
+  control: { type: 'number', min: -1 },
+  description: 'Total number of rows; `-1` = unknown (server-side pagination).',
+  table: { category: 'Content' },
+} as const
+export const shouldShowFirstButton = {
+  control: 'boolean',
+  description: 'Shows the first-page button.',
+  table: { category: 'Behavior', defaultValue: { summary: 'false' } },
+} as const
+export const shouldShowLastButton = {
+  control: 'boolean',
+  description: 'Shows the last-page button.',
+  table: { category: 'Behavior', defaultValue: { summary: 'false' } },
 } as const

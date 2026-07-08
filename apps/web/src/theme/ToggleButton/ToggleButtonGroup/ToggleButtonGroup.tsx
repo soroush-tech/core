@@ -19,8 +19,8 @@ export interface ToggleButtonGroupProps extends Omit<ButtonGroupProps, 'variant'
 }
 
 interface GroupRootProps {
-  orientation?: ButtonGroupProps['orientation']
-  color?: ButtonGroupProps['color']
+  orientation?: NonNullable<ButtonGroupProps['orientation']>
+  color?: NonNullable<ButtonGroupProps['color']>
 }
 
 // ButtonGroup's outlined divider logic clears each trailing child's leading border

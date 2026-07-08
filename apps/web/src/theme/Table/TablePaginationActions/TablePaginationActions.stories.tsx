@@ -1,5 +1,10 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import {
+  paginationCount,
+  shouldShowFirstButton,
+  shouldShowLastButton,
+} from 'src/theme/utils/test/storiesArgs'
 import { Flex } from 'src/theme/Flex'
 import { Typography } from 'src/theme/Typography'
 import { TablePaginationActions } from './TablePaginationActions'
@@ -30,11 +35,7 @@ const meta: Meta<typeof TablePaginationActions> = {
     onPageChange: () => {},
   },
   argTypes: {
-    count: {
-      control: { type: 'number', min: -1 },
-      description: 'Total number of rows; `-1` = unknown (server-side pagination).',
-      table: { category: 'Content' },
-    },
+    count: paginationCount,
     page: {
       control: { type: 'number', min: 0 },
       description: 'Zero-based current page.',
@@ -50,16 +51,8 @@ const meta: Meta<typeof TablePaginationActions> = {
       description: 'Disables all buttons.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
-    shouldShowFirstButton: {
-      control: 'boolean',
-      description: 'Shows the first-page button.',
-      table: { category: 'Behavior', defaultValue: { summary: 'false' } },
-    },
-    shouldShowLastButton: {
-      control: 'boolean',
-      description: 'Shows the last-page button.',
-      table: { category: 'Behavior', defaultValue: { summary: 'false' } },
-    },
+    shouldShowFirstButton,
+    shouldShowLastButton,
     size: {
       control: { type: 'select' },
       options: ['sm', 'md', 'lg'],

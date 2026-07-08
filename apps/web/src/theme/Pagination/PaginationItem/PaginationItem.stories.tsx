@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { buttonColorTokens, tableSizeTokens } from 'src/theme/utils/test/storiesOptions'
+import {
+  paginationColor,
+  paginationVariant,
+  paginationShape,
+  paginationSize,
+} from 'src/theme/utils/test/storiesArgs'
 import { Flex } from 'src/theme/Flex'
 import { PaginationItem } from './PaginationItem'
 
@@ -34,30 +39,10 @@ const meta: Meta<typeof PaginationItem> = {
       description: 'Active styling for the current page — also sets `aria-current="page"`.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
-    color: {
-      control: { type: 'select' },
-      options: buttonColorTokens,
-      description: 'Selected-state color — resolves against `theme.palette`.',
-      table: { category: 'Visual', defaultValue: { summary: 'primary' } },
-    },
-    variant: {
-      control: { type: 'select' },
-      options: ['text', 'outlined'],
-      description: 'Item style.',
-      table: { category: 'Visual', defaultValue: { summary: 'text' } },
-    },
-    shape: {
-      control: { type: 'select' },
-      options: ['circular', 'rounded'],
-      description: 'Corner shape.',
-      table: { category: 'Visual', defaultValue: { summary: 'circular' } },
-    },
-    size: {
-      control: { type: 'select' },
-      options: tableSizeTokens,
-      description: 'Item dimensions and font size — resolves against `theme.sizes`.',
-      table: { category: 'Layout', defaultValue: { summary: 'md' } },
-    },
+    color: paginationColor,
+    variant: paginationVariant,
+    shape: paginationShape,
+    size: paginationSize,
     disabled: {
       control: 'boolean',
       description: 'Disables the item.',

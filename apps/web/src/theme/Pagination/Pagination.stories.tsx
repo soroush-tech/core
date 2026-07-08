@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { buttonColorTokens, tableSizeTokens } from 'src/theme/utils/test/storiesOptions'
+import {
+  paginationColor,
+  paginationVariant,
+  paginationShape,
+  paginationSize,
+  shouldShowFirstButton,
+  shouldShowLastButton,
+} from 'src/theme/utils/test/storiesArgs'
 import { Flex } from 'src/theme/Flex'
 import { Typography } from 'src/theme/Typography'
 import { Pagination } from './Pagination'
@@ -53,45 +60,17 @@ const meta: Meta<typeof Pagination> = {
       description: 'Pages always visible at the start and end.',
       table: { category: 'Behavior', defaultValue: { summary: '1' } },
     },
-    color: {
-      control: { type: 'select' },
-      options: buttonColorTokens,
-      description: 'Selected-item color — resolves against `theme.palette`.',
-      table: { category: 'Visual', defaultValue: { summary: 'primary' } },
-    },
-    variant: {
-      control: { type: 'select' },
-      options: ['text', 'outlined'],
-      description: 'Item style.',
-      table: { category: 'Visual', defaultValue: { summary: 'text' } },
-    },
-    shape: {
-      control: { type: 'select' },
-      options: ['circular', 'rounded'],
-      description: 'Item corner shape.',
-      table: { category: 'Visual', defaultValue: { summary: 'circular' } },
-    },
-    size: {
-      control: { type: 'select' },
-      options: tableSizeTokens,
-      description: 'Item density — resolves against `theme.sizes`.',
-      table: { category: 'Layout', defaultValue: { summary: 'md' } },
-    },
+    color: paginationColor,
+    variant: paginationVariant,
+    shape: paginationShape,
+    size: paginationSize,
     disabled: {
       control: 'boolean',
       description: 'Disables every item.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
-    shouldShowFirstButton: {
-      control: 'boolean',
-      description: 'Shows the first-page button.',
-      table: { category: 'Behavior', defaultValue: { summary: 'false' } },
-    },
-    shouldShowLastButton: {
-      control: 'boolean',
-      description: 'Shows the last-page button.',
-      table: { category: 'Behavior', defaultValue: { summary: 'false' } },
-    },
+    shouldShowFirstButton,
+    shouldShowLastButton,
     shouldHidePrevButton: {
       control: 'boolean',
       description: 'Hides the previous-page button.',

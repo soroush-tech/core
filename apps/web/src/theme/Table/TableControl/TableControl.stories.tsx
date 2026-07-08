@@ -7,7 +7,7 @@ import { TableRow } from 'src/theme/Table/TableRow'
 import { TableCell } from 'src/theme/Table/TableCell'
 import { TableSortLabel } from 'src/theme/Table/TableSortLabel'
 import { TablePagination } from 'src/theme/Table/TablePagination'
-import { useTableSort } from 'src/theme/Table/hooks/useTableSort'
+import { useTableSort, type TableSortMap } from 'src/theme/Table/hooks/useTableSort'
 import { useTablePagination } from 'src/theme/Table/hooks/useTablePagination'
 import { TableControl } from './TableControl'
 
@@ -50,26 +50,33 @@ const meta: Meta<typeof TableControl<Service>> = {
 export default meta
 type Story = StoryObj<typeof TableControl<Service>>
 
+// Sortable Service/Region/Latency header — shared by both stories below.
+function ServiceSortHead({ sort }: Readonly<{ sort: TableSortMap<'name' | 'latency'> }>) {
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell sortDirection={sort.name.isActive ? sort.name.direction : undefined}>
+          <TableSortLabel {...sort.name}>Service</TableSortLabel>
+        </TableCell>
+        <TableCell>Region</TableCell>
+        <TableCell
+          align="right"
+          sortDirection={sort.latency.isActive ? sort.latency.direction : undefined}
+        >
+          <TableSortLabel {...sort.latency}>Latency (ms)</TableSortLabel>
+        </TableCell>
+      </TableRow>
+    </TableHead>
+  )
+}
+
 function SortedAndPaginated({ data }: Readonly<{ data: Service[] }>) {
   const sort = useTableSort(['name', 'latency'])
   const pagination = useTablePagination({ defaultRowsPerPage: 5 })
 
   return (
     <Table size="sm" shouldHideSortIcon={false}>
-      <TableHead>
-        <TableRow>
-          <TableCell sortDirection={sort.name.isActive ? sort.name.direction : undefined}>
-            <TableSortLabel {...sort.name}>Service</TableSortLabel>
-          </TableCell>
-          <TableCell>Region</TableCell>
-          <TableCell
-            align="right"
-            sortDirection={sort.latency.isActive ? sort.latency.direction : undefined}
-          >
-            <TableSortLabel {...sort.latency}>Latency (ms)</TableSortLabel>
-          </TableCell>
-        </TableRow>
-      </TableHead>
+      <ServiceSortHead sort={sort} />
       <TableBody>
         <TableControl data={data} sort={sort} pagination={pagination}>
           {(row) => (
@@ -102,20 +109,7 @@ function SortOnly({ data }: Readonly<{ data: Service[] }>) {
   const sort = useTableSort(['name', 'latency'])
   return (
     <Table size="sm" shouldHideSortIcon={false}>
-      <TableHead>
-        <TableRow>
-          <TableCell sortDirection={sort.name.isActive ? sort.name.direction : undefined}>
-            <TableSortLabel {...sort.name}>Service</TableSortLabel>
-          </TableCell>
-          <TableCell>Region</TableCell>
-          <TableCell
-            align="right"
-            sortDirection={sort.latency.isActive ? sort.latency.direction : undefined}
-          >
-            <TableSortLabel {...sort.latency}>Latency (ms)</TableSortLabel>
-          </TableCell>
-        </TableRow>
-      </TableHead>
+      <ServiceSortHead sort={sort} />
       <TableBody>
         <TableControl data={data.slice(0, 6)} sort={sort}>
           {(row) => (

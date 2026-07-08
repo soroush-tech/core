@@ -16,10 +16,11 @@ which makes descendant `TableCell`s render as `<td>`. The natural home for total
 
 ## Props
 
-| Prop    | Type                        | Default   | Description                 |
-| ------- | --------------------------- | --------- | --------------------------- |
-| `color` | `keyof Theme['text']`       | —         | Text color.                 |
-| `bg`    | `keyof Theme['background']` | —         | Background color.           |
-| `as`    | `ElementType`               | `'tfoot'` | Overrides the root element. |
+| Prop          | Type                        | Default   | Description                 |
+| ------------- | --------------------------- | --------- | --------------------------- |
+| `color`       | `keyof Theme['text']`       | —         | Text color.                 |
+| `bg`          | `keyof Theme['background']` | —         | Background color.           |
+| `borderColor` | `keyof Theme['border']`     | —         | Border color.               |
+| `as`          | `ElementType`               | `'tfoot'` | Overrides the root element. |
 
 Also supports styled-system `space` and `border` props.

@@ -13,12 +13,12 @@ import {
   createShouldForwardProp,
   props,
   space,
-  variant,
   system,
   get,
   type SpaceProps,
   type LayoutProps,
 } from 'src/theme'
+import { inputVariantStyles } from 'src/theme/utils/inputVariantStyles'
 
 export type TextInputColor = keyof Theme['palette']
 export type TextInputTextColor = keyof Theme['text']
@@ -125,24 +125,6 @@ const baseStyle = {
   alignItems: 'center' as const,
   transition: 'border-color 0.15s ease',
 }
-
-// variant() resolves scale keys: 'sm' → theme.radii.sm, 'thin' → theme.borderWidths.thin.
-// For underline, borderStyle:'none' resets all sides then borderBottomStyle:'solid'
-// restores only the bottom (longhand overrides shorthand within the same rule).
-const variantStyles = variant({
-  prop: 'variant',
-  variants: {
-    outlined: { borderRadius: 'sq', borderWidth: 'thin', borderStyle: 'solid' },
-    default: { borderRadius: 'sq', borderStyle: 'none' },
-    underline: {
-      borderRadius: 'sq',
-      borderStyle: 'none',
-      borderBottomWidth: 'thin',
-      borderBottomStyle: 'solid',
-    },
-    text: { borderRadius: 'sq', borderStyle: 'none' },
-  },
-})
 
 // Plain function — get() for safe dot-notation traversal.
 // system() raw function skipped here: createParser iterates props with for...in which
@@ -263,7 +245,7 @@ const sizeVariants = ({ theme, size }: StyledInputProps & { theme: Theme }) => {
 
 const TextInputRoot = styled('div', { label: 'TextInput', shouldForwardProp })<TextInputRootProps>(
   baseStyle,
-  variantStyles,
+  inputVariantStyles,
   borderRadiusStyle,
   colorBorder,
   focusWithinColor,
