@@ -114,8 +114,9 @@ export function useGraphSimulation({
 
     // Soft anchor: gently hold each opened area / expanded node at the spot it was
     // opened (anchorsRef), so it stays put yet drifts when the separation force pushes.
+    // d[axis] is always set: buildNodes seeds x/y on every node before d3 reads this.
     const anchorAt = (axis: 'x' | 'y') => (d: GraphNode) =>
-      anchorsRef.current.get(d.id)?.[axis] ?? d[axis] ?? VIEW_SIZE / 2
+      anchorsRef.current.get(d.id)?.[axis] ?? d[axis]!
     const anchorStrength = (d: GraphNode) =>
       anchorsRef.current.has(d.id) ? SOFT_ANCHOR_STRENGTH : 0
 

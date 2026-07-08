@@ -60,6 +60,23 @@ describe('forceAreaSeparation', () => {
     expect(m.vx).toBe(0)
   })
 
+  it('applies the shared allowance when the pair is already in key order', () => {
+    // Ids in ascending order ('A' < 'B') take pairKey's other ordering branch;
+    // the shared count must land on the same key the force loop reads back.
+    const a = node('A', 0, 0)
+    const b = node('B', 130, 0)
+    const n = node('n', 0, 0)
+    const force = forceAreaSeparation(opts)
+    force.config(['A', 'B'], new Map([['n', ['A', 'B']]]))
+    force.initialize([a, b, n])
+
+    // R 70 + 70 = 140, minus 1 shared * 20 = need 120 < dist 130 ⇒ no push
+    force(1)
+
+    expect(a.vx).toBe(0)
+    expect(b.vx).toBe(0)
+  })
+
   it('grows an area circle with its visible child count', () => {
     const w = node('W', 0, 0)
     const m = node('M', 80, 0)
