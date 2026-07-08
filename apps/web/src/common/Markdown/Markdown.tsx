@@ -1,43 +1,51 @@
-import ReactMarkdown, { type Components } from 'react-markdown'
+import ReactMarkdown, { type Components, type Options } from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
 import { Image } from 'src/theme/Image'
 import { Link } from 'src/theme/Link'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from 'src/theme/Table'
 import { Typography } from 'src/theme/Typography'
 import { View } from 'src/theme/View'
 import { Blockquote } from 'src/common/Blockquote'
+import { CodeBlock } from './CodeBlock'
+
+const remarkPlugins: Options['remarkPlugins'] = [remarkGfm]
+// `ignoreMissing` keeps unknown fence languages from throwing — they render unhighlighted.
+const rehypePlugins: Options['rehypePlugins'] = [[rehypeHighlight, { ignoreMissing: true }]]
 
 const components: Components = {
   h1: ({ children }) => (
-    <Typography variant="h1" color="primary" gutterBottom>
+    <Typography mt={2} variant="h1" color="primary" gutterBottom>
       {children}
     </Typography>
   ),
   h2: ({ children }) => (
-    <Typography variant="h2" color="primary" gutterBottom>
+    <Typography mt={2} variant="h2" color="primary" gutterBottom>
       {children}
     </Typography>
   ),
   h3: ({ children }) => (
-    <Typography variant="h3" gutterBottom>
+    <Typography mt={2} variant="h3" color="primary" gutterBottom>
       {children}
     </Typography>
   ),
   h4: ({ children }) => (
-    <Typography variant="h4" gutterBottom>
+    <Typography mt={2} variant="h4" gutterBottom>
       {children}
     </Typography>
   ),
   h5: ({ children }) => (
-    <Typography variant="h5" gutterBottom>
+    <Typography mt={2} variant="h5" gutterBottom>
       {children}
     </Typography>
   ),
   h6: ({ children }) => (
-    <Typography variant="h6" gutterBottom>
+    <Typography mt={2} variant="h6" gutterBottom>
       {children}
     </Typography>
   ),
   p: ({ children }) => (
-    <Typography variant="body1" color="secondary" gutterBottom>
+    <Typography variant="body1" color="secondary" gutterBottom lineHeight="loose">
       {children}
     </Typography>
   ),
@@ -47,7 +55,7 @@ const components: Components = {
     </Link>
   ),
   strong: ({ children }) => (
-    <Typography as="strong" variant="inherit" fontWeight="bold">
+    <Typography as="strong" variant="inherit" fontWeight="extraBold">
       {children}
     </Typography>
   ),
@@ -67,7 +75,7 @@ const components: Components = {
     </View>
   ),
   li: ({ children }) => (
-    <Typography as="li" color="secondary" variant="body1">
+    <Typography as="li" color="secondary" variant="body1" gutterBottom>
       {children}
     </Typography>
   ),
@@ -81,10 +89,11 @@ const components: Components = {
     return (
       <Typography
         as="code"
+        color="initial"
         variant="inherit"
         fontFamily="mono"
         display={isBlock ? 'block' : 'inline'}
-        bg={isBlock ? 'transparent' : 'default'}
+        bg={isBlock ? 'transparent' : 'paper'}
         px={isBlock ? 0 : 1}
         borderRadius="sm"
       >
@@ -93,9 +102,9 @@ const components: Components = {
     )
   },
   pre: ({ children }) => (
-    <View
+    <CodeBlock
       as="pre"
-      bg="default"
+      bg="terminal"
       p={3}
       my={2}
       borderRadius="md"
@@ -104,9 +113,23 @@ const components: Components = {
       overflow="auto"
     >
       {children}
-    </View>
+    </CodeBlock>
   ),
-  hr: () => <View as="hr" my={4} height="1px" bg="grid" border="none" />,
+  table: ({ children }) => (
+    <TableContainer my={2}>
+      <Table bg="terminal" borderRadius="md">
+        {children}
+      </Table>
+    </TableContainer>
+  ),
+  thead: ({ children }) => <TableHead color="primary">{children}</TableHead>,
+  tbody: ({ children }) => <TableBody>{children}</TableBody>,
+  tr: ({ children }) => <TableRow isHoverable>{children}</TableRow>,
+  // th vs td is resolved from the enclosing section via TableSectionContext; the
+  // GFM column alignment arrives as an inline `style` and overrides the default.
+  th: ({ children, style }) => <TableCell style={style}>{children}</TableCell>,
+  td: ({ children, style }) => <TableCell style={style}>{children}</TableCell>,
+  hr: () => <View as="hr" my={2} height="1px" bg="grid" width="100%" border="none" />,
   img: ({ src, alt }) => <Image src={src} alt={alt} maxWidth="100%" />,
 }
 
@@ -116,5 +139,13 @@ export interface MarkdownProps {
 
 /** Renders a markdown string with every element mapped to a design-system primitive. */
 export function Markdown({ children }: Readonly<MarkdownProps>) {
-  return <ReactMarkdown components={components}>{children}</ReactMarkdown>
+  return (
+    <ReactMarkdown
+      components={components}
+      remarkPlugins={remarkPlugins}
+      rehypePlugins={rehypePlugins}
+    >
+      {children}
+    </ReactMarkdown>
+  )
 }

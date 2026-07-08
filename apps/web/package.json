@@ -64,6 +64,8 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
     "vike": "^0.4.260",
     "vike-react": "^0.6.25",
     "vike-react-query": "^0.1.13",
