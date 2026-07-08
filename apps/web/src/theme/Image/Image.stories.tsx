@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { height, m, p, width } from 'src/theme/utils/test/storiesArgs'
+import { borderRadius, height, m, p, width } from 'src/theme/utils/test/storiesArgs'
 import { objectFitTokens } from 'src/theme/utils/test/storiesOptions'
 import { Image } from './Image'
 
@@ -12,7 +12,18 @@ const meta: Meta<typeof Image> = {
   parameters: {
     layout: 'padded',
     controls: {
-      include: ['src', 'srcSet', 'alt', 'fallback', 'width', 'height', 'objectFit', 'm', 'p'],
+      include: [
+        'src',
+        'srcSet',
+        'alt',
+        'fallback',
+        'width',
+        'height',
+        'objectFit',
+        'borderRadius',
+        'm',
+        'p',
+      ],
     },
   },
   argTypes: {
@@ -44,6 +55,7 @@ const meta: Meta<typeof Image> = {
       description: 'CSS object-fit — controls how the image fills its container.',
       table: { category: 'Layout' },
     },
+    borderRadius,
     m,
     p,
   },

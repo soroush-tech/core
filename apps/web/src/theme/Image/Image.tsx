@@ -8,6 +8,7 @@ import {
   background,
   position,
   system,
+  type Theme,
   type LayoutProps,
   type SpaceProps,
   type BackgroundProps,
@@ -27,6 +28,8 @@ export interface ImageProps
   fallback?: string
   objectFit?: CSSProperties['objectFit']
   objectPosition?: CSSProperties['objectPosition']
+  /** Corner radius — resolves against `theme.radii`. */
+  borderRadius?: keyof Theme['radii']
   /** Called once when all image sources are exhausted. */
   onError?: () => void
 }
@@ -36,6 +39,7 @@ const baseShouldForwardProp = createShouldForwardProp([
   'fallback',
   'objectFit',
   'objectPosition',
+  'borderRadius',
 ])
 
 // fetchPriority is a valid <img> attribute, but @styled-system/should-forward-prop pins an
@@ -44,6 +48,7 @@ const shouldForwardProp = (prop: string) => prop === 'fetchPriority' || baseShou
 const objectSystem = system({
   objectFit: { property: 'objectFit' },
   objectPosition: { property: 'objectPosition' },
+  borderRadius: { property: 'borderRadius', scale: 'radii' },
 })
 
 const StyledImg = styled('img', { label: 'image', shouldForwardProp })(

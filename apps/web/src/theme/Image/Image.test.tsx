@@ -181,5 +181,10 @@ describe('Image', () => {
       renderWithTheme(<Image src="photo.jpg" alt="Test" objectPosition="top left" />)
       expect(screen.getByRole('img')).toHaveStyle({ objectPosition: 'top left' })
     })
+
+    it('borderRadius resolves against theme.radii', () => {
+      renderWithTheme(<Image src="photo.jpg" alt="Test" borderRadius="md" />)
+      expect(screen.getByRole('img')).toHaveStyle({ borderRadius: '8px' })
+    })
   })
 })

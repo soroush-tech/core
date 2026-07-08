@@ -1,6 +1,6 @@
 # Image
 
-A styled-system `<img>` primitive. Accepts all layout, space, background, and position props from the theme, plus `objectFit` and `objectPosition` for common image sizing patterns.
+A styled-system `<img>` primitive. Accepts all layout, space, background, and position props from the theme, plus `objectFit` / `objectPosition` for common image sizing patterns and `borderRadius` for rounded corners.
 
 Built-in source priority and error recovery: when a source fails to load the component advances to the next URL automatically. `onError` fires only when **all** sources are exhausted.
 
@@ -67,6 +67,19 @@ CSS `object-fit`. Common values: `cover` · `contain` · `fill` · `none` · `sc
 ### `objectPosition`
 
 CSS `object-position`. Accepts any valid CSS value, e.g. `center`, `top left`, `50% 25%`.
+
+---
+
+### `borderRadius`
+
+Corner radius — resolves against `theme.radii`.
+
+| Token  | Value |
+| ------ | ----- |
+| `"sq"` | 0     |
+| `"sm"` | 4px   |
+| `"md"` | 8px   |
+| `"lg"` | 16px  |
 
 ---
 
