@@ -12,6 +12,11 @@ import type {
   CircularProgressEasing,
   CircularProgressVariant,
 } from 'src/theme/CircularProgress'
+import type {
+  LinearProgressColor,
+  LinearProgressEasing,
+  LinearProgressVariant,
+} from 'src/theme/LinearProgress'
 import type { CheckboxColor, CheckboxSize } from 'src/theme/Checkbox'
 import type { RadioColor, RadioSize } from 'src/theme/Radio'
 import type { SwitchColor, SwitchEdge, SwitchSize, SwitchVariant } from 'src/theme/Switch'
@@ -84,6 +89,22 @@ export const circularProgressEasingTokens = [
   'ease-out',
   'ease-in-out',
 ] satisfies CircularProgressEasing[]
+export const linearProgressColorTokens = [
+  ...buttonColorTokens,
+  'inherit',
+] satisfies LinearProgressColor[]
+export const linearProgressVariantTokens = [
+  'indeterminate',
+  'determinate',
+  'query',
+] satisfies LinearProgressVariant[]
+export const linearProgressEasingTokens = [
+  'linear',
+  'ease',
+  'ease-in',
+  'ease-out',
+  'ease-in-out',
+] satisfies LinearProgressEasing[]
 export const checkboxColorTokens = buttonColorTokens satisfies CheckboxColor[]
 export const checkboxSizeTokens = ['sm', 'md', 'lg'] satisfies CheckboxSize[]
 export const radioColorTokens = buttonColorTokens satisfies RadioColor[]
