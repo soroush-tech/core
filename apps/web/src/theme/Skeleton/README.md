@@ -33,7 +33,7 @@ Default: `"text"`. The `text` variant with no `height` takes one line's height v
 
 ### `borderRadius`
 
-Overrides the variant's default corner radius — resolves against `theme.radii`, or accepts a raw px value. The `circular` variant ignores it — a circle always stays `50%`.
+Overrides the variant's default corner radius — resolves against `theme.radii`. The `circular` variant ignores it — a circle always stays `50%`.
 
 | Token    | Value |
 | -------- | ----- |

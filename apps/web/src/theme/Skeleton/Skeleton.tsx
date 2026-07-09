@@ -14,13 +14,13 @@ import {
 
 export type SkeletonVariant = 'text' | 'circular' | 'rectangular'
 export type SkeletonAnimation = 'pulse' | 'wave' | false
-export type SkeletonRadius = keyof Theme['radii'] | `${number}px`
+export type SkeletonRadius = keyof Theme['radii']
 
 export interface SkeletonProps
   extends HTMLAttributes<HTMLSpanElement>, Omit<SpaceProps<Theme>, keyof PaddingProps> {
   /** Shape of the placeholder. Default: `'text'`. */
   variant?: SkeletonVariant
-  /** Corner radius — resolves against `theme.radii` (sq · sm · md · lg) or a raw px value. Overrides the variant default. */
+  /** Corner radius — resolves against `theme.radii` (sq · sm · md · lg). Overrides the variant default. */
   borderRadius?: SkeletonRadius
   /** Loading animation. `false` disables it. Default: `'pulse'`. */
   animation?: SkeletonAnimation
@@ -61,7 +61,7 @@ const shapeVariants = styledVariant({
   },
 })
 
-// borderRadius → theme.radii scale (raw px values pass through). Composed after shapeVariants so it overrides.
+// borderRadius → theme.radii scale. Composed after shapeVariants so it overrides.
 const radiusSystem = system({
   borderRadius: { property: 'borderRadius', scale: 'radii' },
 })

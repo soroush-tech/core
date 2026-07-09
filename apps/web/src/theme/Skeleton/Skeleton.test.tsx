@@ -61,11 +61,6 @@ describe('Skeleton', () => {
       expect(screen.getByTestId('sk')).toHaveStyle({ borderRadius: '16px' })
     })
 
-    it('passes a raw px value through unchanged', () => {
-      renderWithTheme(<Skeleton variant="rectangular" borderRadius="12px" data-testid="sk" />)
-      expect(screen.getByTestId('sk')).toHaveStyle({ borderRadius: '12px' })
-    })
-
     it('overrides the variant default radius (text sm → lg)', () => {
       renderWithTheme(<Skeleton variant="text" borderRadius="lg" data-testid="sk" />)
       expect(screen.getByTestId('sk')).toHaveStyle({ borderRadius: '16px' })
