@@ -139,12 +139,15 @@ const focusVisibleRing = ({
   color = 'primary',
   error,
   theme,
-}: NativeSelectRootProps & { theme?: Theme }) => ({
-  '&:has(:focus-visible)': {
-    outline: `2px solid ${error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`)}`,
-    outlineOffset: '2px',
-  },
-})
+}: NativeSelectRootProps & { theme?: Theme }) => {
+  const ringColor = error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`)
+  return {
+    '&:has(:focus-visible)': {
+      outline: `2px solid ${ringColor}`,
+      outlineOffset: '2px',
+    },
+  }
+}
 
 const borderRadiusStyle = ({
   variant: v = 'default',
