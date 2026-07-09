@@ -4,7 +4,10 @@ import AnalyticsIcon from 'src/assets/icons/analytics.svg?react'
 import ArchitectureIcon from 'src/assets/icons/architecture.svg?react'
 import ArrowBackIcon from 'src/assets/icons/arrow_back.svg?react'
 import ArrowForwardIcon from 'src/assets/icons/arrow_forward.svg?react'
+import ArrowUpwardIcon from 'src/assets/icons/arrow_upward.svg?react'
 import CheckIcon from 'src/assets/icons/check.svg?react'
+import ChevronLeftIcon from 'src/assets/icons/chevron_left.svg?react'
+import ChevronRightIcon from 'src/assets/icons/chevron_right.svg?react'
 import CloudDoneIcon from 'src/assets/icons/cloud_done.svg?react'
 import CloseIcon from 'src/assets/icons/close.svg?react'
 import CodeIcon from 'src/assets/icons/code.svg?react'
@@ -16,10 +19,12 @@ import DnsIcon from 'src/assets/icons/dns.svg?react'
 import ExpandLessIcon from 'src/assets/icons/expand_less.svg?react'
 import ExpandMoreIcon from 'src/assets/icons/expand_more.svg?react'
 import ExternalLinkIcon from 'src/assets/icons/external_link.svg?react'
+import FirstPageIcon from 'src/assets/icons/first_page.svg?react'
 import GridViewIcon from 'src/assets/icons/grid_view.svg?react'
 import GroupsIcon from 'src/assets/icons/groups.svg?react'
 import HubIcon from 'src/assets/icons/hub.svg?react'
 import LanguageIcon from 'src/assets/icons/language.svg?react'
+import LastPageIcon from 'src/assets/icons/last_page.svg?react'
 import LockIcon from 'src/assets/icons/lock.svg?react'
 import MenuIcon from 'src/assets/icons/menu.svg?react'
 import NeurologyIcon from 'src/assets/icons/neurology.svg?react'
@@ -45,7 +50,10 @@ export const icons = {
   architecture: ArchitectureIcon,
   arrow_back: ArrowBackIcon,
   arrow_forward: ArrowForwardIcon,
+  arrow_upward: ArrowUpwardIcon,
   check: CheckIcon,
+  chevron_left: ChevronLeftIcon,
+  chevron_right: ChevronRightIcon,
   cloud_done: CloudDoneIcon,
   close: CloseIcon,
   code: CodeIcon,
@@ -57,10 +65,12 @@ export const icons = {
   expand_less: ExpandLessIcon,
   expand_more: ExpandMoreIcon,
   external_link: ExternalLinkIcon,
+  first_page: FirstPageIcon,
   grid_view: GridViewIcon,
   groups: GroupsIcon,
   hub: HubIcon,
   language: LanguageIcon,
+  last_page: LastPageIcon,
   lock: LockIcon,
   menu: MenuIcon,
   neurology: NeurologyIcon,

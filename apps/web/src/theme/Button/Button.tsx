@@ -1,5 +1,6 @@
-import { type ReactNode, type ButtonHTMLAttributes } from 'react'
+import { useContext, type ReactNode, type ButtonHTMLAttributes } from 'react'
 import { CircularProgress } from 'src/theme/CircularProgress'
+import { ButtonGroupContext } from 'src/theme/ButtonGroup/ButtonGroupContext'
 import {
   styled,
   type Theme,
@@ -228,16 +229,16 @@ const ButtonRoot = styled('button', { shouldForwardProp })<ButtonRootProps>(
 // ─── Public component ─────────────────────────────────────────────────────────
 
 export function Button({
-  variant = 'contained',
-  color = 'primary',
-  size = 'md',
+  variant,
+  color,
+  size,
   shape = 'square',
   gap = 1,
   fontWeight = 'bold',
   letterSpacing = 'tight',
   startIcon,
   endIcon,
-  fullWidth = false,
+  fullWidth,
   loading = false,
   loadingIndicator,
   loadingPosition = 'center',
@@ -246,6 +247,14 @@ export function Button({
   href,
   ...rest
 }: Readonly<ButtonProps>) {
+  // Resolution: explicit prop → enclosing ButtonGroup → default.
+  const group = useContext(ButtonGroupContext)
+  const resolvedVariant = variant ?? group.variant ?? 'contained'
+  const resolvedColor = color ?? group.color ?? 'primary'
+  const resolvedSize = size ?? group.size ?? 'md'
+  const resolvedFullWidth = fullWidth ?? group.fullWidth ?? false
+  const resolvedDisabled = (disabled ?? group.disabled ?? false) || loading
+
   const indicator = loadingIndicator ?? <CircularProgress size={16} color="inherit" />
   const isCenter = loading && loadingPosition === 'center'
   const start = loading && loadingPosition === 'start' ? indicator : startIcon
@@ -255,15 +264,15 @@ export function Button({
     <ButtonRoot
       as={href == null ? undefined : 'a'}
       href={href}
-      variant={variant}
-      color={color}
-      size={size}
+      variant={resolvedVariant}
+      color={resolvedColor}
+      size={resolvedSize}
       shape={shape}
       gap={gap}
       fontWeight={fontWeight}
       letterSpacing={letterSpacing}
-      fullWidth={fullWidth}
-      disabled={disabled || loading}
+      fullWidth={resolvedFullWidth}
+      disabled={resolvedDisabled}
       aria-busy={loading || undefined}
       {...rest}
     >

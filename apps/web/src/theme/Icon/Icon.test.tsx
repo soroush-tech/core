@@ -33,4 +33,12 @@ describe('Icon', () => {
     const { container } = renderWithTheme(<Icon name="hub" data-testid="hub-icon" />)
     expect(container.querySelector('[data-testid="hub-icon"]')).toBeInTheDocument()
   })
+
+  it.each(['chevron_left', 'chevron_right', 'first_page', 'last_page', 'arrow_upward'] as const)(
+    'renders the %s navigation icon from the registry',
+    (name) => {
+      const { container } = renderWithTheme(<Icon name={name} />)
+      expect(container.querySelector('svg')).toBeInTheDocument()
+    }
+  )
 })

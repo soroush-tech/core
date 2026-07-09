@@ -20,6 +20,7 @@ import type { FormControlProps } from 'src/theme/FormControl'
 import type { AppBarSize } from 'src/theme/AppBar'
 import type { LinkUnderline } from 'src/theme/Link'
 import type { CardVariant } from 'src/theme/Card'
+import type { TableSize, TableCellPadding, TableCellVariant, TableCellAlign } from 'src/theme/Table'
 import type { DrawerAnchor } from 'src/theme/Drawer'
 import type { ModalScroll } from 'src/theme/Modal'
 import {
@@ -102,6 +103,16 @@ export const formSizeTokens = ['sm', 'md', 'lg'] satisfies NonNullable<FormContr
 export const formColorTokens = [...buttonColorTokens] satisfies NonNullable<
   FormControlProps['color']
 >[]
+export const tableSizeTokens = ['sm', 'md', 'lg'] satisfies TableSize[]
+export const tableCellPaddingTokens = ['normal', 'none'] satisfies TableCellPadding[]
+export const tableCellVariantTokens = ['head', 'body', 'footer'] satisfies TableCellVariant[]
+export const tableCellAlignTokens = [
+  'inherit',
+  'left',
+  'right',
+  'center',
+  'justify',
+] satisfies TableCellAlign[]
 export const linkUnderlineTokens = ['always', 'hover', 'none'] satisfies LinkUnderline[]
 export const cardVariantTokens = ['paper', 'bracketBox', 'interactive'] satisfies CardVariant[]
 export const linkTargetTokens = ['_self', '_blank', '_parent', '_top', '_unfencedTop'] as const

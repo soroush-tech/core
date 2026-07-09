@@ -28,6 +28,7 @@ export interface Theme {
     [key in SpaceUnits]: number | string
   }
   border: {
+    default?: string
     light?: string
     primary: string
     dark?: string
@@ -336,6 +337,7 @@ export const light: Theme = {
     warning: solarAmber[800],
   },
   border: {
+    default: carbonBlack[200],
     light: alpha(forestGreen[500], 0.1),
     primary: forestGreen[600],
     dark: forestGreen[800],
@@ -419,6 +421,7 @@ export const dark: Theme = {
     warning: solarAmber[800],
   },
   border: {
+    default: kineticSurface[600],
     light: alpha(kineticGreen[100], 0.1),
     primary: kineticGreen[500],
     dark: kineticGreen[800],
