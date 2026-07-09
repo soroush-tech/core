@@ -12,10 +12,17 @@ import type {
   CircularProgressEasing,
   CircularProgressVariant,
 } from 'src/theme/CircularProgress'
+import type {
+  LinearProgressColor,
+  LinearProgressEasing,
+  LinearProgressVariant,
+} from 'src/theme/LinearProgress'
 import type { CheckboxColor, CheckboxSize } from 'src/theme/Checkbox'
 import type { RadioColor, RadioSize } from 'src/theme/Radio'
 import type { SwitchColor, SwitchEdge, SwitchSize, SwitchVariant } from 'src/theme/Switch'
 import type { TextInputColor, TextInputVariant, TextInputSize } from 'src/theme/TextInput'
+import type { SelectColor, SelectVariant, SelectSize } from 'src/theme/Select'
+import type { SkeletonVariant, SkeletonAnimation } from 'src/theme/Skeleton'
 import type { FormControlProps } from 'src/theme/FormControl'
 import type { AppBarSize } from 'src/theme/AppBar'
 import type { LinkUnderline } from 'src/theme/Link'
@@ -82,6 +89,22 @@ export const circularProgressEasingTokens = [
   'ease-out',
   'ease-in-out',
 ] satisfies CircularProgressEasing[]
+export const linearProgressColorTokens = [
+  ...buttonColorTokens,
+  'inherit',
+] satisfies LinearProgressColor[]
+export const linearProgressVariantTokens = [
+  'indeterminate',
+  'determinate',
+  'query',
+] satisfies LinearProgressVariant[]
+export const linearProgressEasingTokens = [
+  'linear',
+  'ease',
+  'ease-in',
+  'ease-out',
+  'ease-in-out',
+] satisfies LinearProgressEasing[]
 export const checkboxColorTokens = buttonColorTokens satisfies CheckboxColor[]
 export const checkboxSizeTokens = ['sm', 'md', 'lg'] satisfies CheckboxSize[]
 export const radioColorTokens = buttonColorTokens satisfies RadioColor[]
@@ -98,6 +121,11 @@ export const textInputVariantTokens = [
   'underline',
 ] satisfies TextInputVariant[]
 export const textInputSizeTokens = ['sm', 'md', 'lg'] satisfies TextInputSize[]
+export const selectColorTokens = buttonColorTokens satisfies SelectColor[]
+export const selectVariantTokens = textInputVariantTokens satisfies SelectVariant[]
+export const selectSizeTokens = textInputSizeTokens satisfies SelectSize[]
+export const skeletonVariantTokens = ['text', 'circular', 'rectangular'] satisfies SkeletonVariant[]
+export const skeletonAnimationTokens = ['pulse', 'wave', false] satisfies SkeletonAnimation[]
 export const appBarSizeTokens = objectKeys(sizes) satisfies AppBarSize[]
 export const formSizeTokens = ['sm', 'md', 'lg'] satisfies NonNullable<FormControlProps['size']>[]
 export const formColorTokens = [...buttonColorTokens] satisfies NonNullable<

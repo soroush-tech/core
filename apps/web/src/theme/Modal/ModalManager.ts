@@ -19,6 +19,8 @@ interface ContainerState {
   restore: (() => void) | null
   /** Siblings already `aria-hidden` before this container opened — left untouched. */
   hiddenSiblings: Element[]
+  /** Whether background siblings were `aria-hidden` for this container (skipped for non-modal popovers). */
+  ariaHiddenApplied: boolean
 }
 
 // Tags that can be children of <body> but cannot carry aria-hidden per the ARIA spec.
@@ -131,7 +133,7 @@ export class ModalManager {
   private readonly modals: ManagedModal[] = []
   private readonly containers: ContainerState[] = []
 
-  add(modal: ManagedModal, container: HTMLElement): number {
+  add(modal: ManagedModal, container: HTMLElement, disableAriaHidden = false): number {
     const existingIndex = this.modals.indexOf(modal)
     if (existingIndex !== -1) {
       return existingIndex
@@ -143,15 +145,29 @@ export class ModalManager {
     ariaHidden(modal.modalRef, false)
 
     const hiddenSiblings = getHiddenSiblings(container)
-    ariaHiddenSiblings(container, modal.mount, modal.modalRef, hiddenSiblings, true)
+    // A non-modal popover (e.g. a select's listbox) must not hide the page — its
+    // trigger stays focused and controls the listbox via `aria-activedescendant`.
+    if (!disableAriaHidden) {
+      ariaHiddenSiblings(container, modal.mount, modal.modalRef, hiddenSiblings, true)
+    }
 
     const containerState = this.containers.find((item) => item.container === container)
     if (containerState) {
       containerState.modals.push(modal)
+      // This modal hid the siblings above, so `remove` must later restore them.
+      if (!disableAriaHidden) {
+        containerState.ariaHiddenApplied = true
+      }
       return modalIndex
     }
 
-    this.containers.push({ container, modals: [modal], restore: null, hiddenSiblings })
+    this.containers.push({
+      container,
+      modals: [modal],
+      restore: null,
+      hiddenSiblings,
+      ariaHiddenApplied: !disableAriaHidden,
+    })
 
     return modalIndex
   }
@@ -178,13 +194,15 @@ export class ModalManager {
         containerState.restore()
       }
       ariaHidden(modal.modalRef, ariaHiddenState)
-      ariaHiddenSiblings(
-        containerState.container,
-        modal.mount,
-        modal.modalRef,
-        containerState.hiddenSiblings,
-        false
-      )
+      if (containerState.ariaHiddenApplied) {
+        ariaHiddenSiblings(
+          containerState.container,
+          modal.mount,
+          modal.modalRef,
+          containerState.hiddenSiblings,
+          false
+        )
+      }
       this.containers.splice(this.containers.indexOf(containerState), 1)
     } else {
       // Re-hide the modal being removed (it may linger via `shouldKeepMounted`) and

@@ -3,6 +3,7 @@ import { TableContext, type TableCellPadding } from 'src/theme/Table/TableContex
 import {
   styled,
   type Theme,
+  type PaletteColor,
   createShouldForwardProp,
   props,
   space,
@@ -14,9 +15,6 @@ import {
   type LayoutProps,
   type BorderProps,
 } from 'src/theme'
-
-/** Valid values for the color prop — derived from theme.text keys. */
-export type TableColorToken = keyof Theme['text']
 
 /** Valid values for the bg prop — derived from theme.background keys. */
 export type TableBackgroundToken = keyof Theme['background']
@@ -38,8 +36,11 @@ export interface TableProps
     SpaceProps<Theme>,
     LayoutProps<Theme>,
     Omit<BorderProps<Theme>, 'borderColor'> {
-  /** Resolves against theme.text */
-  color?: TableColorToken
+  /**
+   * Palette color for descendant rows' hover/selected shading — broadcast to
+   * `TableRow`s via `TableContext`; a row's own `color` wins.
+   */
+  color?: PaletteColor
   /** Resolves against theme.background */
   bg?: TableBackgroundToken
   /** Resolves against theme.border — light · primary · dark */
@@ -78,11 +79,10 @@ interface TableBaseProps extends Omit<TableProps, 'align'> {
 
 const shouldForwardProp = createShouldForwardProp([...props, 'tableAlign'])
 
-// color → theme.text / bg → theme.background
-// (borderColor is handled by defaultBorder below so the frame and the
-// descendant cascade always share one resolved color.)
+// bg → theme.background (borderColor is handled by defaultBorder below so the
+// frame and the descendant cascade always share one resolved color; `color` is
+// broadcast-only and paints nothing on the table itself.)
 const colorSystem = system({
-  color: { property: 'color', scale: 'text' },
   bg: { property: 'backgroundColor', scale: 'background' },
 })
 
@@ -134,14 +134,15 @@ export function Table({
   hasStickyHeader = false,
   shouldHideSortIcon = true,
   hasEllipsis = false,
+  color,
   align,
   as,
   children,
   ...rest
 }: Readonly<TableProps>) {
   const value = useMemo(
-    () => ({ size, cellPadding, hasStickyHeader, shouldHideSortIcon, hasEllipsis }),
-    [size, cellPadding, hasStickyHeader, shouldHideSortIcon, hasEllipsis]
+    () => ({ size, cellPadding, hasStickyHeader, shouldHideSortIcon, hasEllipsis, color }),
+    [size, cellPadding, hasStickyHeader, shouldHideSortIcon, hasEllipsis, color]
   )
   return (
     <TableContext.Provider value={value}>

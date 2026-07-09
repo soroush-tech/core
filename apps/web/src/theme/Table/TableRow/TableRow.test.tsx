@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from 'src/test/utils/wrapper'
 import { dark } from 'src/theme/themes'
+import { Table } from 'src/theme/Table/Table'
 import { TableRow } from './TableRow'
 
 const renderRow = (row: React.ReactNode) =>
@@ -78,6 +79,34 @@ describe('TableRow', () => {
         rule.cssText.includes('background-color')
     )
     expect(hasHoverRule).toBe(true)
+  })
+
+  it('inherits the enclosing Table color for its shading', () => {
+    renderWithTheme(
+      <Table color="secondary">
+        <tbody>
+          <TableRow isSelected data-testid="row" />
+        </tbody>
+      </Table>
+    )
+    expect(screen.getByTestId('row')).toHaveStyle({
+      backgroundColor: dark.palette.secondary.dark,
+      color: dark.palette.secondary.contrastText,
+    })
+  })
+
+  it('overwrites the Table color with its own color prop', () => {
+    renderWithTheme(
+      <Table color="secondary">
+        <tbody>
+          <TableRow isSelected color="error" data-testid="row" />
+        </tbody>
+      </Table>
+    )
+    expect(screen.getByTestId('row')).toHaveStyle({
+      backgroundColor: dark.palette.error.dark,
+      color: dark.palette.error.contrastText,
+    })
   })
 
   it('forwards HTML attributes without leaking custom props to the DOM', () => {

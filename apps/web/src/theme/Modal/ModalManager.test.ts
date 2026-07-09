@@ -95,6 +95,49 @@ describe('ModalManager — aria-hidden siblings', () => {
     expect(modal.mount.hasAttribute('aria-hidden')).toBe(false)
   })
 
+  it('leaves siblings visible when disableAriaHidden is set, and skips unhiding on removal', () => {
+    const sibling = document.createElement('section')
+    container.append(sibling)
+    const manager = new ModalManager()
+    const modal = makeModal()
+    manager.add(modal, container, true)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+    manager.remove(modal)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+  })
+
+  it('restores siblings when a modal reuses a container first opened by a non-aria-hidden popover', () => {
+    const sibling = document.createElement('section')
+    container.append(sibling)
+    const manager = new ModalManager()
+    const popover = makeModal()
+    const modal = makeModal()
+    // A non-modal popover opens the container without hiding siblings.
+    manager.add(popover, container, true)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+    // A real modal reuses it — siblings get hidden and must be restored on teardown.
+    manager.add(modal, container)
+    expect(sibling.getAttribute('aria-hidden')).toBe('true')
+    manager.remove(modal)
+    manager.remove(popover)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+  })
+
+  it('leaves the container state intact when a disableAriaHidden popover stacks on a modal', () => {
+    const sibling = document.createElement('section')
+    container.append(sibling)
+    const manager = new ModalManager()
+    const modal = makeModal()
+    const popover = makeModal()
+    // The modal hides siblings; the stacked non-modal popover must not disturb that state.
+    manager.add(modal, container)
+    expect(sibling.getAttribute('aria-hidden')).toBe('true')
+    manager.add(popover, container, true)
+    manager.remove(popover)
+    manager.remove(modal)
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false)
+  })
+
   it('restores siblings when the last modal is removed', () => {
     const sibling = document.createElement('section')
     container.append(sibling)

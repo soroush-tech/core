@@ -25,6 +25,8 @@ export interface UseModalParameters {
   container?: HTMLElement | (() => HTMLElement | null) | null
   /** Disable body scroll-lock while open. */
   disableScrollLock?: boolean
+  /** Skip `aria-hidden` on background siblings (for non-modal popovers). */
+  disableAriaHidden?: boolean
   /** Forwarded ref for the modal root element. */
   rootRef?: Ref<Element>
 }
@@ -45,7 +47,14 @@ function getContainer(container: UseModalParameters['container']): HTMLElement |
 }
 
 export function useModal(parameters: UseModalParameters): UseModalReturnValue {
-  const { isOpen, onClose, container, disableScrollLock = false, rootRef } = parameters
+  const {
+    isOpen,
+    onClose,
+    container,
+    disableScrollLock = false,
+    disableAriaHidden = false,
+    rootRef,
+  } = parameters
 
   const modal = useRef<ManagedModal>({} as ManagedModal)
   const mountNodeRef = useRef<HTMLElement | null>(null)
@@ -60,7 +69,7 @@ export function useModal(parameters: UseModalParameters): UseModalReturnValue {
 
   const handleOpen = useEventCallback(() => {
     const resolvedContainer = getContainer(container) ?? ownerDocument(mountNodeRef.current).body
-    modalManager.add(getModal(), resolvedContainer)
+    modalManager.add(getModal(), resolvedContainer, disableAriaHidden)
     modalManager.mount(getModal(), { disableScrollLock })
   })
 

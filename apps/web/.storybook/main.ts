@@ -2,6 +2,7 @@ import type { StorybookConfig } from '@storybook/react-vite'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import svgr from 'vite-plugin-svgr'
+import { imagetools } from 'vite-imagetools'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -17,7 +18,7 @@ const config: StorybookConfig = {
     '@storybook/addon-themes',
   ],
   viteFinal: async (config) => {
-    config.plugins = [svgr(), ...(config.plugins ?? [])]
+    config.plugins = [svgr(), imagetools(), ...(config.plugins ?? [])]
     config.optimizeDeps = {
       ...(config.optimizeDeps || {}),
       include: ['react', 'react/jsx-dev-runtime'],

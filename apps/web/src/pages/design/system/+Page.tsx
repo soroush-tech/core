@@ -3,23 +3,34 @@ import { Layout } from 'src/common/Layout'
 import { Flex } from 'src/theme/Flex'
 import { Typography } from 'src/theme/Typography'
 import { View } from 'src/theme/View'
+import { AppBarCard } from './components/AppBarCard'
 import { AvatarCard } from './components/AvatarCard'
-import { ColorCard } from './components/ColorCard'
 import { BinaryControlsCard } from './components/BinaryControlsCard'
 import { ButtonCard } from './components/ButtonCard'
+import { ButtonGroupCard } from './components/ButtonGroupCard'
 import { CircularProgressCard } from './components/CircularProgressCard'
+import { ColorCard } from './components/ColorCard'
+import { DrawerCard } from './components/DrawerCard'
 import { FlexCard } from './components/FlexCard'
+import { FontCard } from './components/FontCard'
+import { FormCard } from './components/FormCard'
 import { GridCard } from './components/GridCard'
-import { PaperCard } from './components/PaperCard'
+import { ImageCard } from './components/ImageCard'
+import { InteractiveColorSizeCard } from './components/InteractiveColorSizeCard'
+import { LinearProgressCard } from './components/LinearProgressCard'
 import { LinkCard } from './components/LinkCard'
+import { ModalCard } from './components/ModalCard'
+import { PaginationCard } from './components/PaginationCard'
+import { PaperCard } from './components/PaperCard'
+import { PopoverCard } from './components/PopoverCard'
 import { PrimitiveContainerCard } from './components/PrimitiveContainerCard'
 import { RadiusTokensCard } from './components/RadiusTokensCard'
+import { SelectCard } from './components/SelectCard'
+import { SkeletonCard } from './components/SkeletonCard'
+import { TableCard } from './components/TableCard'
 import { TextInputCard } from './components/TextInputCard'
 import { TypographyCard } from './components/TypographyCard'
-import { FontCard } from './components/FontCard'
 import { TypographyColorCard } from './components/TypographyColorCard'
-import { InteractiveColorSizeCard } from './components/InteractiveColorSizeCard'
-import { TableCard } from './components/TableCard'
 
 export default function SystemDesignPage() {
   return (
@@ -46,21 +57,9 @@ export default function SystemDesignPage() {
           </Typography>
         </View>
 
-        {/* ── 01 . Typography ─────────────────────────────────────────────── */}
-        <View as="section" mb={8} id="typography">
-          <Headline title="01 . Typography" />
-
-          <Flex flexDirection={['column', 'row']} gap={4}>
-            <TypographyCard />
-            <Flex flexDirection={'column'} gap={4}>
-              <ColorCard />
-              <FontCard />
-            </Flex>
-          </Flex>
-        </View>
-        {/* ── 02.Core Layout ────────────────────────────────────────────── */}
-        <View as="section" mb={8} id="primitives">
-          <Headline title="02 . Core Layout" />
+        {/* ── 01 . Layout & Surfaces ───────────────────────────────────── */}
+        <View as="section" mb={8} id="layout-surfaces">
+          <Headline title="01 . Layout &amp; Surfaces" />
 
           <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
             <PrimitiveContainerCard />
@@ -71,44 +70,78 @@ export default function SystemDesignPage() {
             <FlexCard />
             <GridCard />
           </Flex>
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <AppBarCard />
+            <DrawerCard />
+          </Flex>
         </View>
-        {/* ── 03. Interactive Controls ──────────────────────────────────── */}
-        <View as="section" mb={8} id="interactive">
-          <Headline title="03 . Interactive Controls" />
+
+        {/* ── 02 . Content & Data Display ──────────────────────────────── */}
+        <View as="section" mb={8} id="content-data-display">
+          <Headline title="02 . Content &amp; Data Display" />
+
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <TypographyCard />
+            <Flex flexDirection={'column'} gap={4}>
+              <ColorCard />
+              <FontCard />
+            </Flex>
+          </Flex>
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <TypographyColorCard />
+            <LinkCard />
+          </Flex>
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <AvatarCard />
+            <ImageCard />
+          </Flex>
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <TableCard />
+          </Flex>
+        </View>
+
+        {/* ── 03 . Inputs & Forms ──────────────────────────────────────── */}
+        <View as="section" mb={8} id="inputs-forms">
+          <Headline title="03 . Inputs &amp; Forms" />
 
           <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
             <ButtonCard />
             <TextInputCard />
           </Flex>
           <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <ButtonGroupCard />
             <BinaryControlsCard />
-            <LinkCard />
           </Flex>
-        </View>
-
-        {/* ── 04 . Media ────────────────────────────────────────────── */}
-        <View as="section" mb={8} id="media">
-          <Headline title="04 . Media" />
-          <Flex flexDirection={['column', 'row']} gap={4}>
-            <AvatarCard />
-            <CircularProgressCard />
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <SelectCard />
+            <PaginationCard />
           </Flex>
-        </View>
-
-        {/* ── 05. Color & Size ─────────────────────────────────────────── */}
-        <View as="section" mb={8} id="color-size">
-          <Headline title="05 . Color &amp; Size" />
-          <Flex flexDirection={['column', 'row']} gap={4}>
-            <TypographyColorCard />
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <FormCard />
             <InteractiveColorSizeCard />
           </Flex>
         </View>
 
-        {/* ── 06. Data Display ─────────────────────────────────────────── */}
-        <View as="section" mb={8} id="data-display">
-          <Headline title="06 . Data Display" />
+        {/* ── 04 . Feedback ────────────────────────────────────────────── */}
+        <View as="section" mb={8} id="feedback">
+          <Headline title="04 . Feedback" />
+
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <CircularProgressCard />
+            <LinearProgressCard />
+          </Flex>
+          <Flex flexDirection={['column', 'row']} gap={4} mb={4}>
+            <SkeletonCard />
+          </Flex>
+        </View>
+
+        {/* ── 05 . Overlay & Behavior ──────────────────────────────────── */}
+        <View as="section" mb={8} id="overlay-behavior">
+          <Headline title="05 . Overlay &amp; Behavior" />
+
           <Flex flexDirection={['column', 'row']} gap={4}>
-            <TableCard />
+            <ModalCard />
+            <PopoverCard />
           </Flex>
         </View>
       </View>

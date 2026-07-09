@@ -76,14 +76,14 @@ type MyBgProp = keyof Theme['background'] // 'backdrop' | 'modal' | 'primary' | 
 - `color` → `scale: 'text'`
 - `bg` → `scale: 'background'`
 
-**Storybook options** — all option arrays live in `src/theme/test/utils/storiesOptions.ts` with `satisfies` constraints against `Theme`. Import from there in every story, never hardcode inline. When adding a new component, add its token arrays to `storiesOptions.ts`.
+**Storybook options** — all option arrays live in `src/theme/utils/test/storiesOptions.ts` with `satisfies` constraints against `Theme`. Import from there in every story, never hardcode inline. When adding a new component, add its token arrays to `storiesOptions.ts`.
 
 **Storybook argType rules:**
 
 - Always use `controls.include` whitelist — never rely on autodiscovery
 - Every prop in `controls.include` **must** have a matching `argType` entry — missing argTypes cause the control to silently disappear or leak raw props to the DOM. Verify the lists match before finishing a story.
 - Do NOT use top-level `name:` in argTypes (breaks `controls.include` matching)
-- Always add `table.category` — use: Content · Typography · Layout · Visual · Spacing · Behavior · Focus — make sure it matches the category; if unsure, suggest a name and verify before implementing.
+- Always add `table.category` — use: Content · Typography · Layout · Visual · Spacing · State · Progress · Behavior · Focus — make sure it matches the category; if unsure, suggest a name and verify before implementing.
 
 **No hardcoded hex values** anywhere in `src/theme/` — all colors reference palette constants from `src/theme/colors/`. Rgba opacity uses hex suffix pattern: `${kineticSurface[100]}B3`.
 
@@ -214,15 +214,17 @@ import {
 
 ArgType categories — use exactly these names for consistency across all components:
 
-| Category       | What goes here                                                                                                                      |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| **Content**    | `children` and content-related props                                                                                                |
-| **Typography** | `variant`, `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `letterSpacing`                                       |
-| **Layout**     | `align`, `gutterBottom`, `noWrap`, `as`, `display`, `overflow`                                                                      |
-| **Color**      | `color`, `bg`, `opacity`                                                                                                            |
-| **Spacing**    | `m`, `p` (and directional variants if exposed)                                                                                      |
-| **Behavior**   | Mount/scroll-lock/portal toggles and targets — `shouldKeepMounted`, `shouldLockScroll`, `shouldUsePortal`, `isEnabled`, `container` |
-| **Focus**      | Focus-management toggles — `shouldAutoFocus`, `shouldTrapFocus`, `shouldEnforceFocus`, `shouldRestoreFocus`                         |
+| Category       | What goes here                                                                                                                                             |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Content**    | `children` and content-related props — `src`, `srcSet`, `alt`, `href`, `placeholder`, `count`, `fallback`, `title`                                         |
+| **Typography** | `variant`, `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `letterSpacing`                                                              |
+| **Layout**     | Sizing, alignment, and flow — `size`, `fullWidth`, `align`, `orientation`, `as`, `noWrap`, `gutterBottom`, `display`, `overflow`, grid/flex props          |
+| **Visual**     | Visual style tokens — `color`, `bg`, `textColor`, `opacity`, `variant`, `elevation`, `borderRadius`, `shape`, `thickness`                                  |
+| **Spacing**    | `m`, `p` (and directional variants if exposed)                                                                                                             |
+| **State**      | Control state flags — `checked`, `disabled`, `error`, `required`, `readOnly`, `indeterminate`                                                              |
+| **Progress**   | Progress values — `value`, `min`, `max`, `valueBuffer`                                                                                                     |
+| **Behavior**   | Interaction and mount behavior — `shouldKeepMounted`, `shouldLockScroll`, `shouldUsePortal`, `isEnabled`, `container`, `page`, `multiple`, event callbacks |
+| **Focus**      | Focus-management toggles — `shouldAutoFocus`, `shouldTrapFocus`, `shouldEnforceFocus`, `shouldRestoreFocus`                                                |
 
 Rules:
 
@@ -278,6 +280,6 @@ Use `/new_theme_component ComponentName` to scaffold all files automatically.
 - [ ] Custom prop types exported for use in `storiesOptions.ts`
 - [ ] `ComponentName/README.md` — all props documented, no hex codes
 - [ ] `ComponentName/ComponentName.stories.tsx` — imports from `storiesArgs` (shared props) or `storiesOptions` (component-specific), `controls.include` whitelist, argType categories
-- [ ] New token arrays added to `src/theme/test/utils/storiesOptions.ts` with `satisfies`
+- [ ] New token arrays added to `src/theme/utils/test/storiesOptions.ts` with `satisfies`
 - [ ] `ComponentName/ComponentName.test.tsx` — prop→CSS, element mapping, HTML passthrough
 - [ ] No hardcoded hex values anywhere in `src/theme/`

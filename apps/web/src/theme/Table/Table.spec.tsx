@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen, within } from '@testing-library/react'
 import { renderWithTheme } from 'src/test/utils/wrapper'
 import { Checkbox } from 'src/theme/Checkbox'
@@ -108,6 +108,11 @@ function DeploymentsApp() {
     </TableContainer>
   )
 }
+
+// These integration cases render the full composed table (23 rows, sorting,
+// pagination, selection). That cold-start render can exceed the 5s default on a
+// slow/overloaded CI runner, so give the file headroom.
+vi.setConfig({ testTimeout: 20000 })
 
 const getBody = () => screen.getByTestId('body')
 

@@ -347,6 +347,49 @@ jobs:
           echo "### 🧪 Full suite — \`test\`" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} --filter @soroush/web test
 
+      # Chromatic first: both the merged `web` run and the per-tier storybook run need its
+      # storybookUrl. Publishing it here lets the authoritative `web` coverage upload go out
+      # ahead of the per-tier flags below (see the merged-run note).
+      - name: Publish to Chromatic
+        id: chromatic
+        if: matrix.os == 'ubuntu-latest' && github.actor != 'renovate[bot]'
+        uses: chromaui/action@c8eb1dde813a34d0e86b136d8c4faedd0a7351ab # v17.7.1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: build:storybook
+          storybookBaseDir: apps/web
+          exitZeroOnChanges: true
+          onlyChanged: true
+
+      # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag. Each
+      # per-tier flag below runs `all: true` over the whole tree, so a tier that never executes
+      # a file reports its lines at 0; Codecov's cross-flag union then leaves those lines red for
+      # simple components even though another tier covers them. This single run reports each file
+      # once with real execution data (no phantom uncovered lines), and `.codecov.yml` gates
+      # patch on `web` so the per-tier flags stay informational.
+      #
+      # Upload `web` FIRST — before the per-tier flags — so the Codecov PR comment renders from
+      # this authoritative report. A comment generated off the early per-tier uploads would show
+      # phantom-uncovered lines on simple components and then not refresh.
+      - name: Run Web Coverage (merged)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          echo "### 🧪 Web — \`test:coverage\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
+          ${{ needs.prepare.outputs.runner }} run test:coverage
+        env:
+          SB_URL: ${{ steps.chromatic.outputs.storybookUrl }}
+
+      - name: Upload Web Coverage
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/web/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: web
+          name: Web
+
       - name: Run Unit Tests with Coverage
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -381,17 +424,6 @@ jobs:
           flags: browser
           name: Browser
 
-      - name: Publish to Chromatic
-        id: chromatic
-        if: matrix.os == 'ubuntu-latest' && github.actor != 'renovate[bot]'
-        uses: chromaui/action@c8eb1dde813a34d0e86b136d8c4faedd0a7351ab # v17.7.1
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          buildScriptName: build:storybook
-          storybookBaseDir: apps/web
-          exitZeroOnChanges: true
-          onlyChanged: true
-
       - name: Run Storybook Tests with Coverage
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -401,7 +433,7 @@ jobs:
         env:
           SB_URL: ${{ steps.chromatic.outputs.storybookUrl }}
 
-      - name: Upload Coverage to Codecov
+      - name: Upload Storybook Coverage
         if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
@@ -410,31 +442,6 @@ jobs:
           slug: soroush-tech/core
           flags: storybook
           name: Storybook
-
-      # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag on top of
-      # the per-tier flags above. Each per-tier flag runs `all: true` over the whole tree, so a
-      # tier that never executes a file reports its lines at 0; Codecov's cross-flag union then
-      # leaves those lines red for simple components even though another tier covers them. This
-      # single run reports each file once with real execution data (no phantom uncovered lines),
-      # and `.codecov.yml` gates patch on `web` so the per-tier flags stay informational.
-      - name: Run Web Coverage (merged)
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          echo "### 🧪 Web — \`test:coverage\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} run test:coverage
-        env:
-          SB_URL: ${{ steps.chromatic.outputs.storybookUrl }}
-
-      - name: Upload Web Coverage
-        if: matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: web
-          name: Web
 
       - name: Run E2E Tests with Coverage
         if: matrix.os == 'ubuntu-latest'

@@ -1,4 +1,5 @@
-import { type HTMLAttributes } from 'react'
+import { useContext, type ElementType, type HTMLAttributes } from 'react'
+import { TableContext } from 'src/theme/Table/TableContext'
 import {
   styled,
   type Theme,
@@ -28,9 +29,11 @@ export interface TableRowProps
     Omit<BorderProps<Theme>, 'borderColor' | 'borderRadius'> {
   /**
    * Palette color for the hover/selected shading — maps to `theme.palette[color]`
-   * (hover → `.light`, selected → `.dark`, both with `contrastText`). Default: `'primary'`.
+   * (hover → `.light`, selected → `.dark`, both with `contrastText`). Falls back
+   * to the enclosing `Table`'s `color`. Default: `'primary'`.
    */
   color?: TableRowColor
+  as?: ElementType
   /** Resolves against theme.background */
   bg?: TableRowBackgroundToken
   /** Resolves against theme.border — light · primary · dark */
@@ -69,10 +72,16 @@ const selectedStyle = ({
     ? { backgroundColor: theme.palette[color].dark, color: theme.palette[color].contrastText }
     : {}
 
-export const TableRow = styled('tr', { label: 'TableRow', shouldForwardProp })<TableRowProps>(
+const TableRowBase = styled('tr', { label: 'TableRow', shouldForwardProp })<TableRowProps>(
   space,
   colorSystem,
   border,
   selectedStyle,
   hoverStyle
 )
+
+export function TableRow({ color, ...rest }: Readonly<TableRowProps>) {
+  // Resolution: explicit prop → enclosing Table's broadcast → 'primary' (in the style fns).
+  const table = useContext(TableContext)
+  return <TableRowBase color={color ?? table.color} {...rest} />
+}
