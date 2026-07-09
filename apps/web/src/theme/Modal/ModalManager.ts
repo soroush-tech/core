@@ -154,6 +154,10 @@ export class ModalManager {
     const containerState = this.containers.find((item) => item.container === container)
     if (containerState) {
       containerState.modals.push(modal)
+      // This modal hid the siblings above, so `remove` must later restore them.
+      if (!disableAriaHidden) {
+        containerState.ariaHiddenApplied = true
+      }
       return modalIndex
     }
 

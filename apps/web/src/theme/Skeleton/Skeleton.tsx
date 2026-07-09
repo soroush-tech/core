@@ -80,7 +80,7 @@ const dimensionStyle = ({ width, height, variant }: SkeletonProps) => ({
   width,
   height: height ?? (variant === 'text' ? 'auto' : undefined),
   ...(variant === 'text' && height === undefined
-    ? { '&:empty::before': { content: '"\\00a0"' } }
+    ? { '&:empty::before': { content: String.raw`"\00a0"` } }
     : {}),
 })
 

@@ -334,13 +334,9 @@ export function Select({
   const rawValue = isControlledValue ? valueProp : internalValue
   // Keep the value shape in sync with `multiple` — it can be toggled after mount, or the
   // provided value/defaultValue may not match — so selection logic always sees the right type.
-  const value: SelectValue = multiple
-    ? Array.isArray(rawValue)
-      ? rawValue
-      : []
-    : Array.isArray(rawValue)
-      ? ''
-      : rawValue
+  const multipleValue: SelectValue = Array.isArray(rawValue) ? rawValue : []
+  const singleValue: SelectValue = Array.isArray(rawValue) ? '' : rawValue
+  const value: SelectValue = multiple ? multipleValue : singleValue
 
   // Native path: delegate to NativeSelect (single-select) with derived string options.
   if (native) {
@@ -536,6 +532,15 @@ function NonNativeSelect({
     }
   }
 
+  // Arrow keys move the highlight when open, otherwise open the menu.
+  const moveHighlight = (step: 1 | -1) => {
+    if (open) {
+      setHighlightedIndex((index) => getNextEnabledIndex(options, index, step))
+    } else {
+      openWithHighlight()
+    }
+  }
+
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (disabled) {
       return
@@ -543,19 +548,11 @@ function NonNativeSelect({
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
-        if (open) {
-          setHighlightedIndex((index) => getNextEnabledIndex(options, index, 1))
-        } else {
-          openWithHighlight()
-        }
+        moveHighlight(1)
         break
       case 'ArrowUp':
         event.preventDefault()
-        if (open) {
-          setHighlightedIndex((index) => getNextEnabledIndex(options, index, -1))
-        } else {
-          openWithHighlight()
-        }
+        moveHighlight(-1)
         break
       case 'Home':
         if (open) {
@@ -674,8 +671,8 @@ function NonNativeSelect({
         <ValueArea autoWidth={autoWidth}>
           {!autoWidth && (
             <ValueGhost aria-hidden>
-              {options.map((option, index) => (
-                <span key={index}>{option.label}</span>
+              {options.map((option) => (
+                <span key={String(option.value)}>{option.label}</span>
               ))}
               {placeholder !== undefined && <span>{placeholder}</span>}
             </ValueGhost>

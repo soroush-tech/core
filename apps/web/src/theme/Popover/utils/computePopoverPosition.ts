@@ -71,17 +71,29 @@ interface AxisResult {
  * origin when the preferred side overflows and the flipped side fits, then clamps the
  * chosen position inside the viewport (nudging the transform origin to match).
  */
-function resolveAxis(
-  anchorStart: number,
-  anchorSize: number,
-  anchorOrigin: Origin,
-  transformOrigin: Origin,
-  paperSize: number,
-  viewportSize: number,
-  margin: number | null,
-  offset: (size: number, origin: Origin) => number,
+interface AxisInput {
+  anchorStart: number
+  anchorSize: number
+  anchorOrigin: Origin
+  transformOrigin: Origin
+  paperSize: number
+  viewportSize: number
+  margin: number | null
+  offset: (size: number, origin: Origin) => number
   flip: (origin: Origin) => Origin
-): AxisResult {
+}
+
+function resolveAxis({
+  anchorStart,
+  anchorSize,
+  anchorOrigin,
+  transformOrigin,
+  paperSize,
+  viewportSize,
+  margin,
+  offset,
+  flip,
+}: AxisInput): AxisResult {
   const preferredTransform = offset(paperSize, transformOrigin)
   const preferredPosition = anchorStart + offset(anchorSize, anchorOrigin) - preferredTransform
 
@@ -152,29 +164,29 @@ export function computePopoverPosition(params: ComputePopoverPositionParams): Po
       ? { top: anchorPosition?.top ?? 0, left: anchorPosition?.left ?? 0, width: 0, height: 0 }
       : (anchorRect ?? { top: 0, left: 0, width: 0, height: 0 })
 
-  const vertical = resolveAxis(
-    rect.top,
-    rect.height,
-    anchorOrigin.vertical,
-    transformOrigin.vertical,
-    paperRect.height,
-    viewport.height,
-    marginThreshold,
-    (size, origin) => getOffsetTop({ height: size }, origin as PopoverVerticalOrigin),
-    (origin) => flipVertical(origin as PopoverVerticalOrigin)
-  )
+  const vertical = resolveAxis({
+    anchorStart: rect.top,
+    anchorSize: rect.height,
+    anchorOrigin: anchorOrigin.vertical,
+    transformOrigin: transformOrigin.vertical,
+    paperSize: paperRect.height,
+    viewportSize: viewport.height,
+    margin: marginThreshold,
+    offset: (size, origin) => getOffsetTop({ height: size }, origin as PopoverVerticalOrigin),
+    flip: (origin) => flipVertical(origin as PopoverVerticalOrigin),
+  })
 
-  const horizontal = resolveAxis(
-    rect.left,
-    rect.width,
-    anchorOrigin.horizontal,
-    transformOrigin.horizontal,
-    paperRect.width,
-    viewport.width,
-    marginThreshold,
-    (size, origin) => getOffsetLeft({ width: size }, origin as PopoverHorizontalOrigin),
-    (origin) => flipHorizontal(origin as PopoverHorizontalOrigin)
-  )
+  const horizontal = resolveAxis({
+    anchorStart: rect.left,
+    anchorSize: rect.width,
+    anchorOrigin: anchorOrigin.horizontal,
+    transformOrigin: transformOrigin.horizontal,
+    paperSize: paperRect.width,
+    viewportSize: viewport.width,
+    margin: marginThreshold,
+    offset: (size, origin) => getOffsetLeft({ width: size }, origin as PopoverHorizontalOrigin),
+    flip: (origin) => flipHorizontal(origin as PopoverHorizontalOrigin),
+  })
 
   // Floor (not round) so the surface abuts the anchor: rounding a fractional anchor edge
   // up would leave a hairline gap below the trigger (visible on borderless surfaces).

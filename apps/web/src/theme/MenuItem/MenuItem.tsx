@@ -140,15 +140,11 @@ const interactionStyles = ({
   }
 
   const baseColor = textColor ? get(theme, `text.${textColor}`) : main
+  const selectedBackground = highlighted ? activeSelectedBg : selectedBg
+  const idleBackground = highlighted ? hoverBg : 'transparent'
   return {
     color: selected ? main : baseColor,
-    backgroundColor: selected
-      ? highlighted
-        ? activeSelectedBg
-        : selectedBg
-      : highlighted
-        ? hoverBg
-        : 'transparent',
+    backgroundColor: selected ? selectedBackground : idleBackground,
     '&:hover': {
       backgroundColor: selected ? activeSelectedBg : hoverBg,
     },
@@ -267,7 +263,7 @@ export function MenuItem({
     >
       {multiple && (
         <CheckSlot aria-hidden>
-          {selected && <Icon name="check" size="1.125rem" color="primary" />}
+          {selected && <Icon name="check" size="1.125rem" color="inherit" />}
         </CheckSlot>
       )}
       {children}

@@ -77,6 +77,15 @@ describe('LinearProgress', () => {
       expect(el).toHaveAttribute('aria-valuemin', '0')
       expect(el).toHaveAttribute('aria-valuemax', '100')
     })
+
+    it('guards against max=0 — no NaN transform, clamped aria-valuenow', () => {
+      renderWithTheme(
+        <LinearProgress variant="determinate" value={50} min={0} max={0} data-testid="lp" />
+      )
+      const bar = screen.getByTestId('lp').children[1]
+      expect(bar).toHaveStyle({ transform: 'translateX(-100%)' })
+      expect(screen.getByTestId('lp')).toHaveAttribute('aria-valuenow', '0')
+    })
   })
 
   // ─── buffer ──────────────────────────────────────────────────────────────────

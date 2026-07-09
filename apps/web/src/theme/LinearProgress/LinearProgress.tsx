@@ -227,16 +227,18 @@ export function LinearProgress({
   const isSpinning = isDeterminate && spinning
   const normalizedValue = clamp(value ?? min, min, max)
   const normalizedBuffer = clamp(valueBuffer ?? min, min, max)
-  const valuePercent = (normalizedValue / max) * 100
+  // Guard against max === 0, which would make the ratio NaN and break the transform.
+  const toPercent = (n: number) => (max === 0 ? 0 : (n / max) * 100)
+  const valuePercent = toPercent(normalizedValue)
 
   const barStyle = isDeterminate ? { transform: `translateX(${valuePercent - 100}%)` } : undefined
 
   const bufferBarStyle = isBuffer
-    ? { transform: `translateX(${(normalizedBuffer / max) * 100 - 100}%)` }
+    ? { transform: `translateX(${toPercent(normalizedBuffer) - 100}%)` }
     : undefined
 
   const ariaProps = isDeterminate
-    ? { 'aria-valuenow': value, 'aria-valuemin': min, 'aria-valuemax': max }
+    ? { 'aria-valuenow': normalizedValue, 'aria-valuemin': min, 'aria-valuemax': max }
     : {}
 
   return (

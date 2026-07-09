@@ -57,25 +57,15 @@ describe('LinearProgressCard', () => {
       )
     })
 
-    it('keeps the buffer 20 ahead of the value', () => {
+    it.each([
+      [5000, 'BUFFER_50/70'], // buffer stays 20 ahead of the value
+      [9000, 'BUFFER_90/100'], // buffer clamps to 100 near the end
+      [10000, 'DETERMINATE_0%'], // wraps back to 0% at the 10s boundary
+    ])('reflects %ims of elapsed time in the loop', (elapsed, expected) => {
       renderWithTheme(<LinearProgressCard />)
       tick(0)
-      tick(5000)
-      expect(screen.getByText('BUFFER_50/70')).toBeInTheDocument()
-    })
-
-    it('caps the buffer at 100 near the end of the loop', () => {
-      renderWithTheme(<LinearProgressCard />)
-      tick(0)
-      tick(9000) // 90% → buffer clamps to 100
-      expect(screen.getByText('BUFFER_90/100')).toBeInTheDocument()
-    })
-
-    it('wraps back to 0% at the full 10s duration boundary', () => {
-      renderWithTheme(<LinearProgressCard />)
-      tick(0)
-      tick(10000) // elapsed = 10000 % 10000 = 0 → 0%
-      expect(screen.getByText('DETERMINATE_0%')).toBeInTheDocument()
+      tick(elapsed)
+      expect(screen.getByText(expected)).toBeInTheDocument()
     })
 
     it('cancels the animation frame on unmount', () => {
