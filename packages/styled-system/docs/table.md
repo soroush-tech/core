@@ -57,15 +57,22 @@ import { typography } from '@soroush.tech/styled-system'
 </Header>
 ```
 
-| Prop            | CSS Property     | Theme Field      |
-| --------------- | ---------------- | ---------------- |
-| `fontFamily`    | `font-family`    | `fonts`          |
-| `fontSize`      | `font-size`      | `fontSizes`      |
-| `fontWeight`    | `font-weight`    | `fontWeights`    |
-| `lineHeight`    | `line-height`    | `lineHeights`    |
-| `letterSpacing` | `letter-spacing` | `letterSpacings` |
-| `textAlign`     | `text-align`     | none             |
-| `fontStyle`     | `font-style`     | none             |
+| Prop                      | CSS Property                | Theme Field      |
+| ------------------------- | --------------------------- | ---------------- |
+| `fontFamily`              | `font-family`               | `fonts`          |
+| `fontSize`                | `font-size`                 | `fontSizes`      |
+| `fontWeight`              | `font-weight`               | `fontWeights`    |
+| `lineHeight`              | `line-height`               | `lineHeights`    |
+| `letterSpacing`           | `letter-spacing`            | `letterSpacings` |
+| `textAlign`               | `text-align`                | none             |
+| `fontStyle`               | `font-style`                | none             |
+| `textTransform`           | `text-transform`            | none             |
+| `textAlignLast`           | `text-align-last`           | none             |
+| `textDecoration`          | `text-decoration`           | none             |
+| `textDecorationLine`      | `text-decoration-line`      | none             |
+| `textDecorationStyle`     | `text-decoration-style`     | none             |
+| `textDecorationThickness` | `text-decoration-thickness` | none             |
+| `textDecorationColor`     | `text-decoration-color`     | `colors`         |
 
 ## Layout
 

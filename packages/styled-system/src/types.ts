@@ -236,6 +236,44 @@ export interface TextAlignProps<ThemeType extends Theme = RequiredTheme> {
   textAlign?: ResponsiveValue<CSS.Property.TextAlign, ThemeType>
 }
 
+export interface TextTransformProps<ThemeType extends Theme = RequiredTheme> {
+  textTransform?: ResponsiveValue<CSS.Property.TextTransform, ThemeType>
+}
+
+export interface TextAlignLastProps<ThemeType extends Theme = RequiredTheme> {
+  textAlignLast?: ResponsiveValue<CSS.Property.TextAlignLast, ThemeType>
+}
+
+export interface TextDecorationProps<
+  ThemeType extends Theme = RequiredTheme,
+  TVal = CSS.Property.TextDecoration<TLengthStyledSystem>,
+> {
+  textDecoration?: ResponsiveValue<TVal, ThemeType>
+}
+
+export interface TextDecorationLineProps<ThemeType extends Theme = RequiredTheme> {
+  textDecorationLine?: ResponsiveValue<CSS.Property.TextDecorationLine, ThemeType>
+}
+
+export interface TextDecorationStyleProps<ThemeType extends Theme = RequiredTheme> {
+  textDecorationStyle?: ResponsiveValue<CSS.Property.TextDecorationStyle, ThemeType>
+}
+
+export interface TextDecorationThicknessProps<
+  ThemeType extends Theme = RequiredTheme,
+  TVal = CSS.Property.TextDecorationThickness<TLengthStyledSystem>,
+> {
+  textDecorationThickness?: ResponsiveValue<TVal, ThemeType>
+}
+
+// `textDecorationColor` resolves against the `colors` theme scale, like `borderColor`.
+export interface TextDecorationColorProps<
+  ThemeType extends Theme = RequiredTheme,
+  TVal = ThemeValue<'colors', ThemeType>,
+> {
+  textDecorationColor?: ResponsiveValue<TVal, ThemeType>
+}
+
 export interface TypographyProps<ThemeType extends Theme = RequiredTheme>
   extends
     FontFamilyProps<ThemeType>,
@@ -244,7 +282,14 @@ export interface TypographyProps<ThemeType extends Theme = RequiredTheme>
     LineHeightProps<ThemeType>,
     LetterSpacingProps<ThemeType>,
     FontStyleProps<ThemeType>,
-    TextAlignProps<ThemeType> {}
+    TextAlignProps<ThemeType>,
+    TextTransformProps<ThemeType>,
+    TextAlignLastProps<ThemeType>,
+    TextDecorationProps<ThemeType>,
+    TextDecorationLineProps<ThemeType>,
+    TextDecorationStyleProps<ThemeType>,
+    TextDecorationThicknessProps<ThemeType>,
+    TextDecorationColorProps<ThemeType> {}
 
 // ---------------------------------------------------------------------------
 // flexbox
