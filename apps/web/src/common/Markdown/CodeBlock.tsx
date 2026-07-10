@@ -38,10 +38,14 @@ const syntaxStyles = ({ theme }: { theme: Theme }) => ({
 // The horizontally scrollable surface: terminal background + token theming.
 const CodeSurface = styled(View, { label: 'CodeSurface' })<ViewProps>(syntaxStyles)
 
-// Owns the reveal of the copy control. No overflow here so the sticky button
-// escapes to the page scroll (the surface keeps its own horizontal overflow).
-// The control is hidden until hover/focus, and always shown where hover is absent.
+// A single-column grid whose track is `minmax(0, 1fr)`: without the `0` minimum the
+// track adopts the code's min-content width and the surface refuses to shrink inside a
+// flex ancestor, overflowing the page. The `0` lets the surface shrink so its own
+// `overflow: auto` engages and the block scrolls instead of stretching the layout.
+// It also owns the reveal of the copy control (hidden until hover/focus).
 const Wrapper = styled(View, { label: 'CodeBlock' })({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr)',
   '& .code-copy': { opacity: 0, transition: 'opacity 120ms ease' },
   '&:hover .code-copy, &:focus-within .code-copy': { opacity: 1 },
   '@media (hover: none)': { '& .code-copy': { opacity: 1 } },
@@ -101,6 +105,7 @@ export function CodeBlock({ children }: Readonly<CodeBlockProps>) {
         borderRadius="md"
         borderColor="light"
         borderWidth="thin"
+        maxWidth="100%"
         overflow="auto"
       >
         {children}

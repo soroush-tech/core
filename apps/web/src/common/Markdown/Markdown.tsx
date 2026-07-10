@@ -1,6 +1,7 @@
 import ReactMarkdown, { type Components, type Options } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
+import { styled } from 'src/theme'
 import { Image } from 'src/theme/Image'
 import { Link } from 'src/theme/Link'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from 'src/theme/Table'
@@ -12,6 +13,15 @@ import { CodeBlock } from './CodeBlock'
 const remarkPlugins: Options['remarkPlugins'] = [remarkGfm]
 // `ignoreMissing` keeps unknown fence languages from throwing — they render unhighlighted.
 const rehypePlugins: Options['rehypePlugins'] = [[rehypeHighlight, { ignoreMissing: true }]]
+
+// Keeps the content within its (flex-item) column on narrow viewports: shrink to fit,
+// never exceed the container, and break long URLs/tokens instead of overflowing. Wide
+// code blocks and tables keep their own horizontal scroll.
+const MarkdownRoot = styled(View, { label: 'Markdown' })({
+  minWidth: 0,
+  maxWidth: '100%',
+  overflowWrap: 'break-word',
+})
 
 const components: Components = {
   h1: ({ children }) => (
@@ -131,12 +141,14 @@ export interface MarkdownProps {
 /** Renders a markdown string with every element mapped to a design-system primitive. */
 export function Markdown({ children }: Readonly<MarkdownProps>) {
   return (
-    <ReactMarkdown
-      components={components}
-      remarkPlugins={remarkPlugins}
-      rehypePlugins={rehypePlugins}
-    >
-      {children}
-    </ReactMarkdown>
+    <MarkdownRoot>
+      <ReactMarkdown
+        components={components}
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={rehypePlugins}
+      >
+        {children}
+      </ReactMarkdown>
+    </MarkdownRoot>
   )
 }
