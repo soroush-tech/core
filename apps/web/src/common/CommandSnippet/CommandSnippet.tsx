@@ -1,10 +1,9 @@
-import { useState } from 'react'
 import { Flex } from 'src/theme/Flex'
 import { Button } from 'src/theme/Button'
 import { Icon } from 'src/theme/Icon'
 import { Typography } from 'src/theme/Typography'
 import { type ViewProps } from 'src/theme/View'
-import { COPIED_RESET_MS } from './const'
+import { useCopyToClipboard } from 'src/hooks/useCopyToClipboard'
 
 export interface CommandSnippetProps extends ViewProps {
   /** Shell command shown after a `$` prompt and copied to the clipboard on click. */
@@ -17,22 +16,7 @@ export interface CommandSnippetProps extends ViewProps {
  * pass through to the container.
  */
 export function CommandSnippet({ command, ...rest }: Readonly<CommandSnippetProps>) {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopy = () => {
-    // Clipboard is unavailable in insecure/unsupported contexts, and writeText can reject
-    // (e.g. permission denied) — guard both so the handler never throws or leaves the UI stuck.
-    if (!navigator.clipboard?.writeText) return
-    void navigator.clipboard
-      .writeText(command)
-      .then(() => {
-        setCopied(true)
-        setTimeout(() => setCopied(false), COPIED_RESET_MS)
-      })
-      .catch(() => {
-        // Clipboard write failed; leave the button in its idle state.
-      })
-  }
+  const { copied, copy } = useCopyToClipboard()
 
   return (
     <Flex
@@ -58,10 +42,9 @@ export function CommandSnippet({ command, ...rest }: Readonly<CommandSnippetProp
         {command}
       </Typography>
       <Button
-        type="button"
         variant="text"
         size="sm"
-        onClick={handleCopy}
+        onClick={() => copy(command)}
         aria-label={copied ? 'Copied' : 'Copy command'}
       >
         <Icon

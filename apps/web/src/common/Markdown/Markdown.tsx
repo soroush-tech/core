@@ -45,7 +45,7 @@ const components: Components = {
     </Typography>
   ),
   p: ({ children }) => (
-    <Typography variant="body1" color="secondary" gutterBottom lineHeight="loose">
+    <Typography variant="body1" color="secondary" mb={2} lineHeight="relaxed">
       {children}
     </Typography>
   ),
@@ -75,7 +75,7 @@ const components: Components = {
     </View>
   ),
   li: ({ children }) => (
-    <Typography as="li" color="secondary" variant="body1" gutterBottom>
+    <Typography as="li" color="secondary" lineHeight="base" variant="body1" gutterBottom>
       {children}
     </Typography>
   ),
@@ -101,20 +101,7 @@ const components: Components = {
       </Typography>
     )
   },
-  pre: ({ children }) => (
-    <CodeBlock
-      as="pre"
-      bg="terminal"
-      p={3}
-      my={2}
-      borderRadius="md"
-      borderColor="light"
-      borderWidth="thin"
-      overflow="auto"
-    >
-      {children}
-    </CodeBlock>
-  ),
+  pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
   table: ({ children }) => (
     <TableContainer my={2}>
       <Table bg="terminal" borderRadius="md">
@@ -122,7 +109,11 @@ const components: Components = {
       </Table>
     </TableContainer>
   ),
-  thead: ({ children }) => <TableHead color="primary">{children}</TableHead>,
+  thead: ({ children }) => (
+    <TableHead bg="grid" color="primary">
+      {children}
+    </TableHead>
+  ),
   tbody: ({ children }) => <TableBody>{children}</TableBody>,
   tr: ({ children }) => <TableRow isHoverable>{children}</TableRow>,
   // th vs td is resolved from the enclosing section via TableSectionContext; the
