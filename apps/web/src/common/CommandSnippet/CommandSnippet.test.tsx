@@ -1,8 +1,8 @@
 import { act, fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithTheme } from 'src/test/utils/wrapper'
+import { COPIED_RESET_MS } from 'src/hooks/useCopyToClipboard'
 import { CommandSnippet } from './CommandSnippet'
-import { COPIED_RESET_MS } from './const'
 
 const writeText = vi.fn()
 

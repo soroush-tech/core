@@ -14,7 +14,7 @@ export interface PackageReadmeProps {
  */
 export function PackageReadme({ readme }: Readonly<PackageReadmeProps>) {
   return (
-    <View as="section" maxWidth="1280px" mx="auto" p={4} mt={3} mb={4}>
+    <View as="section" maxWidth="1280px" minWidth={0} mx="auto" p={4} mt={3} mb={4}>
       <Markdown>{stripReadmeChrome(readme)}</Markdown>
     </View>
   )

@@ -25,6 +25,10 @@ const content = [
   'const block = true',
   '```',
   '',
+  '| Name | Role  |',
+  '| :--- | ----: |',
+  '| Ada  | Dev   |',
+  '',
   '---',
   '',
   '![alt text](https://example.com/img.png)',
@@ -59,12 +63,26 @@ describe('Markdown', () => {
     expect(screen.getByText('a quoted line').closest('blockquote')).toBeInTheDocument()
   })
 
-  it('maps inline code and fenced code blocks', () => {
-    renderMarkdown()
+  it('maps inline code and highlighted fenced code blocks', () => {
+    const { container } = renderMarkdown()
     expect(screen.getByText('inline code').tagName).toBe('CODE')
-    const block = screen.getByText('const block = true')
-    expect(block.tagName).toBe('CODE')
-    expect(block.closest('pre')).toBeInTheDocument()
+
+    // rehype-highlight tokenises the block into <span class="hljs-*"> children,
+    // so assert on the reassembled text plus a highlighted token.
+    const pre = container.querySelector('pre')
+    expect(pre).toBeInTheDocument()
+    expect(pre).toHaveTextContent('const block = true')
+    expect(pre?.querySelector('.hljs-keyword')).toHaveTextContent('const')
+  })
+
+  it('maps GFM tables with aligned cells', () => {
+    renderMarkdown()
+    expect(screen.getByRole('table')).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Name' })).toBeInTheDocument()
+    // the `----:` column is right-aligned via an inline style
+    expect(screen.getByRole('columnheader', { name: 'Role' })).toHaveStyle({ textAlign: 'right' })
+    expect(screen.getByRole('cell', { name: 'Ada' })).toBeInTheDocument()
+    expect(screen.getByRole('cell', { name: 'Dev' })).toHaveStyle({ textAlign: 'right' })
   })
 
   it('maps horizontal rules and images', () => {
