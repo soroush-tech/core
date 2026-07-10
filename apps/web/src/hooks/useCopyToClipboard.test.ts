@@ -51,6 +51,48 @@ describe('useCopyToClipboard', () => {
     }
   })
 
+  it('restarts the window on a re-copy, cancelling the earlier reset', async () => {
+    vi.useFakeTimers()
+    try {
+      const { result } = renderHook(() => useCopyToClipboard())
+
+      await act(async () => {
+        result.current.copy('a')
+      })
+      act(() => vi.advanceTimersByTime(COPIED_RESET_MS - 1))
+      expect(result.current.copied).toBe(true)
+
+      // Re-copy just before the first reset — it must cancel that timer.
+      await act(async () => {
+        result.current.copy('b')
+      })
+      // The first timer's original moment passes without flipping `copied`.
+      act(() => vi.advanceTimersByTime(1))
+      expect(result.current.copied).toBe(true)
+
+      // Only the second timer resets it.
+      act(() => vi.advanceTimersByTime(COPIED_RESET_MS))
+      expect(result.current.copied).toBe(false)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('clears the pending reset timer on unmount', async () => {
+    vi.useFakeTimers()
+    try {
+      const { result, unmount } = renderHook(() => useCopyToClipboard())
+      await act(async () => {
+        result.current.copy('a')
+      })
+      const pending = vi.getTimerCount()
+      unmount()
+      expect(vi.getTimerCount()).toBe(pending - 1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('does nothing when the clipboard API is unavailable', () => {
     Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
     const { result } = renderHook(() => useCopyToClipboard())

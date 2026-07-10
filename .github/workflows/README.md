@@ -12,7 +12,7 @@ success and never run off a raw `push`; package publishing (`cd-packages`) is **
 | [`cd-web.yml`](./cd-web.yml)               | Pages deploy             | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-worker-api.yml`](./cd-worker-api.yml) | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-packages.yml`](./cd-packages.yml)     | Publish Packages (npm)   | manual `workflow_dispatch` only                              |
-| [`label-area.yml`](./label-area.yml)       | Label Affected Area      | `issues` `opened` + `edited`                                 |
+| [`label-area.yml`](./label-area.yml)       | Label Affected Area      | `issues` `opened`                                            |
 
 **Per-workflow deep dives** (every step + caching):
 [`ci.md`](./ci.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-packages.md`](./cd-packages.md) · [`label-area.md`](./label-area.md)
