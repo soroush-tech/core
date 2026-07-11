@@ -20,6 +20,10 @@ concurrency:
 
 jobs:
   chromatic:
+    # main-only: workflow_dispatch can target any ref, but this job publishes with
+    # CHROMATIC_PROJECT_TOKEN — restrict it so a branch dispatch can't publish arbitrary
+    # Storybook content. The push trigger is already branches: [main].
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: CI # where CHROMATIC_PROJECT_TOKEN lives (same as ci.yml's web job)
     timeout-minutes: 20

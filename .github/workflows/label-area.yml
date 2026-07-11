@@ -46,11 +46,12 @@ jobs:
                   .filter((line) => line && !line.startsWith('#'))
               )
 
-              // The "Affected area" is generated as the FIRST line of the body:
-              // "**Affected area:** <value>". Anchor to the start (no `m` flag, so `^` is the
-              // body start) so a mention elsewhere can't match; group 1 is the value, and the
-              // whole first-line block (plus trailing blank lines) is what gets stripped.
-              const areaRe = /^\*\*Affected area:\*\*[ \t]*([^\n]+)\n*/i
+              // The "Affected area" field sits at the START of the body, in one of two forms:
+              // an inline "**Affected area:** <value>" line, or the GitHub issue-form rendering
+              // "### Affected area\n\n<value>". Anchor to the body start (no `m` flag, so `^` is
+              // the body start) so a mention elsewhere can't match; group 1 is the value, and
+              // the whole matched block (plus trailing blank lines) is what gets stripped.
+              const areaRe = /^(?:\*\*Affected area:\*\*[ \t]*|###[ \t]+Affected area[ \t]*\n+)([^\n]+)\n*/i
               const match = (issue.body || '').match(areaRe)
               const value = match ? match[1].trim() : ''
               if (!allowed.has(value)) return

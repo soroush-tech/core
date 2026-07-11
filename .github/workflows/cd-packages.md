@@ -37,7 +37,7 @@ PR), then a human dispatches the release deliberately.
 
 ```mermaid
 flowchart TD
-    trig["workflow_dispatch<br/>package + notes"] --> publish["publish<br/>(ref == main)"]
+    trig["workflow_dispatch<br/>package"] --> publish["publish<br/>(ref == main)"]
     publish -->|"version is new"| npm["npm registry"]
     publish -->|"version is new"| rel["GitHub Release<br/>(notes = release-notes/&lt;version&gt;.md)"]
     publish -->|"version already on npm"| skip["(skipped)"]
