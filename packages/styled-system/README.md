@@ -157,6 +157,11 @@ Full docs live in [`docs/`](./docs/README.md):
 
 Runnable demos live in the [examples repo](https://github.com/soroush-tech/examples/tree/main/styled-system).
 
+## Release notes
+
+Per-version notes for every published release live in
+[`release-notes/`](https://github.com/soroush-tech/core/tree/main/packages/styled-system/release-notes).
+
 ## License
 
 MIT — a rewrite of styled-system (© 2017–2021 Brent Jackson), see [`LICENSE`](https://github.com/soroush-tech/core/tree/main/packages/styled-system/LICENSE).

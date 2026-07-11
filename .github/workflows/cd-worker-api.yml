@@ -80,8 +80,14 @@ jobs:
           R2_BUCKET: ${{ vars.R2_BUCKET }}
           VITE_CONTACT_HONEYPOT: ${{ vars.VITE_CONTACT_HONEYPOT }}
 
+      # Deploy via the official Cloudflare action (same as the Storybook Pages deploy in
+      # cd-web.yml) rather than the wrangler CLI. `config:gen` above must run first — the action
+      # runs `wrangler deploy` directly and does not fire the package's `predeploy` hook.
       - name: Deploy
-        run: pnpm --filter @soroush/api exec wrangler deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.110.0'
+          workingDirectory: workers/api
+          command: deploy

@@ -32,17 +32,20 @@ flowchart TD
     lint --> packages
     lint --> worker
     lint --> web
+    web --> e2e
     prepare --> packages
     prepare --> worker
     prepare --> web
+    prepare --> e2e
     prepare --> ciok["ci-ok"]
     lint --> ciok
     packages --> ciok
     worker --> ciok
     web --> ciok
+    e2e --> ciok
 ```
 
-`packages`, `worker`, and `web` only run when their area changed (see
+`packages`, `worker`, `web`, and `e2e` only run when their area changed (see
 [`prepare`](#job-prepare)). `ci-ok` runs `if: always()` so it can turn skips into a
 pass and real failures into a fail.
 
@@ -143,49 +146,79 @@ strategy:
 
 ## Job: `web`
 
-`needs: [prepare, lint]` · `if: web == 'true'` · `environment: CI` · 30 min. The only
-multi-OS job.
+`needs: [prepare, lint]` · `if: web == 'true'` · `environment: CI` · **ubuntu** · 30 min.
+Unit / browser / storybook coverage tiers. Browser engines (E2E) run in the separate
+[`e2e`](#job-e2e) job. Exposes `outputs.vite_base_url` (the env-scoped `VITE_BASE_URL`) so the
+environment-less `e2e` job can consume it.
 
 ```yaml
-runs-on: ${{ matrix.os }}
-strategy:
-  matrix: { os: [ubuntu-latest, windows-latest, macOS-latest] }
+runs-on: ubuntu-latest
 env:
   PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
 ```
 
-`PLAYWRIGHT_BROWSERS_PATH` is pinned so one cache path/key works on every OS (the
-default download location differs per platform).
+`PLAYWRIGHT_BROWSERS_PATH` is pinned so the cache path/key is stable and shared with the
+`e2e` job's chromium row on the same runner OS.
 
-| #   | Step                              | Runs on                     | Detail                                                                                                                                                                                                                                                                  |
-| --- | --------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout                          | all                         | `fetch-depth: 0` (full history; Chromatic's `onlyChanged` needs it), no persisted creds                                                                                                                                                                                 |
-| 2   | Setup pnpm                        | all                         | `if manager == 'pnpm'`                                                                                                                                                                                                                                                  |
-| 3   | Setup Node                        | all                         | deps cache via `cache: <manager>`                                                                                                                                                                                                                                       |
-| 4   | **Restore Playwright cache**      | all                         | `actions/cache/restore@v5`, id `playwright-cache`, path `ms-playwright`, key `${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}`                                                                                                              |
-| 5   | Install                           | all                         | `${manager} ${command}`, `CI: true`                                                                                                                                                                                                                                     |
-| 6   | Install Playwright browsers       | cache miss                  | `if: cache-hit != 'true'` → `pnpm --filter @soroush/web exec playwright install --with-deps` (downloads binaries + Linux system deps)                                                                                                                                   |
-| 7   | Install Playwright system deps    | cache hit, Linux            | `if: cache-hit == 'true' && runner.os == 'Linux'` → `playwright install-deps` (apt libs only, no binary download; browsers came from the cache)                                                                                                                         |
-| 8   | **Save Playwright cache**         | all                         | `actions/cache/save@v5`, `if: always() && steps.playwright-cache.outputs.cache-hit != 'true'`, same key                                                                                                                                                                 |
-| 9   | Build project                     | ubuntu                      | `${runner} run build` with `SKIP_PRERENDER: 'true'`                                                                                                                                                                                                                     |
-| 10  | Run Test                          | all                         | `${runner} --filter @soroush/web test` (the non-coverage unit/component run on every OS)                                                                                                                                                                                |
-| 11  | Publish to Chromatic              | ubuntu, not `renovate[bot]` | `chromaui/action@latest`, `buildScriptName: build:storybook`, `onlyChanged: true`, `exitZeroOnChanges: true`; exposes `storybookUrl` — runs first so the `web` upload precedes the per-tier flags                                                                       |
-| 12  | Web coverage (merged) → Codecov   | ubuntu                      | `test:coverage` (unit + browser + storybook in one V8 pass) with `SB_URL` → upload `flags: web`; `.codecov.yml` gates patch on it. **Uploaded first** so the Codecov PR comment renders from this authoritative report, not the per-tier flags' phantom-uncovered lines |
-| 13  | Unit coverage → Codecov           | ubuntu                      | `test:coverage:unit` → upload `flags: unit` (informational)                                                                                                                                                                                                             |
-| 14  | Browser coverage → Codecov        | ubuntu                      | `test:coverage:browser` → upload `flags: browser` (informational)                                                                                                                                                                                                       |
-| 15  | Storybook coverage → Codecov      | ubuntu                      | `test:coverage:storybook` with `SB_URL: <chromatic url>` → upload `flags: storybook` (informational)                                                                                                                                                                    |
-| 16  | E2E (Chromium) coverage → Codecov | ubuntu                      | `test:coverage:e2e` → upload `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                                                                                                                                                                                   |
-| 17  | E2E Firefox                       | windows                     | `test:e2e:firefox`                                                                                                                                                                                                                                                      |
-| 18  | E2E WebKit                        | macOS                       | `test:e2e:webkit`                                                                                                                                                                                                                                                       |
+| #   | Step                            | Detail                                                                                                                                                                                                   |
+| --- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout                        | `fetch-depth: 0` (Codecov base detection), no persisted creds                                                                                                                                            |
+| 2   | Setup pnpm                      | `if manager == 'pnpm'`                                                                                                                                                                                   |
+| 3   | Setup Node                      | deps cache via `cache: <manager>`                                                                                                                                                                        |
+| 4   | **Restore Playwright cache**    | id `playwright-cache`, key `${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}`                                                                                                 |
+| 5   | Install                         | `${manager} ${command}`, `CI: true`                                                                                                                                                                      |
+| 6   | Install Playwright browsers     | cache miss → `playwright install --with-deps chromium` (only Chromium — unit-browser + storybook run headless Chromium)                                                                                  |
+| 7   | Install Playwright system deps  | cache hit → `playwright install-deps chromium` (apt libs only)                                                                                                                                           |
+| 8   | **Save Playwright cache**       | `if: always() && cache-hit != 'true'`, same key                                                                                                                                                          |
+| 9   | Build project                   | `${runner} run build` with `SKIP_PRERENDER: 'true'` (Codecov bundle analysis)                                                                                                                            |
+| 10  | Web coverage (merged) → Codecov | `test:coverage` (unit + browser + storybook in one V8 pass) → upload `flags: web`; `.codecov.yml` gates patch on it. **Uploaded first** so the Codecov PR comment renders from this authoritative report |
+| 11  | Unit coverage → Codecov         | `test:coverage:unit` → upload `flags: unit` (informational)                                                                                                                                              |
+| 12  | Browser coverage → Codecov      | `test:coverage:browser` → upload `flags: browser` (informational)                                                                                                                                        |
+| 13  | Storybook coverage → Codecov    | `test:coverage:storybook` → upload `flags: storybook` (informational). Self-hosts Storybook from `.storybook` (no external URL)                                                                          |
 
-Each engine runs on its native OS; macOS (≈10× cost) is reserved for WebKit. E2E
-runs read `VITE_BASE_URL` from repo `vars`.
+`web` is the single merged V8 pass that gates patch; the per-tier flags stay informational
+(each runs `all: true`, so gating on them directly would surface phantom-uncovered lines). The
+per-tier runs mean each tier executes twice — accepted so `web` never depends on Codecov's
+same-flag merge. Visual review (Chromatic) is not here — it's a main-only, non-blocking
+workflow; see [`chromatic.md`](./chromatic.md).
+
+---
+
+## Job: `e2e`
+
+`needs: [prepare, lint, web]` · `if: web == 'true'` · **no `environment`** · 30 min. Depends on
+`web`, so a `web` failure skips `e2e` (no point running the engines when the app's own suite is
+red). One browser engine per native OS; macOS (≈10× cost) is reserved for WebKit. Playwright's
+`webServer` builds and serves the app, so there is **no separate build step**. Stays off the CI
+environment to avoid a second approval prompt; instead it reads the env-scoped `VITE_BASE_URL`
+via `needs.web.outputs.vite_base_url` (the already-gated `web` job forwards it).
+
+```yaml
+runs-on: ${{ matrix.os }}
+strategy:
+  fail-fast: false
+  matrix:
+    include:
+      - { os: ubuntu-latest, engine: chromium, script: test:coverage:e2e, coverage: true }
+      - { os: windows-latest, engine: firefox, script: test:e2e:firefox }
+      - { os: macOS-latest, engine: webkit, script: test:e2e:webkit }
+```
+
+| #   | Step                     | Detail                                                                                                                    |
+| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout                 | default depth, no persisted creds                                                                                         |
+| 2–5 | Setup + Playwright cache | same as `web`, but installs only the matrix `engine` (`playwright install --with-deps <engine>`)                          |
+| 6   | Run E2E                  | `${runner} run <matrix.script>`, `VITE_BASE_URL` from `needs.web.outputs.vite_base_url` (web forwards the env-scoped var) |
+| 7   | Upload E2E coverage      | `if: matrix.coverage` (chromium only) → `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                          |
+
+Only the chromium row runs with coverage (`E2E_COVERAGE=true` via `test:coverage:e2e`);
+Firefox and WebKit run for cross-engine signal only.
 
 ---
 
 ## Job: `ci-ok`
 
-`if: always()` · `needs: [prepare, lint, packages, worker, web]` · ubuntu · 5 min.
+`if: always()` · `needs: [prepare, lint, packages, worker, web, e2e]` · ubuntu · 5 min.
 The single required check for branch protection.
 
 ```yaml

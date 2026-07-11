@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Sync the `area:` label from the Affected area field
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9
         env:
           # Allowlist of valid areas — only these may become labels, guarding against
           # arbitrary text hand-typed into a blank or edited issue body. `web` is
@@ -46,30 +46,40 @@ jobs:
                   .filter((line) => line && !line.startsWith('#'))
               )
 
-              // The "Affected area" dropdown renders as a "### Affected area" section;
-              // the selected option is the first non-empty line beneath it.
-              const match = (issue.body || '').match(/###\s+Affected area\s*\n+([^\n]+)/)
+              // The "Affected area" field sits at the START of the body, in one of two forms:
+              // an inline "**Affected area:** <value>" line, or the GitHub issue-form rendering
+              // "### Affected area\n\n<value>". Anchor to the body start (no `m` flag, so `^` is
+              // the body start) so a mention elsewhere can't match; group 1 is the value, and
+              // the whole matched block (plus trailing blank lines) is what gets stripped.
+              const areaRe = /^(?:\*\*Affected area:\*\*[ \t]*|###[ \t]+Affected area[ \t]*\n+)([^\n]+)\n*/i
+              const match = (issue.body || '').match(areaRe)
               const value = match ? match[1].trim() : ''
               if (!allowed.has(value)) return
 
               const label = `area: ${value}`
               const current = (issue.labels || []).map((l) => (typeof l === 'string' ? l : l.name))
-              if (current.includes(label)) return
 
               // addLabels rejects labels that don't exist yet, so create it on first use.
-              try {
-                await github.rest.issues.getLabel({ owner, repo, name: label })
-              } catch {
-                await github.rest.issues.createLabel({
-                  owner,
-                  repo,
-                  name: label,
-                  color: '0052cc',
-                  description: 'Affected area',
-                })
+              if (!current.includes(label)) {
+                try {
+                  await github.rest.issues.getLabel({ owner, repo, name: label })
+                } catch {
+                  await github.rest.issues.createLabel({
+                    owner,
+                    repo,
+                    name: label,
+                    color: '0052cc',
+                    description: 'Affected area',
+                  })
+                }
+                await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [label] })
               }
 
-              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [label] })
+              // The label now carries the area, so strip the now-redundant section from the body.
+              const newBody = (issue.body || '').replace(areaRe, '').replace(/^\n+/, '')
+              if (newBody !== issue.body) {
+                await github.rest.issues.update({ owner, repo, issue_number, body: newBody })
+              }
             } catch (error) {
               // Surface the failure on the issue so a maintainer can label it by hand.
               await github.rest.issues

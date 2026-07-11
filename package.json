@@ -14,6 +14,7 @@
     "setup": "pnpm -r run setup",
     "format": "prettier --write .",
     "gen:publish-options": "node scripts/gen-publish-options.mjs",
+    "check:release-notes": "node scripts/check-release-notes.mjs",
     "dev": "pnpm --parallel -r dev",
     "dev:web": "pnpm --filter @soroush/web dev",
     "dev:api": "pnpm --filter @soroush/api dev",

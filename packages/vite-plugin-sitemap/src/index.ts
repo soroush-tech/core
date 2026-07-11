@@ -59,7 +59,18 @@ const generate = (clientDir: string): number => {
  * maintain. The empty scan that precedes prerender (e.g. the client-build pass) writes
  * nothing.
  */
-export default function sitemap(): Plugin {
+export interface SitemapOptions {
+  /**
+   * Emit the sitemap only when `true`; otherwise the plugin is an inert no-op. Disable it for
+   * builds that reuse the app's Vite config but emit no `build/client` SSG output for the plugin
+   * to scan — e.g. a Storybook build (`NODE_ENV=storybook`). Default: `true`.
+   */
+  enable?: boolean
+}
+
+export default function sitemap({ enable = true }: SitemapOptions = {}): Plugin {
+  if (!enable) return { name: 'vite-plugin-sitemap' }
+
   let clientDir = ''
   return {
     name: 'vite-plugin-sitemap',

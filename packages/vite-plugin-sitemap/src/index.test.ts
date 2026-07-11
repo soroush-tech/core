@@ -62,6 +62,14 @@ describe('sitemap', () => {
     expect(plugin.apply).toBe('build')
   })
 
+  it('is an inert no-op when disabled', () => {
+    const plugin = sitemap({ enable: false })
+    expect(plugin.name).toBe('vite-plugin-sitemap')
+    // No hooks registered — nothing to run, nothing to scan.
+    expect(plugin.apply).toBeUndefined()
+    expect(plugin.closeBundle).toBeUndefined()
+  })
+
   it('writes a sitemap of indexable pages, skipping noindex and non-html files', () => {
     mockFs()
     run(sitemap())

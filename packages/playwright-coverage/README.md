@@ -227,3 +227,8 @@ used as-is; if you set both, the globs win.
 `@playwright/test` provides `test` and `page.coverage`; `monocart-coverage-reports` does the
 V8 → lcov aggregation and source mapping. The package carries neither at runtime — you install and
 version them.
+
+## Release notes
+
+Per-version notes for every published release live in
+[`release-notes/`](https://github.com/soroush-tech/core/tree/main/packages/playwright-coverage/release-notes).

@@ -60,20 +60,25 @@ a `schema` package change also flips this to `true`.
 `needs: changes` · `if: needs.changes.outputs.worker == 'true'` ·
 `environment: cd-worker` · ubuntu.
 
-| #   | Step                              | Detail                                                                                                       |
-| --- | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 1   | Checkout                          | `actions/checkout@v5`                                                                                        |
-| 2   | Read Node.js version              | `cat .nvmrc` → `$GITHUB_ENV` (`NODE_VERSION`)                                                                |
-| 3   | Setup pnpm                        | `pnpm/action-setup@v5`                                                                                       |
-| 4   | Setup Node                        | `actions/setup-node@v5`, `node-version: $NODE_VERSION`, `cache: pnpm` (deps cache — see [Caching](#caching)) |
-| 5   | Install                           | `pnpm install --frozen-lockfile`                                                                             |
-| 6   | Generate `wrangler.json` from env | `pnpm --filter @soroush/api config:gen` — renders the wrangler config from repo `vars`                       |
-| 7   | Deploy                            | `pnpm --filter @soroush/api exec wrangler deploy`                                                            |
+| #   | Step                              | Detail                                                                                                                                                                |
+| --- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout                          | `actions/checkout@v5`                                                                                                                                                 |
+| 2   | Read Node.js version              | `cat .nvmrc` → `$GITHUB_ENV` (`NODE_VERSION`)                                                                                                                         |
+| 3   | Setup pnpm                        | `pnpm/action-setup@v5`                                                                                                                                                |
+| 4   | Setup Node                        | `actions/setup-node@v5`, `node-version: $NODE_VERSION`, `cache: pnpm` (deps cache — see [Caching](#caching))                                                          |
+| 5   | Install                           | `pnpm install --frozen-lockfile`                                                                                                                                      |
+| 6   | Generate `wrangler.json` from env | `pnpm --filter @soroush/api config:gen` — renders the wrangler config from repo `vars`                                                                                |
+| 7   | Deploy                            | `cloudflare/wrangler-action@v4.0.0` with `command: deploy`, `workingDirectory: workers/api`, `wranglerVersion: '4.110.0'` (same action as the Storybook Pages deploy) |
+
+Uses the official Cloudflare action rather than the wrangler CLI. Because the action runs
+`wrangler deploy` directly (not the package's `deploy` script), it does **not** fire the
+`predeploy` hook — so step 6 (`config:gen`) must render `wrangler.json` first.
 
 `config:gen` env (`vars`): `WORKER_NAME`, `D1_DATABASE_NAME`, `D1_DATABASE_ID`,
 `R2_BUCKET`, `VITE_CONTACT_HONEYPOT`.
 
-Deploy env: `CLOUDFLARE_API_TOKEN` (`secret`), `CLOUDFLARE_ACCOUNT_ID` (`var`).
+Deploy auth (action inputs): `apiToken` ← `CLOUDFLARE_API_TOKEN` (`secret`), `accountId` ←
+`CLOUDFLARE_ACCOUNT_ID` (`var`).
 
 Why generate the config at deploy time: `wrangler.json` carries environment-specific
 IDs (D1, R2, account) that live in repo `vars`/`secrets` rather than in the repo, so
