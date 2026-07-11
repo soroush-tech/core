@@ -30,7 +30,7 @@ jobs:
       changed_packages: ${{ steps.assemble.outputs.changed_packages }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -133,7 +133,7 @@ jobs:
       # carry no diff base of their own and read this run's answer (computed against
       # github.event.before..after) to decide whether to deploy/publish.
       - name: Upload changes.json
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@v7
         with:
           name: changes
           path: changes.json
@@ -147,7 +147,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -156,7 +156,7 @@ jobs:
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
 
       - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ needs.prepare.outputs.node_version }}
           cache: ${{ needs.prepare.outputs.manager }}
@@ -191,7 +191,7 @@ jobs:
       matrix: ${{ fromJSON(needs.prepare.outputs.changed_packages) }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -200,7 +200,7 @@ jobs:
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
 
       - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ needs.prepare.outputs.node_version }}
           cache: ${{ needs.prepare.outputs.manager }}
@@ -242,7 +242,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -251,7 +251,7 @@ jobs:
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
 
       - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ needs.prepare.outputs.node_version }}
           cache: ${{ needs.prepare.outputs.manager }}
@@ -291,7 +291,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # full history for Codecov base detection
           persist-credentials: false
@@ -301,13 +301,13 @@ jobs:
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
 
       - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ needs.prepare.outputs.node_version }}
           cache: ${{ needs.prepare.outputs.manager }}
 
       - name: Restore cache - Playwright binaries
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache/restore@v5
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
@@ -330,7 +330,7 @@ jobs:
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache/save@v5
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
@@ -415,7 +415,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
-    environment: CI
+      id-token: write # tokenless (OIDC) Codecov upload — see the upload step
+    # No `environment: CI` on purpose. e2e already runs behind `web` (which is the environment
+    # gate), so it can't start until CI is approved; keeping it off the environment avoids a
+    # SECOND approval prompt when e2e reaches the gate in its own (post-web) wave. It uploads to
+    # Codecov via OIDC, so it needs neither the CI-environment secret nor its own approval.
     timeout-minutes: 30
 
     # Pin the browser download location so one cache path/key works on every OS.
@@ -432,7 +436,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -441,13 +445,13 @@ jobs:
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
 
       - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ needs.prepare.outputs.node_version }}
           cache: ${{ needs.prepare.outputs.manager }}
 
       - name: Restore cache - Playwright binaries
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache/restore@v5
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
@@ -468,7 +472,7 @@ jobs:
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache/save@v5
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
@@ -482,7 +486,7 @@ jobs:
         if: matrix.coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true # tokenless upload (public repo) so e2e needs no CI-environment secret
           files: ./apps/web/coverage/e2e/lcov.info
           slug: soroush-tech/core
           flags: e2e
