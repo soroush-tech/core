@@ -66,7 +66,10 @@ export function CodeBlock({ children }: Readonly<CodeBlockProps>) {
   const handleCopy = () => {
     // The button lives outside the surface, so the surface's textContent is the code
     // alone. Drop the fence's trailing newline(s) so the clipboard gets clean text.
-    const text = surfaceRef.current!.textContent!.replace(/\n+$/, '')
+    const raw = surfaceRef.current!.textContent!
+    let end = raw.length
+    while (end > 0 && raw[end - 1] === '\n') end--
+    const text = raw.slice(0, end)
     if (text) copy(text)
   }
 
