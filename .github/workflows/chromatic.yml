@@ -1,12 +1,18 @@
 name: Chromatic
 
-# Publishes Storybook to Chromatic for visual review. Split out of the main CI (ci.yml) and
-# scoped to main-only so a Chromatic failure (e.g. an exhausted plan/quota) can't block PR CI.
-# It runs after code lands on main, never on a pull_request, and nothing gates on its result —
-# a red run here is visible but non-blocking.
+# Publishes Storybook to Chromatic for visual review, in its own workflow (split out of ci.yml)
+# so a Chromatic failure — e.g. an exhausted plan/quota — can't block PR CI: nothing gates on
+# its result, so a red run here is visible but non-blocking. Runs on pull requests to main
+# (visual review before merge) and on pushes to main (baseline refresh).
 
 on:
   push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+      - '.github/workflows/chromatic.yml'
+  pull_request:
     branches: [main]
     paths:
       - 'apps/web/**'
@@ -20,10 +26,10 @@ concurrency:
 
 jobs:
   chromatic:
-    # main-only: workflow_dispatch can target any ref, but this job publishes with
-    # CHROMATIC_PROJECT_TOKEN — restrict it so a branch dispatch can't publish arbitrary
-    # Storybook content. The push trigger is already branches: [main].
-    if: github.ref == 'refs/heads/main'
+    # Allow push (already branches: [main]) and pull_request runs; only restrict a manual
+    # workflow_dispatch to the main ref, so a branch dispatch can't publish arbitrary Storybook
+    # content with CHROMATIC_PROJECT_TOKEN.
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: CI # where CHROMATIC_PROJECT_TOKEN lives (same as ci.yml's web job)
     timeout-minutes: 20
