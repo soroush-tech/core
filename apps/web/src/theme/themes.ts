@@ -5,6 +5,7 @@ import { spacing, generateBoxShadow, alpha, type SpaceUnits } from 'src/theme/ut
 import {
   blackAlpha,
   carbonBlack,
+  clayOrange,
   cyberCyan,
   deepCrimson,
   forestGreen,
@@ -12,6 +13,12 @@ import {
   kineticSurface,
   lightSurface,
   neonRed,
+  neutral,
+  orchidPurple,
+  pineTeal,
+  royalBlue,
+  sageGreen,
+  sandGold,
   softGreen,
   solarAmber,
 } from 'src/theme/colors'
@@ -82,6 +89,31 @@ export interface Theme {
   /** Skeleton placeholder tokens. `highlight` is the wave-animation shimmer band. */
   skeleton: {
     highlight: string
+  }
+  /**
+   * Syntax-highlighting colors for fenced code blocks — mapped onto highlight.js
+   * token classes in `Markdown`'s code block. Values differ per theme so blocks
+   * stay legible on the `background.terminal` surface in both light and dark.
+   */
+  syntax: {
+    /** Default code text — plain identifiers, operators, punctuation. */
+    base: string
+    /** Keywords, built-ins, types, literals, selector tags. */
+    keyword: string
+    /** Strings, template literals, regular expressions. */
+    string: string
+    /** Numbers, symbols, links. */
+    number: string
+    /** Function / class titles, section headings, attributes. */
+    title: string
+    /** Fields, constants, and property keys. */
+    constant: string
+    /** Type and class names. */
+    type: string
+    /** Comments and quotes — rendered dimmed and italic. */
+    comment: string
+    /** Markup tags/names, meta, variables, deletions. */
+    tag: string
   }
   sizes: typeof sizes
   colorScheme: 'light' | 'dark'
@@ -349,6 +381,18 @@ export const light: Theme = {
   skeleton: {
     highlight: alpha(lightSurface[100], 0.65),
   },
+  // Matched to JetBrains "Light" editor scheme (Islands Light's editorScheme).
+  syntax: {
+    base: lightSurface[950], // #1a1c1c ≈ JB text #080808
+    keyword: royalBlue[700], // #184E99 ≈ JB keyword #0033b3
+    string: forestGreen[600], // #006e17 ≈ JB string #067d17
+    number: royalBlue[500], // #2877E9 ≈ JB number #1750eb
+    title: pineTeal[700], // #00627A = JB function #00627a
+    constant: orchidPurple[700], // #871094 = JB field/constant #871094
+    type: pineTeal[600], // #137B86 ≈ JB type #007e8a
+    comment: lightSurface[850], // #747878 ≈ JB comment #8c8c8c
+    tag: pineTeal[600], // #137B86 ≈ JB tag #008077
+  },
   logoFilter: 'brightness(0)',
   portraitBlend: 'multiply',
   portraitOpacity: 1,
@@ -435,6 +479,18 @@ export const dark: Theme = {
   },
   skeleton: {
     highlight: alpha(kineticSurface[500], 0.65),
+  },
+  // Matched to the JetBrains "Islands Dark" editor scheme.
+  syntax: {
+    base: neutral[500], // #BBBBBB ≈ Islands text #bcbec4
+    keyword: clayOrange[400], // #CF8E6D = Islands keyword #cf8e6d
+    string: sageGreen[400], // #6AAB73 = Islands string #6aab73
+    number: pineTeal[400], // #2AACB8 = Islands number #2aacb8
+    title: royalBlue[400], // #6BA9FA ≈ Islands function #56a8f5
+    constant: orchidPurple[400], // #C77DBB = Islands field/constant #c77dbb
+    type: pineTeal[400], // #2AACB8 ≈ Islands type #16baac
+    comment: neutral[600], // #919191 ≈ Islands comment #7a7e85
+    tag: sandGold[400], // #D5B778 = Islands markup tag #d5b778
   },
   logoFilter: 'brightness(0) invert(1)',
   portraitBlend: 'screen',

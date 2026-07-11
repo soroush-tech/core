@@ -12,7 +12,7 @@ import { Card } from 'src/theme/Card'
 export function Articles() {
   const { data } = useGists()
   return (
-    <View as="section" maxWidth="1280px" width="100%" mx="auto" mt={3} mb={4}>
+    <View as="section" maxWidth="1280px" width="100%" mx="auto" mt={3} mb={4} px={4}>
       {data.map((gist) => (
         <Card
           variant="bracketBox"
