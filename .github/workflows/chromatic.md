@@ -13,10 +13,10 @@ refresh).
 on:
   push:
     branches: [main]
-    paths: [apps/web/**, packages/**, .github/workflows/chromatic.yml]
+    paths: [apps/web/**, packages/**, pnpm-lock.yaml, .nvmrc, .github/workflows/chromatic.yml]
   pull_request:
     branches: [main]
-    paths: [apps/web/**, packages/**, .github/workflows/chromatic.yml]
+    paths: [apps/web/**, packages/**, pnpm-lock.yaml, .nvmrc, .github/workflows/chromatic.yml]
   workflow_dispatch:
 concurrency:
   group: chromatic-${{ github.ref }}

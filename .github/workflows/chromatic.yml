@@ -11,12 +11,16 @@ on:
     paths:
       - 'apps/web/**'
       - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.nvmrc'
       - '.github/workflows/chromatic.yml'
   pull_request:
     branches: [main]
     paths:
       - 'apps/web/**'
       - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.nvmrc'
       - '.github/workflows/chromatic.yml'
   workflow_dispatch:
 
