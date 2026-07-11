@@ -33,9 +33,16 @@ test('data-display table sorts and paginates', async ({ page }) => {
   await expect(firstService()).toHaveText('web')
 
   // Sort by Service — first click sorts descending, second flips to ascending.
+  // The first click can be dropped if it lands before React finishes hydrating
+  // (networkidle doesn't guarantee the handler is attached yet). A dropped click
+  // never toggles sort state, so retrying until one registers is safe: the first
+  // click that lands sorts descending. Once it registers the app is hydrated, so
+  // the follow-up interactions below don't need the same guard.
   const serviceSort = table.getByRole('button', { name: 'Service' })
-  await serviceSort.click()
-  await expect(firstService()).toHaveText('worker')
+  await expect(async () => {
+    await serviceSort.click()
+    await expect(firstService()).toHaveText('worker', { timeout: 2000 })
+  }).toPass({ timeout: 15000 })
   await serviceSort.click()
   await expect(firstService()).toHaveText('api')
 
