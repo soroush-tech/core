@@ -1,107 +1,64 @@
 ---
-description: GitHub Actions CI/CD conventions for this repo — the unified ci.yml (prepare → changes-gated lint/web/packages/worker jobs), per-workspace Codecov flags/components, pnpm --filter test:coverage, and workflow_run-gated cd-web/cd-worker-api deploys. Use when adding, editing, or debugging any workflow under .github/workflows/.
+description: GitHub Actions CI/CD conventions for this repo — the unified ci.yml (prepare → changes-gated lint/web/e2e/packages/worker → ci-ok), the action-pinning rule (first-party version tags, third-party SHAs), per-workspace Codecov flags with tokenless-OIDC to dodge the environment approval gate, Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
 paths: .github/workflows/**
 ---
 
 # CI/CD (GitHub Actions)
+
+Each workflow has a per-file deep-dive doc next to it (`ci.md`, `cd-*.md`, `chromatic.md`) with the full step-by-step — **read it before editing that workflow**. This skill is the rulebook, not a second copy of those docs.
 
 ## Workflow files
 
 | File                | Name                     | Trigger                                                         |
 | ------------------- | ------------------------ | --------------------------------------------------------------- |
 | `ci.yml`            | `Continuous Integration` | `push` to `main`, all `pull_request`                            |
-| `cd-web.yml`        | Pages deploy             | `workflow_run` of `Continuous Integration` (success) + dispatch |
-| `cd-worker-api.yml` | Cloudflare Worker deploy | `workflow_run` of `Continuous Integration` (success) + dispatch |
+| `cd-web.yml`        | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + dispatch               |
+| `cd-worker-api.yml` | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + dispatch               |
+| `cd-packages.yml`   | Publish Packages (npm)   | manual `workflow_dispatch` only — see the `release-notes` skill |
+| `chromatic.yml`     | Chromatic                | `pull_request` + `push` to `main`, non-blocking                 |
+| `label-area.yml`    | Label Affected Area      | `issues: opened`                                                |
 
-One CI workflow for the whole monorepo. CD is separate and **gated on CI success** — never deploy on a raw `push`.
+One CI workflow for the whole monorepo; CD is separate and **gated on CI success** — never deploy on a raw `push`.
 
-## CI is one workflow with per-area jobs
+## Action pinning convention — the load-bearing rule
 
-`prepare` → fan out to `lint`, `web`, `packages`, `worker`. Heavy jobs are gated by change detection so a package-only PR never runs the tri-OS web suite.
+Pin every `uses:` by the action's **origin**. Getting this wrong fails review: CodeRabbit flags SHA-pinned first-party actions; SonarQube flags version-tagged third-party ones.
 
-```yaml
-jobs:
-  prepare:          # detect node/pkg-manager/runner + changed areas → outputs
-  lint:             # pnpm -r lint + typecheck, once, ubuntu
-  web:      if: needs.prepare.outputs.web == 'true'       # tri-OS, coverage tiers
-  packages: if: needs.prepare.outputs.packages == 'true'  # matrix per package
-  worker:   if: needs.prepare.outputs.worker == 'true'    # ubuntu
-```
+- **First-party `actions/*`** (checkout, setup-node, cache, upload-artifact, github-script) → **version tag**: `actions/checkout@v5`.
+- **Third-party** (anything not under `actions/` — `pnpm/action-setup`, `codecov/codecov-action`, `cloudflare/wrangler-action`, `chromaui/action`, `dorny/paths-filter`) → **commit SHA** + `# vX` comment.
 
-## Detect once in `prepare`, reuse via outputs
+## CI job shape
 
-Don't re-detect node version / package manager in every job. Detect in `prepare`, expose as job outputs, consume with `needs.prepare.outputs.*`.
+`prepare` → `lint` → `web` / `e2e` / `packages` / `worker` → `ci-ok`.
 
-```yaml
-# ✓ reuse
-- uses: actions/setup-node@v5
-  with: { node-version: ${{ needs.prepare.outputs.node_version }}, cache: ${{ needs.prepare.outputs.manager }} }
-- run: ${{ needs.prepare.outputs.runner }} --filter @soroush/api test:coverage
-```
+- **Detect once in `prepare`** (node version from `.nvmrc`, package manager, runner, changed areas), reuse via `needs.prepare.outputs.*`. Never hard-code the node version.
+- Heavy jobs are **change-gated** (`dorny/paths-filter`, no Nx/Turbo) so a package-only PR stays cheap. Wire dependency edges **manually**: a consumed package must appear in the consumer's filter (`web` ← `packages/**`, `worker` ← `packages/schema/**`). Include `pnpm-lock.yaml`, `.nvmrc`, and the workflow file in every filter so infra changes run everything.
+- **`web` is ubuntu-only** (build + unit/browser/storybook coverage). **`e2e` is the only multi-OS matrix** (one Playwright engine per native OS; macOS ≈10× cost → WebKit only) and **`needs: web`**, so a `web` failure skips it instead of re-running three OSes.
+- **`ci-ok`** is the single branch-protection check: `if: always()`, fails only on a needed job's `failure`/`cancelled` (change-gated skips pass). **Add every new job to its `needs`.**
 
-Node version is always read from `.nvmrc`. Never hard-code it.
+## Coverage → Codecov
 
-## Change detection (dorny/paths-filter)
+- Each workspace emits `coverage/lcov.info` and uploads under its **own flag** (`codecov/codecov-action`, SHA-pinned); register each area as a `.codecov.yml` component. Vitest configs set `reporter: ['text', 'lcov']`; 100% is enforced in `vitest.config` (`thresholds: { 100: true }`), Codecov is reporting only.
+- The **`web` flag is the single merged `test:coverage` pass** — that's the patch gate. The per-tier `unit`/`browser`/`storybook` flags run `all: true` and stay **informational** (don't gate on them — phantom-uncovered lines). `e2e` is the chromium-only page-coverage flag.
 
-No Nx/Turbo — wire dependency edges **manually**. A package consumed by another area must appear in that area's filter.
+## The `environment: CI` approval gate
 
-```yaml
-worker: # worker imports @soroush.tech/schema
-  - 'workers/api/**'
-  - 'packages/schema/**'
-web: # web consumes shared packages
-  - 'apps/web/**'
-  - 'packages/**'
-```
+`environment: CI` on `web`/`packages`/`worker` is a **required-reviewer gate**. One approval covers every job **already waiting** in that wave — but a job reaching the gate **later** (e.g. `e2e`, which `needs: web`) prompts a **second** approval. Keep such a job **off** the environment: `e2e` runs behind the already-gated `web` and uploads to Codecov **tokenlessly via OIDC** (`use_oidc: true` + job `permissions: { id-token: write }`, works on this public repo), so it needs neither the env-scoped `CODECOV_TOKEN` nor its own approval.
 
-Include `pnpm-lock.yaml`, `.nvmrc`, and `.github/workflows/ci.yml` in every filter so infra changes run everything.
+## Deploys
 
-## Coverage → Codecov (per workspace)
+- **Gated on CI success**: `workflow_run` of CI + `workflow_dispatch`; a `changes` job re-derives what changed from CI's `changes.json` artifact (workflow_run carries no diff base). `concurrency: cancel-in-progress: false` — never abort an in-flight deploy.
+- **Cloudflare deploys go through `cloudflare/wrangler-action` (SHA-pinned), not the wrangler CLI** — both the Worker (`command: deploy`) and Storybook Pages (`command: pages deploy`), with `apiToken`/`accountId` inputs. The worker's `wrangler.json` is generated **before** the action (`pnpm --filter @soroush/api config:gen`), since the action runs `wrangler deploy` directly and won't fire the package's `predeploy` hook.
 
-Each workspace emits its own `coverage/lcov.info` and uploads under its **own flag**; Codecov merges uploads by commit SHA.
+## Chromatic
 
-- Every vitest config must set `reporter: ['text', 'lcov']` (default omits lcov).
-- One `codecov/codecov-action@v5` upload per workspace: `files: <ws>/coverage/lcov.info`, `flags: <name>`.
-- Register each area as a component in `.codecov.yml` (mirrors the `Theme` component) for per-area PR numbers.
-- Packages run as a matrix; each row uploads its own flag:
-
-```yaml
-matrix:
-  include:
-    - { dir: schema, filter: '@soroush.tech/schema', flag: schema }
-```
-
-100% coverage is enforced inside each `vitest.config` (`thresholds: { 100: true }`); Codecov is for reporting, not the gate.
-
-## Lint & typecheck once, recursively
-
-Run at root in a single ubuntu job — not per package. `pnpm -r` skips workspaces without the script.
-
-```yaml
-- run: pnpm run lint # = pnpm -r lint
-- run: pnpm run typecheck # = pnpm -r typecheck
-```
-
-## Deploy gating
-
-CD triggers off CI completion and guards on success:
-
-```yaml
-on:
-  workflow_run: { workflows: ['Continuous Integration'], types: [completed], branches: [main] }
-  workflow_dispatch:
-jobs:
-  deploy:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-```
+Visual review is its **own non-blocking workflow** (`chromatic.yml`), split out of CI so an exhausted plan can't block PR CI — **not** part of `ci-ok`. A `workflow_dispatch` is restricted to the main ref.
 
 ## Cost & speed defaults
 
-- **OS:** ubuntu only, except the web/browser suite which is tri-OS (macOS is ~10× cost — browser/e2e only).
-- **Concurrency:** cancel superseded runs — `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }`.
-- **Timeouts:** set `timeout-minutes` on every job.
-- **Matrices:** `fail-fast: false` so one package failure doesn't cancel the others.
-- **Cache:** `setup-node` with `cache: pnpm` for deps; cache Playwright binaries by `runner.os` + Playwright version.
-- **Secrets vs vars:** tokens/keys → `secrets`; non-sensitive config (URLs, IDs, names) → `vars`. Prefer cloud OIDC over long-lived tokens where the provider supports it.
+- ubuntu only, except the `e2e` matrix. Set `timeout-minutes` on every job; matrices use `fail-fast: false`.
+- CI concurrency cancels superseded runs (`group: ${{ github.workflow }}-${{ github.ref }}`); CD does not.
+- Cache deps via `setup-node` `cache: pnpm`; cache Playwright binaries by `runner.os` + Playwright version.
+- Tokens/keys → `secrets`; non-sensitive config → `vars`. Prefer OIDC over long-lived tokens.
 
-If the task names a workflow file, read it and apply these rules. Otherwise apply to the workflow being discussed.
+If the task names a workflow file, read it and its `.md` and apply these rules.
