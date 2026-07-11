@@ -30,7 +30,9 @@ export default defineConfig({
     }),
     react(),
     process.env.NODE_ENV !== 'storybook' && vike(),
-    sitemap(),
+    // Storybook reuses this config but emits no build/client SSG output, so the sitemap plugin
+    // has nothing to scan — disable it there (same signal as vike above).
+    sitemap({ enable: process.env.NODE_ENV !== 'storybook' }),
     mswServer({
       enable: mswEnabled,
       server: () => import('./src/test/mocks/server').then((m) => m.server),
