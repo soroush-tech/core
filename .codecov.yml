@@ -73,7 +73,7 @@ flag_management:
         - workers/api/
     # App-level web flags (not package-generated). `web` is the merged unit+browser+storybook
     # pass that patch coverage gates on; `e2e` is the Playwright page coverage. Both scope to
-    # apps/web so carryforward stays correct when the web job is change-gated out.
+    # apps/web so carryforward stays correct when the web/e2e jobs are change-gated out.
     - name: web
       paths:
         - apps/web/

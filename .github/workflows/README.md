@@ -63,16 +63,19 @@ flowchart TD
     lint["lint<br/>lint + typecheck (recursive)"]
     packages["packages (matrix)<br/>if has_packages == true"]
     worker["worker<br/>if worker == true"]
-    web["web (tri-OS)<br/>if web == true"]
+    web["web (ubuntu)<br/>if web == true"]
+    e2e["e2e (matrix)<br/>if web == true"]
     ciok["ci-ok<br/>branch-protection gate<br/>(if: always)"]
 
     prepare --> lint
     lint --> packages
     lint --> worker
     lint --> web
+    web --> e2e
     packages --> ciok
     worker --> ciok
     web --> ciok
+    e2e --> ciok
     lint --> ciok
     prepare --> ciok
 ```
@@ -112,27 +115,28 @@ flowchart LR
     filters --> cj[("changes.json")]
 ```
 
-### The `web` job (tri-OS)
+### The `web` and `e2e` jobs
 
-Runs on `ubuntu-latest`, `windows-latest`, `macOS-latest`. The unit `test` runs on
-every OS; coverage tiers and Storybook coverage run only on ubuntu; the E2E browsers
-are split across OSes so each engine runs on its native platform (macOS is ~10× the
-cost — used only for WebKit). Chromatic visual review is **not** part of this job — it
-runs in its own main-only [`chromatic.yml`](./chromatic.yml).
+**`web`** runs on **ubuntu only**. It builds (Codecov bundle analysis) and runs a merged
+`test:coverage` pass (unit + browser + storybook in one V8 pass) uploaded as the authoritative
+`web` flag that patch gates on, plus the three per-tier runs for their informational
+`unit`/`browser`/`storybook` flags. Chromatic visual review is **not** here — it runs in its
+own main-only [`chromatic.yml`](./chromatic.yml).
 
-| Step                       | ubuntu | windows | macOS |
-| -------------------------- | :----: | :-----: | :---: |
-| Build (`SKIP_PRERENDER`)   |   ✅   |         |       |
-| Tests                      |   ✅   |   ✅    |  ✅   |
-| Unit coverage → Codecov    |   ✅   |         |       |
-| Browser coverage → Codecov |   ✅   |         |       |
-| Storybook coverage         |   ✅   |         |       |
-| E2E Chromium               |   ✅   |         |       |
-| E2E Firefox                |        |   ✅    |       |
-| E2E WebKit                 |        |         |  ✅   |
+**`e2e`** is the only multi-OS job: a matrix running each Playwright engine on its native
+platform (macOS ~10× cost — WebKit only). It `needs: web`, so a `web` failure skips `e2e`. Only
+the chromium row runs with coverage and uploads the `e2e` flag; Playwright's `webServer`
+builds/serves the app, so there is no separate build step.
+
+| Job / Step                                        | ubuntu | windows | macOS |
+| ------------------------------------------------- | :----: | :-----: | :---: |
+| **web** — build + unit/browser/storybook coverage |   ✅   |         |       |
+| **e2e** Chromium (+ coverage)                     |   ✅   |         |       |
+| **e2e** Firefox                                   |        |   ✅    |       |
+| **e2e** WebKit                                    |        |         |  ✅   |
 
 The Playwright browser binaries are cached by `runner.os` + Playwright version, with a
-fixed `PLAYWRIGHT_BROWSERS_PATH` so one cache path/key works across all three OSes.
+fixed `PLAYWRIGHT_BROWSERS_PATH`; `web` and the `e2e` chromium row share the ubuntu cache.
 
 ### Coverage → Codecov
 

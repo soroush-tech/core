@@ -273,30 +273,27 @@ jobs:
           flags: api
           name: api
 
-  # Web app: full multi-OS suite with unit / browser / storybook / e2e coverage tiers.
+  # Web app (ubuntu-only): unit / browser / storybook coverage tiers. The browser engines
+  # (E2E) run in the separate `e2e` matrix job below.
   web:
     needs: [prepare, lint]
     if: needs.prepare.outputs.web == 'true'
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     environment: CI
     timeout-minutes: 30
 
-    # Pin the browser download location so one cache path/key works on every OS
-    # (the default location differs per platform: ~/.cache, ~/Library/Caches, AppData).
+    # Pin the browser download location so the cache path/key is stable and shared with the
+    # `e2e` job's chromium row on the same runner OS.
     env:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # full history for Codecov base detection
           persist-credentials: false
 
       - name: Setup pnpm
@@ -321,16 +318,15 @@ jobs:
           CI: true
         run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
 
-      # On a cache miss, download the browser binaries (+ Linux system deps).
+      # Only Chromium is needed here — the unit-browser and storybook tiers run headless Chromium.
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @soroush/web exec playwright install --with-deps
+        run: pnpm --filter @soroush/web exec playwright install --with-deps chromium
 
-      # On a cache hit the binaries are restored, but Linux system libs live
-      # outside the cache — reinstall just those (fast, no binary download).
+      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
       - name: Install Playwright system deps
-        if: steps.playwright-cache.outputs.cache-hit == 'true' && runner.os == 'Linux'
-        run: pnpm --filter @soroush/web exec playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @soroush/web exec playwright install-deps chromium
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
@@ -340,37 +336,23 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
 
       - name: Build project
-        if: matrix.os == 'ubuntu-latest'
         run: ${{ needs.prepare.outputs.runner }} run build
         env:
           SKIP_PRERENDER: 'true'
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Run Test
-        shell: bash
-        run: |
-          echo "### 🧪 Full suite — \`test\`" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} --filter @soroush/web test
-
-      # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag. Each
-      # per-tier flag below runs `all: true` over the whole tree, so a tier that never executes
-      # a file reports its lines at 0; Codecov's cross-flag union then leaves those lines red for
-      # simple components even though another tier covers them. This single run reports each file
-      # once with real execution data (no phantom uncovered lines), and `.codecov.yml` gates
-      # patch on `web` so the per-tier flags stay informational.
-      #
-      # Upload `web` FIRST — before the per-tier flags — so the Codecov PR comment renders from
-      # this authoritative report. A comment generated off the early per-tier uploads would show
-      # phantom-uncovered lines on simple components and then not refresh.
+      # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag that
+      # `.codecov.yml` gates patch on. A single pass reports each file once with real execution
+      # data — no phantom-uncovered lines from the per-tier `all: true` reports — so `web` is the
+      # authoritative report and the per-tier flags below stay informational. Uploaded FIRST so
+      # the Codecov PR comment renders from this report.
       - name: Run Web Coverage (merged)
-        if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           echo "### 🧪 Web — \`test:coverage\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} run test:coverage
 
       - name: Upload Web Coverage
-        if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -380,14 +362,12 @@ jobs:
           name: Web
 
       - name: Run Unit Tests with Coverage
-        if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           echo "### 🧪 Unit — \`test:coverage:unit\`" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} run test:coverage:unit
 
-      - name: Upload Unit Test Coverage
-        if: matrix.os == 'ubuntu-latest'
+      - name: Upload Unit Coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -397,14 +377,12 @@ jobs:
           name: Unit
 
       - name: Run Browser Tests with Coverage
-        if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           echo "### 🧪 Browser — \`test:coverage:browser\`" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} run test:coverage:browser
 
-      - name: Upload Browser Test Coverage
-        if: matrix.os == 'ubuntu-latest'
+      - name: Upload Browser Coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -414,14 +392,12 @@ jobs:
           name: Browser
 
       - name: Run Storybook Tests with Coverage
-        if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           echo "### 🧪 Storybook — \`test:coverage:storybook\`" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} run test:coverage:storybook
 
       - name: Upload Storybook Coverage
-        if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -430,26 +406,80 @@ jobs:
           flags: storybook
           name: Storybook
 
-      - name: Run E2E Tests with Coverage
-        if: matrix.os == 'ubuntu-latest'
-        run: ${{ needs.prepare.outputs.runner }} run test:coverage:e2e
-        env:
-          VITE_BASE_URL: ${{ vars.VITE_BASE_URL }}
+  # E2E: one engine per native OS. Chromium (ubuntu) runs with coverage → the `e2e` flag; Firefox
+  # (windows) and WebKit (macOS) run for cross-engine signal only. Playwright's `webServer` builds
+  # and serves the app, so there is no separate build step.
+  e2e:
+    needs: [prepare, lint, web]
+    if: needs.prepare.outputs.web == 'true'
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    environment: CI
+    timeout-minutes: 30
 
-      - name: Run E2E Tests (Firefox)
-        if: matrix.os == 'windows-latest'
-        run: ${{ needs.prepare.outputs.runner }} run test:e2e:firefox
-        env:
-          VITE_BASE_URL: ${{ vars.VITE_BASE_URL }}
+    # Pin the browser download location so one cache path/key works on every OS.
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
 
-      - name: Run E2E Tests (WebKit)
-        if: matrix.os == 'macOS-latest'
-        run: ${{ needs.prepare.outputs.runner }} run test:e2e:webkit
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, engine: chromium, script: test:coverage:e2e, coverage: true }
+          - { os: windows-latest, engine: firefox, script: test:e2e:firefox }
+          - { os: macOS-latest, engine: webkit, script: test:e2e:webkit }
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: needs.prepare.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: ${{ needs.prepare.outputs.node_version }}
+          cache: ${{ needs.prepare.outputs.manager }}
+
+      - name: Restore cache - Playwright binaries
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: playwright-cache
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @soroush/web exec playwright install --with-deps ${{ matrix.engine }}
+
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true' && runner.os == 'Linux'
+        run: pnpm --filter @soroush/web exec playwright install-deps ${{ matrix.engine }}
+
+      - name: Save cache - Playwright binaries
+        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
+
+      - name: Run E2E (${{ matrix.engine }})
+        run: ${{ needs.prepare.outputs.runner }} run ${{ matrix.script }}
         env:
           VITE_BASE_URL: ${{ vars.VITE_BASE_URL }}
 
       - name: Upload E2E Coverage to Codecov
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -463,7 +493,7 @@ jobs:
   ci-ok:
     name: ci-ok
     if: always()
-    needs: [prepare, lint, packages, worker, web]
+    needs: [prepare, lint, packages, worker, web, e2e]
     runs-on: ubuntu-latest
     permissions: {}
     timeout-minutes: 5
