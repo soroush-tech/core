@@ -1,10 +1,10 @@
 # GitHub Actions workflows
 
 This directory holds the CI/CD pipeline for the `soroush.tech` monorepo. There is
-**one** CI workflow for the whole workspace, **three** deployment workflows, and an
-issue-labeling automation. The two deploys (`cd-web`, `cd-worker-api`) are gated on CI
-success and never run off a raw `push`; package publishing (`cd-packages`) is **manual
-`workflow_dispatch` only**.
+**one** CI workflow for the whole workspace, **three** deployment workflows, a main-only
+Chromatic visual-review workflow, and an issue-labeling automation. The two deploys
+(`cd-web`, `cd-worker-api`) are gated on CI success and never run off a raw `push`; package
+publishing (`cd-packages`) is **manual `workflow_dispatch` only**.
 
 | File                                       | Name                     | Trigger                                                      |
 | ------------------------------------------ | ------------------------ | ------------------------------------------------------------ |
@@ -12,10 +12,11 @@ success and never run off a raw `push`; package publishing (`cd-packages`) is **
 | [`cd-web.yml`](./cd-web.yml)               | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-worker-api.yml`](./cd-worker-api.yml) | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-packages.yml`](./cd-packages.yml)     | Publish Packages (npm)   | manual `workflow_dispatch` only                              |
+| [`chromatic.yml`](./chromatic.yml)         | Chromatic                | `push` to `main` (paths) + `workflow_dispatch`               |
 | [`label-area.yml`](./label-area.yml)       | Label Affected Area      | `issues` `opened`                                            |
 
 **Per-workflow deep dives** (every step + caching):
-[`ci.md`](./ci.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-packages.md`](./cd-packages.md) · [`label-area.md`](./label-area.md)
+[`ci.md`](./ci.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-packages.md`](./cd-packages.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
 
 ## How the pieces fit together
 
@@ -114,9 +115,10 @@ flowchart LR
 ### The `web` job (tri-OS)
 
 Runs on `ubuntu-latest`, `windows-latest`, `macOS-latest`. The unit `test` runs on
-every OS; coverage tiers and Storybook/Chromatic run only on ubuntu; the E2E browsers
+every OS; coverage tiers and Storybook coverage run only on ubuntu; the E2E browsers
 are split across OSes so each engine runs on its native platform (macOS is ~10× the
-cost — used only for WebKit).
+cost — used only for WebKit). Chromatic visual review is **not** part of this job — it
+runs in its own main-only [`chromatic.yml`](./chromatic.yml).
 
 | Step                       | ubuntu | windows | macOS |
 | -------------------------- | :----: | :-----: | :---: |
@@ -124,7 +126,7 @@ cost — used only for WebKit).
 | Tests                      |   ✅   |   ✅    |  ✅   |
 | Unit coverage → Codecov    |   ✅   |         |       |
 | Browser coverage → Codecov |   ✅   |         |       |
-| Chromatic + Storybook cov. |   ✅   |         |       |
+| Storybook coverage         |   ✅   |         |       |
 | E2E Chromium               |   ✅   |         |       |
 | E2E Firefox                |        |   ✅    |       |
 | E2E WebKit                 |        |         |  ✅   |

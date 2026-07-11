@@ -1,0 +1,57 @@
+name: Chromatic
+
+# Publishes Storybook to Chromatic for visual review. Split out of the main CI (ci.yml) and
+# scoped to main-only so a Chromatic failure (e.g. an exhausted plan/quota) can't block PR CI.
+# It runs after code lands on main, never on a pull_request, and nothing gates on its result —
+# a red run here is visible but non-blocking.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+      - '.github/workflows/chromatic.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: chromatic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    environment: CI # where CHROMATIC_PROJECT_TOKEN lives (same as ci.yml's web job)
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          fetch-depth: 0 # full history — Chromatic's onlyChanged needs it
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: pnpm install --frozen-lockfile
+
+      # The action runs buildScriptName (build:storybook) itself, so no separate build step.
+      - name: Publish to Chromatic
+        uses: chromaui/action@c8eb1dde813a34d0e86b136d8c4faedd0a7351ab # v17.7.1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: build:storybook
+          storybookBaseDir: apps/web
+          exitZeroOnChanges: true
+          onlyChanged: true

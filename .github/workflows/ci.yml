@@ -352,20 +352,6 @@ jobs:
           echo "### 🧪 Full suite — \`test\`" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} --filter @soroush/web test
 
-      # Chromatic first: both the merged `web` run and the per-tier storybook run need its
-      # storybookUrl. Publishing it here lets the authoritative `web` coverage upload go out
-      # ahead of the per-tier flags below (see the merged-run note).
-      - name: Publish to Chromatic
-        id: chromatic
-        if: matrix.os == 'ubuntu-latest' && github.actor != 'renovate[bot]'
-        uses: chromaui/action@c8eb1dde813a34d0e86b136d8c4faedd0a7351ab # v17.7.1
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          buildScriptName: build:storybook
-          storybookBaseDir: apps/web
-          exitZeroOnChanges: true
-          onlyChanged: true
-
       # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag. Each
       # per-tier flag below runs `all: true` over the whole tree, so a tier that never executes
       # a file reports its lines at 0; Codecov's cross-flag union then leaves those lines red for
@@ -382,8 +368,6 @@ jobs:
         run: |
           echo "### 🧪 Web — \`test:coverage\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} run test:coverage
-        env:
-          SB_URL: ${{ steps.chromatic.outputs.storybookUrl }}
 
       - name: Upload Web Coverage
         if: matrix.os == 'ubuntu-latest'
@@ -435,8 +419,6 @@ jobs:
         run: |
           echo "### 🧪 Storybook — \`test:coverage:storybook\`" >> "$GITHUB_STEP_SUMMARY"
           ${{ needs.prepare.outputs.runner }} run test:coverage:storybook
-        env:
-          SB_URL: ${{ steps.chromatic.outputs.storybookUrl }}
 
       - name: Upload Storybook Coverage
         if: matrix.os == 'ubuntu-latest'
