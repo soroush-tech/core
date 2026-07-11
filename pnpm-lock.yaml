@@ -81,13 +81,13 @@ importers:
         version: 4.0.1
       vike:
         specifier: ^0.4.260
-        version: 0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
+        version: 0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
       vike-react:
         specifier: ^0.6.25
-        version: 0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)))
+        version: 0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)))
       vike-react-query:
         specifier: ^0.1.13
-        version: 0.1.13(@tanstack/react-query@5.101.2(react@19.2.7))(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(vike-react@0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))))(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)))
+        version: 0.1.13(@tanstack/react-query@5.101.2(react@19.2.7))(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(vike-react@0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))))(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)))
       zod:
         specifier: ^4.4.3
         version: 4.4.3
@@ -263,6 +263,9 @@ importers:
       vitest:
         specifier: ^4.1.10
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@29.1.1)(msw@2.15.0(@types/node@26.1.1)(typescript@6.0.3))(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
+      wrangler:
+        specifier: ^4.110.0
+        version: 4.110.0(@cloudflare/workers-types@5.20260710.1)
 
   labs/bench:
     dependencies:
@@ -871,12 +874,6 @@ packages:
     engines: { node: '>=16' }
     cpu: [x64]
     os: [win32]
-
-  '@cloudflare/workers-types@4.20260702.1':
-    resolution:
-      {
-        integrity: sha512-mOhf5TUEB1m2vPrxtqoIGfz0fUC9xyxRDx5gWHy5s+OCo6dcV+g7wI1R7gYCMFohhqF/2y2xeKVwMwCJjfn/WA==,
-      }
 
   '@cloudflare/workers-types@5.20260710.1':
     resolution:
@@ -12894,9 +12891,6 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260708.1':
     optional: true
 
-  '@cloudflare/workers-types@4.20260702.1':
-    optional: true
-
   '@cloudflare/workers-types@5.20260710.1': {}
 
   '@codecov/bundler-plugin-core@2.0.1':
@@ -14845,12 +14839,12 @@ snapshots:
     optionalDependencies:
       srvx: 0.11.21
 
-  '@universal-deploy/vite@0.1.10(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))':
+  '@universal-deploy/vite@0.1.10(hono@4.12.29)(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))':
     dependencies:
       '@universal-deploy/netlify': 0.2.2(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
       '@universal-deploy/node': 0.1.7(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
       '@universal-deploy/store': 0.2.1(srvx@0.11.21)
-      '@universal-middleware/express': 0.4.30(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)
+      '@universal-middleware/express': 0.4.30(hono@4.12.29)(srvx@0.11.21)
       magic-string: 0.30.21
       rou3: 0.8.1
     optionalDependencies:
@@ -14866,19 +14860,18 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/core@0.4.18(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)':
+  '@universal-middleware/core@0.4.18(hono@4.12.29)(srvx@0.11.21)':
     dependencies:
       regexparam: 3.0.0
       tough-cookie: 6.0.1
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20260702.1
       hono: 4.12.29
       srvx: 0.11.21
 
-  '@universal-middleware/express@0.4.30(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)':
+  '@universal-middleware/express@0.4.30(hono@4.12.29)(srvx@0.11.21)':
     dependencies:
-      '@universal-middleware/core': 0.4.18(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)
-      '@universal-middleware/node': 0.2.1(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)
+      '@universal-middleware/core': 0.4.18(hono@4.12.29)(srvx@0.11.21)
+      '@universal-middleware/node': 0.2.1(hono@4.12.29)(srvx@0.11.21)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -14890,9 +14883,9 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/node@0.2.1(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)':
+  '@universal-middleware/node@0.2.1(hono@4.12.29)(srvx@0.11.21)':
     dependencies:
-      '@universal-middleware/core': 0.4.18(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)
+      '@universal-middleware/core': 0.4.18(hono@4.12.29)(srvx@0.11.21)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -20552,24 +20545,24 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vike-react-query@0.1.13(@tanstack/react-query@5.101.2(react@19.2.7))(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(vike-react@0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))))(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))):
+  vike-react-query@0.1.13(@tanstack/react-query@5.101.2(react@19.2.7))(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(vike-react@0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))))(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))):
     dependencies:
       '@brillout/json-serializer': 0.5.25
       '@tanstack/react-query': 5.101.2(react@19.2.7)
       react: 19.2.7
       react-error-boundary: 4.1.2(react@19.2.7)
       react-streaming: 0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      vike: 0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
-      vike-react: 0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)))
+      vike: 0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
+      vike-react: 0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)))
 
-  vike-react@0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))):
+  vike-react@0.6.25(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       react-streaming: 0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      vike: 0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
+      vike: 0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
 
-  vike@0.4.260(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)):
+  vike@0.4.260(hono@4.12.29)(react-streaming@0.4.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1)):
     dependencies:
       '@babel/core': 7.29.7
       '@babel/types': 7.29.7
@@ -20578,9 +20571,9 @@ snapshots:
       '@brillout/picocolors': 1.0.31
       '@brillout/vite-plugin-server-entry': 0.7.19
       '@universal-deploy/store': 0.2.1(srvx@0.11.21)
-      '@universal-deploy/vite': 0.1.10(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
-      '@universal-middleware/core': 0.4.18(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)
-      '@universal-middleware/node': 0.2.1(@cloudflare/workers-types@4.20260702.1)(hono@4.12.29)(srvx@0.11.21)
+      '@universal-deploy/vite': 0.1.10(hono@4.12.29)(srvx@0.11.21)(vite@8.0.16(@types/node@26.1.1)(esbuild@0.28.1))
+      '@universal-middleware/core': 0.4.18(hono@4.12.29)(srvx@0.11.21)
+      '@universal-middleware/node': 0.2.1(hono@4.12.29)(srvx@0.11.21)
       cac: 6.7.14
       convert-route: 1.1.1
       es-module-lexer: 1.7.0

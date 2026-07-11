@@ -5,7 +5,7 @@
   <a href="https://codecov.io/github/soroush-tech/core"><img alt="Coverage" src="https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg"></a>
   <a href="https://sonarcloud.io/summary/new_code?id=soroush-tech_soroush.tech"><img alt="Quality Gate" src="https://sonarcloud.io/api/project_badges/measure?project=soroush-tech_soroush.tech&metric=alert_status"></a>
   <a href="https://coderabbit.ai"><img alt="Reviewed by CodeRabbit" src="https://img.shields.io/badge/CodeRabbit-Reviewed-FF570A?logo=coderabbit&logoColor=white"></a>
-  <a href="https://main--6a17c33fc4e9466680e34e97.chromatic.com/"><img alt="Storybook" src="https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white"></a>
+  <a href="https://storybook.soroush.tech/"><img alt="Storybook" src="https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white"></a>
 </p>
 
 Welcome to my digital home. 👋
@@ -37,7 +37,7 @@ its own shared tooling packages and backend workers.
 - `@soroush.tech/vite-plugin-sitemap` emits
   `sitemap.xml` from the prerendered HTML (skipping `noindex` pages).
 - a static `robots.txt` ships from `apps/web/public/` at build time.
-- meta tags are injected for each page.
+- meta-tags are injected for each page.
 
 ---
 

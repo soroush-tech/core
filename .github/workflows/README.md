@@ -9,7 +9,7 @@ success and never run off a raw `push`; package publishing (`cd-packages`) is **
 | File                                       | Name                     | Trigger                                                      |
 | ------------------------------------------ | ------------------------ | ------------------------------------------------------------ |
 | [`ci.yml`](./ci.yml)                       | `Continuous Integration` | `push` to `main`, every `pull_request`                       |
-| [`cd-web.yml`](./cd-web.yml)               | Pages deploy             | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
+| [`cd-web.yml`](./cd-web.yml)               | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-worker-api.yml`](./cd-worker-api.yml) | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-packages.yml`](./cd-packages.yml)     | Publish Packages (npm)   | manual `workflow_dispatch` only                              |
 | [`label-area.yml`](./label-area.yml)       | Label Affected Area      | `issues` `opened`                                            |
@@ -147,15 +147,17 @@ Codecov merges uploads by commit SHA. 100% coverage is enforced inside each
 | `storybook`          | Storybook test runner               |
 | `e2e`                | web Playwright (`coverage/e2e`)     |
 
-## `cd-web.yml` — GitHub Pages deploy
+## `cd-web.yml` — GitHub Pages + Storybook deploy
 
 ```mermaid
 flowchart TD
     trig["workflow_run success<br/>or workflow_dispatch"] --> changes["changes<br/>download changes.json →<br/>web = apps∋web ∥ packages≠[] ∥ root"]
     changes -->|"web == true"| build["build<br/>vite build → upload-pages-artifact"]
+    changes -->|"web == true"| storybook["storybook<br/>build:storybook → wrangler deploy"]
     changes -->|"web == false"| skip["(skipped)"]
     build --> deploy["deploy<br/>actions/deploy-pages"]
     deploy --> pages["GitHub Pages"]
+    storybook --> cf["Cloudflare · storybook.soroush.tech"]
 ```
 
 `concurrency: pages` with `cancel-in-progress: false` so deploys queue rather than

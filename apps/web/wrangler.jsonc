@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Storybook static site deployed to the Cloudflare Pages project
+  // `soroush-storybook`, served at storybook.soroush.tech (the custom domain is
+  // configured on the Pages project in the dashboard, not here). Consumed by
+  // `wrangler pages deploy` in the `storybook` job of .github/workflows/cd-web.yml
+  // and by the local `pnpm --filter @soroush/web deploy:storybook` script.
+  "name": "soroush-storybook",
+  "pages_build_output_dir": "./storybook-static",
+  "compatibility_date": "2026-06-18",
+}

@@ -44,7 +44,8 @@
     "preview": "vite preview",
     "preview:e2e": "serve build/client -l 9999",
     "preview:storybook": "npx serve storybook-static",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "deploy:storybook": "wrangler pages deploy"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -128,7 +129,8 @@
     "vite-imagetools": "^10.0.1",
     "vite-plugin-compression2": "^2.5.3",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.110.0"
   },
   "msw": {
     "workerDirectory": [
