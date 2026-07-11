@@ -78,6 +78,13 @@ export const fontWeight = typographyFns.fontWeight
 export const lineHeight = typographyFns.lineHeight
 export const textAlign = typographyFns.textAlign
 export const fontStyle = typographyFns.fontStyle
+export const textTransform = typographyFns.textTransform
+export const textAlignLast = typographyFns.textAlignLast
+export const textDecoration = typographyFns.textDecoration
+export const textDecorationLine = typographyFns.textDecorationLine
+export const textDecorationStyle = typographyFns.textDecorationStyle
+export const textDecorationThickness = typographyFns.textDecorationThickness
+export const textDecorationColor = typographyFns.textDecorationColor
 export const letterSpacing = typographyFns.letterSpacing
 
 const flexboxFns = flexbox as unknown as Record<string, Parser>

@@ -10,6 +10,13 @@ const config: SystemConfig = {
   letterSpacing: { property: 'letterSpacing', scale: 'letterSpacings' },
   textAlign: true,
   fontStyle: true,
+  textTransform: true,
+  textDecoration: true,
+  textDecorationLine: true,
+  textDecorationStyle: true,
+  textDecorationThickness: true,
+  textDecorationColor: { property: 'textDecorationColor', scale: 'colors' },
+  textAlignLast: true,
 }
 
 export const typography = system(config)

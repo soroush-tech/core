@@ -64,6 +64,12 @@ The color utility parses a component's `color` and `bg` props and converts them 
 By default the raw value of the prop is returned.
 Color palettes can be configured with the [ThemeProvider][theming] to use keys as prop values, with support for dot notation.
 
+| Prop                    | CSS Property     |
+| ----------------------- | ---------------- |
+| `color`                 | color            |
+| `bg`, `backgroundColor` | background-color |
+| `opacity`               | opacity          |
+
 ```jsx
 // examples
 // picks the value defined in `theme.colors.blue`
@@ -89,7 +95,24 @@ Color palettes can be configured with the [ThemeProvider][theming] to use keys a
 import { typography } from '@soroush.tech/styled-system'
 ```
 
-Typography props include `fontFamily`, `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`, `textAlign`, and `fontStyle`.
+The typography utility includes the following style props.
+
+| Prop                      | CSS Property              |
+| ------------------------- | ------------------------- |
+| `fontFamily`              | font-family               |
+| `fontSize`                | font-size                 |
+| `fontWeight`              | font-weight               |
+| `lineHeight`              | line-height               |
+| `letterSpacing`           | letter-spacing            |
+| `textAlign`               | text-align                |
+| `fontStyle`               | font-style                |
+| `textTransform`           | text-transform            |
+| `textAlignLast`           | text-align-last           |
+| `textDecoration`          | text-decoration           |
+| `textDecorationLine`      | text-decoration-line      |
+| `textDecorationStyle`     | text-decoration-style     |
+| `textDecorationThickness` | text-decoration-thickness |
+| `textDecorationColor`     | text-decoration-color     |
 
 ```jsx
 // examples
@@ -128,7 +151,22 @@ Typography props include `fontFamily`, `fontSize`, `fontWeight`, `lineHeight`, `
 import { layout } from '@soroush.tech/styled-system'
 ```
 
-The layout utility includes style props for `width`, `height`, `display`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`, `size`, `verticalAlign`, `overflow`, `overflowX`, and `overflowY`.
+The layout utility includes the following style props.
+
+| Prop            | CSS Property     |
+| --------------- | ---------------- |
+| `width`         | width            |
+| `height`        | height           |
+| `minWidth`      | min-width        |
+| `maxWidth`      | max-width        |
+| `minHeight`     | min-height       |
+| `maxHeight`     | max-height       |
+| `size`          | width and height |
+| `display`       | display          |
+| `verticalAlign` | vertical-align   |
+| `overflow`      | overflow         |
+| `overflowX`     | overflow-x       |
+| `overflowY`     | overflow-y       |
 
 The `width` prop is transformed based on the following:
 
@@ -200,7 +238,23 @@ The `width` prop is transformed based on the following:
 import { flexbox } from '@soroush.tech/styled-system'
 ```
 
-The `flexbox` utility includes style props for `alignItems`, `alignContent`, `justifyItems`, `justifyContent`, `flexWrap`, `flexDirection`, `flex`, `flexGrow`, `flexShrink`, `flexBasis`, `justifySelf`, `alignSelf`, and `order`.
+The `flexbox` utility includes the following style props.
+
+| Prop             | CSS Property    |
+| ---------------- | --------------- |
+| `alignItems`     | align-items     |
+| `alignContent`   | align-content   |
+| `justifyItems`   | justify-items   |
+| `justifyContent` | justify-content |
+| `flexWrap`       | flex-wrap       |
+| `flexDirection`  | flex-direction  |
+| `flex`           | flex            |
+| `flexGrow`       | flex-grow       |
+| `flexShrink`     | flex-shrink     |
+| `flexBasis`      | flex-basis      |
+| `justifySelf`    | justify-self    |
+| `alignSelf`      | align-self      |
+| `order`          | order           |
 
 ```jsx
 // alignItems
@@ -240,7 +294,22 @@ The `flexbox` utility includes style props for `alignItems`, `alignContent`, `ju
 import { grid } from '@soroush.tech/styled-system'
 ```
 
-The `grid` utility includes style props for `gridGap`, `gridColumnGap`, `gridRowGap`, `gridColumn`, `gridRow`, `gridAutoFlow`, `gridAutoColumns`, `gridAutoRows`, `gridTemplateColumns`, `gridTemplateRows`, `gridTemplateAreas`, and `gridArea`.
+The `grid` utility includes the following style props.
+
+| Prop                  | CSS Property          |
+| --------------------- | --------------------- |
+| `gridGap`             | grid-gap              |
+| `gridColumnGap`       | grid-column-gap       |
+| `gridRowGap`          | grid-row-gap          |
+| `gridColumn`          | grid-column           |
+| `gridRow`             | grid-row              |
+| `gridAutoFlow`        | grid-auto-flow        |
+| `gridAutoColumns`     | grid-auto-columns     |
+| `gridAutoRows`        | grid-auto-rows        |
+| `gridTemplateColumns` | grid-template-columns |
+| `gridTemplateRows`    | grid-template-rows    |
+| `gridTemplateAreas`   | grid-template-areas   |
+| `gridArea`            | grid-area             |
 
 ```jsx
 // gridGap
@@ -289,7 +358,15 @@ The `grid` utility includes style props for `gridGap`, `gridColumnGap`, `gridRow
 import { background } from '@soroush.tech/styled-system'
 ```
 
-The `background` utility includes style props for `backgroundImage`, `backgroundSize`, `backgroundPosition`, and `backgroundRepeat`.
+The `background` utility includes the following style props.
+
+| Prop                               | CSS Property        |
+| ---------------------------------- | ------------------- |
+| `background`                       | background          |
+| `backgroundImage`, `bgImage`       | background-image    |
+| `backgroundSize`, `bgSize`         | background-size     |
+| `backgroundPosition`, `bgPosition` | background-position |
+| `backgroundRepeat`, `bgRepeat`     | background-repeat   |
 
 ```jsx
 // example
@@ -307,7 +384,37 @@ The `background` utility includes style props for `backgroundImage`, `background
 import { border } from '@soroush.tech/styled-system'
 ```
 
-The `border` utility includes style props for `border`, `borderWidth`, `borderStyle`, `borderColor`, `borderRadius`, `borderTop`, `borderTopWidth`, `borderTopStyle`, `borderTopColor`, `borderTopLeftRadius`, `borderTopRightRadius`, `borderRight`, `borderRightWidth`, `borderRightStyle`, `borderRightColor`, `borderBottom`, `borderBottomWidth`, `borderBottomStyle`, `borderBottomColor`, `borderBottomLeftRadius`, `borderBottomRightRadius`, `borderLeft`, `borderLeftWidth`, `borderLeftStyle`, `borderLeftColor`, `borderX`, and `borderY`.
+The `border` utility includes the following style props.
+
+| Prop                      | CSS Property                 |
+| ------------------------- | ---------------------------- |
+| `border`                  | border                       |
+| `borderWidth`             | border-width                 |
+| `borderStyle`             | border-style                 |
+| `borderColor`             | border-color                 |
+| `borderRadius`            | border-radius                |
+| `borderTop`               | border-top                   |
+| `borderTopWidth`          | border-top-width             |
+| `borderTopStyle`          | border-top-style             |
+| `borderTopColor`          | border-top-color             |
+| `borderTopLeftRadius`     | border-top-left-radius       |
+| `borderTopRightRadius`    | border-top-right-radius      |
+| `borderRight`             | border-right                 |
+| `borderRightWidth`        | border-right-width           |
+| `borderRightStyle`        | border-right-style           |
+| `borderRightColor`        | border-right-color           |
+| `borderBottom`            | border-bottom                |
+| `borderBottomWidth`       | border-bottom-width          |
+| `borderBottomStyle`       | border-bottom-style          |
+| `borderBottomColor`       | border-bottom-color          |
+| `borderBottomLeftRadius`  | border-bottom-left-radius    |
+| `borderBottomRightRadius` | border-bottom-right-radius   |
+| `borderLeft`              | border-left                  |
+| `borderLeftWidth`         | border-left-width            |
+| `borderLeftStyle`         | border-left-style            |
+| `borderLeftColor`         | border-left-color            |
+| `borderX`                 | border-left and border-right |
+| `borderY`                 | border-top and border-bottom |
 
 ```jsx
 <Box border='1px solid' />
@@ -335,7 +442,16 @@ The `border` utility includes style props for `border`, `borderWidth`, `borderSt
 import { position } from '@soroush.tech/styled-system'
 ```
 
-The `position` utility includes style props for `position`, `zIndex`, `top`, `right`, `bottom`, and `left`.
+The `position` utility includes the following style props.
+
+| Prop       | CSS Property |
+| ---------- | ------------ |
+| `position` | position     |
+| `zIndex`   | z-index      |
+| `top`      | top          |
+| `right`    | right        |
+| `bottom`   | bottom       |
+| `left`     | left         |
 
 ```jsx
 // position
@@ -359,7 +475,12 @@ The `position` utility includes style props for `position`, `zIndex`, `top`, `ri
 import { shadow } from '@soroush.tech/styled-system'
 ```
 
-The `shadow` utility includes style props for `textShadow` and `boxShadow`.
+The `shadow` utility includes the following style props.
+
+| Prop         | CSS Property |
+| ------------ | ------------ |
+| `textShadow` | text-shadow  |
+| `boxShadow`  | box-shadow   |
 
 ```jsx
 <Box textShadow="small" boxShadow="medium" />

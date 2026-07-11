@@ -3,12 +3,14 @@
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
   "rebaseWhen": "conflicted",
-  "prConcurrentLimit": 3,
+  "prConcurrentLimit": 1,
   "prHourlyLimit": 2,
   "labels": ["dependencies"],
   "semanticCommits": "enabled",
   "rangeStrategy": "bump",
   "enabledManagers": ["npm"],
+  "separateMajorMinor": false,
+  "separateMinorPatch": false,
   "lockFileMaintenance": {
     "enabled": false
   },
@@ -22,12 +24,9 @@
       "enabled": false
     },
     {
-      "matchDepTypes": ["devDependencies"],
-      "groupName": "dev dependencies"
-    },
-    {
-      "matchDepTypes": ["dependencies"],
-      "groupName": "dependencies"
+      "matchPackageNames": ["*"],
+      "groupName": "all dependencies",
+      "groupSlug": "all"
     },
     {
       "matchFileNames": ["apps/web/package.json"],

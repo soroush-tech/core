@@ -117,6 +117,7 @@ const scales: Record<string, string> = {
   borderRightColor: 'colors',
   borderRightStyle: 'borderStyles',
   outlineColor: 'colors',
+  textDecorationColor: 'colors',
   boxShadow: 'shadows',
   textShadow: 'shadows',
   zIndex: 'zIndices',
