@@ -283,6 +283,10 @@ jobs:
       contents: read
     environment: CI
     timeout-minutes: 30
+    # Forward the CI-environment-scoped `VITE_BASE_URL` to the `e2e` job, which can't read it
+    # itself (it stays off the environment to avoid a second approval). Non-secret value.
+    outputs:
+      vite_base_url: ${{ vars.VITE_BASE_URL }}
 
     # Pin the browser download location so the cache path/key is stable and shared with the
     # `e2e` job's chromium row on the same runner OS.
@@ -416,10 +420,11 @@ jobs:
     permissions:
       contents: read
       id-token: write # tokenless (OIDC) Codecov upload — see the upload step
-    # No `environment: CI` on purpose. e2e already runs behind `web` (which is the environment
-    # gate), so it can't start until CI is approved; keeping it off the environment avoids a
-    # SECOND approval prompt when e2e reaches the gate in its own (post-web) wave. It uploads to
-    # Codecov via OIDC, so it needs neither the CI-environment secret nor its own approval.
+    # No `environment: CI` on purpose — that would prompt a SECOND approval when e2e reaches the
+    # gate in its own (post-web) wave. e2e still needs the CI-environment-scoped `VITE_BASE_URL`
+    # (the dev-server SSR fetch in the article page's data() hook needs an absolute base, else the
+    # relative `/gists/:id` URL throws in Node and the article title falls back to a placeholder),
+    # so the already-gated `web` job reads it and forwards it via `needs.web.outputs.vite_base_url`.
     timeout-minutes: 30
 
     # Pin the browser download location so one cache path/key works on every OS.
@@ -480,7 +485,9 @@ jobs:
       - name: Run E2E (${{ matrix.engine }})
         run: ${{ needs.prepare.outputs.runner }} run ${{ matrix.script }}
         env:
-          VITE_BASE_URL: ${{ vars.VITE_BASE_URL }}
+          # From the `web` job's output — e2e is off the CI environment, so it can't read the
+          # env-scoped `vars.VITE_BASE_URL` directly (see the job-level comment above).
+          VITE_BASE_URL: ${{ needs.web.outputs.vite_base_url }}
 
       - name: Upload E2E Coverage to Codecov
         if: matrix.coverage

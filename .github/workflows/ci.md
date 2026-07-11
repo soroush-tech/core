@@ -148,7 +148,8 @@ strategy:
 
 `needs: [prepare, lint]` · `if: web == 'true'` · `environment: CI` · **ubuntu** · 30 min.
 Unit / browser / storybook coverage tiers. Browser engines (E2E) run in the separate
-[`e2e`](#job-e2e) job.
+[`e2e`](#job-e2e) job. Exposes `outputs.vite_base_url` (the env-scoped `VITE_BASE_URL`) so the
+environment-less `e2e` job can consume it.
 
 ```yaml
 runs-on: ubuntu-latest
@@ -185,10 +186,12 @@ workflow; see [`chromatic.md`](./chromatic.md).
 
 ## Job: `e2e`
 
-`needs: [prepare, lint, web]` · `if: web == 'true'` · `environment: CI` · 30 min. Depends on
+`needs: [prepare, lint, web]` · `if: web == 'true'` · **no `environment`** · 30 min. Depends on
 `web`, so a `web` failure skips `e2e` (no point running the engines when the app's own suite is
 red). One browser engine per native OS; macOS (≈10× cost) is reserved for WebKit. Playwright's
-`webServer` builds and serves the app, so there is **no separate build step**.
+`webServer` builds and serves the app, so there is **no separate build step**. Stays off the CI
+environment to avoid a second approval prompt; instead it reads the env-scoped `VITE_BASE_URL`
+via `needs.web.outputs.vite_base_url` (the already-gated `web` job forwards it).
 
 ```yaml
 runs-on: ${{ matrix.os }}
@@ -201,12 +204,12 @@ strategy:
       - { os: macOS-latest, engine: webkit, script: test:e2e:webkit }
 ```
 
-| #   | Step                     | Detail                                                                                           |
-| --- | ------------------------ | ------------------------------------------------------------------------------------------------ |
-| 1   | Checkout                 | default depth, no persisted creds                                                                |
-| 2–5 | Setup + Playwright cache | same as `web`, but installs only the matrix `engine` (`playwright install --with-deps <engine>`) |
-| 6   | Run E2E                  | `${runner} run <matrix.script>`, `VITE_BASE_URL` from repo `vars`                                |
-| 7   | Upload E2E coverage      | `if: matrix.coverage` (chromium only) → `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e` |
+| #   | Step                     | Detail                                                                                                                    |
+| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout                 | default depth, no persisted creds                                                                                         |
+| 2–5 | Setup + Playwright cache | same as `web`, but installs only the matrix `engine` (`playwright install --with-deps <engine>`)                          |
+| 6   | Run E2E                  | `${runner} run <matrix.script>`, `VITE_BASE_URL` from `needs.web.outputs.vite_base_url` (web forwards the env-scoped var) |
+| 7   | Upload E2E coverage      | `if: matrix.coverage` (chromium only) → `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                          |
 
 Only the chromium row runs with coverage (`E2E_COVERAGE=true` via `test:coverage:e2e`);
 Firefox and WebKit run for cross-engine signal only.

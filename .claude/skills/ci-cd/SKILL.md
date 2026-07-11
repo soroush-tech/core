@@ -1,5 +1,5 @@
 ---
-description: GitHub Actions CI/CD conventions for this repo — the unified ci.yml (prepare → changes-gated lint/web/e2e/packages/worker → ci-ok), the action-pinning rule (first-party version tags, third-party SHAs), per-workspace Codecov flags with tokenless-OIDC to dodge the environment approval gate, Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
+description: GitHub Actions CI/CD conventions for this repo — the unified ci.yml (prepare → changes-gated lint/web/e2e/packages/worker → ci-ok), the action-pinning rule (first-party version tags, third-party SHAs), per-workspace Codecov flags with tokenless-OIDC uploads, the CI-environment approval gate (with env-scoped vars forwarded to environment-less jobs via job outputs), Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
 paths: .github/workflows/**
 ---
 
@@ -43,7 +43,7 @@ Pin every `uses:` by the action's **origin**. Getting this wrong fails review: C
 
 ## The `environment: CI` approval gate
 
-`environment: CI` on `web`/`packages`/`worker` is a **required-reviewer gate**. One approval covers every job **already waiting** in that wave — but a job reaching the gate **later** (e.g. `e2e`, which `needs: web`) prompts a **second** approval. Keep such a job **off** the environment: `e2e` runs behind the already-gated `web` and uploads to Codecov **tokenlessly via OIDC** (`use_oidc: true` + job `permissions: { id-token: write }`, works on this public repo), so it needs neither the env-scoped `CODECOV_TOKEN` nor its own approval.
+`environment: CI` on `web`/`packages`/`worker` is a **required-reviewer gate**. One approval covers every job **already waiting** in that wave — but a job reaching the gate **later** (e.g. `e2e`, which `needs: web`) prompts a **second** approval. Keep such a job **off** the environment. When it still needs an env-scoped value, **forward it through an already-gated job's `outputs`** rather than joining the environment: `e2e` needs the CI-environment-scoped `VITE_BASE_URL` (its dev-server SSR fetch needs an absolute base — else the relative `/gists/:id` URL throws in Node and the article-page e2e fails on a placeholder title), so `web` reads it (`outputs.vite_base_url: ${{ vars.VITE_BASE_URL }}`) and `e2e` consumes `needs.web.outputs.vite_base_url`. Only works for **non-secret** values (job outputs redact secrets). e2e also uploads to Codecov **tokenlessly via OIDC** (`use_oidc: true` + job `permissions: { id-token: write }`, works on this public repo), so its coverage upload doesn't depend on the env-scoped `CODECOV_TOKEN` either.
 
 ## Deploys
 
