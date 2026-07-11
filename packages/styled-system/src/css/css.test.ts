@@ -62,4 +62,10 @@ describe('css', () => {
   it('resolves nested function values', () => {
     expect(css({ width: () => () => '50%' })({})).toEqual({ width: '50%' })
   })
+
+  it('resolves textDecorationColor through the colors scale', () => {
+    expect(css({ textDecorationColor: 'primary' })({ colors: { primary: '#0cf' } })).toEqual({
+      textDecorationColor: '#0cf',
+    })
+  })
 })
