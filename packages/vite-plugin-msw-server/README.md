@@ -209,3 +209,8 @@ plugin can't hook).
 **Which Node versions are supported?**
 Any Node that your msw version supports. `msw/node` hooks Node's HTTP layer, so it runs
 under Node.js for dev, CI, and builds.
+
+## Release notes
+
+Per-version notes for every published release live in
+[`release-notes/`](https://github.com/soroush-tech/core/tree/main/packages/vite-plugin-msw-server/release-notes).

@@ -1,4 +1,5 @@
 pnpm pretty-quick --staged
 pnpm gen:publish-options --check
+pnpm check:release-notes
 pnpm prebuild
 pnpm test

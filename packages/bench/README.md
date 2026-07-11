@@ -426,3 +426,8 @@ and PMU access. Under Docker Desktop (WSL2) the PMU is virtualized away, so coun
 **Can pinning flags live in the bench file?**
 Yes — `options.sandbox` (`cpuset`/`cpus`/`memory`/`tag`/`mount`) is read on the host before
 `docker run`. CLI flags still override, and the file must be host-loadable (see above).
+
+## Release notes
+
+Per-version notes for every published release live in
+[`release-notes/`](https://github.com/soroush-tech/core/tree/main/packages/bench/release-notes).

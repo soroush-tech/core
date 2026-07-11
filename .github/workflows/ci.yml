@@ -172,6 +172,11 @@ jobs:
       - name: Run Typecheck
         run: ${{ needs.prepare.outputs.runner }} run typecheck
 
+      # Fail the build if a publishable package bumped its version without adding the matching
+      # release-notes/<version>.md — the same file cd-packages.yml requires before publishing.
+      - name: Check release notes
+        run: ${{ needs.prepare.outputs.runner }} run check:release-notes
+
   # Shared packages: one job per package, each uploads its own Codecov flag.
   packages:
     needs: [prepare, lint]
