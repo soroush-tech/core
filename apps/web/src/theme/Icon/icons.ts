@@ -8,6 +8,7 @@ import ArrowUpwardIcon from 'src/assets/icons/arrow_upward.svg?react'
 import CheckIcon from 'src/assets/icons/check.svg?react'
 import ChevronLeftIcon from 'src/assets/icons/chevron_left.svg?react'
 import ChevronRightIcon from 'src/assets/icons/chevron_right.svg?react'
+import ChecklistIcon from 'src/assets/icons/checklist.svg?react'
 import CloudDoneIcon from 'src/assets/icons/cloud_done.svg?react'
 import CloseIcon from 'src/assets/icons/close.svg?react'
 import CodeIcon from 'src/assets/icons/code.svg?react'
@@ -20,11 +21,16 @@ import ExpandLessIcon from 'src/assets/icons/expand_less.svg?react'
 import ExpandMoreIcon from 'src/assets/icons/expand_more.svg?react'
 import ExternalLinkIcon from 'src/assets/icons/external_link.svg?react'
 import FirstPageIcon from 'src/assets/icons/first_page.svg?react'
+import FormatListBulletedIcon from 'src/assets/icons/format_list_bulleted.svg?react'
+import FormatListNumberedIcon from 'src/assets/icons/format_list_numbered.svg?react'
+import FormatQuoteIcon from 'src/assets/icons/format_quote.svg?react'
 import GridViewIcon from 'src/assets/icons/grid_view.svg?react'
 import GroupsIcon from 'src/assets/icons/groups.svg?react'
 import HubIcon from 'src/assets/icons/hub.svg?react'
+import ImageIcon from 'src/assets/icons/image.svg?react'
 import LanguageIcon from 'src/assets/icons/language.svg?react'
 import LastPageIcon from 'src/assets/icons/last_page.svg?react'
+import LinkIcon from 'src/assets/icons/link.svg?react'
 import LockIcon from 'src/assets/icons/lock.svg?react'
 import MenuIcon from 'src/assets/icons/menu.svg?react'
 import NeurologyIcon from 'src/assets/icons/neurology.svg?react'
@@ -37,6 +43,7 @@ import SmartToyIcon from 'src/assets/icons/smart_toy.svg?react'
 import SmartphoneIcon from 'src/assets/icons/smartphone.svg?react'
 import SpeedIcon from 'src/assets/icons/speed.svg?react'
 import StacksIcon from 'src/assets/icons/stacks.svg?react'
+import TableIcon from 'src/assets/icons/table.svg?react'
 import TerminalIcon from 'src/assets/icons/terminal.svg?react'
 import VisibilityIcon from 'src/assets/icons/visibility.svg?react'
 import WarningIcon from 'src/assets/icons/warning.svg?react'
@@ -54,6 +61,7 @@ export const icons = {
   check: CheckIcon,
   chevron_left: ChevronLeftIcon,
   chevron_right: ChevronRightIcon,
+  checklist: ChecklistIcon,
   cloud_done: CloudDoneIcon,
   close: CloseIcon,
   code: CodeIcon,
@@ -66,11 +74,16 @@ export const icons = {
   expand_more: ExpandMoreIcon,
   external_link: ExternalLinkIcon,
   first_page: FirstPageIcon,
+  format_list_bulleted: FormatListBulletedIcon,
+  format_list_numbered: FormatListNumberedIcon,
+  format_quote: FormatQuoteIcon,
   grid_view: GridViewIcon,
   groups: GroupsIcon,
   hub: HubIcon,
+  image: ImageIcon,
   language: LanguageIcon,
   last_page: LastPageIcon,
+  link: LinkIcon,
   lock: LockIcon,
   menu: MenuIcon,
   neurology: NeurologyIcon,
@@ -83,6 +96,7 @@ export const icons = {
   smartphone: SmartphoneIcon,
   speed: SpeedIcon,
   stacks: StacksIcon,
+  table: TableIcon,
   terminal: TerminalIcon,
   visibility: VisibilityIcon,
   warning: WarningIcon,
