@@ -33,4 +33,5 @@ Rendered at `/article/:id` by `src/pages/article/@id/+Page.tsx`. The page fetche
 
 - Fetching is owned by the page (`useGistById` — a suspense query); the heading is rendered by
   `PageHeader` and the body data is passed to `Article` as a prop.
-- Markdown rendering lives in the [`Markdown`](../../common/Markdown) component (shared module).
+- Markdown rendering lives in the [`Preview`](../../theme/Markdown/Preview) component
+  (`src/theme/Markdown`).

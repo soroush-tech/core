@@ -9,7 +9,7 @@ const ARTICLE = [
   '',
   'A paragraph with **bold**, *italic*, `inline code` and a [link](https://example.com).',
   '',
-  '> A pull quote rendered through the Blockquote primitive.',
+  '> A pull quote rendered through the Quote primitive.',
   '',
   '- First point',
   '- Second point',
