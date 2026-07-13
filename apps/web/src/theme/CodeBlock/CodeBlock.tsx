@@ -51,7 +51,7 @@ const Wrapper = styled(View, { label: 'CodeBlock' })({
   '@media (hover: none)': { '& .code-copy': { opacity: 1 } },
 })
 
-export interface CodeBlockProps {
+export interface CodeBlockProps extends ViewProps {
   children: ReactNode
 }
 
@@ -59,7 +59,7 @@ export interface CodeBlockProps {
  * Fenced-code block: a horizontally scrollable, syntax-highlighted surface with a
  * copy-to-clipboard button that sticks to the top-right while the block is in view.
  */
-export function CodeBlock({ children }: Readonly<CodeBlockProps>) {
+export function CodeBlock({ children, ...rest }: Readonly<CodeBlockProps>) {
   const surfaceRef = useRef<HTMLDivElement>(null)
   const { copied, copy } = useCopyToClipboard()
 
@@ -74,7 +74,7 @@ export function CodeBlock({ children }: Readonly<CodeBlockProps>) {
   }
 
   return (
-    <Wrapper my={2} position="relative">
+    <Wrapper my={2} position="relative" {...rest}>
       <View
         position="absolute"
         top="8px"
