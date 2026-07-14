@@ -29,6 +29,11 @@
       "groupSlug": "all"
     },
     {
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7.0.0",
+      "description": "Hold TypeScript at 6.x: typescript-eslint's supported peer range is '>=4.8.4 <6.1.0', and eslint crashes under the native TS 7 compiler ('Cannot read properties of undefined (reading Cjs)'). Revisit when typescript-eslint supports TypeScript 7."
+    },
+    {
       "matchFileNames": ["apps/web/package.json"],
       "matchPackageNames": ["vite"],
       "allowedVersions": "<8.1.0",
