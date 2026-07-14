@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/bench",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Run A/B function and package-version benchmarks inside a CPU/RAM-pinned Docker sandbox for stable, low-noise numbers. Built on mitata.",
   "keywords": [
     "benchmark",
@@ -26,7 +26,7 @@
   "type": "module",
   "sideEffects": false,
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.18.0"
   },
   "bin": {
     "soroush-bench": "./dist/bin.mjs"
@@ -72,7 +72,7 @@
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
     "mitata": "^1.0.34",
-    "tsdown": "^0.22.4",
+    "tsdown": "^0.22.7",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }

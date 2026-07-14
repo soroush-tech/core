@@ -19,11 +19,11 @@
   "dependencies": {
     "@hono/swagger-ui": "^0.6.1",
     "@soroush.tech/schema": "workspace:*",
-    "hono": "^4.12.29",
+    "hono": "^4.12.30",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260710.1",
+    "@cloudflare/workers-types": "^5.20260714.1",
     "@soroush.tech/eslint-config": "workspace:*",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.7.0",
