@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/vite-plugin-msw-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Make server-side rendering deterministic in end-to-end tests: an msw/node mock server inside Vite, so SSR loaders and SSG prerendering resolve against your mocks instead of a live API.",
   "keywords": [
     "vite",

@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/playwright-coverage",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Collect per-test V8 code coverage from Playwright e2e runs and aggregate it to lcov via monocart-coverage-reports.",
   "keywords": [
     "playwright",
