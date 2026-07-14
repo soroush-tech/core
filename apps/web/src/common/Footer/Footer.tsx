@@ -6,7 +6,7 @@ import { Flex } from 'src/theme/Flex'
 import { Grid } from 'src/theme/Grid'
 import { Typography } from 'src/theme/Typography'
 import { Navbar } from 'src/common/Navbar'
-import { Blockquote } from 'src/common/Blockquote'
+import { Quote } from 'src/theme/Quote'
 import { alpha } from 'src/theme/utils'
 
 const DIRECTORIES = [
@@ -129,7 +129,7 @@ export function Footer() {
 
           {/* Col 4 — Terminal readout + copyright (stays after the logo in tablet) */}
           <View order={[0, 2, 2, 0]}>
-            <Blockquote bg="primary" p={3} mb={4} display={['none', 'block']}>
+            <Quote bg="primary" p={3} mb={4} display={['none', 'block']}>
               <Typography
                 variant="caption"
                 color="primary"
@@ -140,7 +140,7 @@ export function Footer() {
                 SYSTEM_OUTPUT
               </Typography>
               <TerminalText>Running diagnostic sequence... OK</TerminalText>
-            </Blockquote>
+            </Quote>
             <Typography variant="caption" color="secondary" fontFamily="mono">
               © 2026 SOROUSH.TECH. ALL RIGHTS RESERVED.
             </Typography>

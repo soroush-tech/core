@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithTheme } from 'src/test/utils/wrapper'
 import { CodeBlock } from './CodeBlock'
@@ -22,6 +22,8 @@ describe('CodeBlock', () => {
       </CodeBlock>
     )
     expect(container.querySelector('pre')).toHaveTextContent('const x = 1')
+    // Focusable so keyboard users can scroll an overflowing block.
+    expect(container.querySelector('pre')).toHaveAttribute('tabindex', '0')
     expect(screen.getByRole('button', { name: 'Copy code' })).toBeInTheDocument()
   })
 
@@ -35,9 +37,8 @@ describe('CodeBlock', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Copy code' }))
     expect(writeText).toHaveBeenCalledWith('line one\nline two')
 
-    // Flush the clipboard promise so the confirmation state applies.
-    await act(async () => {})
-    expect(screen.getByRole('button', { name: 'Copied' })).toBeInTheDocument()
+    // Waits for the clipboard promise to resolve and the confirmation state to apply.
+    expect(await screen.findByRole('button', { name: 'Copied' })).toBeInTheDocument()
   })
 
   it('does not copy when the block is empty', () => {

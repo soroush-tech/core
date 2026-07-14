@@ -47,15 +47,16 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 
 ### Layout & surfaces
 
-| Component | Purpose                                          |
-| --------- | ------------------------------------------------ |
-| `View`    | Styled `div` primitive — the base building block |
-| `Flex`    | `View` with flexbox defaults                     |
-| `Grid`    | CSS grid container                               |
-| `Paper`   | Elevated surface with background and shadow      |
-| `Card`    | Content container built on `Paper`               |
-| `AppBar`  | Top application bar                              |
-| `Drawer`  | Slide-in side panel                              |
+| Component | Purpose                                           |
+| --------- | ------------------------------------------------- |
+| `View`    | Styled `div` primitive — the base building block  |
+| `Flex`    | `View` with flexbox defaults                      |
+| `Grid`    | CSS grid container                                |
+| `Paper`   | Elevated surface with background and shadow       |
+| `Card`    | Content container built on `Paper`                |
+| `Quote`   | Bordered quote / terminal-panel surface on `View` |
+| `AppBar`  | Top application bar                               |
+| `Drawer`  | Slide-in side panel                               |
 
 ### Content & data display
 
@@ -67,6 +68,8 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 | `Image`        | Image with styled-system props                                                                                                                                                                                             |
 | `Avatar`       | User/entity avatar                                                                                                                                                                                                         |
 | `Table`        | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `src/theme/Table` |
+| `CodeBlock`    | Scrollable fenced-code surface with a copy-to-clipboard button                                                                                                                                                             |
+| `Markdown`     | Headless markdown editor + renderer — exports `Control`, `Toolbar`, `Editor`, and `Preview` from `src/theme/Markdown`                                                                                                      |
 | `ColorPalette` | Renders palette swatches (docs/Storybook aid)                                                                                                                                                                              |
 
 ### Inputs & forms

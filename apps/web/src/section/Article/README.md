@@ -1,7 +1,7 @@
 # Article
 
 Renders a single article body from a GitHub gist. Receives an already-fetched `Gist` and renders the
-`en.md` body through the `Markdown` component, which maps every markdown element to a design-system
+`en.md` body through the `Preview` component, which maps every markdown element to a design-system
 primitive.
 
 ```tsx
@@ -27,10 +27,11 @@ Rendered at `/article/:id` by `src/pages/article/@id/+Page.tsx`. The page fetche
 | Region  | Element              | Notes                                        |
 | ------- | -------------------- | -------------------------------------------- |
 | Body    | `Paper as="section"` | `bg="paper"`, `maxWidth="1280px"`, centered  |
-| Body MD | `Markdown`           | Markdown elements mapped to theme primitives |
+| Body MD | `Preview`            | Markdown elements mapped to theme primitives |
 
 ## Data
 
 - Fetching is owned by the page (`useGistById` — a suspense query); the heading is rendered by
   `PageHeader` and the body data is passed to `Article` as a prop.
-- Markdown rendering lives in the [`Markdown`](../../common/Markdown) component (shared module).
+- Markdown rendering lives in the [`Preview`](../../theme/Markdown/Preview) component
+  (`src/theme/Markdown`).

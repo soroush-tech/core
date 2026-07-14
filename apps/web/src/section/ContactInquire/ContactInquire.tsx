@@ -17,7 +17,7 @@ import { useContactInquire } from 'src/hooks/useContactInquire'
 import { useContactSubmit } from 'src/hooks/useContactSubmit'
 import { useTurnstile } from 'src/hooks/useTurnstile'
 import { usePageContext } from 'src/hooks/usePageContext'
-import { Blockquote } from 'src/common/Blockquote'
+import { Quote } from 'src/theme/Quote'
 
 export function ContactInquire() {
   // Hidden honeypot field name — read from env so it stays out of the public repo. When unset
@@ -159,7 +159,7 @@ export function ContactInquire() {
                 {success.subtext}
               </Typography>
 
-              <Blockquote bg="terminal" p={5} mt={8} width="100%" maxWidth="28rem" textAlign="left">
+              <Quote bg="terminal" p={5} mt={8} width="100%" maxWidth="28rem" textAlign="left">
                 <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
                   <Typography variant="caption" color="primary" letterSpacing="widest">
                     ID: {requestId}
@@ -181,7 +181,7 @@ export function ContactInquire() {
                     </Typography>
                   ))}
                 </View>
-              </Blockquote>
+              </Quote>
 
               <Flex flexDirection="row" mt={8} gap={2}>
                 {cameFromApp && (

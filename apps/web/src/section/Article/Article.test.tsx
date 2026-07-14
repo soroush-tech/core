@@ -6,8 +6,8 @@ import type { Gist } from 'src/types/github'
 const markdownMock = vi.fn(({ children }: { children: string }) => (
   <div data-testid="markdown">{children}</div>
 ))
-vi.mock('src/common/Markdown', () => ({
-  Markdown: (props: { children: string }) => markdownMock(props),
+vi.mock('src/theme/Markdown', () => ({
+  Preview: (props: { children: string }) => markdownMock(props),
 }))
 
 import { Article } from './Article'
