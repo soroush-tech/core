@@ -325,7 +325,7 @@
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
     "prop-types": "^15.8.1",
-    "tsdown": "^0.22.4",
+    "tsdown": "^0.22.7",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }

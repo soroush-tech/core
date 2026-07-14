@@ -60,7 +60,7 @@
   },
   "peerDependencies": {
     "@playwright/test": "^1.61.1",
-    "monocart-coverage-reports": "^2"
+    "monocart-coverage-reports": "^2.12.12"
   },
   "dependencies": {
     "picomatch": "^4.0.5"
@@ -74,7 +74,7 @@
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
     "monocart-coverage-reports": "^2.12.12",
-    "tsdown": "^0.22.4",
+    "tsdown": "^0.22.7",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }
