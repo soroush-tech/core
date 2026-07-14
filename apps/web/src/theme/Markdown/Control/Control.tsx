@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react'
+import { useMemo, useRef, type ReactNode } from 'react'
 import { applyAction } from 'src/theme/Markdown/utils/applyAction'
 import {
   MarkdownContext,
@@ -25,38 +25,35 @@ export function Control({ value, onChange, children }: Readonly<ControlProps>) {
   const lastSelectionRef = useRef<MarkdownSelection | null>(null)
   const pendingSelectionRef = useRef<MarkdownSelection | null>(null)
 
-  const dispatch = (action: ToolbarAction) => {
-    const { start, end } = lastSelectionRef.current ?? { start: value.length, end: value.length }
-    const next = applyAction(action, { value, selectionStart: start, selectionEnd: end })
-    const selection = { start: next.selectionStart, end: next.selectionEnd }
-    pendingSelectionRef.current = selection
-    lastSelectionRef.current = selection
-    onChange(next.value)
-  }
+  // Memoised so consumers only re-render when the source (or its handler) actually changes —
+  // the handlers close over `value`, so they are rebuilt inside the memo.
+  const context = useMemo<MarkdownContextValue>(() => {
+    const dispatch = (action: ToolbarAction) => {
+      const { start, end } = lastSelectionRef.current ?? { start: value.length, end: value.length }
+      const next = applyAction(action, { value, selectionStart: start, selectionEnd: end })
+      const selection = { start: next.selectionStart, end: next.selectionEnd }
+      pendingSelectionRef.current = selection
+      lastSelectionRef.current = selection
+      onChange(next.value)
+    }
 
-  const rememberSelection = (selection: MarkdownSelection) => {
-    lastSelectionRef.current = selection
-  }
+    const rememberSelection = (selection: MarkdownSelection) => {
+      lastSelectionRef.current = selection
+    }
 
-  const queueSelection = (selection: MarkdownSelection) => {
-    pendingSelectionRef.current = selection
-    lastSelectionRef.current = selection
-  }
+    const queueSelection = (selection: MarkdownSelection) => {
+      pendingSelectionRef.current = selection
+      lastSelectionRef.current = selection
+    }
 
-  const takeQueuedSelection = () => {
-    const selection = pendingSelectionRef.current
-    pendingSelectionRef.current = null
-    return selection
-  }
+    const takeQueuedSelection = () => {
+      const selection = pendingSelectionRef.current
+      pendingSelectionRef.current = null
+      return selection
+    }
 
-  const context: MarkdownContextValue = {
-    value,
-    onChange,
-    dispatch,
-    rememberSelection,
-    queueSelection,
-    takeQueuedSelection,
-  }
+    return { value, onChange, dispatch, rememberSelection, queueSelection, takeQueuedSelection }
+  }, [value, onChange])
 
   return <MarkdownContext.Provider value={context}>{children}</MarkdownContext.Provider>
 }
