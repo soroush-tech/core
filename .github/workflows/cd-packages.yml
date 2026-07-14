@@ -103,32 +103,46 @@ jobs:
       # OIDC). Skip a version already on the registry rather than fail trying to republish
       # it — with `all`, that skip is the filter: only packages whose version isn't on npm
       # yet actually publish. Bump a package version on main to release it. Each package
-      # runs in a subshell so a skip exits only that iteration and cd resets.
+      # runs in a subshell so a skip exits only that iteration and cd resets; a real
+      # publish failure is recorded but doesn't abort the loop, so the remaining packages
+      # still publish and the step fails at the end.
       - name: Publish packages
         run: |
+          # The explicit `|| exit 1` guards are load-bearing: with the subshell on the
+          # left of `||`, bash ignores errexit inside it, so failures must be raised
+          # by hand for the per-package failure tracking to see them.
+          failed=""
           for pkg in $PKGS; do
             (
-              cd "packages/$pkg"
-              name=$(node -p "require('./package.json').name")
-              version=$(node -p "require('./package.json').version")
+              cd "packages/$pkg" || exit 1
+              name=$(node -p "require('./package.json').name") || exit 1
+              version=$(node -p "require('./package.json').version") || exit 1
               if npm view "$name@$version" version >/dev/null 2>&1; then
                 echo "⏭️ \`$name@$version\` already on npm — skipped (bump the version to release)." >> "$GITHUB_STEP_SUMMARY"
                 exit 0
               fi
-              pnpm publish --no-git-checks
+              pnpm publish --no-git-checks || exit 1
               echo "### 📦 Published \`$name@$version\`" >> "$GITHUB_STEP_SUMMARY"
               echo "https://www.npmjs.com/package/$name/v/$version" >> "$GITHUB_STEP_SUMMARY"
               echo "::notice title=Published::$name@$version"
-            )
+            ) || { echo "::error::Publishing $pkg failed"; failed="$failed $pkg"; }
           done
+          if [ -n "$failed" ]; then
+            echo "::error::Publish failed for:$failed"
+            exit 1
+          fi
 
       # Create each package's GitHub Release if it doesn't already exist — gated on the
-      # release's existence, not on whether npm was newly published, so a rerun can repair
-      # a missing release after a successful publish. Notes come from the in-repo file
-      # packages/<pkg>/release-notes/<version>.md (its existence was checked in the
-      # Resolve step, before publish); --notes-file reads it verbatim. $pkg comes from the
-      # resolved list (repo directory names), never spliced from the dispatch input.
+      # release's existence, not on whether npm was newly published in this run, so a
+      # rerun can repair a missing release after a successful publish. Runs even when the
+      # previous step failed (`!cancelled()`) so packages that did publish still get their
+      # release; a version that never made it to npm is skipped rather than released.
+      # Notes come from the in-repo file packages/<pkg>/release-notes/<version>.md (its
+      # existence was checked in the Resolve step, before publish); --notes-file reads it
+      # verbatim. $pkg comes from the resolved list (repo directory names), never spliced
+      # from the dispatch input.
       - name: Create GitHub Releases
+        if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -136,6 +150,10 @@ jobs:
             name=$(PKG="$pkg" node -p "require('./packages/'+process.env.PKG+'/package.json').name")
             version=$(PKG="$pkg" node -p "require('./packages/'+process.env.PKG+'/package.json').version")
             tag="$name@$version"
+            if ! npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "⏭️ \`$tag\` is not on npm — no GitHub Release created." >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
             if gh release view "$tag" >/dev/null 2>&1; then
               echo "⏭️ GitHub Release \`$tag\` already exists — skipped." >> "$GITHUB_STEP_SUMMARY"
               continue
