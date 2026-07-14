@@ -1,7 +1,7 @@
 import {
   useContext,
-  useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   type KeyboardEvent,
   type SyntheticEvent,
@@ -142,8 +142,9 @@ export function Editor({
   }
 
   // After a dispatched action or Tab re-renders with the new value, restore focus and place the
-  // caret/selection around the inserted markup so typing continues in place.
-  useEffect(() => {
+  // caret/selection around the inserted markup so typing continues in place. Runs before paint
+  // (layout effect) so the prior caret position never flashes for a frame.
+  useLayoutEffect(() => {
     const selection = takeQueuedSelection()
     if (!selection) return
     // The pane always contains the textarea while the Editor is mounted.

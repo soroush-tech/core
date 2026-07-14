@@ -102,6 +102,8 @@ export function CodeBlock({ children, ...rest }: Readonly<CodeBlockProps>) {
       </View>
       <CodeSurface
         as="pre"
+        // Focusable so keyboard users can scroll overflowing lines with the arrow keys.
+        tabIndex={0}
         ref={surfaceRef}
         bg="terminal"
         p={3}
