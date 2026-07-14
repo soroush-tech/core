@@ -141,6 +141,7 @@ jobs:
     environment: cd-worker
     permissions:
       contents: read
+      deployments: write # gitHubToken on wrangler-action creates GitHub deployment records
     steps:
       - name: Checkout Repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -179,11 +180,29 @@ jobs:
           VITE_TURNSTILE_SITEKEY: ${{ secrets.VITE_TURNSTILE_SITEKEY }}
           APP_ENV: production
 
+      # TEMPORARY diagnostic for the silent wrangler-action failure: run the same
+      # commands the action runs, as a raw step where nothing can swallow the output.
+      # Remove once the Pages deploy failure is understood and fixed.
+      - name: Debug wrangler environment
+        working-directory: apps/web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -x
+          node -v
+          npx --version
+          npx --no-install wrangler --version || echo "version exit: $?"
+          npx --no-install wrangler whoami || echo "whoami exit: $?"
+          npx --no-install wrangler pages project list || echo "project list exit: $?"
+          npx --no-install wrangler pages deploy --branch=main || echo "deploy exit: $?"
+
       - name: Deploy Storybook to Cloudflare Pages
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: '4.110.0'
           workingDirectory: apps/web
           command: pages deploy --branch=main

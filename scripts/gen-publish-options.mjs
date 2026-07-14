@@ -53,9 +53,11 @@ const edits = [
     path: join(repoRoot, '.github', 'workflows', 'cd-packages.yml'),
     regions: [
       {
+        // `all` is a mode, not a package: the workflow expands it to every
+        // non-private package whose version isn't on npm yet.
         start: '# gen:publish-options start',
         end: '# gen:publish-options end',
-        lines: ['options:', ...publishable.map((name) => `  - ${name}`)],
+        lines: ['options:', '  - all', ...publishable.map((name) => `  - ${name}`)],
       },
     ],
   },
