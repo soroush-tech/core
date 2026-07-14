@@ -95,6 +95,30 @@ describe('Editor', () => {
     expect(source()).toHaveValue('ab')
   })
 
+  it('releases focus with Escape instead of typing', () => {
+    renderWithTheme(<Harness initialValue="ab" />)
+    const el = source()
+
+    el.focus()
+    expect(el).toHaveFocus()
+    fireEvent.keyDown(el, { key: 'Escape' })
+    expect(el).not.toHaveFocus()
+    expect(source()).toHaveValue('ab')
+  })
+
+  it('announces the shortcut hint via aria-describedby', () => {
+    const { unmount } = renderWithTheme(<Harness />)
+    expect(source()).toHaveAccessibleDescription(/Tab inserts a tab/)
+    unmount()
+
+    renderWithTheme(
+      <Control value="" onChange={() => {}}>
+        <Editor showShortcutHint={false} />
+      </Control>
+    )
+    expect(source()).not.toHaveAttribute('aria-describedby')
+  })
+
   it('works standalone (without a Control) via value/onChange', () => {
     renderWithTheme(<StandaloneHarness />)
     const el = source()

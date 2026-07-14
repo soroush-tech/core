@@ -4,12 +4,14 @@ import { renderWithTheme } from 'src/test/utils/wrapper'
 import { TablePicker } from './TablePicker'
 
 describe('TablePicker', () => {
-  it('opens the size grid when the trigger is clicked', () => {
+  it('opens the size grid and moves focus into it', () => {
     renderWithTheme(<TablePicker onSelect={vi.fn()} />)
     expect(screen.queryByRole('grid')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Table' }))
     expect(screen.getByRole('grid', { name: 'Table size' })).toBeInTheDocument()
-    expect(screen.getByText('Select size')).toBeInTheDocument()
+    // The popover is portalled, so auto-focus must pull keyboard users into the grid.
+    expect(screen.getByRole('gridcell', { name: '1 by 1' })).toHaveFocus()
+    expect(screen.getByText('1 × 1')).toBeInTheDocument()
   })
 
   it('grows the grid when the hover reaches the current edge', () => {

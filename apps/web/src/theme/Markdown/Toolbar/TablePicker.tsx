@@ -80,8 +80,8 @@ export function TablePicker({ onSelect }: Readonly<TablePickerProps>) {
         onClose={close}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        // A hover/click size grid — keep focus on the trigger rather than pulling it into a cell.
-        shouldAutoFocus={false}
+        // The popover is portalled, so focus must be pulled into the grid — otherwise keyboard
+        // users tab straight past it. The default auto-focus lands on the first cell.
         disableAriaHidden
       >
         <Flex flexDirection="column" gap={2} p={2}>

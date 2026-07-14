@@ -147,6 +147,16 @@ describe('applyAction', () => {
       const result = applyAction(bullet, { value: 'a\nb', selectionStart: 0, selectionEnd: 0 })
       expect(result).toEqual({ value: '- a\nb', selectionStart: 0, selectionEnd: 3 })
     })
+
+    it('prefixes the empty first line when the document starts with a newline', () => {
+      const result = applyAction(bullet, { value: '\nfoo', selectionStart: 0, selectionEnd: 0 })
+      expect(result).toEqual({ value: '- \nfoo', selectionStart: 0, selectionEnd: 2 })
+    })
+
+    it('prefixes only the second line when the caret sits on it', () => {
+      const result = applyAction(bullet, { value: 'a\nb', selectionStart: 2, selectionEnd: 3 })
+      expect(result).toEqual({ value: 'a\n- b', selectionStart: 2, selectionEnd: 5 })
+    })
   })
 
   describe('linePrefix family (toggle / replace)', () => {

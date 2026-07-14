@@ -112,4 +112,14 @@ describe('Preview', () => {
     )
     expect(container.querySelector('.custom-para')).toHaveTextContent('a paragraph')
   })
+
+  it('keeps the rendered DOM nodes when slotProps changes identity', () => {
+    const { rerender } = renderWithTheme(
+      <Preview slotProps={{ p: { color: 'primary' } }}>{'a paragraph'}</Preview>
+    )
+    const paragraph = screen.getByText('a paragraph')
+    // A new inline slotProps object must not remount the tree — same node, updated props.
+    rerender(<Preview slotProps={{ p: { color: 'secondary' } }}>{'a paragraph'}</Preview>)
+    expect(screen.getByText('a paragraph')).toBe(paragraph)
+  })
 })

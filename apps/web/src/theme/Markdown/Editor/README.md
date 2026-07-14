@@ -14,7 +14,7 @@ The source `<textarea>` of the `Markdown` compound.
   caret/selection after a dispatched action.
 - **Tab** inserts a real tab (U+0009): a single tab at the caret, or one per line for a multi-line
   selection — it does not move focus.
-- **Ctrl/Cmd+Shift+M** releases focus from the field (the normal Tab behaviour).
+- **Escape** or **Ctrl/Cmd+Shift+M** releases focus from the field (the normal Tab behaviour).
 - A one-line hint of these shortcuts renders under the field by default — set `showShortcutHint`
   to `false` to hide it.
 

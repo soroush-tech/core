@@ -129,7 +129,9 @@ function applyLinePrefix(
   action: LinePrefixAction,
   { value, selectionStart, selectionEnd }: EditorSelection
 ): EditorSelection {
-  const lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1
+  // `lastIndexOf` clamps a negative fromIndex to 0, so a caret at 0 with a leading '\n' would
+  // resolve to line two — the document start is always its own line start.
+  const lineStart = selectionStart === 0 ? 0 : value.lastIndexOf('\n', selectionStart - 1) + 1
   const nextNewline = value.indexOf('\n', selectionEnd)
   const lineEnd = nextNewline === -1 ? value.length : nextNewline
   const prefixed = value

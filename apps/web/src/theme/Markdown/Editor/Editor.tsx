@@ -1,4 +1,11 @@
-import { useContext, useEffect, useRef, type KeyboardEvent, type SyntheticEvent } from 'react'
+import {
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  type KeyboardEvent,
+  type SyntheticEvent,
+} from 'react'
 import { Flex } from 'src/theme/Flex'
 import { Typography } from 'src/theme/Typography'
 import {
@@ -76,6 +83,8 @@ export function Editor({
   showShortcutHint = true,
 }: Readonly<EditorProps>) {
   const context = useContext(MarkdownContext)
+  // Links the shortcut hint to the textarea so assistive tech announces the escape routes on focus.
+  const hintId = useId()
   // Standalone (no Control) keeps its own pending-selection here — there is no Toolbar to share it.
   const localPendingRef = useRef<MarkdownSelection | null>(null)
 
@@ -105,10 +114,14 @@ export function Editor({
     context.rememberSelection({ start: selectionStart, end: selectionEnd })
   }
 
-  // Tab inserts a real tab (U+0009) instead of moving focus; Ctrl/Cmd+Shift+M releases the field.
+  // Tab inserts a real tab (U+0009) instead of moving focus; Escape or Ctrl/Cmd+Shift+M
+  // releases the field.
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const el = event.currentTarget as HTMLTextAreaElement
-    if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === 'm') {
+    if (
+      event.key === 'Escape' ||
+      ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === 'm')
+    ) {
       event.preventDefault()
       el.blur()
       return
@@ -160,14 +173,15 @@ export function Editor({
         onChange={(event) => onChange(event.target.value)}
         inputProps={{
           'aria-label': 'Markdown source',
+          'aria-describedby': showShortcutHint ? hintId : undefined,
           onSelect: rememberSelection,
           onBlur: rememberSelection,
           onKeyDown: handleKeyDown,
         }}
       />
       {showShortcutHint && (
-        <Typography variant="caption" color="secondary" m={0}>
-          Tab inserts a tab · press Ctrl/Cmd+Shift+M to move focus out.
+        <Typography id={hintId} variant="caption" color="secondary" m={0}>
+          Tab inserts a tab · press Escape or Ctrl/Cmd+Shift+M to move focus out.
         </Typography>
       )}
     </Flex>
