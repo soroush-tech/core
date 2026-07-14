@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { gap, m, p } from 'src/theme/utils/test/storiesArgs'
-import { flexAlignItemsTokens, flexJustifyContentTokens } from 'src/theme/utils/test/storiesOptions'
-import { Icon } from 'src/theme/Icon'
+import { gap, m, p } from '@soroush.tech/design-system/utils/test/storiesArgs'
+import {
+  flexAlignItemsTokens,
+  flexJustifyContentTokens,
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
+import { Icon } from '@soroush.tech/design-system/Icon'
 import { Flicker } from './Flicker'
 
 const meta = {

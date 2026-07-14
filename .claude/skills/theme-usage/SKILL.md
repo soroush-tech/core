@@ -64,13 +64,13 @@ The `variant` prop maps to the correct HTML element automatically (via `theme.ty
 
 ```ts
 // ✗
-import { View } from 'src/theme/View/View'
+import { View } from '@soroush.tech/design-system/View/View'
 import { Flex } from '../../theme/Flex'
 
 // ✓
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
 ```
 
 Always use the `src/` alias, never relative paths up the tree.
@@ -79,7 +79,7 @@ Always use the `src/` alias, never relative paths up the tree.
 
 ## Rule 5 — Never recreate what already exists
 
-Before adding a layout div, spinner, input, or icon wrapper — check `src/theme/`. If it exists, use it:
+Before adding a layout div, spinner, input, or icon wrapper — check `@soroush.tech/design-system/`. If it exists, use it:
 
 | If you need               | Check                         |
 | ------------------------- | ----------------------------- |
@@ -114,6 +114,6 @@ styled-system props accept responsive arrays — prefer them over JS ternaries o
 - No raw `div`/`span`/`p` when a theme component exists
 - No `className` + external CSS for layout — use `View`/`Flex` props
 - No custom wrapper components that just rename a theme primitive with no added logic
-- Do not import theme components from inside `src/theme/ComponentName/ComponentName.tsx` — always go through the barrel `index.ts`
+- Do not import theme components from inside `packages/design-system/src/ComponentName/ComponentName.tsx` — always go through the barrel `index.ts`
 
 If `$ARGUMENTS` names a file or component, read it and flag every violation above with a corrected snippet. Otherwise apply to the code being discussed.

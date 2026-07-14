@@ -5,7 +5,7 @@ import { GraphHeader } from './components/GraphHeader'
 import { useGraphSimulation } from './hooks/useGraphSimulation'
 import { useGraphState } from './hooks/useGraphState'
 import type { GraphChildProps, GraphData } from './NetworkGraph.types'
-import { Flex } from 'src/theme/Flex'
+import { Flex } from '@soroush.tech/design-system/Flex'
 
 export interface NetworkGraphProps {
   /** The fully-derived render graph to display. */

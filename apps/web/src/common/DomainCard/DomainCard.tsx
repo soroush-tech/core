@@ -1,9 +1,9 @@
 import type { CSSProperties, ReactNode } from 'react'
 import styled from '@emotion/styled'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Image } from 'src/theme/Image'
-import { Typography } from 'src/theme/Typography'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Image } from '@soroush.tech/design-system/Image'
+import { Typography } from '@soroush.tech/design-system/Typography'
 
 /** Multi-format responsive image from vite-imagetools `as=picture` imports. */
 export interface Images {

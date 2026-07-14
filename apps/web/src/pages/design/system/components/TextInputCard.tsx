@@ -1,9 +1,9 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { TextInput } from 'src/theme/TextInput'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { TextInput } from '@soroush.tech/design-system/TextInput'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 import { CardTitle } from './CardTitle'
 
 export function TextInputCard() {

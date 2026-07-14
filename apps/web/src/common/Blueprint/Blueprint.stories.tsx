@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { height } from 'src/theme/utils/test/storiesArgs'
-import { Typography } from 'src/theme/Typography'
+import { height } from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { Blueprint } from './Blueprint'
 
 const blueprintVariantTokens = ['line', 'dot'] as const

@@ -1,0 +1,7 @@
+import type { SVGProps } from 'react'
+const SvgStacks = (props: SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#9cff93" viewBox="0 0 24 24" {...props}>
+    <path d="M12 14 1 8l11-6 11 6zm0 4L1.575 12.325l2.1-1.15L12 15.725l8.325-4.55 2.1 1.15zm0 4L1.575 16.325l2.1-1.15L12 19.725l8.325-4.55 2.1 1.15z" />
+  </svg>
+)
+export default SvgStacks

@@ -1,4 +1,4 @@
-import { Flex, type GapToken } from 'src/theme/Flex'
+import { Flex, type GapToken } from '@soroush.tech/design-system/Flex'
 import { NavLink, type NavLinkProps } from 'src/common/NavLink'
 
 export type NavItem = { href: string; label: string; target?: string }

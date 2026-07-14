@@ -8,7 +8,7 @@ vi.mock('src/common/Routes', () => ({
 vi.mock('src/common/Providers', () => ({
   Providers: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
-vi.mock('src/theme/utils/styleCache', () => ({
+vi.mock('@soroush.tech/design-system/utils/styleCache', () => ({
   default: { key: 'soroush', inserted: {}, registered: {}, sheet: { tags: [] } },
 }))
 

@@ -1,7 +1,7 @@
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import type { TextColorToken } from 'src/theme/Typography'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import type { TextColorToken } from '@soroush.tech/design-system/Typography'
 
 const COLORS: TextColorToken[] = [
   'initial',

@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import { type Theme, useTheme } from '@emotion/react'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { Paper } from 'src/theme/Paper'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Paper } from '@soroush.tech/design-system/Paper'
 
 export interface FontStyleProps {
   variant?: keyof Theme['fonts']

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { fontFamilyTokens } from 'src/theme/utils/test/storiesOptions'
+import { fontFamilyTokens } from '@soroush.tech/design-system/utils/test/storiesOptions'
 import { FontStyle } from './FontStyle'
 
 const meta = {

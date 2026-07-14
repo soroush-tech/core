@@ -1,7 +1,7 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Button } from 'src/theme/Button'
-import { Flex } from 'src/theme/Flex'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Flex } from '@soroush.tech/design-system/Flex'
 import { CardTitle } from './CardTitle'
 
 export function ButtonCard() {

@@ -21,7 +21,7 @@ Decide the correct frontmatter based on what the skill does:
 
 **`paths`** — set only if the skill is scoped to specific files. Use glob patterns:
 
-- Design system / theme work → `src/theme/**`
+- Design system / theme work → `@soroush.tech/design-system/**`
 - All TypeScript → `**/*.ts,**/*.tsx`
 - Omit for project-wide knowledge
 

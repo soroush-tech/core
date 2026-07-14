@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { styled, keyframes } from 'src/theme'
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Icon } from 'src/theme/Icon'
-import { Button } from 'src/theme/Button'
-import { Typography } from 'src/theme/Typography'
-import { alpha } from 'src/theme/utils'
+import { styled, keyframes } from '@soroush.tech/design-system'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Icon } from '@soroush.tech/design-system/Icon'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { alpha } from '@soroush.tech/design-system/utils'
 
 export interface CookieNoticeProps {
   /** Body copy explaining the cookie situation. */

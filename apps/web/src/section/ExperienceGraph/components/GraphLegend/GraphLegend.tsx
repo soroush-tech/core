@@ -2,10 +2,10 @@ import { Fragment } from 'react'
 import styled from '@emotion/styled'
 import { useTheme } from '@emotion/react'
 import type { GraphChildProps } from 'src/common/NetworkGraph'
-import { Flex } from 'src/theme/Flex'
-import { Switch } from 'src/theme/Switch'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Switch } from '@soroush.tech/design-system/Switch'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 
 // backdrop-filter and media query require CSS — can't be expressed as props.
 const LegendPanel = styled(View)`

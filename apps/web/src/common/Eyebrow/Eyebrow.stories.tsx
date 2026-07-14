@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { letterSpacingTokens, fontFamilyTokens } from 'src/theme/utils/test/storiesOptions'
-import { gap, mb } from 'src/theme/utils/test/storiesArgs'
+import {
+  letterSpacingTokens,
+  fontFamilyTokens,
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
+import { gap, mb } from '@soroush.tech/design-system/utils/test/storiesArgs'
 import { Eyebrow } from './Eyebrow'
 
 const meta: Meta<typeof Eyebrow> = {

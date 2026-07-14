@@ -1,8 +1,8 @@
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { Button } from 'src/theme/Button'
-import { Icon } from 'src/theme/Icon'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Icon } from '@soroush.tech/design-system/Icon'
 import { PageHeader } from 'src/common/PageHeader'
 import { CommandSnippet } from 'src/common/CommandSnippet'
 

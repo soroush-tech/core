@@ -1,9 +1,9 @@
-import { Flex } from 'src/theme/Flex'
-import { Button } from 'src/theme/Button'
-import { Icon } from 'src/theme/Icon'
-import { Typography } from 'src/theme/Typography'
-import { type ViewProps } from 'src/theme/View'
-import { useCopyToClipboard } from 'src/hooks/useCopyToClipboard'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Icon } from '@soroush.tech/design-system/Icon'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { type ViewProps } from '@soroush.tech/design-system/View'
+import { useCopyToClipboard } from '@soroush.tech/design-system/hooks/useCopyToClipboard'
 
 export interface CommandSnippetProps extends ViewProps {
   /** Shell command shown after a `$` prompt and copied to the clipboard on click. */

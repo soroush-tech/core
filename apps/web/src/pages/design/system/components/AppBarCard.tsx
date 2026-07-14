@@ -1,10 +1,10 @@
 import { STORYBOOK_URL } from 'src/config'
-import { AppBar, type AppBarSize } from 'src/theme/AppBar'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Icon } from 'src/theme/Icon'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { AppBar, type AppBarSize } from '@soroush.tech/design-system/AppBar'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Icon } from '@soroush.tech/design-system/Icon'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 import { CardTitle } from './CardTitle'
 
 const SIZES: AppBarSize[] = ['sm', 'md', 'lg']

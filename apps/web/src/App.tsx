@@ -1,10 +1,10 @@
 import Logo from '/soroush.svg'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import Email from 'src/assets/email.svg'
 import LinkedIn from 'src/assets/linkedin.svg'
 import GitHub from 'src/assets/github.svg'
-import { View } from 'src/theme/View'
+import { View } from '@soroush.tech/design-system/View'
 
 function App() {
   return (

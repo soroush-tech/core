@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import type { ReactNode } from 'react'
-import { View } from 'src/theme/View'
-import { Typography } from 'src/theme/Typography'
-import { Paper, type PaperProps } from 'src/theme/Paper'
+import { View } from '@soroush.tech/design-system/View'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Paper, type PaperProps } from '@soroush.tech/design-system/Paper'
 
 // background: linear-gradient has no styled-system equivalent
 const PageHeaderGradient = styled(View, { label: 'PageHeaderGradient' })`

@@ -3,7 +3,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import createEmotionServer from '@emotion/server/create-instance'
 import { Bootstrap } from '../common/Bootstrap'
 import type { OnRenderHtmlAsync } from 'vike/types'
-import styleCache from 'src/theme/utils/styleCache'
+import styleCache from '@soroush.tech/design-system/utils/styleCache'
 import faviconUrl from 'src/assets/soroush.svg'
 import { buildHead } from './buildHead'
 

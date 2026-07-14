@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Flex } from 'src/theme/Flex'
+import { Flex } from '@soroush.tech/design-system/Flex'
 import { Layout } from 'src/common/Layout'
 import { NotFound } from './NotFound'
 

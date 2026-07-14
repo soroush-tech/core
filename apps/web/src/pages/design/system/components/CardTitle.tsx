@@ -1,8 +1,8 @@
-import { Flex } from 'src/theme/Flex'
-import { Icon } from 'src/theme/Icon'
-import { Link } from 'src/theme/Link'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Icon } from '@soroush.tech/design-system/Icon'
+import { Link } from '@soroush.tech/design-system/Link'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 
 export interface CardTitleProps {
   title: string

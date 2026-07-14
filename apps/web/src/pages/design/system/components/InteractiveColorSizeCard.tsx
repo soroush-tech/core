@@ -1,12 +1,12 @@
-import { Card } from 'src/theme/Card'
-import { Button } from 'src/theme/Button'
-import type { ButtonColor, ButtonSize } from 'src/theme/Button'
-import { Checkbox } from 'src/theme/Checkbox'
-import { Switch } from 'src/theme/Switch'
-import { TextInput } from 'src/theme/TextInput'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { Radio } from 'src/theme/Radio'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Button } from '@soroush.tech/design-system/Button'
+import type { ButtonColor, ButtonSize } from '@soroush.tech/design-system/Button'
+import { Checkbox } from '@soroush.tech/design-system/Checkbox'
+import { Switch } from '@soroush.tech/design-system/Switch'
+import { TextInput } from '@soroush.tech/design-system/TextInput'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Radio } from '@soroush.tech/design-system/Radio'
 
 const COLORS: ButtonColor[] = [
   'default',

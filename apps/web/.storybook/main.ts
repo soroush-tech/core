@@ -8,7 +8,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: [
+    '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../../../packages/design-system/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+  ],
   addons: [
     '@chromatic-com/storybook',
     '@storybook/addon-docs',
@@ -27,8 +30,11 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: [
         {
-          find: 'src/theme/hooks/useThemeMode',
-          replacement: resolve(__dirname, '../src/theme/hooks/__mocks__/useThemeMode'),
+          find: '@soroush.tech/design-system/hooks/useThemeMode',
+          replacement: resolve(
+            __dirname,
+            '../../../packages/design-system/src/hooks/__mocks__/useThemeMode'
+          ),
         },
         ...(Array.isArray(config.resolve?.alias)
           ? config.resolve.alias

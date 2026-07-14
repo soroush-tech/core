@@ -1,10 +1,10 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Checkbox } from 'src/theme/Checkbox'
-import { Flex } from 'src/theme/Flex'
-import { Radio } from 'src/theme/Radio'
-import { Switch } from 'src/theme/Switch'
-import { Typography } from 'src/theme/Typography'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Checkbox } from '@soroush.tech/design-system/Checkbox'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Radio } from '@soroush.tech/design-system/Radio'
+import { Switch } from '@soroush.tech/design-system/Switch'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { CardTitle } from './CardTitle'
 
 export function BinaryControlsCard() {

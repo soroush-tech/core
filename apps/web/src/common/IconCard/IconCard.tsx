@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
-import { Card } from 'src/theme/Card'
-import { Typography } from 'src/theme/Typography'
-import { type IconName } from 'src/theme/Icon'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { type IconName } from '@soroush.tech/design-system/Icon'
 
 export interface IconCardProps {
   /** Icon registry name shown at the top of the card. */

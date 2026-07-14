@@ -1,8 +1,8 @@
-import { styled } from 'src/theme'
-import { Flex } from 'src/theme/Flex'
-import { View } from 'src/theme/View'
-import { Typography } from 'src/theme/Typography'
-import { Button } from 'src/theme/Button'
+import { styled } from '@soroush.tech/design-system'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { View } from '@soroush.tech/design-system/View'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Button } from '@soroush.tech/design-system/Button'
 
 // font-size: 15vw is a viewport unit with no theme token;
 const DecorativeText = styled(Typography, { label: 'DecorativeText' })`

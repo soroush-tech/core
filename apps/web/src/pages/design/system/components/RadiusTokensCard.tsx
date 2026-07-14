@@ -1,8 +1,8 @@
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Paper } from 'src/theme/Paper'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Paper } from '@soroush.tech/design-system/Paper'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 
 const RADII = [
   { borderRadius: 'sq' as const, name: 'DEFAULT', sub: 'SQ' },

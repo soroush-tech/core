@@ -1,13 +1,13 @@
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Avatar } from 'src/theme/Avatar'
-import { Typography } from 'src/theme/Typography'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Avatar } from '@soroush.tech/design-system/Avatar'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { NavLink } from 'src/common/NavLink'
 import { useGists } from 'src/hooks/useGists'
 import { readingTime } from 'src/utils/readingTime'
 import { authorName } from 'src/utils/authorName'
 import { formatDate, estimateWordCount } from './utils'
-import { Card } from 'src/theme/Card'
+import { Card } from '@soroush.tech/design-system/Card'
 
 export function Articles() {
   const { data } = useGists()

@@ -1,8 +1,8 @@
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Grid } from 'src/theme/Grid'
-import { Typography } from 'src/theme/Typography'
-import { type IconName } from 'src/theme/Icon'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Grid } from '@soroush.tech/design-system/Grid'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { type IconName } from '@soroush.tech/design-system/Icon'
 import { IconCard } from 'src/common/IconCard'
 import { Eyebrow } from 'src/common/Eyebrow'
 

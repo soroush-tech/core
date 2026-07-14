@@ -69,14 +69,14 @@ apps/web/
 
 ## 📚 Layer docs
 
-| Doc                                                          | Covers                                                                          |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-| [`src/theme/design-system.md`](./src/theme/design-system.md) | Styled primitives, tokens, and `system()`.                                      |
-| [`src/common/common.md`](./src/common/common.md)             | Component folder structure and testing.                                         |
-| [`src/section/section.md`](./src/section/section.md)         | Page-specific composed sections.                                                |
-| [`src/pages/pages.md`](./src/pages/pages.md)                 | Vike `+` files and SSR safety.                                                  |
-| [`src/hooks/hooks.md`](./src/hooks/hooks.md)                 | Data-fetching hook pattern.                                                     |
-| Component demos                                              | [Storybook on Chromatic](https://main--6a17c33fc4e9466680e34e97.chromatic.com/) |
+| Doc                                                                                        | Covers                                                                          |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| [`packages/design-system/design-system.md`](../../packages/design-system/design-system.md) | Styled primitives, tokens, and `system()`.                                      |
+| [`src/common/common.md`](./src/common/common.md)                                           | Component folder structure and testing.                                         |
+| [`src/section/section.md`](./src/section/section.md)                                       | Page-specific composed sections.                                                |
+| [`src/pages/pages.md`](./src/pages/pages.md)                                               | Vike `+` files and SSR safety.                                                  |
+| [`src/hooks/hooks.md`](./src/hooks/hooks.md)                                               | Data-fetching hook pattern.                                                     |
+| Component demos                                                                            | [Storybook on Chromatic](https://main--6a17c33fc4e9466680e34e97.chromatic.com/) |
 
 ---
 

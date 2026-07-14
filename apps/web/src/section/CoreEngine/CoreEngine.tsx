@@ -1,10 +1,10 @@
-import { styled } from 'src/theme'
-import { Flex } from 'src/theme/Flex'
-import { View } from 'src/theme/View'
-import { Grid } from 'src/theme/Grid'
-import { Typography } from 'src/theme/Typography'
-import { Paper } from 'src/theme/Paper'
-import { Icon } from 'src/theme/Icon'
+import { styled } from '@soroush.tech/design-system'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { View } from '@soroush.tech/design-system/View'
+import { Grid } from '@soroush.tech/design-system/Grid'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Paper } from '@soroush.tech/design-system/Paper'
+import { Icon } from '@soroush.tech/design-system/Icon'
 import { specs } from './CoreEngine.data'
 
 // 1px hairline gaps: gap uses the thin border-width token (no 1px space token) and
