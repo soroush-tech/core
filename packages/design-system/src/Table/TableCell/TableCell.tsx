@@ -15,6 +15,7 @@ import {
   type TypographyProps as SystemTypographyProps,
   type BorderProps,
 } from '../../index'
+import { themeDefault } from '../../utils/themeDefault'
 
 /** Cell type — inherited from the enclosing section, overridable per cell. */
 export type TableCellVariant = TableSection
@@ -89,10 +90,10 @@ const colorSystem = system({
 // size → theme.sizes density (padding + fontSize); cellPadding 'none' zeroes the box.
 const sizeStyle = ({
   theme,
-  size = 'md',
+  size,
   cellPadding = 'normal',
 }: TableCellBaseProps & { theme: Theme }) => {
-  const s = theme.sizes[size]
+  const s = theme.sizes[size ?? themeDefault(theme, 'size', 'md')]
   const fontSize = theme.fontSizes[s.fontSize]
   if (cellPadding === 'none') return { padding: 0, fontSize }
   return {
@@ -128,17 +129,12 @@ const stickyStyle = ({ isSticky, theme }: TableCellBaseProps & { theme?: Theme }
     ? ({ position: 'sticky', top: 0, backgroundColor: get(theme, 'background.paper') } as const)
     : {}
 
-const TableCellBase = styled('td', { label: 'TableCell', shouldForwardProp })<TableCellBaseProps>(
-  sizeStyle,
-  dividerStyle,
-  stickyStyle,
-  ellipsisStyle,
-  space,
-  colorSystem,
-  typography,
-  border,
-  alignStyle
-)
+const TableCellBase = styled('td', {
+  name: 'TableCell',
+  label: 'TableCell',
+  shouldForwardProp,
+  systemProps: [space, colorSystem, typography, border],
+})<TableCellBaseProps>(sizeStyle, dividerStyle, stickyStyle, ellipsisStyle, alignStyle)
 
 export function TableCell({
   variant,

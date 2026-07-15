@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { renderWithTheme } from '../utils/test/renderWithTheme'
+import { renderWithTheme } from 'src/test/utils/wrapper'
 import { Color } from './Color'
 
 describe('Color', () => {

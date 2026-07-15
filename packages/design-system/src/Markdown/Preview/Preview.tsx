@@ -31,7 +31,7 @@ const rehypePlugins: Options['rehypePlugins'] = [[rehypeHighlight, { ignoreMissi
 // Keeps the content within its (flex-item) column on narrow viewports: shrink to fit,
 // never exceed the container, and break long URLs/tokens instead of overflowing. Wide
 // code blocks and tables keep their own horizontal scroll.
-const PreviewRoot = styled(View, { label: 'MarkdownPreview' })({
+const PreviewRoot = styled(View, { name: 'MarkdownPreview', label: 'MarkdownPreview' })({
   minWidth: 0,
   maxWidth: '100%',
   overflowWrap: 'break-word',

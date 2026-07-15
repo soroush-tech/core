@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
 import { Paper } from '../Paper'
 
@@ -29,13 +29,13 @@ describe('Paper', () => {
 
     it('defaults to borderRadius="sq" (0)', () => {
       renderWithTheme(<Paper data-testid="paper" />)
-      expect(screen.getByTestId('paper')).toHaveStyle({ borderRadius: dark.radii.sq })
+      expect(screen.getByTestId('paper')).toHaveStyle({ borderRadius: baseTheme.radii.sq })
     })
 
     it('defaults to elevation=1 box-shadow', () => {
       renderWithTheme(<Paper data-testid="paper" />)
       expect(screen.getByTestId('paper')).toHaveStyle({
-        boxShadow: dark.shadows[1],
+        boxShadow: baseTheme.shadows[1],
       })
     })
   })
@@ -44,21 +44,21 @@ describe('Paper', () => {
     it('elevation=0 applies flat shadow', () => {
       renderWithTheme(<Paper elevation={0} data-testid="paper" />)
       expect(screen.getByTestId('paper')).toHaveStyle({
-        boxShadow: dark.shadows[0],
+        boxShadow: baseTheme.shadows[0],
       })
     })
 
     it('elevation=4 applies correct box-shadow', () => {
       renderWithTheme(<Paper elevation={4} data-testid="paper" />)
       expect(screen.getByTestId('paper')).toHaveStyle({
-        boxShadow: dark.shadows[4],
+        boxShadow: baseTheme.shadows[4],
       })
     })
 
     it('elevation=24 applies maximum box-shadow', () => {
       renderWithTheme(<Paper elevation={24} data-testid="paper" />)
       expect(screen.getByTestId('paper')).toHaveStyle({
-        boxShadow: dark.shadows[24],
+        boxShadow: baseTheme.shadows[24],
       })
     })
 

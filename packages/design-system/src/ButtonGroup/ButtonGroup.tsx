@@ -11,6 +11,7 @@ import {
   get,
   type SpaceProps,
 } from '../index'
+import { themeDefault } from '../utils/themeDefault'
 
 export type ButtonGroupOrientation = 'horizontal' | 'vertical'
 
@@ -20,13 +21,13 @@ export interface ButtonGroupProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, SpaceProps<Theme> {
   /** Visual style for all child buttons. Default: `'outlined'`. */
   variant?: ButtonVariant
-  /** Color palette for all child buttons — resolves against `theme.palette`. Default: `'primary'`. */
+  /** Color palette for all child buttons — resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: ButtonColor
-  /** Density for all child buttons — resolves against `theme.sizes`. Default: `'md'`. */
+  /** Density for all child buttons — resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: ButtonSize
   /** Layout flow direction. Default: `'horizontal'`. */
   orientation?: ButtonGroupOrientation
-  /** Group corner radius — rounds the group's outer corners only. Resolves against `theme.radii`. Default: `'md'`. */
+  /** Group corner radius — rounds the group's outer corners only. Resolves against `theme.radii`. Default: 'md', overridable via `theme.defaults.borderRadius`. */
   borderRadius?: ButtonGroupRadius
   /** Disables all child buttons. Default: `false`. */
   disabled?: boolean
@@ -52,10 +53,10 @@ interface GroupRootProps {
 const orientationStyles = ({
   theme,
   orientation = 'horizontal',
-  borderRadius = 'md',
+  borderRadius,
 }: GroupRootProps & { theme: Theme }) => {
   const overlap = `-${theme.borderWidths.thin}`
-  const r = get(theme, `radii.${borderRadius}`)
+  const r = get(theme, `radii.${borderRadius ?? themeDefault(theme, 'borderRadius', 'md')}`)
   if (orientation === 'vertical') {
     return {
       flexDirection: 'column' as const,
@@ -107,8 +108,9 @@ const dividerStyles = ({
   theme,
   orientation = 'horizontal',
   variant = 'outlined',
-  color = 'primary',
+  color: colorProp,
 }: GroupRootProps & { theme: Theme }) => {
+  const color = colorProp ?? themeDefault(theme, 'color', 'primary')
   const edge = orientation === 'vertical' ? 'borderTopColor' : 'borderLeftColor'
   if (variant === 'outlined') {
     return { '& > *:not(:first-of-type)': { [edge]: 'transparent' } }
@@ -124,14 +126,15 @@ const fullWidthStyles = ({ fullWidth }: GroupRootProps) =>
   fullWidth ? { display: 'flex', width: '100%', '& > *': { flex: 1 } } : {}
 
 const GroupRoot = styled('div', {
+  name: 'ButtonGroup',
   label: 'ButtonGroup',
   shouldForwardProp,
+  systemProps: [space],
 })<GroupRootProps & SpaceProps<Theme>>(
   { display: 'inline-flex' },
   orientationStyles,
   dividerStyles,
-  fullWidthStyles,
-  space
+  fullWidthStyles
 )
 
 /**
@@ -141,10 +144,11 @@ const GroupRoot = styled('div', {
  */
 export function ButtonGroup({
   variant = 'outlined',
-  color = 'primary',
-  size = 'md',
+  // color/size stay undefined here so children fall back to theme.defaults themselves.
+  color,
+  size,
   orientation = 'horizontal',
-  borderRadius = 'md',
+  borderRadius,
   disabled = false,
   fullWidth = false,
   as,

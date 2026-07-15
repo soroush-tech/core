@@ -44,9 +44,11 @@ const colorSystem = system({
 })
 
 const TableFooterBase = styled('tfoot', {
+  name: 'TableFooter',
   label: 'TableFooter',
   shouldForwardProp,
-})<TableFooterProps>(space, colorSystem, border)
+  systemProps: [space, colorSystem, border],
+})<TableFooterProps>()
 
 export function TableFooter({ as, children, ...rest }: Readonly<TableFooterProps>) {
   return (

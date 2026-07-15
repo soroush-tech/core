@@ -7,7 +7,7 @@
 [![types included](https://img.shields.io/npm/types/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
 [![license](https://img.shields.io/npm/l/@soroush.tech/design-system.svg)](./LICENSE)
 
-An Emotion + [@soroush.tech/styled-system](https://www.npmjs.com/package/@soroush.tech/styled-system) React component library with token-driven `light` and `dark` themes — layout primitives, forms, overlays, data display, and a headless markdown editor/renderer.
+An Emotion + [@soroush.tech/styled-system](https://www.npmjs.com/package/@soroush.tech/styled-system) React component library with a token-driven, consumer-extensible theme — layout primitives, forms, overlays, data display, and a headless markdown editor/renderer.
 
 The library takes inspiration from [Material UI](https://mui.com/) — its component vocabulary and prop conventions will feel familiar — but it is written entirely in house. It is not a clone or a fork: every component is built from scratch on our own engine and token system, and the API is free to diverge wherever it serves its consumers better.
 
@@ -42,17 +42,17 @@ import { styled, css, useTheme, type Theme } from '@soroush.tech/design-system'
 
 ## Folder map
 
-| Path               | What it is                                                                                                                     |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `index.ts`         | Engine barrel — Emotion + `@soroush.tech/styled-system` re-exports                                                             |
-| `themes.ts`        | `light` and `dark` theme objects implementing the `Theme` interface; no hardcoded hex values                                   |
-| `globalStyles.ts`  | Global CSS applied by `ThemeProvider`                                                                                          |
-| `colors/`          | Palette files (`kineticGreen`, `kineticSurface`, `cyberCyan`, `neonRed`, `solarAmber`, …) — the only place hex values may live |
-| `hooks/`           | `useTheme`, `useThemeMode`, `useStyle`, `withTheme`, `withStyles`, `StylesConsumer`                                            |
-| `utils/`           | Style helpers — `alpha`, `spacing`, `clamp`, `luminance`, `generateBoxShadow`, `styleCache`                                    |
-| `utils/test/`      | `storiesOptions.ts` (token option arrays) and `storiesArgs.ts` (pre-built argTypes) for Storybook                              |
-| `design-system.md` | Architecture and conventions for building components                                                                           |
-| `ComponentName/`   | One folder per component (see inventory below)                                                                                 |
+| Path               | What it is                                                                                                                 |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `index.ts`         | Engine barrel — the themed `styled`, Emotion + `@soroush.tech/styled-system` re-exports                                    |
+| `styled.ts`        | The themed `styled` wrapper — `name`/`slot` options enable `theme.components` customization                                |
+| `themes.ts`        | `baseTheme` (the complete default theme — the only place hex values live), the `Theme` type layer, `createTheme`           |
+| `hooks/`           | `useTheme`, `useDefaultProps`, `useStyle`, `useCopyToClipboard`, `withTheme`, `withStyles`, `StylesConsumer`               |
+| `utils/`           | Style helpers — `alpha`, `spacing`, `clamp`, `luminance`, `generateBoxShadow`, `styleCache`, `createTheme`, `themeDefault` |
+| `utils/test/`      | `storiesOptions.ts` (token option arrays) and `storiesArgs.ts` (pre-built argTypes) for Storybook                          |
+| `docs/`            | Guides — [`theming.md`](./docs/theming.md) and [`customization.md`](./docs/customization.md)                               |
+| `design-system.md` | Architecture and conventions for building components                                                                       |
+| `ComponentName/`   | One folder per component (see inventory below)                                                                             |
 
 Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `README.md` (prop reference), `ComponentName.stories.tsx`, and `ComponentName.test.tsx`. Each component's own README documents its full prop API.
 
@@ -75,17 +75,16 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 
 ### Content & data display
 
-| Component      | Purpose                                                                                                                                                                                                                                      |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Typography`   | Text with variant → element mapping — the reference implementation for all components                                                                                                                                                        |
-| `Link`         | Anchor with theme-aware styling                                                                                                                                                                                                              |
-| `Icon`         | Icon renderer                                                                                                                                                                                                                                |
-| `Image`        | Image with styled-system props                                                                                                                                                                                                               |
-| `Avatar`       | User/entity avatar                                                                                                                                                                                                                           |
-| `Table`        | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `@soroush.tech/design-system/Table` |
-| `CodeBlock`    | Scrollable fenced-code surface with a copy-to-clipboard button                                                                                                                                                                               |
-| `Markdown`     | Headless markdown editor + renderer — exports `Control`, `Toolbar`, `Editor`, and `Preview` from `@soroush.tech/design-system/Markdown`                                                                                                      |
-| `ColorPalette` | Renders palette swatches (docs/Storybook aid)                                                                                                                                                                                                |
+| Component    | Purpose                                                                                                                                                                                                                                      |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Typography` | Text with variant → element mapping — the reference implementation for all components                                                                                                                                                        |
+| `Link`       | Anchor with theme-aware styling                                                                                                                                                                                                              |
+| `Icon`       | Icon renderer                                                                                                                                                                                                                                |
+| `Image`      | Image with styled-system props                                                                                                                                                                                                               |
+| `Avatar`     | User/entity avatar                                                                                                                                                                                                                           |
+| `Table`      | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `@soroush.tech/design-system/Table` |
+| `CodeBlock`  | Scrollable fenced-code surface with a copy-to-clipboard button                                                                                                                                                                               |
+| `Markdown`   | Headless markdown editor + renderer — exports `Control`, `Toolbar`, `Editor`, and `Preview` from `@soroush.tech/design-system/Markdown`                                                                                                      |
 
 ### Inputs & forms
 
@@ -134,6 +133,137 @@ Components never hardcode colors or sizes — props resolve against scales on th
 | Layering & effects | `zOrder` (appBar/drawer/modal) · `blur` · `logoFilter` · `portraitBlend` · `portraitOpacity`          |
 
 Prop types are derived from the interface (`keyof Theme['text']`), so adding a token to `themes.ts` propagates everywhere automatically. See [`design-system.md`](./design-system.md) for the full scale table and the palette rules.
+
+---
+
+## Theming
+
+The theme belongs to you — the package only ships defaults. This section is the overview; the full guides are [`docs/theming.md`](./docs/theming.md) and [`docs/customization.md`](./docs/customization.md).
+
+### One theme, yours
+
+`ThemeProvider` provides exactly one theme — the built-in dark theme when you pass nothing. Bring one theme, or as many as you like: switching between them is your state, not the provider's.
+
+```tsx
+import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
+import { baseTheme, createTheme } from '@soroush.tech/design-system/themes'
+
+// Zero-config: the built-in `baseTheme`.
+<ThemeProvider>{app}</ThemeProvider>
+
+// Your theme — written from scratch or extended from the base.
+const brand = createTheme(baseTheme, { palette: { primary: { main: '#00ff88' } } })
+<ThemeProvider theme={brand}>{app}</ThemeProvider>
+
+// Mode switching is app policy — own the state and pass the active theme:
+const [isDark, setIsDark] = useState(true)
+<ThemeProvider theme={isDark ? brandDark : brandLight}>{app}</ThemeProvider>
+```
+
+`createTheme(base, overrides)` (exported from `…/themes` and `…/utils`) is the merge primitive: plain objects recurse, arrays (`shadows`, `fontSizes`) and functions replace wholesale, `undefined` values are ignored — keys are added or replaced, never removed.
+
+### Component defaults
+
+Components carry visible literal fallbacks (`size = 'md'`, `variant = 'outside'`, …) resolved through `themeDefault(theme, key, fallback)` — so every default, including behavioral variants, is overridable via the optional `theme.defaults` map or the provider's `defaults` prop:
+
+| Key                                          | Fallback                           | Drives                                 |
+| -------------------------------------------- | ---------------------------------- | -------------------------------------- |
+| `size` / `compactSize`                       | `'md'` / `'sm'`                    | sized components / dense table actions |
+| `color` / `neutralColor`                     | `'primary'` / `'default'`          | accent controls / toggle controls      |
+| `textColor` / `accentTextColor`              | `'initial'` / `'primary'`          | body text / icons + input labels       |
+| `bg` / `surfaceBg` / `inputBg`               | `'default'`/`'paper'`/`'terminal'` | switch track / paper surfaces / inputs |
+| `borderRadius` / `surfaceRadius`             | `'md'` / `'sq'`                    | grouped controls / surfaces            |
+| `avatarSize` / `borderColor` / `borderWidth` | `'md'` / `'primary'` / `'thin'`    | avatars and rings                      |
+| `iconSize`                                   | `'lg'`                             | Icon default glyph size (`theme.icon`) |
+| `buttonVariant` / `switchVariant`            | `'contained'` / `'outside'`        | Button / Switch visual variants        |
+| `inputVariant`                               | `'default'`                        | TextInput, Select, NativeSelect frames |
+| `avatarVariant` / `cardVariant`              | `'circular'` / `'paper'`           | Avatar shape / Card treatment          |
+| `linkUnderline`                              | `'always'`                         | Link underline behavior                |
+| `paginationVariant` / `paginationShape`      | `'text'` / `'circular'`            | Pagination items                       |
+
+The built-in themes carry no `defaults` — the literals apply. A theme with entirely different size or palette keys stays valid by pointing the keys at its own tokens:
+
+```tsx
+<ThemeProvider defaults={{ size: 'compact', color: 'brand', switchVariant: 'inside' }}>
+```
+
+### Per-component customization (`theme.components`)
+
+Customize one component for the whole app — default prop values, per-slot CSS, and new variant values — without wrapping or forking:
+
+```tsx
+const brand = createTheme(baseTheme, {
+  components: {
+    Button: {
+      // Buttons default to sm + rounded; explicit props and ButtonGroup still win.
+      defaultProps: { size: 'sm', shape: 'rounded' },
+
+      // Per-slot CSS merged after Button's own styles — the theme wins the cascade,
+      // but per-instance props (m, p, width, …) still beat the theme.
+      styleOverrides: {
+        root: ({ theme, ownerState }) => ({
+          letterSpacing: theme.letterSpacings.wide,
+          ...(ownerState.variant === 'contained' && { textTransform: 'none' }),
+        }),
+        label: { fontStyle: 'italic' },
+      },
+
+      // A new variant value — register it first so it typechecks:
+      // declare module '@emotion/react' { interface ButtonVariants { dashed: true } }
+      variants: [
+        {
+          props: { variant: 'dashed' },
+          style: ({ theme }) => ({
+            backgroundColor: 'transparent',
+            border: `${theme.borderWidths.thin} dashed ${theme.border.primary}`,
+          }),
+        },
+      ],
+    },
+  },
+})
+```
+
+Style callbacks receive `{ theme, ownerState }`, where `ownerState` is the styled root's **resolved** props (after group context, `defaultProps`, and `theme.defaults`). `defaultProps` sits in the standard precedence chain: explicit prop → group context → `defaultProps` → `theme.defaults.*` → the component's literal fallback. `variants` arrays are replaced wholesale by `createTheme`, never merged.
+
+Your own components can join the same mechanism: create their roots with this package's `styled(tag, { name: 'MyWidget', slot: 'root' })` and register the name by augmenting `ThemeComponents`. Zero-config themes pay nothing — the resolver bails out on the first check when `theme.components` is absent.
+
+### Extending tokens (declaration merging)
+
+Every scale is an open interface declared on `@emotion/react`, so you can add palette colors, tokens, or whole scales — and every component prop union (`color`, `bg`, `size`, …) widens automatically:
+
+```ts
+import type { PaletteEntry } from '@soroush.tech/design-system/themes'
+
+declare module '@emotion/react' {
+  interface ThemePalette {
+    brand: PaletteEntry // new palette color
+  }
+  interface ThemeBackground {
+    tertiary: string // new background token
+  }
+  interface Theme {
+    elevations: Record<'low' | 'mid' | 'high', string> // whole new scale
+  }
+}
+```
+
+Then supply the values with `createTheme` and use the new keys:
+
+```tsx
+const brandDark = createTheme(baseTheme, {
+  palette: { brand: { main: '#00ff88', light: '#66ffb2', dark: '#00b25f', contrastText: '#000' } },
+  background: { tertiary: '#101418' },
+  elevations: { low: '0 1px 2px', mid: '0 2px 6px', high: '0 6px 18px' },
+})
+
+<ThemeProvider theme={brandDark}>
+  <Button color="brand" />
+  <View bg="tertiary" />
+</ThemeProvider>
+```
+
+Notes: new object-valued keys (like a `PaletteEntry`) must be supplied complete — components read `.main`/`.contrastText` at runtime; and TypeScript cannot verify at runtime that an augmented token was actually supplied, so always pair an augmentation with the matching override.
 
 ---
 

@@ -8,11 +8,11 @@ import {
   createShouldForwardProp,
   props,
   space,
-  variant,
   get,
   type SpaceProps,
 } from '../../index'
 import { alpha } from '../../utils'
+import { themeDefault } from '../../utils/themeDefault'
 
 export type PaginationItemColor = PaletteColor
 export type PaginationItemVariant = 'text' | 'outlined'
@@ -27,13 +27,13 @@ export interface PaginationItemProps
   page?: ReactNode
   /** Active styling for the current page. Default: `false`. */
   isSelected?: boolean
-  /** Selected-state color — resolves against `theme.palette`. Default: `'primary'`. */
+  /** Selected-state color — resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: PaginationItemColor
   /** `text` — no border · `outlined` — stroked. Default: `'text'`. */
   variant?: PaginationItemVariant
   /** Corner shape. Default: `'circular'`. */
   shape?: PaginationItemShape
-  /** Item dimensions and font size — resolves against `theme.sizes`. Default: `'md'`. */
+  /** Item dimensions and font size — resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: PaginationItemSize
   disabled?: boolean
   as?: ElementType
@@ -64,7 +64,8 @@ interface ItemStyleProps {
 }
 
 // Square-ish dimensions per density token; fontSize follows theme.sizes.
-const ITEM_DIMENSIONS: Record<PaginationItemSize, string> = {
+// Partial on purpose: augmented theme sizes fall back to the md dimensions.
+const ITEM_DIMENSIONS: Partial<Record<PaginationItemSize, string>> & Record<'md', string> = {
   sm: '1.75rem',
   md: '2rem',
   lg: '2.5rem',
@@ -87,24 +88,30 @@ const baseStyles = {
   },
 }
 
-const sizeStyles = ({ theme, size = 'md' }: ItemStyleProps & { theme: Theme }) => ({
-  minWidth: ITEM_DIMENSIONS[size],
-  height: ITEM_DIMENSIONS[size],
-  fontSize: theme.fontSizes[theme.sizes[size].fontSize],
-})
+const sizeStyles = ({
+  theme,
+  size = themeDefault(theme, 'size', 'md'),
+}: ItemStyleProps & { theme: Theme }) => {
+  return {
+    minWidth: ITEM_DIMENSIONS[size] ?? ITEM_DIMENSIONS.md,
+    height: ITEM_DIMENSIONS[size] ?? ITEM_DIMENSIONS.md,
+    fontSize: theme.fontSizes[theme.sizes[size].fontSize],
+  }
+}
 
-const shapeStyles = variant({
-  prop: 'shape',
-  variants: {
-    circular: { borderRadius: '9999px' },
-    rounded: { borderRadius: 'md' },
-  },
-})
+// circular → pill / rounded → the theme's grouped-control radius
+const shapeStyles = ({
+  theme,
+  shape = themeDefault(theme, 'paginationShape', 'circular'),
+}: ItemStyleProps & { theme: Theme }) =>
+  shape === 'rounded'
+    ? { borderRadius: theme.radii[themeDefault(theme, 'borderRadius', 'md')] }
+    : { borderRadius: '9999px' }
 
 const colorStyles = ({
   theme,
-  variant: v = 'text',
-  color = 'primary',
+  variant: v = themeDefault(theme, 'paginationVariant', 'text'),
+  color = themeDefault(theme, 'color', 'primary'),
   isSelected,
 }: ItemStyleProps & { theme: Theme }) => {
   const c = theme.palette[color]
@@ -133,20 +140,24 @@ const focusVisibleStyles = ({ theme }: { theme: Theme }) => ({
 })
 
 const ItemRoot = styled('button', {
+  name: 'PaginationItem',
   label: 'PaginationItem',
   shouldForwardProp,
+  systemProps: [space],
 })<ItemStyleProps & SpaceProps<Theme>>(
   baseStyles,
   sizeStyles,
   shapeStyles,
   colorStyles,
-  focusVisibleStyles,
-  space
+  focusVisibleStyles
 )
 
 const Ellipsis = styled('span', {
+  name: 'PaginationItem',
+  slot: 'ellipsis',
   label: 'PaginationEllipsis',
   shouldForwardProp,
+  systemProps: [space],
 })<ItemStyleProps & SpaceProps<Theme>>(
   {
     display: 'inline-flex',
@@ -154,18 +165,18 @@ const Ellipsis = styled('span', {
     justifyContent: 'center',
   },
   sizeStyles,
-  ({ theme }: { theme: Theme }) => ({ color: get(theme, 'text.secondary') }),
-  space
+  ({ theme }: { theme: Theme }) => ({ color: get(theme, 'text.secondary') })
 )
 
 export function PaginationItem({
   type = 'page',
   page,
   isSelected = false,
-  color = 'primary',
-  variant = 'text',
-  shape = 'circular',
-  size = 'md',
+  // undefined color/variant/shape/size resolve to theme.defaults in the styled layer.
+  color,
+  variant,
+  shape,
+  size,
   as,
   ...rest
 }: Readonly<PaginationItemProps>) {

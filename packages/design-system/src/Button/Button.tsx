@@ -12,14 +12,19 @@ import {
   border,
   typography,
   system,
-  variant,
+  useTheme,
   type SpaceProps,
   type LayoutProps,
   type BorderProps,
   type TypographyProps,
 } from '../index'
 import { alpha } from '../utils'
-export type ButtonVariant = 'contained' | 'outlined' | 'text'
+import { themeDefault } from '../utils/themeDefault'
+import { useDefaultProps } from '../hooks/useDefaultProps'
+import type { ButtonVariants } from '../themes'
+
+/** Augmentable via the `ButtonVariants` interface — style new values through `theme.components.Button.variants`. */
+export type ButtonVariant = keyof ButtonVariants
 export type ButtonColor = PaletteColor
 export type ButtonSize = keyof Theme['sizes']
 export type ButtonShape = 'square' | 'rounded' | 'pill'
@@ -34,11 +39,11 @@ export interface ButtonProps
     LayoutProps<Theme>,
     BorderProps<Theme>,
     TypographyProps<Theme> {
-  /** Visual style — filled, stroked, or ghost. Default: `"contained"`. */
+  /** Visual style — filled, stroked, or ghost. Default: `'contained'`, overridable via `theme.defaults.buttonVariant`. */
   variant?: ButtonVariant
-  /** Color palette — maps to `theme.palette[color]`. Default: `"primary"`. */
+  /** Color palette — maps to `theme.palette[color]`. Default: `'primary'`, overridable via `theme.defaults.color`. */
   color?: ButtonColor
-  /** Size token — controls padding and font size. Default: `"md"`. */
+  /** Size token — controls padding and font size. Default: `'md'`, overridable via `theme.defaults.size`. */
   size?: ButtonSize
   /** Gap between icon and label — resolves against theme.space. Default: `1` (8px). */
   gap?: GapToken
@@ -86,6 +91,8 @@ const shouldForwardProp = createShouldForwardProp([
 // ─── Internal sub-components ──────────────────────────────────────────────────
 
 const ButtonLabel = styled('span', {
+  name: 'Button',
+  slot: 'label',
   shouldForwardProp: (prop) => prop !== 'invisible',
 })<{ invisible?: boolean }>(({ invisible }) => ({
   display: 'inherit',
@@ -96,7 +103,7 @@ const ButtonLabel = styled('span', {
   ...(invisible && { opacity: 0 }),
 }))
 
-const LoadingCenter = styled('span')({
+const LoadingCenter = styled('span', { name: 'Button', slot: 'loader', label: 'ButtonLoader' })({
   position: 'absolute',
   left: '50%',
   top: '50%',
@@ -105,7 +112,7 @@ const LoadingCenter = styled('span')({
   alignItems: 'center',
 })
 
-const ButtonIcon = styled('span')({
+const ButtonIcon = styled('span', { name: 'Button', slot: 'icon' })({
   display: 'inline-flex',
   alignItems: 'center',
   fontSize: 'inherit',
@@ -155,8 +162,8 @@ const sizeVariants = ({ theme, size }: ButtonRootProps & { theme: Theme }) => {
 
 const variantStyles = ({
   variant = 'contained',
-  color = 'primary',
   theme,
+  color = themeDefault(theme, 'color', 'primary'),
 }: ButtonProps & { theme: Theme }) => {
   const { main, dark, contrastText } = theme.palette[color]
 
@@ -183,15 +190,16 @@ const variantStyles = ({
   }
 }
 
-// square → 0  /  rounded → theme.radii.md  /  pill → 9999px
-const shapeVariants = variant({
-  prop: 'shape',
-  variants: {
-    square: { borderRadius: 'sq' },
-    rounded: { borderRadius: 'md' },
-    pill: { borderRadius: '9999px' },
-  },
-})
+// square → 0  /  rounded → themeDefault(theme, 'borderRadius', 'md')  /  pill → 9999px
+const shapeVariants = ({ shape = 'square', theme }: ButtonProps & { theme: Theme }) => {
+  if (shape === 'pill') {
+    return { borderRadius: '9999px' }
+  }
+  if (shape === 'rounded') {
+    return { borderRadius: theme.radii[themeDefault(theme, 'borderRadius', 'md')] }
+  }
+  return { borderRadius: 0 }
+}
 
 const fullWidthStyles = ({ fullWidth }: ButtonProps) => (fullWidth ? { width: '100%' } : {})
 
@@ -199,7 +207,7 @@ const fullWidthStyles = ({ fullWidth }: ButtonProps) => (fullWidth ? { width: '1
 // resting base (above), so pointer clicks show no ring.
 const focusVisibleStyles = ({ theme }: { theme: Theme }) => ({
   '&:focus-visible': {
-    outline: `2px solid ${theme.palette.primary.main}`,
+    outline: `2px solid ${theme.palette[themeDefault(theme, 'color', 'primary')].main}`,
     outlineOffset: '2px',
   },
 })
@@ -212,18 +220,19 @@ const safeLayout = (props: ButtonProps & { theme?: Theme }) => layout({ ...props
 
 type ButtonRootProps = Omit<ButtonProps, 'size'> & { size: ButtonSize }
 
-const ButtonRoot = styled('button', { shouldForwardProp })<ButtonRootProps>(
+const ButtonRoot = styled('button', {
+  name: 'Button',
+  shouldForwardProp,
+  // Styled-system parsers run after theme styleOverrides/variants, so
+  // per-instance props (m, width, fontWeight, …) always beat the theme.
+  systemProps: [space, safeLayout, buttonBaseSystem, typography, border],
+})<ButtonRootProps>(
   baseStyles,
   sizeVariants,
   variantStyles,
   shapeVariants,
   fullWidthStyles,
-  focusVisibleStyles,
-  space,
-  safeLayout,
-  buttonBaseSystem,
-  typography,
-  border
+  focusVisibleStyles
 )
 
 // ─── Public component ─────────────────────────────────────────────────────────
@@ -232,7 +241,7 @@ export function Button({
   variant,
   color,
   size,
-  shape = 'square',
+  shape,
   gap = 1,
   fontWeight = 'bold',
   letterSpacing = 'tight',
@@ -247,11 +256,16 @@ export function Button({
   href,
   ...rest
 }: Readonly<ButtonProps>) {
-  // Resolution: explicit prop → enclosing ButtonGroup → default.
+  // Resolution: explicit prop → enclosing ButtonGroup → theme.components.Button.defaultProps
+  // → theme.defaults.* → literal fallback.
   const group = useContext(ButtonGroupContext)
-  const resolvedVariant = variant ?? group.variant ?? 'contained'
-  const resolvedColor = color ?? group.color ?? 'primary'
-  const resolvedSize = size ?? group.size ?? 'md'
+  const theme = useTheme()
+  const dp = useDefaultProps('Button')
+  const resolvedVariant =
+    variant ?? group.variant ?? dp.variant ?? themeDefault(theme, 'buttonVariant', 'contained')
+  const resolvedColor = color ?? group.color ?? dp.color ?? themeDefault(theme, 'color', 'primary')
+  const resolvedSize = size ?? group.size ?? dp.size ?? themeDefault(theme, 'size', 'md')
+  const resolvedShape = shape ?? dp.shape ?? 'square'
   const resolvedFullWidth = fullWidth ?? group.fullWidth ?? false
   const resolvedDisabled = (disabled ?? group.disabled ?? false) || loading
 
@@ -267,7 +281,7 @@ export function Button({
       variant={resolvedVariant}
       color={resolvedColor}
       size={resolvedSize}
-      shape={shape}
+      shape={resolvedShape}
       gap={gap}
       fontWeight={fontWeight}
       letterSpacing={letterSpacing}

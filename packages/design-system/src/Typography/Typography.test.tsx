@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark, typography, fonts } from '../themes'
+import { baseTheme, typography, fonts } from '../themes'
 import { Typography, type TypographyVariant, type TextColorToken } from '../Typography'
 
 describe('Typography', () => {
@@ -238,10 +238,10 @@ describe('Typography', () => {
 
   describe('color resolves from theme.text', () => {
     const cases: Array<[TextColorToken, string]> = [
-      ['initial', dark.text.initial],
-      ['secondary', dark.text.secondary],
-      ['error', dark.text.error],
-      ['success', dark.text.success],
+      ['initial', baseTheme.text.initial],
+      ['secondary', baseTheme.text.secondary],
+      ['error', baseTheme.text.error],
+      ['success', baseTheme.text.success],
     ]
 
     it.each(cases)('color="%s" resolves to theme.text value', (token, expected) => {

@@ -30,13 +30,13 @@ export interface PaginationProps
     Omit<HTMLAttributes<HTMLElement>, 'color' | 'onChange'>,
     UsePaginationProps,
     SpaceProps<Theme> {
-  /** Selected-item color — resolves against `theme.palette`. Default: `'primary'`. */
+  /** Selected-item color — resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: PaginationColor
   /** Item style — `text` or `outlined`. Default: `'text'`. */
   variant?: PaginationVariant
   /** Item corner shape. Default: `'circular'`. */
   shape?: PaginationShape
-  /** Item density — resolves against `theme.sizes`. Default: `'md'`. */
+  /** Item density — resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: PaginationSize
   /** Accessible name per item — important for screen readers. A sensible default is provided. */
   getItemAriaLabel?: (type: PaginationItemType, page: number | null, isSelected: boolean) => string
@@ -54,11 +54,15 @@ const defaultGetItemAriaLabel = (
 const shouldForwardProp = createShouldForwardProp([...props])
 
 const PaginationNav = styled('nav', {
+  name: 'Pagination',
   label: 'PaginationNav',
   shouldForwardProp,
-})<SpaceProps<Theme>>(space)
+  systemProps: [space],
+})<SpaceProps<Theme>>()
 
 const PaginationList = styled('ul', {
+  name: 'Pagination',
+  slot: 'list',
   label: 'Pagination',
   shouldForwardProp,
 })({
@@ -83,10 +87,11 @@ export function Pagination({
   shouldHidePrevButton,
   shouldHideNextButton,
   onChange,
-  color = 'primary',
-  variant = 'text',
-  shape = 'circular',
-  size = 'md',
+  // undefined color/variant/shape/size flow through to PaginationItem's theme-default resolution.
+  color,
+  variant,
+  shape,
+  size,
   getItemAriaLabel = defaultGetItemAriaLabel,
   'aria-label': ariaLabel = 'pagination navigation',
   ...rest

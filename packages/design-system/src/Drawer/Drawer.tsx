@@ -51,16 +51,18 @@ const shouldForwardProp = createShouldForwardProp(['anchor', 'duration'])
 
 // Anchored, sliding surface. `position: fixed` lifts it out of Modal's centring
 // flow so it pins to the chosen viewport edge. Honors reduced-motion preferences.
-const DrawerPanel = styled(Paper, { label: 'Drawer', shouldForwardProp })<DrawerPanelProps>(
-  ({ anchor, duration }) => ({
-    position: 'fixed',
-    ...anchorPosition[anchor],
-    animation: `${slideIn[anchor]} ${duration}ms ease-out`,
-    '@media (prefers-reduced-motion: reduce)': {
-      animation: 'none',
-    },
-  })
-)
+const DrawerPanel = styled(Paper, {
+  name: 'Drawer',
+  label: 'Drawer',
+  shouldForwardProp,
+})<DrawerPanelProps>(({ anchor, duration }) => ({
+  position: 'fixed',
+  ...anchorPosition[anchor],
+  animation: `${slideIn[anchor]} ${duration}ms ease-out`,
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
+}))
 
 /**
  * @description A panel that slides in from a screen edge, built on Modal. Portals,

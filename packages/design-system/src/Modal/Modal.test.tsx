@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { screen, fireEvent, cleanup } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { Modal } from './'
 
 const getRoot = () => document.querySelector('[role="presentation"]') as HTMLElement
@@ -109,7 +109,7 @@ describe('Modal', () => {
         <div>x</div>
       </Modal>
     )
-    expect(getRoot()).toHaveStyle({ zIndex: dark.zOrder.modal })
+    expect(getRoot()).toHaveStyle({ zIndex: baseTheme.zOrder.modal })
   })
 
   it('layers the root at a custom theme.zOrder layer', () => {
@@ -118,7 +118,7 @@ describe('Modal', () => {
         <div>x</div>
       </Modal>
     )
-    expect(getRoot()).toHaveStyle({ zIndex: dark.zOrder.drawer })
+    expect(getRoot()).toHaveStyle({ zIndex: baseTheme.zOrder.drawer })
   })
 
   it('does not throw when a stacked modal unmounts while another stays open', () => {

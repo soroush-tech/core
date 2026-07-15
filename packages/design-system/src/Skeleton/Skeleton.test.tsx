@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { Skeleton } from '../Skeleton'
 
 describe('Skeleton', () => {
@@ -20,7 +20,9 @@ describe('Skeleton', () => {
 
     it('applies the theme skeleton surface as background', () => {
       renderWithTheme(<Skeleton data-testid="sk" />)
-      expect(screen.getByTestId('sk')).toHaveStyle({ backgroundColor: dark.background.default })
+      expect(screen.getByTestId('sk')).toHaveStyle({
+        backgroundColor: baseTheme.background.default,
+      })
     })
   })
 
@@ -178,7 +180,7 @@ describe('Skeleton', () => {
 
     it('applies margin from theme.space via the m prop', () => {
       renderWithTheme(<Skeleton m={2} data-testid="sk" />)
-      expect(screen.getByTestId('sk')).toHaveStyle({ margin: dark.space[2] as string })
+      expect(screen.getByTestId('sk')).toHaveStyle({ margin: baseTheme.space[2] as string })
     })
   })
 })

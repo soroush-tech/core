@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { FormControl } from '../FormControl'
 import { Form } from '../Form'
 import { FormHelperText } from './FormHelperText'
@@ -39,7 +39,7 @@ describe('FormHelperText', () => {
     )
     const node = screen.getByText('Invalid')
     expect(node).toHaveAttribute('role', 'alert')
-    expect(node).toHaveStyle({ color: dark.text.error })
+    expect(node).toHaveStyle({ color: baseTheme.text.error })
   })
 
   it('shows error styling from an explicit prop', () => {
@@ -51,7 +51,7 @@ describe('FormHelperText', () => {
     renderWithTheme(<FormHelperText>Helper</FormHelperText>)
     const node = screen.getByText('Helper')
     expect(node).not.toHaveAttribute('role')
-    expect(node).toHaveStyle({ color: dark.text.secondary })
+    expect(node).toHaveStyle({ color: baseTheme.text.secondary })
   })
 
   it('forwards an explicit role when not in error', () => {
@@ -85,7 +85,7 @@ describe('FormHelperText', () => {
           <FormHelperText>Hint</FormHelperText>
         </FormControl>
       )
-      expect(screen.getByText('Hint')).toHaveStyle({ color: dark.text.info })
+      expect(screen.getByText('Hint')).toHaveStyle({ color: baseTheme.text.info })
     })
 
     it('inherits textColor from a parent Form', () => {
@@ -94,7 +94,7 @@ describe('FormHelperText', () => {
           <FormHelperText>Hint</FormHelperText>
         </Form>
       )
-      expect(screen.getByText('Hint')).toHaveStyle({ color: dark.text.success })
+      expect(screen.getByText('Hint')).toHaveStyle({ color: baseTheme.text.success })
     })
 
     it('lets an explicit color win over context textColor', () => {
@@ -103,7 +103,7 @@ describe('FormHelperText', () => {
           <FormHelperText color="warning">Hint</FormHelperText>
         </FormControl>
       )
-      expect(screen.getByText('Hint')).toHaveStyle({ color: dark.text.warning })
+      expect(screen.getByText('Hint')).toHaveStyle({ color: baseTheme.text.warning })
     })
 
     it('keeps the error color over textColor in the error state', () => {
@@ -113,7 +113,7 @@ describe('FormHelperText', () => {
         </FormControl>
       )
       const node = screen.getByText('Bad')
-      expect(node).toHaveStyle({ color: dark.text.error })
+      expect(node).toHaveStyle({ color: baseTheme.text.error })
       expect(node).toHaveAttribute('role', 'alert')
     })
   })

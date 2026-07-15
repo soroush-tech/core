@@ -1,7 +1,15 @@
 import { useContext, useEffect, type ReactNode } from 'react'
+import { styled } from '../index'
 import { Typography, type TypographyProps } from '../Typography'
 import { FormControlContext } from '../FormControl/FormControlContext'
 import { FormContext } from '../Form/FormContext'
+
+// Named styled root — theme-customizable via
+// `theme.components.FormHelperText.styleOverrides.root`.
+const FormHelperTextRoot = styled(Typography, {
+  name: 'FormHelperText',
+  label: 'FormHelperText',
+})()
 
 export interface FormHelperTextProps extends TypographyProps {
   children: ReactNode
@@ -38,7 +46,7 @@ export function FormHelperText({
   }, [setHasHelperText])
 
   return (
-    <Typography
+    <FormHelperTextRoot
       as="p"
       id={resolvedId}
       variant="caption"
@@ -47,6 +55,6 @@ export function FormHelperText({
       color={resolvedColor}
     >
       {children}
-    </Typography>
+    </FormHelperTextRoot>
   )
 }

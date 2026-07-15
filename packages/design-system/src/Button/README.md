@@ -2,6 +2,8 @@
 
 Renders as `<button>`. Sharp corners, uppercase, bold, tight letter-spacing — matching the Kinetic Architecture aesthetic. Supports three visual variants, six semantic color palettes, three sizes, start/end icon slots, full-width mode, and a loading state with configurable indicator position.
 
+Button is the reference implementation for theme-level customization: `theme.components.Button` supports `defaultProps`, per-slot `styleOverrides` (`root` / `label` / `icon`), and theme-contributed `variants` — see [`docs/customization.md`](../../docs/customization.md).
+
 ---
 
 ## Button-specific props
@@ -16,7 +18,17 @@ Controls the visual structure of the button.
 | `"outlined"`  | Transparent background, 1px solid border — `theme.palette[color].main`   |
 | `"text"`      | Transparent background, no border — label in `theme.palette[color].main` |
 
-Default: `"contained"`.
+Default: `"contained"`, overridable via `theme.defaults.buttonVariant` or `theme.components.Button.defaultProps`.
+
+The value union is augmentable — register new values on the `ButtonVariants` interface and style them through `theme.components.Button.variants`:
+
+```ts
+declare module '@emotion/react' {
+  interface ButtonVariants {
+    dashed: true
+  }
+}
+```
 
 ---
 

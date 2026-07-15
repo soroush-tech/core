@@ -1,5 +1,7 @@
 import { type ReactNode } from 'react'
-import { styled, type Theme, type CSSObject } from '../index'
+import { styled, type Theme, type CSSObject, useTheme } from '../index'
+import { themeDefault } from '../utils/themeDefault'
+import { useDefaultProps } from '../hooks/useDefaultProps'
 import { Paper, type PaperProps } from '../Paper'
 import { Typography, type TypographyProps } from '../Typography'
 import { Icon, type IconName, type IconProps } from '../Icon'
@@ -31,7 +33,15 @@ const variantStyle = ({ theme, variant }: { theme?: Theme; variant?: CardVariant
   return {}
 }
 
-const CardSurface = styled(Paper, { label: 'CardSurface' })<{ variant?: CardVariant }>(variantStyle)
+const CardSurface = styled(Paper, { name: 'Card', label: 'CardSurface' })<{
+  variant?: CardVariant
+}>(variantStyle)
+
+// Named slots so `theme.components.Card.styleOverrides.title/caption/icon` can
+// restyle them; prop-level customization flows through `defaultProps.*Props`.
+const CardTitle = styled(Typography, { name: 'Card', slot: 'title' })<TypographyProps>()
+const CardCaption = styled(Typography, { name: 'Card', slot: 'caption' })<TypographyProps>()
+const CardIcon = styled(Icon, { name: 'Card', slot: 'icon' })<IconProps>()
 
 export interface CardProps extends Omit<PaperProps, 'title'> {
   variant?: CardVariant
@@ -44,7 +54,7 @@ export interface CardProps extends Omit<PaperProps, 'title'> {
 }
 
 export function Card({
-  variant = 'paper',
+  variant: variantProp,
   icon,
   title,
   caption,
@@ -55,21 +65,37 @@ export function Card({
   children,
   ...rest
 }: Readonly<CardProps>) {
+  const theme = useTheme()
+  const dp = useDefaultProps('Card')
+  const variant = variantProp ?? dp.variant ?? themeDefault(theme, 'cardVariant', 'paper')
   return (
     <CardSurface variant={variant} flexDirection={flexDirection} {...rest}>
-      {icon !== undefined && <Icon name={icon} {...iconProps} />}
+      {icon !== undefined && <CardIcon name={icon} {...dp.iconProps} {...iconProps} />}
       {title !== undefined &&
         (typeof title === 'string' ? (
-          <Typography variant="overline" color="primary" fontFamily="mono" mb={1} {...titleProps}>
+          <CardTitle
+            variant="overline"
+            color="primary"
+            fontFamily="mono"
+            mb={1}
+            {...dp.titleProps}
+            {...titleProps}
+          >
             {title}
-          </Typography>
+          </CardTitle>
         ) : (
           title
         ))}
       {caption !== undefined && (
-        <Typography variant="caption" color="secondary" mb={5} {...captionProps}>
+        <CardCaption
+          variant="caption"
+          color="secondary"
+          mb={5}
+          {...dp.captionProps}
+          {...captionProps}
+        >
           {caption}
-        </Typography>
+        </CardCaption>
       )}
       {children}
     </CardSurface>

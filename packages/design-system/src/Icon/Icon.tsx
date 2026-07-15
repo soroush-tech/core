@@ -1,4 +1,4 @@
-import { type SVGProps } from 'react'
+import { type ComponentType, type ElementType, type SVGProps } from 'react'
 import {
   styled,
   createShouldForwardProp,
@@ -6,11 +6,13 @@ import {
   layout,
   space,
   system,
+  useTheme,
   type LayoutProps,
   type SpaceProps,
 } from '../index'
 import { type TextColorToken } from '../Typography'
 import { icons, type IconName } from './icons'
+import { themeDefault } from '../utils/themeDefault'
 
 export interface IconProps
   extends
@@ -33,15 +35,24 @@ const colorSystem = system({
   color: { property: 'color', scale: 'text' },
 })
 
-const StyledIcon = styled('svg', { label: 'icon', shouldForwardProp })(
-  { fill: 'currentColor' },
-  layout,
-  space,
-  colorSystem
-)
+const StyledIcon = styled('svg', {
+  name: 'Icon',
+  label: 'icon',
+  shouldForwardProp,
+  systemProps: [layout, space, colorSystem],
+})({ fill: 'currentColor' }) as ComponentType<Omit<IconProps, 'name'> & { as?: ElementType }>
 
-export function Icon({ name, color = 'primary', size = '1.5rem', ...rest }: Readonly<IconProps>) {
+export function Icon({ name, color, size, ...rest }: Readonly<IconProps>) {
+  const theme = useTheme()
+  const resolvedSize = size ?? theme.icon[themeDefault(theme, 'iconSize', 'lg')]
   return (
-    <StyledIcon as={icons[name]} color={color} width={size} height={size} aria-hidden {...rest} />
+    <StyledIcon
+      as={icons[name]}
+      color={color ?? themeDefault(theme, 'accentTextColor', 'primary')}
+      width={resolvedSize}
+      height={resolvedSize}
+      aria-hidden
+      {...rest}
+    />
   )
 }

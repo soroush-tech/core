@@ -7,7 +7,7 @@ import { Image } from '@soroush.tech/design-system/Image'
 import { Icon } from '@soroush.tech/design-system/Icon'
 import dataCenter from 'src/assets/datacenter-server-room.png?w=256;384;512&format=avif;webp;png&as=picture'
 import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
-import { dark } from '@soroush.tech/design-system/themes'
+import { dark } from 'src/theme/themes'
 
 // Cover-fill bento tile — ~792px tall once the grid goes multi-column at the 52em (832px)
 // breakpoint (square source binds to the taller side); full viewport width below that.

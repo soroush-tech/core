@@ -1,4 +1,5 @@
 import { useContext, type ComponentType, type ReactNode } from 'react'
+import { styled } from '../index'
 import { Typography, type TypographyProps } from '../Typography'
 import { FormControlContext } from '../FormControl/FormControlContext'
 import { FormContext } from '../Form/FormContext'
@@ -6,6 +7,10 @@ import { FormContext } from '../Form/FormContext'
 // Typography forwards unknown DOM attributes but does not declare `htmlFor` (a label-only
 // attribute) in its props. Render it through this alias so `htmlFor` type-checks.
 const LabelTypography = Typography as ComponentType<TypographyProps & { htmlFor?: string }>
+
+// Named styled root — theme-customizable via
+// `theme.components.FormLabel.styleOverrides.root`.
+const FormLabelRoot = styled(LabelTypography, { name: 'FormLabel', label: 'FormLabel' })()
 
 export interface FormLabelProps extends TypographyProps {
   children: ReactNode
@@ -35,15 +40,9 @@ export function FormLabel({
   const resolvedColor = color ?? control?.textColor ?? form.textColor
 
   return (
-    <LabelTypography
-      as="label"
-      htmlFor={resolvedFor}
-      variant="body2"
-      {...rest}
-      color={resolvedColor}
-    >
+    <FormLabelRoot as="label" htmlFor={resolvedFor} variant="body2" {...rest} color={resolvedColor}>
       {children}
       {isRequired ? ' *' : ''}
-    </LabelTypography>
+    </FormLabelRoot>
   )
 }

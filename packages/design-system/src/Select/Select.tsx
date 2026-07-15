@@ -22,6 +22,7 @@ import {
   variant,
   get,
   system,
+  useTheme,
   type SpaceProps,
   type LayoutProps,
 } from '../index'
@@ -31,6 +32,7 @@ import { getNextEnabledIndex, getEdgeEnabledIndex } from './utils/getNextEnabled
 import { isOptionSelected, type SelectValue } from './utils/isOptionSelected'
 import { computeNextValue } from './utils/computeNextValue'
 import { resolveDisplayLabel } from './utils/resolveDisplayLabel'
+import { themeDefault } from '../utils/themeDefault'
 
 export type { SelectValue }
 export type SelectColor = keyof Theme['palette']
@@ -67,9 +69,9 @@ export interface SelectProps
   renderValue?: (value: SelectValue) => ReactNode
   /** Corner radius — applies only to `default` and `outlined` variants. */
   borderRadius?: keyof Theme['radii']
-  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: `'primary'`. */
+  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: SelectColor
-  /** Text color of the trigger value — resolves against `theme.text`. Default: `'primary'`. */
+  /** Text color of the trigger value — resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
   textColor?: SelectTextColor
   /** Background color — resolves against `theme.background`. Default: `'terminal'`. */
   bg?: SelectBackgroundToken
@@ -77,7 +79,7 @@ export interface SelectProps
   error?: boolean
   fullWidth?: boolean
   required?: boolean
-  /** Controls padding and font size. Default: `'md'`. */
+  /** Controls padding and font size. Default: 'md', overridable via `theme.defaults.size`. */
   size?: SelectSize
   /** Visual style — mirrors `TextInput`/`NativeSelect`. Default: `'default'`. */
   variant?: SelectVariant
@@ -172,7 +174,7 @@ const activeBorder = ({ color, error, open, theme }: TriggerProps & { theme: The
     ...(open ? { borderColor: activeColor } : {}),
     '&:focus': { borderColor: activeColor },
     '&:focus-visible': {
-      outline: `2px solid ${get(theme, 'palette.primary.main')}`,
+      outline: `2px solid ${get(theme, `palette.${themeDefault(theme, 'color', 'primary')}.main`)}`,
       outlineOffset: '2px',
     },
   }
@@ -216,7 +218,12 @@ const layoutStyles = ({ fullWidth, disabled }: TriggerProps) => ({
 
 const widthStyles = system({ width: true, minWidth: true, maxWidth: true })
 
-const Trigger = styled('div', { label: 'Select', shouldForwardProp })<TriggerProps>(
+const Trigger = styled('div', {
+  name: 'Select',
+  label: 'Select',
+  shouldForwardProp,
+  systemProps: [space, widthStyles],
+})<TriggerProps>(
   baseStyle,
   variantStyles,
   borderRadiusStyle,
@@ -224,15 +231,16 @@ const Trigger = styled('div', { label: 'Select', shouldForwardProp })<TriggerPro
   activeBorder,
   backgroundStyle,
   sizeVariants,
-  layoutStyles,
-  space,
-  widthStyles
+  layoutStyles
 )
 
 // The value area reserves the widest option's width via a hidden ghost stack, so the
 // trigger doesn't resize — and shift the layout — as the selection changes. `autoWidth`
 // opts into sizing to the current content instead.
 const ValueArea = styled('span', {
+  name: 'Select',
+  slot: 'valueArea',
+  label: 'SelectValueArea',
   shouldForwardProp: (prop: string) => prop !== 'autoWidth',
 })<{ autoWidth: boolean }>(({ autoWidth }) => ({
   flex: 1,
@@ -242,7 +250,11 @@ const ValueArea = styled('span', {
   '& > *': { gridArea: '1 / 1' },
 }))
 
-const ValueGhost = styled('span')({
+const ValueGhost = styled('span', {
+  name: 'Select',
+  slot: 'valueGhost',
+  label: 'SelectValueGhost',
+})({
   height: 0,
   overflow: 'hidden',
   visibility: 'hidden',
@@ -253,7 +265,7 @@ const ValueGhost = styled('span')({
 
 // The placeholder inherits the trigger's `textColor` (not dimmed), so an empty field
 // reads in the same color as a selected value, matching NativeSelect.
-const TriggerValue = styled('span')({
+const TriggerValue = styled('span', { name: 'Select', slot: 'value', label: 'SelectValue' })({
   minWidth: 0,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -262,14 +274,16 @@ const TriggerValue = styled('span')({
 
 // ─── Popover ──────────────────────────────────────────────────────────────────
 
-const ListBox = styled('ul')(({ theme }) => ({
-  margin: 0,
-  padding: `${theme.space[1]} 0`,
-  width: '100%',
-  maxHeight: '16rem',
-  overflowY: 'auto',
-  listStyle: 'none',
-}))
+const ListBox = styled('ul', { name: 'Select', slot: 'listbox', label: 'SelectListbox' })(
+  ({ theme }) => ({
+    margin: 0,
+    padding: `${theme.space[1]} 0`,
+    width: '100%',
+    maxHeight: '16rem',
+    overflowY: 'auto',
+    listStyle: 'none',
+  })
+)
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -290,13 +304,13 @@ export function Select({
   borderRadius,
   color: colorProp,
   textColor: textColorProp,
-  bg = 'terminal',
+  bg: bgProp,
   disabled: disabledProp,
   error: errorProp,
   fullWidth: fullWidthProp,
   required: requiredProp,
   size: sizeProp,
-  variant: variantProp = 'default',
+  variant: variantProp,
   iconName,
   iconProps,
   id: idProp,
@@ -318,7 +332,10 @@ export function Select({
     textColor: textColorProp,
   })
   const { id, error, disabled, required, size, fullWidth } = fc
-  const color = fc.color ?? 'primary'
+  const theme = useTheme()
+  const color = fc.color ?? themeDefault(theme, 'color', 'primary')
+  const bg = bgProp ?? themeDefault(theme, 'inputBg', 'terminal')
+  const variant = variantProp ?? themeDefault(theme, 'inputVariant', 'default')
   // Left undefined so the trigger and rows fall back to the accent color's `main`.
   const textColor = fc.textColor
 
@@ -357,7 +374,7 @@ export function Select({
         fullWidth={fullWidthProp}
         required={requiredProp}
         size={sizeProp}
-        variant={variantProp}
+        variant={variant}
         iconName={iconName}
         iconProps={iconProps}
         id={idProp}
@@ -396,7 +413,7 @@ export function Select({
       required={required}
       fullWidth={fullWidth}
       size={size}
-      variant={variantProp}
+      variant={variant}
       iconName={iconName}
       iconProps={iconProps}
       id={id}

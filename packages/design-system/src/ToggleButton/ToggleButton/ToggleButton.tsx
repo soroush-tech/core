@@ -2,8 +2,9 @@ import { useContext, type MouseEvent } from 'react'
 import { ToggleButtonGroupContext, type ToggleButtonValue } from '../ToggleButtonGroupContext'
 import { Button, type ButtonProps } from '../../Button'
 import { ButtonGroupContext } from '../../ButtonGroup'
-import { styled, type Theme, get } from '../../index'
+import { styled, type Theme, get, useTheme } from '../../index'
 import { alpha } from '../../utils'
+import { themeDefault } from '../../utils/themeDefault'
 
 export interface ToggleButtonProps extends Omit<
   ButtonProps,
@@ -27,7 +28,7 @@ interface ToggleButtonRootProps {
 // only the colors change, so Button keeps the border width and hover/active fades.
 const stateStyles = ({
   theme,
-  color = 'default',
+  color = themeDefault(theme, 'neutralColor', 'default'),
   isSelected,
 }: ToggleButtonRootProps & { theme: Theme }) => {
   const c = theme.palette[color]
@@ -47,6 +48,7 @@ const stateStyles = ({
 }
 
 const ToggleButtonRoot = styled(Button, {
+  name: 'ToggleButton',
   label: 'ToggleButton',
   shouldForwardProp: (prop) => prop !== 'isSelected',
 })<ToggleButtonRootProps>(stateStyles)
@@ -72,8 +74,9 @@ export function ToggleButton({
   // Size / disabled / fullWidth are resolved by Button itself; color is resolved
   // here too because the selected-state styles need it. Explicit props win.
   const buttonGroup = useContext(ButtonGroupContext)
+  const theme = useTheme()
   const selected = isSelected ?? isValueSelected(value, group.value)
-  const resolvedColor = color ?? buttonGroup.color ?? 'default'
+  const resolvedColor = color ?? buttonGroup.color ?? themeDefault(theme, 'neutralColor', 'default')
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)

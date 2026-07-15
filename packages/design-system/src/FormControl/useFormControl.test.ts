@@ -1,6 +1,7 @@
 import { createElement, type ReactNode } from 'react'
 import { renderHook } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
+import { ThemeProvider } from '../ThemeProvider'
 import { FormContext, type FormContextValue } from '../Form/FormContext'
 import { FormControlContext, type FormControlContextValue } from './FormControlContext'
 import { useFormControl } from './useFormControl'
@@ -19,13 +20,14 @@ const withProviders =
     let tree = children
     if (ctrl) tree = createElement(FormControlContext.Provider, { value: ctrl }, tree)
     if (form) tree = createElement(FormContext.Provider, { value: form }, tree)
-    return tree
+    // The hook reads theme.defaults, so every case renders under the ThemeProvider.
+    return createElement(ThemeProvider, null, tree)
   }
 
 describe('useFormControl', () => {
   describe('defaults with no providers', () => {
     it('returns falsy/default values', () => {
-      const { result } = renderHook(() => useFormControl())
+      const { result } = renderHook(() => useFormControl(), { wrapper: withProviders() })
       expect(result.current).toEqual({
         id: undefined,
         error: false,

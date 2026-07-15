@@ -36,8 +36,10 @@ const shouldForwardProp = createShouldForwardProp([...props, 'isActive', 'should
 // A lean inline button that inherits the cell's typography and color — the
 // active column keeps the header's color; the icon alone signals sort state.
 const SortLabelRoot = styled('button', {
+  name: 'TableSortLabel',
   label: 'TableSortLabel',
   shouldForwardProp,
+  systemProps: [space],
 })<{ isActive?: boolean; shouldHideSortIcon?: boolean } & SpaceProps<Theme>>(
   {
     display: 'inline-flex',
@@ -61,8 +63,7 @@ const SortLabelRoot = styled('button', {
   ({ isActive, shouldHideSortIcon }) =>
     !isActive && shouldHideSortIcon
       ? { '&:hover .sort-icon, &:focus-visible .sort-icon': { opacity: 0.5 } }
-      : {},
-  space
+      : {}
 )
 
 // `isDescending`, not `direction` — SVG elements have a native `direction`
@@ -70,7 +71,12 @@ const SortLabelRoot = styled('button', {
 const shouldForwardIconProp = (prop: string) =>
   prop !== 'isDescending' && prop !== 'isActive' && prop !== 'shouldHideSortIcon'
 
-const SortIcon = styled(Icon, { shouldForwardProp: shouldForwardIconProp })<{
+const SortIcon = styled(Icon, {
+  name: 'TableSortLabel',
+  slot: 'icon',
+  label: 'TableSortLabelIcon',
+  shouldForwardProp: shouldForwardIconProp,
+})<{
   isDescending: boolean
   isActive: boolean
   shouldHideSortIcon: boolean

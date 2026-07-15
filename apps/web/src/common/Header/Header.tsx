@@ -14,7 +14,7 @@ import { Drawer } from '@soroush.tech/design-system/Drawer'
 import { Link } from '@soroush.tech/design-system/Link'
 import { Logo } from 'src/common/Logo'
 import { Navbar } from 'src/common/Navbar'
-import { useThemeMode } from '@soroush.tech/design-system/hooks/useThemeMode'
+import { useThemeMode } from 'src/theme/useThemeMode'
 import { alpha } from '@soroush.tech/design-system/utils'
 
 export interface HeaderProps {

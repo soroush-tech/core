@@ -1,6 +1,7 @@
 import { type AnchorHTMLAttributes, type ComponentType, type ElementType } from 'react'
-import { styled, system, type CSSObject, type Theme } from '../index'
+import { styled, system, useTheme, type CSSObject, type Theme } from '../index'
 import { Typography, type TypographyProps } from '../Typography'
+import { themeDefault } from '../utils/themeDefault'
 
 export type LinkUnderline = 'always' | 'hover' | 'none'
 
@@ -40,13 +41,15 @@ const underlineStyles: Record<LinkUnderline, CSSObject> = {
 const linkGapSystem = system({ gap: { property: 'gap', scale: 'space' } })
 
 const LinkBase = styled(Typography as ComponentType<LinkProps & { as?: ElementType }>, {
+  name: 'Link',
+  label: 'Link',
   shouldForwardProp: (prop) => prop !== 'underline',
 })<LinkProps>(
   ({ underline = 'always' }) => underlineStyles[underline],
   ({ theme }: { theme: Theme }) => ({
-    '&:hover': { color: theme.palette.primary.main },
+    '&:hover': { color: theme.palette[themeDefault(theme, 'color', 'primary')].main },
     '&:focus-visible': {
-      outline: `2px solid ${theme.palette.primary.main}`,
+      outline: `2px solid ${theme.palette[themeDefault(theme, 'color', 'primary')].main}`,
       outlineOffset: '4px',
       borderRadius: theme.radii.sm,
     },
@@ -55,19 +58,21 @@ const LinkBase = styled(Typography as ComponentType<LinkProps & { as?: ElementTy
 )
 
 export function Link({
-  underline = 'always',
-  color = 'primary',
+  underline: underlineProp,
+  color,
   variant = 'inherit',
   target,
   rel,
   ...rest
 }: Readonly<LinkProps>) {
+  const theme = useTheme()
+  const underline = underlineProp ?? themeDefault(theme, 'linkUnderline', 'always')
   const resolvedRel = target === '_blank' && rel === undefined ? 'noopener noreferrer' : rel
   return (
     <LinkBase
       as="a"
       underline={underline}
-      color={color}
+      color={color ?? themeDefault(theme, 'accentTextColor', 'primary')}
       variant={variant}
       target={target}
       rel={resolvedRel}

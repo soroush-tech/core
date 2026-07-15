@@ -36,14 +36,18 @@ const syntaxStyles = ({ theme }: { theme: Theme }) => ({
 })
 
 // The horizontally scrollable surface: terminal background + token theming.
-const CodeSurface = styled(View, { label: 'CodeSurface' })<ViewProps>(syntaxStyles)
+const CodeSurface = styled(View, {
+  name: 'CodeBlock',
+  slot: 'surface',
+  label: 'CodeSurface',
+})<ViewProps>(syntaxStyles)
 
 // A single-column grid whose track is `minmax(0, 1fr)`: without the `0` minimum the
 // track adopts the code's min-content width and the surface refuses to shrink inside a
 // flex ancestor, overflowing the page. The `0` lets the surface shrink so its own
 // `overflow: auto` engages and the block scrolls instead of stretching the layout.
 // It also owns the reveal of the copy control (hidden until hover/focus).
-const Wrapper = styled(View, { label: 'CodeBlock' })({
+const Wrapper = styled(View, { name: 'CodeBlock', label: 'CodeBlock' })({
   display: 'grid',
   gridTemplateColumns: 'minmax(0, 1fr)',
   '& .code-copy': { opacity: 0, transition: 'opacity 120ms ease' },

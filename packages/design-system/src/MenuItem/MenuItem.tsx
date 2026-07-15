@@ -8,7 +8,8 @@ import {
   type ReactNode,
 } from 'react'
 import { Icon } from '../Icon'
-import { styled, type Theme, createShouldForwardProp, get } from '../index'
+import { styled, type Theme, createShouldForwardProp, get, useTheme } from '../index'
+import { themeDefault } from '../utils/themeDefault'
 
 export type MenuItemColor = keyof Theme['palette']
 export type MenuItemSize = keyof Theme['sizes']
@@ -29,11 +30,11 @@ export interface MenuItemProps {
   highlighted?: boolean
   /** Reserves a leading checkmark slot for multi-select menus. Injected by `Select`. */
   multiple?: boolean
-  /** Accent color — resolves to `theme.palette[color]`. Injected by `Select`; the item's own value wins. Default: `'primary'`. */
+  /** Accent color — resolves to `theme.palette[color]`. Injected by `Select`; the item's own value wins. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: MenuItemColor
   /** Base text color of the row — resolves against `theme.text`. When unset, falls back to the accent color's `main`. Injected by `Select`; the item's own value wins. */
   textColor?: MenuItemTextColor
-  /** Density token — resolves against `theme.sizes`. Injected by `Select`. Default: `'md'`. */
+  /** Density token — resolves against `theme.sizes`. Injected by `Select`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: MenuItemSize
   /** Compact vertical padding, independent of `size`. Default: `false`. */
   dense?: boolean
@@ -151,15 +152,14 @@ const interactionStyles = ({
   }
 }
 
-const MenuItemRoot = styled('li', { label: 'MenuItem', shouldForwardProp })<MenuItemRootProps>(
-  baseStyle,
-  sizeVariants,
-  dividerStyle,
-  interactionStyles
-)
+const MenuItemRoot = styled('li', {
+  name: 'MenuItem',
+  label: 'MenuItem',
+  shouldForwardProp,
+})<MenuItemRootProps>(baseStyle, sizeVariants, dividerStyle, interactionStyles)
 
 // A fixed-width slot keeps labels aligned whether or not the checkmark is shown.
-const CheckSlot = styled('span')({
+const CheckSlot = styled('span', { name: 'MenuItem', slot: 'check', label: 'MenuItemCheck' })({
   display: 'inline-flex',
   width: '1.125rem',
   flexShrink: 0,
@@ -188,9 +188,9 @@ export function MenuItem({
   selected = false,
   highlighted = false,
   multiple = false,
-  color = 'primary',
+  color: colorProp,
   textColor,
-  size = 'md',
+  size: sizeProp,
   dense = false,
   disableGutters = false,
   divider = false,
@@ -201,6 +201,9 @@ export function MenuItem({
   className,
   'data-testid': dataTestid,
 }: Readonly<MenuItemProps>) {
+  const theme = useTheme()
+  const color = colorProp ?? themeDefault(theme, 'color', 'primary')
+  const size = sizeProp ?? themeDefault(theme, 'size', 'md')
   const rootRef = useRef<HTMLLIElement>(null)
   const [isFocusVisible, setIsFocusVisible] = useState(false)
 

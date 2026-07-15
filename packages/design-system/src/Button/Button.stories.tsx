@@ -2,7 +2,7 @@ import { css, keyframes } from '@emotion/css'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 import { m, p } from '../utils/test/storiesArgs'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import {
   borderRadiiTokens,
   buttonColorTokens,
@@ -311,7 +311,7 @@ const RAINBOW = [
 // The `&&` selector doubles specificity to beat Button's own variant styles.
 function rainbowBorderClass({
   speed = '2s',
-  innerBg = dark.background.paper,
+  innerBg = baseTheme.background.paper,
   colors = RAINBOW,
 }: { speed?: string; innerBg?: string; colors?: string[] } = {}) {
   return css({
@@ -374,9 +374,9 @@ export const RainbowBorder: Story = {
           fontWeight="medium"
           className={rainbowBorderClass({
             colors: [
-              dark.palette.primary.main,
-              dark.palette.secondary.main,
-              dark.palette.primary.main,
+              baseTheme.palette.primary.main,
+              baseTheme.palette.secondary.main,
+              baseTheme.palette.primary.main,
             ],
           })}
         >
@@ -388,7 +388,11 @@ export const RainbowBorder: Story = {
           letterSpacing="normal"
           fontWeight="medium"
           className={rainbowBorderClass({
-            colors: [dark.palette.error.main, dark.palette.warning.main, dark.palette.error.main],
+            colors: [
+              baseTheme.palette.error.main,
+              baseTheme.palette.warning.main,
+              baseTheme.palette.error.main,
+            ],
             speed: '1s',
           })}
         >

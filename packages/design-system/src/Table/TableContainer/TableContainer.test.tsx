@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
+import { baseTheme } from '../../themes'
 import { TableContainer } from './TableContainer'
 
 describe('TableContainer', () => {
@@ -20,8 +20,8 @@ describe('TableContainer', () => {
   it('inherits View styling props', () => {
     renderWithTheme(<TableContainer bg="paper" p={2} maxHeight="200px" data-testid="container" />)
     expect(screen.getByTestId('container')).toHaveStyle({
-      backgroundColor: dark.background.paper,
-      padding: dark.space[2],
+      backgroundColor: baseTheme.background.paper,
+      padding: baseTheme.space[2],
       maxHeight: '200px',
     })
   })

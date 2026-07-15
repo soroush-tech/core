@@ -2,10 +2,11 @@ import { renderHook } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import type { ReactNode } from 'react'
 import { ThemeProvider } from '../ThemeProvider'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { useStyle } from './useStyle'
 
-const wrapper = ({ children }: { children: ReactNode }) => ThemeProvider({ children, theme: dark })
+const wrapper = ({ children }: { children: ReactNode }) =>
+  ThemeProvider({ children, theme: baseTheme })
 
 describe('useStyle', () => {
   it('returns the CSSObject as-is when style has no getStyles', () => {
@@ -15,8 +16,8 @@ describe('useStyle', () => {
   })
 
   it('calls getStyles with the current theme and returns the result', () => {
-    const style = { getStyles: (theme: typeof dark) => ({ color: theme.text.primary }) }
+    const style = { getStyles: (theme: typeof baseTheme) => ({ color: theme.text.primary }) }
     const { result } = renderHook(() => useStyle(style), { wrapper })
-    expect(result.current).toEqual({ color: dark.text.primary })
+    expect(result.current).toEqual({ color: baseTheme.text.primary })
   })
 })

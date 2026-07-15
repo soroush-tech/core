@@ -24,19 +24,14 @@
     "url": "https://github.com/soroush-tech/core/issues"
   },
   "type": "module",
-  "sideEffects": [
-    "**/*.css",
-    "**/globalStyles.*"
-  ],
+  "sideEffects": false,
   "files": [
     "dist"
   ],
   "exports": {
     ".": "./src/index.ts",
     "./themes": "./src/themes.ts",
-    "./globalStyles": "./src/globalStyles.ts",
     "./utils/styleCache": "./src/utils/styleCache.ts",
-    "./hooks/useThemeMode": "./src/hooks/useThemeMode.ts",
     "./hooks/useCopyToClipboard": "./src/hooks/useCopyToClipboard.ts",
     "./utils/test/storiesArgs": "./src/utils/test/storiesArgs.ts",
     "./utils/test/storiesOptions": "./src/utils/test/storiesOptions.ts",
@@ -81,16 +76,17 @@
   },
   "scripts": {
     "build": "tsdown",
+    "storybook": "pnpm --filter @soroush/web storybook",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:types": "pnpm build && tsc -p type-tests/tsconfig.json",
+    "audit:styled": "node scripts/audit-styled.mjs",
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
-    "@fontsource-variable/jetbrains-mono": "^5.2.8",
-    "@fontsource-variable/space-grotesk": "^5.2.10",
     "@soroush.tech/styled-system": "workspace:^",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",

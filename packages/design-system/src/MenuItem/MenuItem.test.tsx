@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { MenuItem } from './MenuItem'
 
 describe('MenuItem', () => {
@@ -66,7 +66,7 @@ describe('MenuItem', () => {
         Alpha
       </MenuItem>
     )
-    expect(screen.getByRole('option')).toHaveStyle({ color: dark.palette.error.main })
+    expect(screen.getByRole('option')).toHaveStyle({ color: baseTheme.palette.error.main })
   })
 
   it('applies its own textColor to the row, overriding the accent default', () => {
@@ -75,7 +75,7 @@ describe('MenuItem', () => {
         Alpha
       </MenuItem>
     )
-    expect(screen.getByRole('option')).toHaveStyle({ color: dark.text.secondary })
+    expect(screen.getByRole('option')).toHaveStyle({ color: baseTheme.text.secondary })
   })
 
   it('applies the accent color when selected', () => {
@@ -84,7 +84,7 @@ describe('MenuItem', () => {
         Alpha
       </MenuItem>
     )
-    expect(screen.getByRole('option')).toHaveStyle({ color: dark.palette.primary.main })
+    expect(screen.getByRole('option')).toHaveStyle({ color: baseTheme.palette.primary.main })
   })
 
   it('renders as a custom element via `as`', () => {
@@ -104,13 +104,13 @@ describe('MenuItem', () => {
         Alpha
       </MenuItem>
     )
-    expect(screen.getByRole('option')).toHaveStyle({ paddingTop: dark.space[1] })
+    expect(screen.getByRole('option')).toHaveStyle({ paddingTop: baseTheme.space[1] })
     rerender(
       <MenuItem value="a" size="md" dense>
         Alpha
       </MenuItem>
     )
-    expect(screen.getByRole('option')).toHaveStyle({ paddingTop: dark.space[0.5] })
+    expect(screen.getByRole('option')).toHaveStyle({ paddingTop: baseTheme.space[0.5] })
   })
 
   it('removes horizontal padding when disableGutters', () => {
@@ -130,7 +130,7 @@ describe('MenuItem', () => {
     )
     expect(screen.getByRole('option')).toHaveStyle({
       borderBottomStyle: 'solid',
-      borderBottomColor: dark.border.light,
+      borderBottomColor: baseTheme.border.light,
     })
   })
 

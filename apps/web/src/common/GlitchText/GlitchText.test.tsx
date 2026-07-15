@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from 'src/test/utils/wrapper'
-import { dark } from '@soroush.tech/design-system/themes'
+import { dark } from 'src/theme/themes'
 import { GlitchText } from './GlitchText'
 
 describe('GlitchText', () => {

@@ -1,8 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
-import { Switch } from '../Switch'
+import { baseTheme } from '../themes'
+import { Switch, type SwitchSize } from '../Switch'
 
 describe('Switch', () => {
   // ─── element ─────────────────────────────────────────────────────────────────
@@ -146,7 +146,7 @@ describe('Switch', () => {
       ] as const
       colors.forEach((color) => {
         const { unmount } = renderWithTheme(<Switch color={color} data-testid="sw" />)
-        expect(screen.getByTestId('sw')).toHaveStyle({ color: dark.palette[color].main })
+        expect(screen.getByTestId('sw')).toHaveStyle({ color: baseTheme.palette[color].main })
         unmount()
       })
     })
@@ -191,6 +191,11 @@ describe('Switch', () => {
     it('inside lg — track is 56×32px', () => {
       const { container } = renderWithTheme(<Switch variant="inside" size="lg" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '56px', height: '32px' })
+    })
+
+    it('falls back to md metrics for a size without entries', () => {
+      const { container } = renderWithTheme(<Switch size={'xl' as SwitchSize} />)
+      expect(container.querySelector('.sw-track')).toHaveStyle({ width: '44px', height: '24px' })
     })
 
     it('does not forward size to DOM', () => {
@@ -248,14 +253,14 @@ describe('Switch', () => {
     it('inside variant: applies theme.background[bg] as unchecked track color', () => {
       const { container } = renderWithTheme(<Switch variant="inside" bg="paper" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({
-        backgroundColor: dark.background.paper,
+        backgroundColor: baseTheme.background.paper,
       })
     })
 
     it('inside variant: defaults to theme.background.default when bg is not set', () => {
       const { container } = renderWithTheme(<Switch variant="inside" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({
-        backgroundColor: dark.background.default,
+        backgroundColor: baseTheme.background.default,
       })
     })
 

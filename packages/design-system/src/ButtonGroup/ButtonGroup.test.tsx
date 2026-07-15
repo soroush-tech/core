@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { Button } from '../Button'
 import { ButtonGroup } from './ButtonGroup'
 
@@ -24,7 +24,7 @@ describe('ButtonGroup', () => {
       </ButtonGroup>
     )
     expect(screen.getByRole('button')).toHaveStyle({
-      backgroundColor: dark.palette.secondary.main,
+      backgroundColor: baseTheme.palette.secondary.main,
     })
   })
 
@@ -36,7 +36,7 @@ describe('ButtonGroup', () => {
     )
     expect(screen.getByRole('button')).toHaveStyle({
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      borderColor: dark.palette.primary.main,
+      borderColor: baseTheme.palette.primary.main,
     })
   })
 
@@ -47,7 +47,7 @@ describe('ButtonGroup', () => {
       </ButtonGroup>
     )
     expect(screen.getByRole('button')).toHaveStyle({
-      paddingTop: dark.space[dark.sizes.lg.paddingTop],
+      paddingTop: baseTheme.space[baseTheme.sizes.lg.paddingTop],
     })
   })
 
@@ -60,7 +60,7 @@ describe('ButtonGroup', () => {
       </ButtonGroup>
     )
     const button = screen.getByRole('button')
-    expect(button).toHaveStyle({ backgroundColor: dark.palette.secondary.main })
+    expect(button).toHaveStyle({ backgroundColor: baseTheme.palette.secondary.main })
     expect(button).not.toBeDisabled()
   })
 
@@ -128,7 +128,7 @@ describe('ButtonGroup', () => {
         <Button>Three</Button>
       </ButtonGroup>
     )
-    const r = dark.radii.md
+    const r = baseTheme.radii.md
 
     const first = groupRule('group', '*:first-of-type')
     expect(first).toContain(`border-top-left-radius: ${r}`)
@@ -151,7 +151,7 @@ describe('ButtonGroup', () => {
       </ButtonGroup>
     )
     const only = groupRule('group', ':only-child')
-    expect(only).toContain(`border-radius: ${dark.radii.lg}`)
+    expect(only).toContain(`border-radius: ${baseTheme.radii.lg}`)
   })
 
   it('rounds the top/bottom outer corners when vertical', () => {
@@ -161,7 +161,7 @@ describe('ButtonGroup', () => {
         <Button>Two</Button>
       </ButtonGroup>
     )
-    const r = dark.radii.sm
+    const r = baseTheme.radii.sm
     const first = groupRule('group', '*:first-of-type')
     expect(first).toContain(`border-top-left-radius: ${r}`)
     expect(first).toContain(`border-top-right-radius: ${r}`)

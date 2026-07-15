@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { screen, fireEvent, within } from '@testing-library/react'
 import { renderWithTheme } from 'src/test/utils/wrapper'
-import { dark } from '@soroush.tech/design-system/themes'
+import { dark } from 'src/theme/themes'
 
 vi.mock('src/common/NavLink', () => ({
   NavLink: ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -14,7 +14,7 @@ const { mockToggleTheme, mockUseThemeMode } = vi.hoisted(() => ({
   mockUseThemeMode: vi.fn(() => ({ isDark: true, toggleTheme: vi.fn() })),
 }))
 
-vi.mock('@soroush.tech/design-system/hooks/useThemeMode', () => ({
+vi.mock('src/theme/useThemeMode', () => ({
   useThemeMode: mockUseThemeMode,
 }))
 

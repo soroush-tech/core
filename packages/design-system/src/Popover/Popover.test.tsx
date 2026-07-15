@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createRef } from 'react'
 import { fireEvent, screen } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { Popover, type PopoverActions } from './Popover'
 
 function makeAnchor() {
@@ -71,7 +71,7 @@ describe('Popover', () => {
       </Popover>
     )
     const surface = screen.getByText('Panel').parentElement as HTMLElement
-    expect(surface).toHaveStyle({ backgroundColor: dark.background.secondary })
+    expect(surface).toHaveStyle({ backgroundColor: baseTheme.background.secondary })
   })
 
   it('positions from anchorPosition and re-positions on resize', () => {

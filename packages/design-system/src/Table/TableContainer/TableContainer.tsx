@@ -8,6 +8,9 @@ export type TableContainerProps = ViewProps
  * instead of breaking the page layout. Give it a bounded height to make
  * `Table`'s `hasStickyHeader` stick.
  */
-export const TableContainer = styled(View, { label: 'TableContainer' })<TableContainerProps>({
+export const TableContainer = styled(View, {
+  name: 'TableContainer',
+  label: 'TableContainer',
+})<TableContainerProps>({
   overflowX: 'auto',
 })

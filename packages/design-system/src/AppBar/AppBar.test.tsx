@@ -2,7 +2,10 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
 import { ThemeProvider } from '../ThemeProvider'
-import { dark, light } from '../themes'
+import { baseTheme, createTheme } from '../themes'
+
+// A second theme with a different surface value — proves tokens resolve per-theme.
+const light = createTheme(baseTheme, { background: { paper: '#F3F3F3' } })
 import { AppBar } from '../AppBar'
 
 describe('AppBar', () => {
@@ -45,32 +48,32 @@ describe('AppBar', () => {
 
     it('applies elevation shadow from theme', () => {
       renderWithTheme(<AppBar data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: dark.shadows[4] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: baseTheme.shadows[4] })
     })
 
     it('applies default padding from theme.sizes.md', () => {
       renderWithTheme(<AppBar data-testid="bar" />)
       expect(screen.getByTestId('bar')).toHaveStyle({
-        paddingLeft: dark.space[2],
-        paddingRight: dark.space[2],
-        paddingTop: dark.space[1],
-        paddingBottom: dark.space[1],
+        paddingLeft: baseTheme.space[2],
+        paddingRight: baseTheme.space[2],
+        paddingTop: baseTheme.space[1],
+        paddingBottom: baseTheme.space[1],
       })
     })
 
     it('allows px prop to override default horizontal padding', () => {
       renderWithTheme(<AppBar px={1} data-testid="bar" />)
       expect(screen.getByTestId('bar')).toHaveStyle({
-        paddingLeft: dark.space[1],
-        paddingRight: dark.space[1],
+        paddingLeft: baseTheme.space[1],
+        paddingRight: baseTheme.space[1],
       })
     })
 
     it('allows py prop to override default vertical padding', () => {
       renderWithTheme(<AppBar py={2} data-testid="bar" />)
       expect(screen.getByTestId('bar')).toHaveStyle({
-        paddingTop: dark.space[2],
-        paddingBottom: dark.space[2],
+        paddingTop: baseTheme.space[2],
+        paddingBottom: baseTheme.space[2],
       })
     })
 
@@ -91,40 +94,40 @@ describe('AppBar', () => {
     it('size="sm" applies theme.sizes.sm padding', () => {
       renderWithTheme(<AppBar size="sm" data-testid="bar" />)
       expect(screen.getByTestId('bar')).toHaveStyle({
-        paddingLeft: dark.space[1.5],
-        paddingTop: dark.space[0.5],
+        paddingLeft: baseTheme.space[1.5],
+        paddingTop: baseTheme.space[0.5],
       })
     })
 
     it('size="md" applies theme.sizes.md padding', () => {
       renderWithTheme(<AppBar size="md" data-testid="bar" />)
       expect(screen.getByTestId('bar')).toHaveStyle({
-        paddingLeft: dark.space[2],
-        paddingTop: dark.space[1],
+        paddingLeft: baseTheme.space[2],
+        paddingTop: baseTheme.space[1],
       })
     })
 
     it('size="lg" applies theme.sizes.lg padding', () => {
       renderWithTheme(<AppBar size="lg" data-testid="bar" />)
       expect(screen.getByTestId('bar')).toHaveStyle({
-        paddingLeft: dark.space[3],
-        paddingTop: dark.space[1.5],
+        paddingLeft: baseTheme.space[3],
+        paddingTop: baseTheme.space[1.5],
       })
     })
 
     it('size="sm" applies theme.sizes.sm fontSize', () => {
       renderWithTheme(<AppBar size="sm" data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ fontSize: dark.fontSizes[0] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ fontSize: baseTheme.fontSizes[0] })
     })
 
     it('size="md" applies theme.sizes.md fontSize', () => {
       renderWithTheme(<AppBar size="md" data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ fontSize: dark.fontSizes[1] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ fontSize: baseTheme.fontSizes[1] })
     })
 
     it('size="lg" applies theme.sizes.lg fontSize', () => {
       renderWithTheme(<AppBar size="lg" data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ fontSize: dark.fontSizes[1] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ fontSize: baseTheme.fontSizes[1] })
     })
   })
 
@@ -133,7 +136,7 @@ describe('AppBar', () => {
   describe('color', () => {
     it('sets backgroundColor from theme.background in dark mode', () => {
       renderWithTheme(<AppBar color="paper" data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ backgroundColor: dark.background.paper })
+      expect(screen.getByTestId('bar')).toHaveStyle({ backgroundColor: baseTheme.background.paper })
     })
 
     it('sets backgroundColor from theme.background in light mode', () => {
@@ -146,14 +149,16 @@ describe('AppBar', () => {
     })
 
     it('dark and light resolve to different values for the same token', () => {
-      expect(dark.background.paper).not.toBe(light.background.paper)
+      expect(baseTheme.background.paper).not.toBe(light.background.paper)
     })
 
     it('applies all background tokens without error', () => {
-      const colors = Object.keys(dark.background) as (keyof typeof dark.background)[]
+      const colors = Object.keys(baseTheme.background) as (keyof typeof baseTheme.background)[]
       colors.forEach((color) => {
         const { unmount } = renderWithTheme(<AppBar color={color} data-testid="bar" />)
-        expect(screen.getByTestId('bar')).toHaveStyle({ backgroundColor: dark.background[color] })
+        expect(screen.getByTestId('bar')).toHaveStyle({
+          backgroundColor: baseTheme.background[color],
+        })
         unmount()
       })
     })
@@ -162,8 +167,8 @@ describe('AppBar', () => {
       renderWithTheme(<AppBar data-testid="bar" />)
       const style = getComputedStyle(screen.getByTestId('bar'))
       // transparent is excluded — rgba(0,0,0,0) is also the default computed value for unstyled elements
-      const opaqueTokens = Object.values(dark.background).filter(
-        (v) => v !== dark.background.transparent
+      const opaqueTokens = Object.values(baseTheme.background).filter(
+        (v) => v !== baseTheme.background.transparent
       )
       expect(opaqueTokens).not.toContain(style.backgroundColor)
     })
@@ -174,17 +179,17 @@ describe('AppBar', () => {
   describe('elevation', () => {
     it('elevation={0} applies theme.shadows[0]', () => {
       renderWithTheme(<AppBar elevation={0} data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: dark.shadows[0] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: baseTheme.shadows[0] })
     })
 
     it('elevation={8} applies theme.shadows[8]', () => {
       renderWithTheme(<AppBar elevation={8} data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: dark.shadows[8] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: baseTheme.shadows[8] })
     })
 
     it('elevation={4} matches the default shadow', () => {
       renderWithTheme(<AppBar elevation={4} data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: dark.shadows[4] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ boxShadow: baseTheme.shadows[4] })
     })
   })
 
@@ -222,7 +227,7 @@ describe('AppBar', () => {
   describe('zOrder', () => {
     it('defaults zIndex to theme.zOrder.appBar', () => {
       renderWithTheme(<AppBar data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ zIndex: dark.zOrder.appBar })
+      expect(screen.getByTestId('bar')).toHaveStyle({ zIndex: baseTheme.zOrder.appBar })
     })
 
     it('allows an explicit zIndex prop to override the default', () => {
@@ -251,7 +256,7 @@ describe('AppBar', () => {
 
     it('applies gap from theme.space scale', () => {
       renderWithTheme(<AppBar gap={2} data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ gap: dark.space[2] })
+      expect(screen.getByTestId('bar')).toHaveStyle({ gap: baseTheme.space[2] })
     })
   })
 
@@ -260,12 +265,14 @@ describe('AppBar', () => {
   describe('blur', () => {
     it('applies backdropFilter when blur is true', () => {
       renderWithTheme(<AppBar blur data-testid="bar" />)
-      expect(screen.getByTestId('bar')).toHaveStyle({ backdropFilter: `blur(${dark.blur})` })
+      expect(screen.getByTestId('bar')).toHaveStyle({ backdropFilter: `blur(${baseTheme.blur})` })
     })
 
     it('does not apply backdropFilter when blur is omitted', () => {
       renderWithTheme(<AppBar data-testid="bar" />)
-      expect(screen.getByTestId('bar')).not.toHaveStyle({ backdropFilter: `blur(${dark.blur})` })
+      expect(screen.getByTestId('bar')).not.toHaveStyle({
+        backdropFilter: `blur(${baseTheme.blur})`,
+      })
     })
   })
 

@@ -13,6 +13,7 @@ import {
 } from '../index'
 import type { ButtonColor } from '../Button'
 import { clamp } from '../utils'
+import { themeDefault } from '../utils/themeDefault'
 
 export type CircularProgressVariant = 'indeterminate' | 'determinate'
 export type CircularProgressColor = ButtonColor | 'inherit'
@@ -27,7 +28,7 @@ export interface CircularProgressProps
     LayoutProps<Theme> {
   /** Visual variant — looping animation or value-driven arc. Default: `'indeterminate'`. */
   variant?: CircularProgressVariant
-  /** Stroke color — resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: `'primary'`. */
+  /** Stroke color — resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: CircularProgressColor
   /** Width and height. Number → px; string → raw CSS unit (e.g. `'3rem'`). Default: `40`. */
   size?: number | string
@@ -81,13 +82,20 @@ const dash = keyframes({
 
 // ─── Internal sub-components ──────────────────────────────────────────────────
 
-const CircularProgressTrack = styled('circle')({
+const CircularProgressTrack = styled('circle', {
+  name: 'CircularProgress',
+  slot: 'track',
+  label: 'CircularProgressTrack',
+})({
   fill: 'none',
   stroke: 'currentColor',
   opacity: 0.2,
 })
 
 const CircularProgressCircle = styled('circle', {
+  name: 'CircularProgress',
+  slot: 'circle',
+  label: 'CircularProgressCircle',
   shouldForwardProp: (prop) => prop !== 'variant' && prop !== 'disableShrink',
 })<Pick<CircularProgressProps, 'variant' | 'disableShrink'>>(({ variant, disableShrink }) => ({
   fill: 'none',
@@ -103,8 +111,9 @@ const CircularProgressCircle = styled('circle', {
 
 // ─── Styling functions ────────────────────────────────────────────────────────
 
-const colorStyle = ({ color = 'primary', theme }: CircularProgressProps & { theme?: Theme }) => {
-  if (!theme || color === 'inherit') return {}
+const colorStyle = ({ color: colorProp, theme }: CircularProgressProps & { theme: Theme }) => {
+  const color = colorProp ?? themeDefault(theme, 'color', 'primary')
+  if (color === 'inherit') return {}
   return { color: theme.palette[color].main }
 }
 
@@ -132,19 +141,19 @@ const safeLayout = (props: CircularProgressProps & { theme?: Theme }) =>
 // Root is a <span> to avoid SVG attribute type conflicts with styled-system's
 // LayoutProps (SVGAttributes.height is string|number; LayoutProps.height can be null).
 // The <svg> inside is a plain element that fills the span via width/height="100%".
-const CircularProgressRoot = styled('span', { shouldForwardProp })<CircularProgressProps>(
-  colorStyle,
-  sizeStyle,
-  rotationStyle,
-  space,
-  safeLayout
-)
+const CircularProgressRoot = styled('span', {
+  name: 'CircularProgress',
+  label: 'CircularProgress',
+  shouldForwardProp,
+  systemProps: [space, safeLayout],
+})<CircularProgressProps>(colorStyle, sizeStyle, rotationStyle)
 
 // ─── Public component ─────────────────────────────────────────────────────────
 
 export function CircularProgress({
   variant = 'indeterminate',
-  color = 'primary',
+  // undefined resolves to themeDefault(theme, 'color', 'primary') in the styled layer.
+  color,
   size = SIZE_DEFAULT,
   thickness = THICKNESS_DEFAULT,
   value,

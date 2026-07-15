@@ -2,14 +2,14 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type { CSSObject } from '@emotion/react'
 import { ThemeProvider } from '../ThemeProvider'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import type { Theme } from '../themes'
 import { StylesConsumer } from './StylesConsumer'
 import { withStyles } from './withStyles'
 import { withTheme } from './withTheme'
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <ThemeProvider theme={dark}>{children}</ThemeProvider>
+  <ThemeProvider theme={baseTheme}>{children}</ThemeProvider>
 )
 
 describe('StylesConsumer', () => {
@@ -24,7 +24,7 @@ describe('StylesConsumer', () => {
         ),
       })
     )
-    expect(screen.getByTestId('out').textContent).toBe(dark.text.primary)
+    expect(screen.getByTestId('out').textContent).toBe(baseTheme.text.primary)
   })
 })
 
@@ -36,7 +36,7 @@ describe('withStyles', () => {
     }
     const Enhanced = withStyles<object>(style)(Base)
     render(wrapper({ children: <Enhanced /> }))
-    expect(screen.getByTestId('out').textContent).toBe(dark.text.primary)
+    expect(screen.getByTestId('out').textContent).toBe(baseTheme.text.primary)
   })
 
   it('passes the plain CSSObject when style has no getStyles', () => {
@@ -57,6 +57,6 @@ describe('withTheme', () => {
     }
     const Enhanced = withTheme(Base)
     render(wrapper({ children: <Enhanced /> }))
-    expect(screen.getByTestId('out').textContent).toBe(dark.name)
+    expect(screen.getByTestId('out').textContent).toBe(baseTheme.name)
   })
 })

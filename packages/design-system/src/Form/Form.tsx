@@ -1,6 +1,11 @@
 import { useMemo, type ReactNode, type SyntheticEvent } from 'react'
 import { type Theme } from '@emotion/react'
+import { styled } from '../index'
 import { FormContext } from './FormContext'
+
+// Named styled root — the `<form>` element is theme-customizable via
+// `theme.components.Form.styleOverrides.root`.
+const FormRoot = styled('form', { name: 'Form', label: 'Form' })()
 
 export interface FormProps {
   children: ReactNode
@@ -46,7 +51,7 @@ export function Form({
 
   return (
     <FormContext.Provider value={value}>
-      <form
+      <FormRoot
         id={id}
         className={className}
         noValidate={noValidate}
@@ -54,7 +59,7 @@ export function Form({
         data-testid={dataTestid}
       >
         {children}
-      </form>
+      </FormRoot>
     </FormContext.Provider>
   )
 }

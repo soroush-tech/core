@@ -34,6 +34,12 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
+      '@fontsource-variable/jetbrains-mono':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource-variable/space-grotesk':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@soroush.tech/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
@@ -299,12 +305,6 @@ importers:
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
-      '@fontsource-variable/jetbrains-mono':
-        specifier: ^5.2.8
-        version: 5.2.8
-      '@fontsource-variable/space-grotesk':
-        specifier: ^5.2.10
-        version: 5.2.10
       '@soroush.tech/styled-system':
         specifier: workspace:^
         version: link:../styled-system

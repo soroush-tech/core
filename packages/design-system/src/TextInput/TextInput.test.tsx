@@ -2,7 +2,7 @@ import type { HTMLAttributes, InputHTMLAttributes } from 'react'
 import { fireEvent, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { FormControl } from '../FormControl'
 import { FormHelperText } from '../FormHelperText'
 import { TextInput } from '../TextInput'
@@ -180,12 +180,12 @@ describe('TextInput', () => {
   describe('error', () => {
     it('applies error.main border color', () => {
       renderWithTheme(<TextInput error data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ borderColor: dark.palette.error.main })
+      expect(screen.getByTestId('root')).toHaveStyle({ borderColor: baseTheme.palette.error.main })
     })
 
     it('error overrides the color prop border', () => {
       renderWithTheme(<TextInput color="primary" error data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ borderColor: dark.palette.error.main })
+      expect(screen.getByTestId('root')).toHaveStyle({ borderColor: baseTheme.palette.error.main })
     })
   })
 
@@ -195,7 +195,7 @@ describe('TextInput', () => {
     it('resting border uses palette[color].light', () => {
       renderWithTheme(<TextInput color="primary" data-testid="root" />)
       expect(screen.getByTestId('root')).toHaveStyle({
-        borderColor: dark.palette.primary.light,
+        borderColor: baseTheme.palette.primary.light,
       })
     })
 
@@ -204,7 +204,7 @@ describe('TextInput', () => {
       colors.forEach((color) => {
         const { unmount } = renderWithTheme(<TextInput color={color} data-testid="root" />)
         expect(screen.getByTestId('root')).toHaveStyle({
-          borderColor: dark.palette[color].light,
+          borderColor: baseTheme.palette[color].light,
         })
         unmount()
       })
@@ -216,13 +216,13 @@ describe('TextInput', () => {
   describe('variant', () => {
     it('outlined (default) has border-radius from theme', () => {
       renderWithTheme(<TextInput data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ borderRadius: dark.radii.sq })
+      expect(screen.getByTestId('root')).toHaveStyle({ borderRadius: baseTheme.radii.sq })
     })
 
     it('outlined has terminal background', () => {
       renderWithTheme(<TextInput variant="outlined" data-testid="root" />)
       expect(screen.getByTestId('root')).toHaveStyle({
-        backgroundColor: dark.background.terminal,
+        backgroundColor: baseTheme.background.terminal,
       })
     })
 
@@ -242,22 +242,22 @@ describe('TextInput', () => {
   describe('borderRadius', () => {
     it('applies borderRadius to default variant', () => {
       renderWithTheme(<TextInput borderRadius="md" data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ borderRadius: dark.radii.md })
+      expect(screen.getByTestId('root')).toHaveStyle({ borderRadius: baseTheme.radii.md })
     })
 
     it('applies borderRadius to outlined variant', () => {
       renderWithTheme(<TextInput variant="outlined" borderRadius="md" data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ borderRadius: dark.radii.md })
+      expect(screen.getByTestId('root')).toHaveStyle({ borderRadius: baseTheme.radii.md })
     })
 
     it('ignores borderRadius on underline variant', () => {
       renderWithTheme(<TextInput variant="underline" borderRadius="md" data-testid="root" />)
-      expect(screen.getByTestId('root')).not.toHaveStyle({ borderRadius: dark.radii.md })
+      expect(screen.getByTestId('root')).not.toHaveStyle({ borderRadius: baseTheme.radii.md })
     })
 
     it('ignores borderRadius on text variant', () => {
       renderWithTheme(<TextInput variant="text" borderRadius="md" data-testid="root" />)
-      expect(screen.getByTestId('root')).not.toHaveStyle({ borderRadius: dark.radii.md })
+      expect(screen.getByTestId('root')).not.toHaveStyle({ borderRadius: baseTheme.radii.md })
     })
   })
 
@@ -483,7 +483,7 @@ describe('TextInput', () => {
           <TextInput data-testid="root" />
         </FormControl>
       )
-      expect(screen.getByTestId('root')).toHaveStyle({ borderColor: dark.palette.error.main })
+      expect(screen.getByTestId('root')).toHaveStyle({ borderColor: baseTheme.palette.error.main })
     })
 
     it('lets an explicit prop override context', () => {
@@ -501,7 +501,7 @@ describe('TextInput', () => {
           <TextInput data-testid="root" />
         </FormControl>
       )
-      expect(screen.getByTestId('root')).toHaveStyle({ color: dark.text.info })
+      expect(screen.getByTestId('root')).toHaveStyle({ color: baseTheme.text.info })
     })
   })
 
@@ -510,12 +510,12 @@ describe('TextInput', () => {
   describe('textColor', () => {
     it('defaults the text color to text.primary', () => {
       renderWithTheme(<TextInput data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ color: dark.text.primary })
+      expect(screen.getByTestId('root')).toHaveStyle({ color: baseTheme.text.primary })
     })
 
     it('applies an explicit textColor token to the text color', () => {
       renderWithTheme(<TextInput textColor="success" data-testid="root" />)
-      expect(screen.getByTestId('root')).toHaveStyle({ color: dark.text.success })
+      expect(screen.getByTestId('root')).toHaveStyle({ color: baseTheme.text.success })
     })
   })
 })

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { mocked, fn } from 'storybook/test'
-import { useThemeMode } from '@soroush.tech/design-system/hooks/useThemeMode'
+import { useThemeMode } from 'src/theme/useThemeMode'
 import { Header } from './Header'
 
 const meta = {

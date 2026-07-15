@@ -3,7 +3,23 @@ import type { Meta, StoryObj, Decorator } from '@storybook/react-vite'
 import { border, m, p, position } from '../utils/test/storiesArgs'
 import { appBarSizeTokens, backgroundTokens } from '../utils/test/storiesOptions'
 import { ThemeProvider } from '../ThemeProvider'
-import { dark, light } from '../themes'
+import { baseTheme, createTheme } from '../themes'
+
+// Story-local light variant — the package ships only `baseTheme`; consumers
+// build their own light themes the same way.
+const light = createTheme(baseTheme, {
+  name: 'light',
+  colorScheme: 'light',
+  background: {
+    appBar: '#F9F9F9CC',
+    paper: '#F3F3F3',
+    default: '#FFFFFF',
+    primary: '#F9F9F9',
+    secondary: '#EEEEEE',
+  },
+  text: { initial: '#1A1C1C', secondary: '#444748' },
+  border: { default: '#D7D8DA' },
+})
 import { Avatar } from '../Avatar'
 import { Flex } from '../Flex'
 import { Link } from '../Link'
@@ -288,7 +304,7 @@ interface DarkModeArgs {
 const WithThemeToggle: Decorator = (Story, ctx) => {
   const [isDark, setIsDark] = useState(false)
   return (
-    <ThemeProvider theme={isDark ? dark : light}>
+    <ThemeProvider theme={isDark ? baseTheme : light}>
       <Story args={{ ...ctx.args, isDark, onToggle: () => setIsDark((value) => !value) }} />
     </ThemeProvider>
   )

@@ -5,9 +5,11 @@ import {
   createShouldForwardProp,
   props,
   system,
+  useTheme,
   variant as styledVariant,
 } from '../index'
 import { Flex, type FlexProps } from '../Flex'
+import { themeDefault } from '../utils/themeDefault'
 
 export type AvatarVariant = 'circular' | 'rounded' | 'square'
 export type AvatarSize = keyof Theme['avatar']
@@ -24,7 +26,7 @@ export interface AvatarProps extends Omit<FlexProps, OmittedProps> {
   fallback?: string
   /** Shape of the avatar. Default: 'circular'. */
   variant?: AvatarVariant
-  /** Preset size — resolves against theme.avatar. Default: 'md'. */
+  /** Preset size — resolves against theme.avatar. Default: 'md', overridable via `theme.defaults.size`. */
   size?: AvatarSize
   /** Adds a CSS outline ring around the avatar. */
   ring?: boolean
@@ -64,7 +66,11 @@ const ringSystem = system({
   ringWidth: { property: 'outlineWidth', scale: 'borderWidths' },
 })
 
-const AvatarRoot = styled(Flex, { label: 'avatar', shouldForwardProp })<AvatarProps>(
+const AvatarRoot = styled(Flex, {
+  name: 'Avatar',
+  label: 'avatar',
+  shouldForwardProp,
+})<AvatarProps>(
   {
     overflow: 'hidden',
     flexShrink: 0,
@@ -79,7 +85,7 @@ const AvatarRoot = styled(Flex, { label: 'avatar', shouldForwardProp })<AvatarPr
 )
 
 // Plain img fills the container — no styled-system props needed.
-const AvatarImg = styled('img')({
+const AvatarImg = styled('img', { name: 'Avatar', slot: 'img', label: 'AvatarImg' })({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
@@ -92,13 +98,18 @@ export function Avatar({
   alt,
   fallback,
   children,
-  variant = 'circular',
-  size = 'md',
+  variant: variantProp,
+  size: sizeProp,
   ring,
-  ringColor = 'primary',
-  ringWidth = 'thin',
+  ringColor: ringColorProp,
+  ringWidth: ringWidthProp,
   ...rest
 }: Readonly<AvatarProps>) {
+  const theme = useTheme()
+  const variant = variantProp ?? themeDefault(theme, 'avatarVariant', 'circular')
+  const size = sizeProp ?? themeDefault(theme, 'avatarSize', 'md')
+  const ringColor = ringColorProp ?? themeDefault(theme, 'borderColor', 'primary')
+  const ringWidth = ringWidthProp ?? themeDefault(theme, 'borderWidth', 'thin')
   const [prevSrc, setPrevSrc] = useState(src)
   const [prevSrcSet, setPrevSrcSet] = useState(srcSet)
   const [prevFallback, setPrevFallback] = useState(fallback)

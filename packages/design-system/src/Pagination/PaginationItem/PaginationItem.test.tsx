@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
+import { ThemeProvider } from '../../ThemeProvider'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
-import { PaginationItem } from './PaginationItem'
+import { createTheme, baseTheme, type Theme } from '../../themes'
+import { PaginationItem, type PaginationItemProps } from './PaginationItem'
 
 describe('PaginationItem', () => {
   it('renders a page number as a button', () => {
@@ -16,7 +17,7 @@ describe('PaginationItem', () => {
     renderWithTheme(<PaginationItem page={2} isSelected data-testid="item" />)
     const item = screen.getByTestId('item')
     expect(item).toHaveAttribute('aria-current', 'page')
-    expect(item).toHaveStyle({ backgroundColor: dark.palette.primary.main })
+    expect(item).toHaveStyle({ backgroundColor: baseTheme.palette.primary.main })
   })
 
   it('does not set aria-current on unselected pages', () => {
@@ -47,7 +48,7 @@ describe('PaginationItem', () => {
   it('resolves the selected color against the palette', () => {
     renderWithTheme(<PaginationItem page={1} isSelected color="secondary" data-testid="item" />)
     expect(screen.getByTestId('item')).toHaveStyle({
-      backgroundColor: dark.palette.secondary.main,
+      backgroundColor: baseTheme.palette.secondary.main,
     })
   })
 
@@ -59,16 +60,29 @@ describe('PaginationItem', () => {
   it('uses the palette color for the border when selected and outlined', () => {
     renderWithTheme(<PaginationItem page={1} isSelected variant="outlined" data-testid="item" />)
     expect(screen.getByTestId('item')).toHaveStyle({
-      borderColor: dark.palette.primary.main,
+      borderColor: baseTheme.palette.primary.main,
     })
   })
 
   it('applies shape tokens', () => {
     renderWithTheme(<PaginationItem page={1} shape="rounded" data-testid="item" />)
-    expect(screen.getByTestId('item')).toHaveStyle({ borderRadius: dark.radii.md })
+    expect(screen.getByTestId('item')).toHaveStyle({ borderRadius: baseTheme.radii.md })
 
     renderWithTheme(<PaginationItem page={1} shape="circular" data-testid="circular" />)
     expect(screen.getByTestId('circular')).toHaveStyle({ borderRadius: '9999px' })
+  })
+
+  it('falls back to md dimensions for an augmented size without entries', () => {
+    // Simulates a consumer-augmented theme: `sizes.xl` exists on the theme, but the
+    // component's static dimension map only knows sm/md/lg.
+    const augmented = createTheme(baseTheme, {
+      sizes: { xl: { ...baseTheme.sizes.lg } } as Partial<Theme['sizes']>,
+    })
+    renderWithTheme(
+      <PaginationItem page={1} size={'xl' as PaginationItemProps['size']} data-testid="item" />,
+      { wrapper: ({ children }) => <ThemeProvider theme={augmented}>{children}</ThemeProvider> }
+    )
+    expect(screen.getByTestId('item')).toHaveStyle({ minWidth: '2rem', height: '2rem' })
   })
 
   it('applies size dimensions', () => {

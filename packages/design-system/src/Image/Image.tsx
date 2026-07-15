@@ -51,13 +51,12 @@ const objectSystem = system({
   borderRadius: { property: 'borderRadius', scale: 'radii' },
 })
 
-const StyledImg = styled('img', { label: 'image', shouldForwardProp })(
-  layout,
-  space,
-  background,
-  position,
-  objectSystem
-) as ComponentType<Omit<ImageProps, 'onError'> & { onError?: () => void }>
+const StyledImg = styled('img', {
+  name: 'Image',
+  label: 'image',
+  shouldForwardProp,
+  systemProps: [layout, space, background, position, objectSystem],
+})() as ComponentType<Omit<ImageProps, 'onError'> & { onError?: () => void }>
 
 export function Image({ src, srcSet, fallback, alt, onError, ...rest }: Readonly<ImageProps>) {
   const [prevSrc, setPrevSrc] = useState(src)

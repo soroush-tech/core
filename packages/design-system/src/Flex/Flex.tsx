@@ -26,8 +26,9 @@ const gapSystem = system({
   gap: { property: 'gap', scale: 'space' },
 })
 
-export const Flex = styled(View, { label: 'flex', shouldForwardProp })<FlexProps>(
-  { display: 'flex', flexDirection: 'column' },
-  flexbox,
-  gapSystem
-)
+export const Flex = styled(View, {
+  name: 'Flex',
+  label: 'flex',
+  shouldForwardProp,
+  systemProps: [flexbox, gapSystem],
+})<FlexProps>({ display: 'flex', flexDirection: 'column' })

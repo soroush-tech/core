@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
+import { baseTheme } from '../../themes'
 import { TableContext } from '../TableContext'
 import { Table } from './Table'
 
@@ -35,17 +35,17 @@ describe('Table', () => {
   it('frames the table with a thin solid border by default', () => {
     renderWithTheme(<Table data-testid="table" />)
     expect(screen.getByTestId('table')).toHaveStyle({
-      borderWidth: dark.borderWidths.thin,
+      borderWidth: baseTheme.borderWidths.thin,
       borderStyle: 'solid',
-      borderColor: dark.border.light,
+      borderColor: baseTheme.border.light,
     })
   })
 
   it('lets explicit border props override the default frame', () => {
     renderWithTheme(<Table borderColor="primary" borderWidth="thick" data-testid="table" />)
     expect(screen.getByTestId('table')).toHaveStyle({
-      borderWidth: dark.borderWidths.thick,
-      borderColor: dark.border.primary,
+      borderWidth: baseTheme.borderWidths.thick,
+      borderColor: baseTheme.border.primary,
       borderStyle: 'solid',
     })
   })
@@ -62,7 +62,8 @@ describe('Table', () => {
       </Table>
     )
     const probe = screen.getByTestId('probe')
-    expect(probe).toHaveAttribute('data-size', 'md')
+    // size stays unset in context — consumers fall back to theme.defaults.size.
+    expect(probe).not.toHaveAttribute('data-size')
     expect(probe).toHaveAttribute('data-cell-padding', 'normal')
     expect(probe).toHaveAttribute('data-sticky', 'false')
     expect(probe).not.toHaveAttribute('data-color')
@@ -84,13 +85,13 @@ describe('Table', () => {
   it('applies the bg theme token', () => {
     renderWithTheme(<Table bg="paper" data-testid="table" />)
     expect(screen.getByTestId('table')).toHaveStyle({
-      backgroundColor: dark.background.paper,
+      backgroundColor: baseTheme.background.paper,
     })
   })
 
   it('applies space props', () => {
     renderWithTheme(<Table m={2} data-testid="table" />)
-    expect(screen.getByTestId('table')).toHaveStyle({ margin: dark.space[2] })
+    expect(screen.getByTestId('table')).toHaveStyle({ margin: baseTheme.space[2] })
   })
 
   it('switches to the separate border model so borderRadius renders', () => {
@@ -101,7 +102,7 @@ describe('Table', () => {
       borderCollapse: 'separate',
       borderSpacing: '0',
       overflow: 'hidden',
-      borderRadius: dark.radii.md,
+      borderRadius: baseTheme.radii.md,
     })
   })
 

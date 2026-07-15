@@ -107,19 +107,27 @@ const reducedMotionStyle = {
   '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
 }
 
-const SkeletonRoot = styled('span', { label: 'skeleton', shouldForwardProp })<SkeletonProps>(
+const SkeletonRoot = styled('span', {
+  name: 'Skeleton',
+  label: 'skeleton',
+  shouldForwardProp,
+  systemProps: [space],
+})<SkeletonProps>(
   baseStyle,
   shapeVariants,
   radiusSystem,
   circularStyle,
   animationStyle,
   dimensionStyle,
-  space,
   reducedMotionStyle
 )
 
 // Sizes the skeleton to its children while keeping them invisible.
-const HiddenContent = styled('span')({ visibility: 'hidden', display: 'block' })
+const HiddenContent = styled('span', {
+  name: 'Skeleton',
+  slot: 'content',
+  label: 'SkeletonContent',
+})({ visibility: 'hidden', display: 'block' })
 
 export function Skeleton({
   variant = 'text',

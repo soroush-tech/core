@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { Link } from '../Link'
 
 describe('Link', () => {
@@ -55,7 +55,7 @@ describe('Link', () => {
           Link
         </Link>
       )
-      expect(screen.getByTestId('link')).toHaveStyle({ color: dark.text.primary })
+      expect(screen.getByTestId('link')).toHaveStyle({ color: baseTheme.text.primary })
     })
 
     it('sets an explicit color on :hover to prevent global a:hover overrides', () => {
@@ -87,8 +87,8 @@ describe('Link', () => {
     })
 
     it('applies each text color token without error', () => {
-      const tokens = (Object.keys(dark.text) as (keyof typeof dark.text)[]).filter(
-        (t) => dark.text[t] !== 'inherit'
+      const tokens = (Object.keys(baseTheme.text) as (keyof typeof baseTheme.text)[]).filter(
+        (t) => baseTheme.text[t] !== 'inherit'
       )
       tokens.forEach((token) => {
         const { unmount } = renderWithTheme(
@@ -96,7 +96,7 @@ describe('Link', () => {
             Link
           </Link>
         )
-        expect(screen.getByTestId('link')).toHaveStyle({ color: dark.text[token] })
+        expect(screen.getByTestId('link')).toHaveStyle({ color: baseTheme.text[token] })
         unmount()
       })
     })
@@ -119,7 +119,7 @@ describe('Link', () => {
         </Link>
       )
       // body1 → fontSizes index 2 = 16
-      expect(screen.getByTestId('link')).toHaveStyle({ fontSize: `${dark.fontSizes[2]}px` })
+      expect(screen.getByTestId('link')).toHaveStyle({ fontSize: `${baseTheme.fontSizes[2]}px` })
     })
   })
 
@@ -216,7 +216,7 @@ describe('Link', () => {
           Link
         </Link>
       )
-      expect(screen.getByTestId('link')).toHaveStyle({ padding: dark.space[1] })
+      expect(screen.getByTestId('link')).toHaveStyle({ padding: baseTheme.space[1] })
     })
   })
 })

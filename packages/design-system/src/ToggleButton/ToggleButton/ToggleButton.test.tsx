@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
+import { baseTheme } from '../../themes'
 import { ToggleButtonGroup } from '../ToggleButtonGroup'
 import { ToggleButton } from './ToggleButton'
 
@@ -22,8 +22,8 @@ describe('ToggleButton', () => {
     const button = screen.getByRole('button')
     expect(button).toHaveAttribute('aria-pressed', 'true')
     expect(button).toHaveStyle({
-      color: dark.palette.primary.main,
-      borderColor: dark.palette.primary.main,
+      color: baseTheme.palette.primary.main,
+      borderColor: baseTheme.palette.primary.main,
     })
   })
 
@@ -59,7 +59,7 @@ describe('ToggleButton', () => {
     const web = screen.getByRole('button', { name: 'Web' })
     const ios = screen.getByRole('button', { name: 'iOS' })
     expect(web).toHaveAttribute('aria-pressed', 'true')
-    expect(web).toHaveStyle({ color: dark.palette.secondary.main })
+    expect(web).toHaveStyle({ color: baseTheme.palette.secondary.main })
     expect(ios).toHaveAttribute('aria-pressed', 'false')
     expect(web).toBeDisabled()
     expect(ios).toBeDisabled()
@@ -108,7 +108,7 @@ describe('ToggleButton', () => {
       </ToggleButton>
     )
     expect(screen.getByRole('button')).toHaveStyle({
-      paddingTop: dark.space[dark.sizes.sm.paddingTop],
+      paddingTop: baseTheme.space[baseTheme.sizes.sm.paddingTop],
     })
   })
 

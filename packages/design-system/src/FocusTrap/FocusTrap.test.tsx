@@ -1,8 +1,27 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { ThemeProvider } from '../ThemeProvider'
+import { createTheme, baseTheme } from '../themes'
 import { FocusTrap } from './'
 
 afterEach(cleanup)
+
+describe('FocusTrap — theme customization', () => {
+  it('applies theme.components.FocusTrap.styleOverrides.root to the wrapper', () => {
+    const theme = createTheme(baseTheme, {
+      components: { FocusTrap: { styleOverrides: { root: { display: 'contents' } } } },
+    })
+    render(
+      <ThemeProvider theme={theme}>
+        <FocusTrap>
+          <button data-testid="inner">in</button>
+        </FocusTrap>
+      </ThemeProvider>
+    )
+    const wrapper = screen.getByTestId('inner').parentElement
+    expect(wrapper).toHaveStyle({ display: 'contents', outline: 'none' })
+  })
+})
 
 /** Focuses a detached trigger button so focus restoration can be observed. */
 const focusTrigger = () => {

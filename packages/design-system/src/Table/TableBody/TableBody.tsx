@@ -43,11 +43,12 @@ const colorSystem = system({
   borderColor: { property: 'borderColor', scale: 'border' },
 })
 
-const TableBodyBase = styled('tbody', { label: 'TableBody', shouldForwardProp })<TableBodyProps>(
-  space,
-  colorSystem,
-  border
-)
+const TableBodyBase = styled('tbody', {
+  name: 'TableBody',
+  label: 'TableBody',
+  shouldForwardProp,
+  systemProps: [space, colorSystem, border],
+})<TableBodyProps>()
 
 export function TableBody({ as, children, ...rest }: Readonly<TableBodyProps>) {
   return (

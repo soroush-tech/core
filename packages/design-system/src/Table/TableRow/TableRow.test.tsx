@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
+import { baseTheme } from '../../themes'
 import { Table } from '../Table'
 import { TableRow } from './TableRow'
 
@@ -26,15 +26,15 @@ describe('TableRow', () => {
   it('applies the selected shading from the primary palette by default', () => {
     renderRow(<TableRow isSelected data-testid="row" />)
     expect(screen.getByTestId('row')).toHaveStyle({
-      backgroundColor: dark.palette.primary.dark,
-      color: dark.palette.primary.contrastText,
+      backgroundColor: baseTheme.palette.primary.dark,
+      color: baseTheme.palette.primary.contrastText,
     })
   })
 
   it('does not shade an unselected row', () => {
     renderRow(<TableRow data-testid="row" />)
     expect(screen.getByTestId('row')).not.toHaveStyle({
-      backgroundColor: dark.palette.primary.dark,
+      backgroundColor: baseTheme.palette.primary.dark,
     })
   })
 
@@ -56,8 +56,8 @@ describe('TableRow', () => {
   it('applies bg and borderColor theme tokens', () => {
     renderRow(<TableRow bg="paper" borderColor="light" data-testid="row" />)
     expect(screen.getByTestId('row')).toHaveStyle({
-      backgroundColor: dark.background.paper,
-      borderColor: dark.border.light,
+      backgroundColor: baseTheme.background.paper,
+      borderColor: baseTheme.border.light,
     })
   })
 
@@ -66,8 +66,8 @@ describe('TableRow', () => {
     const row = screen.getByTestId('row')
     // selected → the palette's dark shade + contrast text
     expect(row).toHaveStyle({
-      backgroundColor: dark.palette.secondary.dark,
-      color: dark.palette.secondary.contrastText,
+      backgroundColor: baseTheme.palette.secondary.dark,
+      color: baseTheme.palette.secondary.contrastText,
     })
     // a :hover rule exists for the row (jsdom can't apply :hover)
     const rowClasses = Array.from(row.classList)
@@ -90,8 +90,8 @@ describe('TableRow', () => {
       </Table>
     )
     expect(screen.getByTestId('row')).toHaveStyle({
-      backgroundColor: dark.palette.secondary.dark,
-      color: dark.palette.secondary.contrastText,
+      backgroundColor: baseTheme.palette.secondary.dark,
+      color: baseTheme.palette.secondary.contrastText,
     })
   })
 
@@ -104,8 +104,8 @@ describe('TableRow', () => {
       </Table>
     )
     expect(screen.getByTestId('row')).toHaveStyle({
-      backgroundColor: dark.palette.error.dark,
-      color: dark.palette.error.contrastText,
+      backgroundColor: baseTheme.palette.error.dark,
+      color: baseTheme.palette.error.contrastText,
     })
   })
 

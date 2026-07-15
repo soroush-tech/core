@@ -4,7 +4,7 @@
 // missing weights to synthesize).
 import '@fontsource-variable/space-grotesk/wght.css'
 import '@fontsource-variable/jetbrains-mono/wght.css'
-import { css, type Theme } from './index'
+import { Global, css, type Theme } from '@soroush.tech/design-system'
 
 const globalStyles = (theme: Theme) => css`
   *,
@@ -67,4 +67,6 @@ const globalStyles = (theme: Theme) => css`
   }
 `
 
-export default globalStyles
+// The app's global CSS (reset, brand webfonts, token-driven body styles). Rendered
+// inside the ThemeProvider so the styles resolve against the active brand theme.
+export const GlobalStyles = () => <Global styles={globalStyles} />

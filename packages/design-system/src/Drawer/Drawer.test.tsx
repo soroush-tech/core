@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { screen, fireEvent, cleanup } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { Drawer, type DrawerAnchor } from './'
 
 const getPanel = () => screen.getByTestId('content').parentElement as HTMLElement
@@ -36,7 +36,7 @@ describe('Drawer', () => {
 
   it('layers the root on the drawer stacking layer (below modals)', () => {
     renderDrawer()
-    expect(getRoot()).toHaveStyle({ zIndex: dark.zOrder.drawer })
+    expect(getRoot()).toHaveStyle({ zIndex: baseTheme.zOrder.drawer })
   })
 
   it('anchors to the left edge by default (full height)', () => {
@@ -61,12 +61,12 @@ describe('Drawer', () => {
 
   it('forwards the default elevation (16) to the Paper panel', () => {
     renderDrawer()
-    expect(getPanel()).toHaveStyle({ boxShadow: dark.shadows[16] })
+    expect(getPanel()).toHaveStyle({ boxShadow: baseTheme.shadows[16] })
   })
 
   it('forwards a custom elevation', () => {
     renderDrawer({ elevation: 4 })
-    expect(getPanel()).toHaveStyle({ boxShadow: dark.shadows[4] })
+    expect(getPanel()).toHaveStyle({ boxShadow: baseTheme.shadows[4] })
   })
 
   it('closes on Escape via the underlying Modal', () => {

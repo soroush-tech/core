@@ -65,6 +65,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ## Critical conventions
 
 - **Design-system imports:** UI primitives and styling come from the workspace package — `import { X } from '@soroush.tech/design-system/X'` (barrel `@soroush.tech/design-system` for `styled`, `css`, `Theme`, etc.). App-internal imports use the `src/` alias (`import { X } from 'src/hooks/useX'`), never relative `../../`.
+- **Brand layer:** The site's color palettes, `light`/`dark` themes, mode toggling (`ThemeModeProvider`/`useThemeMode`), and global styles/fonts live in `apps/web/src/theme/`; both brand themes are built with `createTheme(baseTheme, …)`. The design-system `ThemeProvider` receives exactly one active theme (see `src/theme/ThemeModeProvider.tsx`); the package ships a single hex-inlined `baseTheme` (the only place hex values are allowed in the package) for its tests, stories, and npm consumers.
 - **SSR guard:** Never import browser-only APIs at module top level — guard with `typeof window !== 'undefined'` or move into effects.
 - **Styled-system:** Use `Flex`, `View`, `Typography` from `@soroush.tech/design-system` over raw `div`/`p` for layout.
 - **Hook co-location:** Shared data hooks → `src/hooks/useX.ts`. Component-specific hooks → `src/common|section|pages/ComponentName/hooks/useX.ts`. Flat files — `useX.ts` + co-located `useX.test.ts`; no per-hook subfolder, no `index.ts`.
@@ -78,15 +79,16 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Read the relevant doc before working in that area:
 
-| Layer             | Convention doc                            | What it covers                                                                                                              |
-| ----------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Design system     | `packages/design-system/design-system.md` | Styled components, `system()`, `shouldForwardProp`, Storybook argTypes, token rules                                         |
-| Common components | `src/common/common.md`                    | Folder structure, composition rules, custom CSS, testing with `renderWithTheme`                                             |
-| Sections          | `src/section/section.md`                  | Page-specific composed sections: folder structure, co-located data/logic, testing                                           |
-| Pages             | `src/pages/pages.md`                      | Vike `+` files, page shape, SSR safety, e2e-only testing                                                                    |
-| Hooks             | `src/hooks/hooks.md`                      | Data-fetching pattern, `useCustomQuery`, query keys, MSW integration tests                                                  |
-| Packages          | `packages/packages.md`                    | Workspace packages: structure, default-export, tsdown + `publishConfig` publishing, 100% coverage, licensing                |
-| Worker API        | `workers/api/worker.md`                   | Hono routes, `services/` vs `utils/` split, cron `jobs/`, D1 month-table schema, env/bindings, `src/*` alias, 100% coverage |
+| Layer                 | Convention doc                            | What it covers                                                                                                              |
+| --------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Design system         | `packages/design-system/design-system.md` | Styled components, `system()`, `shouldForwardProp`, Storybook argTypes, token rules                                         |
+| Theming/customization | `packages/design-system/docs/`            | `theming.md` (createTheme, defaults, augmentation) · `customization.md` (`theme.components`)                                |
+| Common components     | `src/common/common.md`                    | Folder structure, composition rules, custom CSS, testing with `renderWithTheme`                                             |
+| Sections              | `src/section/section.md`                  | Page-specific composed sections: folder structure, co-located data/logic, testing                                           |
+| Pages                 | `src/pages/pages.md`                      | Vike `+` files, page shape, SSR safety, e2e-only testing                                                                    |
+| Hooks                 | `src/hooks/hooks.md`                      | Data-fetching pattern, `useCustomQuery`, query keys, MSW integration tests                                                  |
+| Packages              | `packages/packages.md`                    | Workspace packages: structure, default-export, tsdown + `publishConfig` publishing, 100% coverage, licensing                |
+| Worker API            | `workers/api/worker.md`                   | Hono routes, `services/` vs `utils/` split, cron `jobs/`, D1 month-table schema, env/bindings, `src/*` alias, 100% coverage |
 
 ## Quick checklist before pushing
 

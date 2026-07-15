@@ -54,7 +54,7 @@ apps/web/
 │   │   └── [Section]/                 # index.ts · Section.tsx · Section.data.ts · *.test.tsx · README.md
 │   ├── pages/                         # Vike file-based routes (about, articles, contact, projects…).
 │   │   └── [route]/                   # +Page.tsx · @id/ (+route.ts, +onBeforeRender.ts, +onBeforePrerenderStart.ts)
-│   ├── theme/                         # Design system: styled primitives (View, Flex, Typography…).
+│   ├── theme/                         # Brand layer: color palettes, light/dark themes, global styles + fonts.
 │   ├── hooks/                         # Shared data-fetching hooks (useCustomQuery, useGists, useUser…).
 │   ├── utils/                         # Framework-agnostic helpers (incl. api/ — client, query client, logger).
 │   ├── renderer/                      # Vike SSR/CSR render hooks and app bootstrap.
@@ -72,6 +72,7 @@ apps/web/
 | Doc                                                                                        | Covers                                                                          |
 | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
 | [`packages/design-system/design-system.md`](../../packages/design-system/design-system.md) | Styled primitives, tokens, and `system()`.                                      |
+| [`packages/design-system/docs/`](../../packages/design-system/docs/)                       | Theming and per-component customization guides.                                 |
 | [`src/common/common.md`](./src/common/common.md)                                           | Component folder structure and testing.                                         |
 | [`src/section/section.md`](./src/section/section.md)                                       | Page-specific composed sections.                                                |
 | [`src/pages/pages.md`](./src/pages/pages.md)                                               | Vike `+` files and SSR safety.                                                  |

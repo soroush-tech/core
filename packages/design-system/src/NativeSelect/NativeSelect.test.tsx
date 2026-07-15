@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { FormControl } from '../FormControl'
 import { NativeSelect, type NativeSelectOption } from './NativeSelect'
 
@@ -109,14 +109,14 @@ describe('NativeSelect', () => {
       <NativeSelect options={options} defaultValue={10} data-testid="root" />
     )
     expect(byDefault.querySelector('[data-testid="root"]')).toHaveStyle({
-      backgroundColor: dark.background.terminal,
+      backgroundColor: baseTheme.background.terminal,
     })
 
     const { container: overridden } = renderWithTheme(
       <NativeSelect options={options} defaultValue={10} bg="paper" data-testid="root" />
     )
     expect(overridden.querySelector('[data-testid="root"]')).toHaveStyle({
-      backgroundColor: dark.background.paper,
+      backgroundColor: baseTheme.background.paper,
     })
   })
 
@@ -125,16 +125,16 @@ describe('NativeSelect', () => {
       <NativeSelect options={options} defaultValue={10} />
     )
     expect(byDefault.querySelector('option')).toHaveStyle({
-      backgroundColor: dark.background.terminal,
-      color: dark.text.primary,
+      backgroundColor: baseTheme.background.terminal,
+      color: baseTheme.text.primary,
     })
 
     const { container: overridden } = renderWithTheme(
       <NativeSelect options={options} defaultValue={10} bg="paper" textColor="secondary" />
     )
     expect(overridden.querySelector('option')).toHaveStyle({
-      backgroundColor: dark.background.paper,
-      color: dark.text.secondary,
+      backgroundColor: baseTheme.background.paper,
+      color: baseTheme.text.secondary,
     })
   })
 

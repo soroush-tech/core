@@ -1,6 +1,7 @@
 import { type HTMLAttributes } from 'react'
 import { PaginationItem, type PaginationItemSize } from '../../Pagination/PaginationItem'
-import { styled } from '../../index'
+import { styled, useTheme } from '../../index'
+import { themeDefault } from '../../utils/themeDefault'
 
 export type TablePaginationActionType = 'first' | 'previous' | 'next' | 'last'
 
@@ -23,7 +24,10 @@ export interface TablePaginationActionsProps extends HTMLAttributes<HTMLDivEleme
   size?: PaginationItemSize
 }
 
-const ActionsRoot = styled('div', { label: 'TablePaginationActions' })({
+const ActionsRoot = styled('div', {
+  name: 'TablePaginationActions',
+  label: 'TablePaginationActions',
+})({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '0.25rem',
@@ -44,9 +48,11 @@ export function TablePaginationActions({
   disabled = false,
   shouldShowFirstButton = false,
   shouldShowLastButton = false,
-  size = 'sm',
+  size: sizeProp,
   ...rest
 }: Readonly<TablePaginationActionsProps>) {
+  const theme = useTheme()
+  const size = sizeProp ?? themeDefault(theme, 'compactSize', 'sm')
   // rowsPerPage -1 shows every row on one page; count -1 means the last page is unknown.
   const lastPage = rowsPerPage === -1 ? 0 : Math.max(0, Math.ceil(count / rowsPerPage) - 1)
   const isBackwardDisabled = disabled || page <= 0

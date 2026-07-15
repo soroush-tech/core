@@ -1,5 +1,6 @@
 import { useState, type MouseEvent } from 'react'
 import { styled, type Theme } from '../../index'
+import { themeDefault } from '../../utils/themeDefault'
 import { Button } from '../../Button'
 import { Flex } from '../../Flex'
 import { Icon } from '../../Icon'
@@ -24,6 +25,8 @@ export interface TablePickerProps {
 
 // Small square cell whose fill flags whether it falls inside the hovered rectangle.
 const Cell = styled('button', {
+  name: 'MarkdownToolbar',
+  slot: 'tablePickerCell',
   label: 'MarkdownEditorTableCell',
   shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>(({ theme, isActive }: { theme: Theme; isActive: boolean }) => ({
@@ -35,7 +38,9 @@ const Cell = styled('button', {
   cursor: 'pointer',
   borderRadius: theme.radii.sm,
   border: `${theme.borderWidths.thin} solid ${theme.border.light}`,
-  backgroundColor: isActive ? theme.palette.primary.main : theme.background.terminal,
+  backgroundColor: isActive
+    ? theme.palette[themeDefault(theme, 'color', 'primary')].main
+    : theme.background[themeDefault(theme, 'inputBg', 'terminal')],
 }))
 
 /** A "Table" trigger that opens a hover grid for choosing table dimensions. */

@@ -78,13 +78,16 @@ const ANCHOR_ORIGIN_DEFAULT: PopoverOrigin = { vertical: 'top', horizontal: 'lef
 // The measured, positioned wrapper. Kept transparent so the inner Paper owns the
 // visuals — its rounded corners are never clipped. Hidden until first positioned.
 const Positioner = styled('div', {
+  name: 'Popover',
+  slot: 'positioner',
+  label: 'PopoverPositioner',
   shouldForwardProp: createShouldForwardProp(['isPositioned']),
 })<{ isPositioned: boolean }>(({ isPositioned }) => ({
   position: 'absolute',
   ...(isPositioned ? {} : { opacity: 0 }),
 }))
 
-const Surface = styled(Paper)({
+const Surface = styled(Paper, { name: 'Popover', label: 'Popover' })({
   overflowY: 'auto',
   overflowX: 'hidden',
   minWidth: 16,

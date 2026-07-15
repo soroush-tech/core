@@ -26,7 +26,15 @@ const HEADING_BY_ID: Record<string, LinePrefixAction> = Object.fromEntries(
 )
 
 // line-through has no Typography style prop, so a thin styled Typography carries it.
-const StrikeLabel = styled(Typography, { label: 'MarkdownStrike' })({
+// Named styled root — theme-customizable via
+// `theme.components.MarkdownToolbar.styleOverrides.root`.
+const ToolbarRoot = styled(Flex, { name: 'MarkdownToolbar', label: 'MarkdownToolbar' })()
+
+const StrikeLabel = styled(Typography, {
+  name: 'MarkdownToolbar',
+  slot: 'strike',
+  label: 'MarkdownStrike',
+})({
   textDecoration: 'line-through',
 })
 
@@ -72,7 +80,7 @@ export function Toolbar() {
   )
 
   return (
-    <Flex
+    <ToolbarRoot
       flexDirection="row"
       flexWrap="wrap"
       gap={1}
@@ -120,6 +128,6 @@ export function Toolbar() {
           selectProps={{ 'aria-label': 'Code block language' }}
         />
       </Flex>
-    </Flex>
+    </ToolbarRoot>
   )
 }

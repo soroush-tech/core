@@ -43,7 +43,7 @@ export interface ModalProps {
 
 const shouldForwardProp = createShouldForwardProp(['scroll', 'layer'])
 
-const ModalRoot = styled(View, { label: 'Modal', shouldForwardProp })<{
+const ModalRoot = styled(View, { name: 'Modal', label: 'Modal', shouldForwardProp })<{
   scroll: ModalScroll
   layer: keyof Theme['zOrder']
 }>(({ theme, scroll, layer }) => ({

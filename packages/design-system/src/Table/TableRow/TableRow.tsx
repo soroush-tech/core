@@ -12,6 +12,7 @@ import {
   type SpaceProps,
   type BorderProps,
 } from '../../index'
+import { themeDefault } from '../../utils/themeDefault'
 
 /** Palette color driving the hover/selected shading — a `theme.palette` key. */
 export type TableRowColor = PaletteColor
@@ -30,7 +31,7 @@ export interface TableRowProps
   /**
    * Palette color for the hover/selected shading — maps to `theme.palette[color]`
    * (hover → `.light`, selected → `.dark`, both with `contrastText`). Falls back
-   * to the enclosing `Table`'s `color`. Default: `'primary'`.
+   * to the enclosing `Table`'s `color`. Default: 'primary', overridable via `theme.defaults.color`.
    */
   color?: TableRowColor
   as?: ElementType
@@ -53,32 +54,29 @@ const colorSystem = system({
 
 // Hover/selected fill the row from the palette (like Button): the light shade on
 // hover, the dark shade when selected, both paired with the palette's contrastText.
-const hoverStyle = ({ isHoverable, color = 'primary', theme }: TableRowProps & { theme: Theme }) =>
-  isHoverable
+const hoverStyle = ({ isHoverable, color, theme }: TableRowProps & { theme: Theme }) => {
+  const c = theme.palette[color ?? themeDefault(theme, 'color', 'primary')]
+  return isHoverable
     ? {
         '&:hover': {
-          backgroundColor: theme.palette[color].light,
-          color: theme.palette[color].contrastText,
+          backgroundColor: c.light,
+          color: c.contrastText,
         },
       }
     : {}
+}
 
-const selectedStyle = ({
-  isSelected,
-  color = 'primary',
-  theme,
-}: TableRowProps & { theme: Theme }) =>
-  isSelected
-    ? { backgroundColor: theme.palette[color].dark, color: theme.palette[color].contrastText }
-    : {}
+const selectedStyle = ({ isSelected, color, theme }: TableRowProps & { theme: Theme }) => {
+  const c = theme.palette[color ?? themeDefault(theme, 'color', 'primary')]
+  return isSelected ? { backgroundColor: c.dark, color: c.contrastText } : {}
+}
 
-const TableRowBase = styled('tr', { label: 'TableRow', shouldForwardProp })<TableRowProps>(
-  space,
-  colorSystem,
-  border,
-  selectedStyle,
-  hoverStyle
-)
+const TableRowBase = styled('tr', {
+  name: 'TableRow',
+  label: 'TableRow',
+  shouldForwardProp,
+  systemProps: [space, colorSystem, border],
+})<TableRowProps>(selectedStyle, hoverStyle)
 
 export function TableRow({ color, ...rest }: Readonly<TableRowProps>) {
   // Resolution: explicit prop → enclosing Table's broadcast → 'primary' (in the style fns).

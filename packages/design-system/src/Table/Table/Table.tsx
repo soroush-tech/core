@@ -45,7 +45,7 @@ export interface TableProps
   bg?: TableBackgroundToken
   /** Resolves against theme.border — light · primary · dark */
   borderColor?: TableBorderColorToken
-  /** Cell density — broadcast to descendant `TableCell`s via `TableContext`. Default: `'md'`. */
+  /** Cell density — broadcast to descendant `TableCell`s via `TableContext`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: TableSize
   /** Cell padding mode — broadcast to descendant `TableCell`s. `'none'` zeroes cell padding. Default: `'normal'`. */
   cellPadding?: TableCellPadding
@@ -117,19 +117,16 @@ const TableElement = (
   props: Readonly<Omit<TableHTMLAttributes<HTMLTableElement>, 'align' | 'width' | 'border'>>
 ) => <table {...props} />
 
-const TableBase = styled(TableElement, { label: 'Table', shouldForwardProp })<TableBaseProps>(
-  { width: '100%' },
-  collapseStyle,
-  defaultBorder,
-  alignStyle,
-  space,
-  layout,
-  colorSystem,
-  border
-)
+const TableBase = styled(TableElement, {
+  name: 'Table',
+  label: 'Table',
+  shouldForwardProp,
+  systemProps: [space, layout, colorSystem, border],
+})<TableBaseProps>({ width: '100%' }, collapseStyle, defaultBorder, alignStyle)
 
 export function Table({
-  size = 'md',
+  // undefined resolves to themeDefault(theme, 'size', 'md') where the size is consumed.
+  size,
   cellPadding = 'normal',
   hasStickyHeader = false,
   shouldHideSortIcon = true,

@@ -18,13 +18,14 @@ import {
   system,
 } from '../index'
 import { Flex, type FlexProps } from '../Flex'
+import { themeDefault } from '../utils/themeDefault'
 
 /** Valid values for the color prop — derived from theme.background keys. */
 export type AppBarColor = keyof Theme['background']
 
 export type AppBarPosition = 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky'
 
-/** Padding preset from theme.sizes. Default: 'md'. */
+/** Padding preset from theme.sizes. Default: 'md', overridable via `theme.defaults.size`. */
 export type AppBarSize = keyof Theme['sizes']
 
 export interface AppBarProps extends Omit<FlexProps, 'position' | 'bg'> {
@@ -34,14 +35,14 @@ export interface AppBarProps extends Omit<FlexProps, 'position' | 'bg'> {
   position?: AppBarPosition
   /** Box-shadow elevation (index into theme.shadows, 0–24). Default: `4`; use `0` for no shadow. */
   elevation?: number
-  /** Padding preset from theme.sizes. Default: 'md'. */
+  /** Padding preset from theme.sizes. Default: 'md', overridable via `theme.defaults.size`. */
   size?: AppBarSize
   /** Applies backdrop-filter: blur(theme.blur) + webkit prefix for frosted-glass effect. */
   blur?: boolean
 }
 
 type AppBarBaseProps = Omit<AppBarProps, 'size' | 'elevation'> & {
-  size: AppBarSize
+  size?: AppBarSize
   elevation: number
 }
 
@@ -69,7 +70,7 @@ const zOrderDefault = ({ theme }: AppBarBaseProps & { theme: Theme }) => ({
 })
 
 const sizeVariants = ({ theme, size }: AppBarBaseProps & { theme: Theme }) => {
-  const s = theme.sizes[size]
+  const s = theme.sizes[size ?? themeDefault(theme, 'size', 'md')]
   return {
     paddingTop: theme.space[s.paddingTop],
     paddingBottom: theme.space[s.paddingBottom],
@@ -79,27 +80,29 @@ const sizeVariants = ({ theme, size }: AppBarBaseProps & { theme: Theme }) => {
   }
 }
 
-const AppBarBase = styled(Flex, { label: 'AppBar', shouldForwardProp })<AppBarBaseProps>(
-  { flexShrink: 0, width: '100%' },
-  elevationVariant,
-  sizeVariants,
-  colorSystem,
-  blurSystem,
-  border,
-  borderTop,
-  borderRight,
-  borderBottom,
-  borderLeft,
-  borderWidth,
-  borderStyle,
-  borderColor,
-  flexbox,
-  space,
-  layout,
-  zOrderDefault,
-  position
-)
+const AppBarBase = styled(Flex, {
+  name: 'AppBar',
+  label: 'AppBar',
+  shouldForwardProp,
+  systemProps: [
+    colorSystem,
+    blurSystem,
+    border,
+    borderTop,
+    borderRight,
+    borderBottom,
+    borderLeft,
+    borderWidth,
+    borderStyle,
+    borderColor,
+    flexbox,
+    space,
+    layout,
+    zOrderDefault,
+    position,
+  ],
+})<AppBarBaseProps>({ flexShrink: 0, width: '100%' }, elevationVariant, sizeVariants)
 
-export function AppBar({ elevation = 4, size = 'md', ...rest }: Readonly<AppBarProps>) {
+export function AppBar({ elevation = 4, size, ...rest }: Readonly<AppBarProps>) {
   return <AppBarBase as="header" elevation={elevation} size={size} {...rest} />
 }

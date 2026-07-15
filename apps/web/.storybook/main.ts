@@ -30,11 +30,8 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: [
         {
-          find: '@soroush.tech/design-system/hooks/useThemeMode',
-          replacement: resolve(
-            __dirname,
-            '../../../packages/design-system/src/hooks/__mocks__/useThemeMode'
-          ),
+          find: 'src/theme/useThemeMode',
+          replacement: resolve(__dirname, '../src/theme/__mocks__/useThemeMode'),
         },
         ...(Array.isArray(config.resolve?.alias)
           ? config.resolve.alias

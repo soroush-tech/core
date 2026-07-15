@@ -7,7 +7,12 @@ import {
   type SyntheticEvent,
 } from 'react'
 import { Flex } from '../../Flex'
+import { styled } from '../../index'
 import { Typography } from '../../Typography'
+
+// Named styled root — theme-customizable via
+// `theme.components.MarkdownEditor.styleOverrides.root`.
+const EditorRoot = styled(Flex, { name: 'MarkdownEditor', label: 'MarkdownEditor' })()
 import {
   TextInput,
   type TextInputColor,
@@ -15,9 +20,11 @@ import {
   type TextInputTextColor,
   type TextInputVariant,
 } from '../../TextInput'
+import { useTheme } from '../../index'
 import { applyAction } from '../utils/applyAction'
 import { MarkdownContext, type MarkdownSelection } from '../MarkdownContext'
 import type { LinePrefixAction } from '../const'
+import { themeDefault } from '../../utils/themeDefault'
 
 // Tab indents: a single tab at the caret, or one tab per line for a multi-line selection.
 const INDENT_ACTION: LinePrefixAction = {
@@ -73,7 +80,7 @@ export function Editor({
   minRows = 16,
   variant,
   color,
-  textColor = 'initial',
+  textColor: textColorProp,
   size,
   name,
   id,
@@ -83,6 +90,8 @@ export function Editor({
   showShortcutHint = true,
 }: Readonly<EditorProps>) {
   const context = useContext(MarkdownContext)
+  const theme = useTheme()
+  const textColor = textColorProp ?? themeDefault(theme, 'textColor', 'initial')
   // Links the shortcut hint to the textarea so assistive tech announces the escape routes on focus.
   const hintId = useId()
   // Standalone (no Control) keeps its own pending-selection here — there is no Toolbar to share it.
@@ -154,7 +163,7 @@ export function Editor({
   })
 
   return (
-    <Flex ref={paneRef} flexDirection="column" flex={1} minWidth={0} gap={1}>
+    <EditorRoot ref={paneRef} flexDirection="column" flex={1} minWidth={0} gap={1}>
       <TextInput
         multiline
         resize
@@ -185,6 +194,6 @@ export function Editor({
           Tab inserts a tab · press Escape or Ctrl/Cmd+Shift+M to move focus out.
         </Typography>
       )}
-    </Flex>
+    </EditorRoot>
   )
 }

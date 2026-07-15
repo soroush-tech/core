@@ -1,38 +1,32 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { ReactNode } from 'react'
-import { Global, EmotionThemeProvider as DefaultThemeProvider } from '../index'
-import { dark, light, type Theme } from '../themes'
-import globalStyles from '../globalStyles'
-import { ThemeContext } from './ThemeContext'
+import { EmotionThemeProvider as DefaultThemeProvider } from '../index'
+import { baseTheme, type Theme, type ThemeDefaults } from '../themes'
+import { createTheme } from '../utils/createTheme'
 
 interface ThemeProviderProps {
   children: ReactNode
-  /** Named dark/light pair to use when toggling. Defaults to the built-in dark/light themes. */
-  themes?: { dark: Theme; light: Theme }
-  /** Full custom override — bypasses mode switching entirely. Useful in tests and Storybook. */
+  /**
+   * The active theme. Bring one theme, or as many as you like — switching
+   * between them is your state, not the provider's. Defaults to the built-in
+   * `baseTheme`.
+   */
   theme?: Theme
+  /**
+   * Optional component default token/variant keys, merged into the theme
+   * (e.g. `{ size: 'compact' }` makes every sized component default to your key).
+   */
+  defaults?: ThemeDefaults
 }
-
-export const GlobalStyles = () => <Global styles={globalStyles} />
 
 export function ThemeProvider({
   children,
-  themes,
-  theme: themeProp,
+  theme = baseTheme,
+  defaults,
 }: Readonly<ThemeProviderProps>) {
-  const [isDark, setIsDark] = useState(true)
-  const toggleTheme = useCallback(() => setIsDark((prev) => !prev), [])
-  const themeSet = themes ?? { dark, light }
-  const theme = themeProp ?? (isDark ? themeSet.dark : themeSet.light)
-
-  const contextValue = useMemo(() => ({ isDark, toggleTheme }), [isDark, toggleTheme])
-
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      <DefaultThemeProvider theme={theme}>
-        <GlobalStyles />
-        {children}
-      </DefaultThemeProvider>
-    </ThemeContext.Provider>
+  const value = useMemo(
+    () => (defaults ? createTheme(theme, { defaults }) : theme),
+    [theme, defaults]
   )
+  return <DefaultThemeProvider theme={value}>{children}</DefaultThemeProvider>
 }

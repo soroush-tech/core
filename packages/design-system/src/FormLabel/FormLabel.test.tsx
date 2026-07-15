@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { FormControl } from '../FormControl'
 import { Form } from '../Form'
 import { FormLabel } from './FormLabel'
@@ -69,7 +69,7 @@ describe('FormLabel', () => {
           <FormLabel>Email</FormLabel>
         </FormControl>
       )
-      expect(screen.getByText('Email')).toHaveStyle({ color: dark.text.success })
+      expect(screen.getByText('Email')).toHaveStyle({ color: baseTheme.text.success })
     })
 
     it('inherits textColor from a parent Form', () => {
@@ -78,7 +78,7 @@ describe('FormLabel', () => {
           <FormLabel>Email</FormLabel>
         </Form>
       )
-      expect(screen.getByText('Email')).toHaveStyle({ color: dark.text.info })
+      expect(screen.getByText('Email')).toHaveStyle({ color: baseTheme.text.info })
     })
 
     it('lets an explicit color win over context textColor', () => {
@@ -87,7 +87,7 @@ describe('FormLabel', () => {
           <FormLabel color="error">Email</FormLabel>
         </FormControl>
       )
-      expect(screen.getByText('Email')).toHaveStyle({ color: dark.text.error })
+      expect(screen.getByText('Email')).toHaveStyle({ color: baseTheme.text.error })
     })
   })
 })

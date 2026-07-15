@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen, within } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { MenuItem } from '../MenuItem'
 import { Select } from './Select'
 
@@ -66,18 +66,18 @@ describe('Select (non-native)', () => {
         {options}
       </Select>
     )
-    expect(screen.getByRole('combobox')).toHaveStyle({ color: dark.text.secondary })
+    expect(screen.getByRole('combobox')).toHaveStyle({ color: baseTheme.text.secondary })
   })
 
   it('defaults the trigger text to the color main, overridable by textColor', () => {
     const { rerender } = renderWithTheme(<Select color="error">{options}</Select>)
-    expect(screen.getByRole('combobox')).toHaveStyle({ color: dark.palette.error.main })
+    expect(screen.getByRole('combobox')).toHaveStyle({ color: baseTheme.palette.error.main })
     rerender(
       <Select color="error" textColor="secondary">
         {options}
       </Select>
     )
-    expect(screen.getByRole('combobox')).toHaveStyle({ color: dark.text.secondary })
+    expect(screen.getByRole('combobox')).toHaveStyle({ color: baseTheme.text.secondary })
   })
 
   it('reserves the widest option width by default (hidden sizer) to avoid layout shift', () => {
@@ -387,10 +387,10 @@ describe('Select (non-native)', () => {
     )
     openMenu()
     expect(screen.getByRole('option', { name: 'Inherits' })).toHaveStyle({
-      color: dark.text.secondary,
+      color: baseTheme.text.secondary,
     })
     expect(screen.getByRole('option', { name: 'Overrides' })).toHaveStyle({
-      color: dark.text.error,
+      color: baseTheme.text.error,
     })
   })
 
@@ -402,20 +402,24 @@ describe('Select (non-native)', () => {
         {options}
       </Select>
     )
-    expect(screen.getByRole('combobox')).toHaveStyle({ backgroundColor: dark.background.paper })
+    expect(screen.getByRole('combobox')).toHaveStyle({
+      backgroundColor: baseTheme.background.paper,
+    })
   })
 
   it('applies its borderRadius to the popover surface', () => {
     renderWithTheme(<Select borderRadius="md">{options}</Select>)
     openMenu()
-    expect(screen.getByRole('listbox').parentElement!).toHaveStyle({ borderRadius: dark.radii.md })
+    expect(screen.getByRole('listbox').parentElement!).toHaveStyle({
+      borderRadius: baseTheme.radii.md,
+    })
   })
 
   it('applies its bg to the popover surface (Paper), not the rows', () => {
     renderWithTheme(<Select bg="secondary">{options}</Select>)
     openMenu()
     const paper = screen.getByRole('listbox').parentElement!
-    expect(paper).toHaveStyle({ backgroundColor: dark.background.secondary })
+    expect(paper).toHaveStyle({ backgroundColor: baseTheme.background.secondary })
   })
 
   it('preserves a MenuItem divider inside the listbox', () => {
@@ -430,7 +434,7 @@ describe('Select (non-native)', () => {
     openMenu()
     expect(screen.getByRole('option', { name: 'One' })).toHaveStyle({
       borderBottomStyle: 'solid',
-      borderBottomColor: dark.border.light,
+      borderBottomColor: baseTheme.border.light,
     })
     expect(screen.getByRole('option', { name: 'Two' })).not.toHaveStyle({
       borderBottomStyle: 'solid',

@@ -31,7 +31,7 @@ import type { TableSize, TableCellPadding, TableCellVariant, TableCellAlign } fr
 import type { DrawerAnchor } from '../../Drawer'
 import type { ModalScroll } from '../../Modal'
 import {
-  dark,
+  baseTheme,
   radii,
   sizes,
   borderWidths,
@@ -51,9 +51,9 @@ const objectKeys = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof
 // --- Derived from component mappings ---
 
 export const typographyVariantTokens = objectKeys(typography)
-export const textColorTokens = objectKeys(dark.text)
-export const backgroundTokens = objectKeys(dark.background)
-export const borderColorTokens = objectKeys(dark.border)
+export const textColorTokens = objectKeys(baseTheme.text)
+export const backgroundTokens = objectKeys(baseTheme.background)
+export const borderColorTokens = objectKeys(baseTheme.border)
 
 export const spaceTokens = objectKeys(space).map((k) => (k === 'auto' ? k : Number(k)))
 
@@ -65,9 +65,9 @@ export const letterSpacingTokens = objectKeys(letterSpacings)
 export const borderRadiiTokens = objectKeys(radii)
 export const borderWidthTokens = objectKeys(borderWidths)
 export const avatarSizeTokens = objectKeys(avatar)
-export const buttonColorTokens = objectKeys(dark.palette) satisfies ButtonColor[]
+export const buttonColorTokens = objectKeys(baseTheme.palette) satisfies ButtonColor[]
 export const buttonVariantTokens = ['contained', 'outlined', 'text'] satisfies ButtonVariant[]
-export const buttonSizeTokens = ['sm', 'md', 'lg'] satisfies ButtonSize[]
+export const buttonSizeTokens = objectKeys(sizes) satisfies ButtonSize[]
 export const buttonShapeTokens = ['square', 'rounded', 'pill'] satisfies ButtonShape[]
 export const buttonLoadingPositionTokens = [
   'start',
@@ -106,11 +106,11 @@ export const linearProgressEasingTokens = [
   'ease-in-out',
 ] satisfies LinearProgressEasing[]
 export const checkboxColorTokens = buttonColorTokens satisfies CheckboxColor[]
-export const checkboxSizeTokens = ['sm', 'md', 'lg'] satisfies CheckboxSize[]
+export const checkboxSizeTokens = objectKeys(sizes) satisfies CheckboxSize[]
 export const radioColorTokens = buttonColorTokens satisfies RadioColor[]
-export const radioSizeTokens = ['sm', 'md', 'lg'] satisfies RadioSize[]
+export const radioSizeTokens = objectKeys(sizes) satisfies RadioSize[]
 export const switchColorTokens = buttonColorTokens satisfies SwitchColor[]
-export const switchSizeTokens = ['sm', 'md', 'lg'] satisfies SwitchSize[]
+export const switchSizeTokens = objectKeys(sizes) satisfies SwitchSize[]
 export const switchVariantTokens = ['outside', 'inside'] satisfies SwitchVariant[]
 export const switchEdgeTokens = ['start', 'end', false] satisfies SwitchEdge[]
 export const textInputColorTokens = [...buttonColorTokens] satisfies TextInputColor[]
@@ -120,18 +120,18 @@ export const textInputVariantTokens = [
   'text',
   'underline',
 ] satisfies TextInputVariant[]
-export const textInputSizeTokens = ['sm', 'md', 'lg'] satisfies TextInputSize[]
+export const textInputSizeTokens = objectKeys(sizes) satisfies TextInputSize[]
 export const selectColorTokens = buttonColorTokens satisfies SelectColor[]
 export const selectVariantTokens = textInputVariantTokens satisfies SelectVariant[]
 export const selectSizeTokens = textInputSizeTokens satisfies SelectSize[]
 export const skeletonVariantTokens = ['text', 'circular', 'rectangular'] satisfies SkeletonVariant[]
 export const skeletonAnimationTokens = ['pulse', 'wave', false] satisfies SkeletonAnimation[]
 export const appBarSizeTokens = objectKeys(sizes) satisfies AppBarSize[]
-export const formSizeTokens = ['sm', 'md', 'lg'] satisfies NonNullable<FormControlProps['size']>[]
+export const formSizeTokens = objectKeys(sizes) satisfies NonNullable<FormControlProps['size']>[]
 export const formColorTokens = [...buttonColorTokens] satisfies NonNullable<
   FormControlProps['color']
 >[]
-export const tableSizeTokens = ['sm', 'md', 'lg'] satisfies TableSize[]
+export const tableSizeTokens = objectKeys(sizes) satisfies TableSize[]
 export const tableCellPaddingTokens = ['normal', 'none'] satisfies TableCellPadding[]
 export const tableCellVariantTokens = ['head', 'body', 'footer'] satisfies TableCellVariant[]
 export const tableCellAlignTokens = [

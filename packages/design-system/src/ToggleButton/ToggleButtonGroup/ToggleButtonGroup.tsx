@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { ToggleButtonGroupContext, type ToggleButtonValue } from '../ToggleButtonGroupContext'
 import { ButtonGroup, type ButtonGroupProps } from '../../ButtonGroup'
-import { styled, type Theme } from '../../index'
+import { styled, type Theme, useTheme } from '../../index'
+import { themeDefault } from '../../utils/themeDefault'
 
 export interface ToggleButtonGroupProps extends Omit<ButtonGroupProps, 'variant' | 'onChange'> {
   /** Selected value(s) — single when `isExclusive`, array otherwise. Controlled. */
@@ -25,15 +26,18 @@ interface GroupRootProps {
 const selectedEdgeStyles = ({
   theme,
   orientation = 'horizontal',
-  color = 'default',
+  color = themeDefault(theme, 'neutralColor', 'default'),
 }: GroupRootProps & { theme: Theme }) => {
   const edge = orientation === 'vertical' ? 'borderTopColor' : 'borderLeftColor'
   return {
-    '& > [aria-pressed="true"]:not(:first-of-type)': { [edge]: theme.palette[color].main },
+    '& > [aria-pressed="true"]:not(:first-of-type)': {
+      [edge]: theme.palette[color].main,
+    },
   }
 }
 
 const ToggleButtonGroupRoot = styled(ButtonGroup, {
+  name: 'ToggleButtonGroup',
   label: 'ToggleButtonGroup',
 })<GroupRootProps>(selectedEdgeStyles)
 
@@ -47,10 +51,12 @@ export function ToggleButtonGroup({
   value = null,
   onChange,
   isExclusive = false,
-  color = 'default',
+  color: colorProp,
   children,
   ...rest
 }: Readonly<ToggleButtonGroupProps>) {
+  const theme = useTheme()
+  const color = colorProp ?? themeDefault(theme, 'neutralColor', 'default')
   const context = useMemo(() => {
     const handleToggle = (buttonValue: ToggleButtonValue) => {
       if (isExclusive) {

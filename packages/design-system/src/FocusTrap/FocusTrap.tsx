@@ -1,4 +1,12 @@
 import { useEffect, useRef, type ReactNode } from 'react'
+import { styled } from '../index'
+
+// Named styled root — the trap wrapper is theme-customizable via
+// `theme.components.FocusTrap.styleOverrides.root`. `outline: none` stays the
+// base since the wrapper itself is focused only as a programmatic fallback.
+const FocusTrapRoot = styled('div', { name: 'FocusTrap', label: 'FocusTrap' })({
+  outline: 'none',
+})
 
 export interface FocusTrapProps {
   /** The content whose focusable descendants are trapped. */
@@ -106,8 +114,8 @@ export function FocusTrap({
   }, [isEnabled, shouldAutoFocus, shouldEnforceFocus, shouldRestoreFocus, shouldTrapFocus])
 
   return (
-    <div ref={rootRef} tabIndex={-1} style={{ outline: 'none' }}>
+    <FocusTrapRoot ref={rootRef} tabIndex={-1}>
       {children}
-    </div>
+    </FocusTrapRoot>
   )
 }

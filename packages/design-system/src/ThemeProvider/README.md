@@ -1,52 +1,41 @@
 # ThemeProvider
 
-Owns dark/light mode state, provides `ThemeModeContext`, and wraps Emotion's `ThemeProvider` — all in one component.
+Provides exactly **one** theme to the tree — a thin wrapper over Emotion's provider plus the optional `defaults` merge. It has no opinion about how many themes you have or how you switch between them: mode toggling is app state, not the provider's (see [`docs/theming.md`](../../docs/theming.md)).
 
 ```tsx
-// src/common/Providers.tsx
-<ThemeProvider>{children}</ThemeProvider>
+import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
+
+// Zero-config: the built-in dark theme.
+<ThemeProvider>{app}</ThemeProvider>
+
+// Your theme — written from scratch or extended from a built-in via createTheme.
+<ThemeProvider theme={brandDark}>{app}</ThemeProvider>
 ```
 
 ---
 
-## Exports
+## Props
 
-### `ThemeProvider`
+| Prop       | Type            | Default         | Description                                                                               |
+| ---------- | --------------- | --------------- | ----------------------------------------------------------------------------------------- |
+| `children` | `ReactNode`     | —               | Required child tree                                                                       |
+| `theme`    | `Theme`         | built-in `dark` | The active theme. Bring one, or many managed by your own state.                           |
+| `defaults` | `ThemeDefaults` | —               | Component default token/variant keys, merged into the theme (e.g. `{ size: 'compact' }`). |
 
-| Prop       | Type                            | Default                           | Description                                                                      |
-| ---------- | ------------------------------- | --------------------------------- | -------------------------------------------------------------------------------- |
-| `children` | `ReactNode`                     | —                                 | Required child tree                                                              |
-| `themes`   | `{ dark: Theme; light: Theme }` | built-in `dark` / `light`         | Custom dark/light pair. Swapped by `toggleTheme` instead of the built-in themes. |
-| `theme`    | `Theme`                         | resolved from `isDark` + `themes` | Full custom override — bypasses mode switching entirely (tests, Storybook).      |
+When `defaults` is provided, the provider merges it into the theme via `createTheme(theme, { defaults })` (memoized). Otherwise the theme passes through untouched.
 
-`theme` takes precedence over `themes`. When neither is provided, the built-in `dark` and `light` themes from `@soroush.tech/design-system/themes` are used.
+## Mode switching
 
-Internally:
+Owned by the consumer — hold the state and pass the active theme:
 
-1. Owns `isDark` state (defaults to `true`) and `toggleTheme`
-2. Provides `ThemeModeContext` so `useThemeMode()` works anywhere in the tree
-3. Resolves the active theme: `theme ?? (isDark ? themes.dark : themes.light)`
-4. Mounts `GlobalStyles`
-
-### `GlobalStyles`
-
-Renders Emotion's `<Global>` with site-wide base styles from `@soroush.tech/design-system/globalStyles.ts`. Mounted automatically inside `ThemeProvider` — do not render separately.
-
-### `ThemeModeContext`
-
-The React context carrying `{ isDark, toggleTheme }`. Prefer the hook:
-
-```ts
-import { useThemeMode } from '@soroush.tech/design-system/hooks/useThemeMode'
-
-const { isDark, toggleTheme } = useThemeMode()
+```tsx
+const [isDark, setIsDark] = useState(true)
+<ThemeProvider theme={isDark ? dark : light}>{app}</ThemeProvider>
 ```
 
----
+The web app's reference implementation is `apps/web/src/theme/ThemeModeProvider.tsx` (context + `useThemeMode()` + the brand theme pair).
 
-## Notes
+## Related
 
-- The default starting mode is dark (`isDark` initialises to `true`).
-- Passing `themes` swaps which dark/light objects are toggled between — useful for nested sub-trees that need a different palette pair.
-- Passing `theme` bypasses `isDark` entirely — useful for test wrappers and Storybook decorators where a fixed theme is required.
-- `ThemeModeContext` is re-exported from the barrel so `useThemeMode` can import it from `'@soroush.tech/design-system/ThemeProvider'`.
+- `createTheme(base, overrides)` — deep-merge primitive for building themes ([`docs/theming.md`](../../docs/theming.md)).
+- `theme.components` — per-component customization the provider carries along ([`docs/customization.md`](../../docs/customization.md)).

@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { LinearProgress } from '../LinearProgress'
 
 describe('LinearProgress', () => {
@@ -262,14 +262,14 @@ describe('LinearProgress', () => {
   describe('color', () => {
     it('resolves theme.palette[color].main as CSS color on the root', () => {
       renderWithTheme(<LinearProgress color="primary" data-testid="lp" />)
-      expect(screen.getByTestId('lp')).toHaveStyle({ color: dark.palette.primary.main })
+      expect(screen.getByTestId('lp')).toHaveStyle({ color: baseTheme.palette.primary.main })
     })
 
     it('each color resolves to the correct theme token', () => {
       const colors = ['primary', 'secondary', 'success', 'error', 'info', 'warning'] as const
       colors.forEach((color) => {
         const { unmount } = renderWithTheme(<LinearProgress color={color} data-testid="lp" />)
-        expect(screen.getByTestId('lp')).toHaveStyle({ color: dark.palette[color].main })
+        expect(screen.getByTestId('lp')).toHaveStyle({ color: baseTheme.palette[color].main })
         unmount()
       })
     })

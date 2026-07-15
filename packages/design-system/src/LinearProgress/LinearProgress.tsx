@@ -13,6 +13,7 @@ import {
 } from '../index'
 import type { ButtonColor } from '../Button'
 import { clamp } from '../utils'
+import { themeDefault } from '../utils/themeDefault'
 
 export type LinearProgressVariant = 'indeterminate' | 'determinate' | 'query'
 export type LinearProgressColor = ButtonColor | 'inherit'
@@ -25,7 +26,7 @@ export interface LinearProgressProps
     LayoutProps<Theme> {
   /** Visual variant — looping animation, value-driven bar, or reversed loop. Default: `'indeterminate'`. */
   variant?: LinearProgressVariant
-  /** Bar color — resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: `'primary'`. */
+  /** Bar color — resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: LinearProgressColor
   /** Bar height. Number → px; string → raw CSS unit (e.g. `'0.5rem'`). Default: `4`. */
   thickness?: number | string
@@ -92,7 +93,11 @@ const travel = keyframes({
 
 // ─── Internal sub-components ──────────────────────────────────────────────────
 
-const LinearProgressTrack = styled('span')({
+const LinearProgressTrack = styled('span', {
+  name: 'LinearProgress',
+  slot: 'track',
+  label: 'LinearProgressTrack',
+})({
   position: 'absolute',
   inset: 0,
   backgroundColor: 'currentColor',
@@ -101,7 +106,11 @@ const LinearProgressTrack = styled('span')({
 
 // Dotted leading edge for the buffer mode — replaces the solid track.
 // currentColor keeps it on the resolved theme color without extra tokens.
-const LinearProgressDash = styled('span')({
+const LinearProgressDash = styled('span', {
+  name: 'LinearProgress',
+  slot: 'dash',
+  label: 'LinearProgressDash',
+})({
   position: 'absolute',
   inset: 0,
   backgroundImage: 'radial-gradient(currentColor 0%, currentColor 16%, transparent 42%)',
@@ -118,6 +127,9 @@ const barShouldForwardProp = (prop: string) =>
 
 // Primary bar — animated for indeterminate/query, transform-driven for determinate.
 const LinearProgressBar = styled('span', {
+  name: 'LinearProgress',
+  slot: 'bar',
+  label: 'LinearProgressBar',
   shouldForwardProp: barShouldForwardProp,
 })<BarProps>(({ variant, easing = 'linear' }) => ({
   position: 'absolute',
@@ -135,6 +147,9 @@ const LinearProgressBar = styled('span', {
 // segments one full track width apart; translating the carrier by 100% moves
 // both, so the copy re-enters at the start exactly as the lead exits the end.
 const LinearProgressTraveler = styled('span', {
+  name: 'LinearProgress',
+  slot: 'traveler',
+  label: 'LinearProgressTraveler',
   shouldForwardProp: barShouldForwardProp,
 })<Pick<LinearProgressProps, 'easing'>>(({ easing = 'linear' }) => ({
   position: 'absolute',
@@ -142,7 +157,11 @@ const LinearProgressTraveler = styled('span', {
   animation: `${travel} 1.4s ${easing} infinite`,
 }))
 
-const LinearProgressSegment = styled('span')({
+const LinearProgressSegment = styled('span', {
+  name: 'LinearProgress',
+  slot: 'segment',
+  label: 'LinearProgressSegment',
+})({
   position: 'absolute',
   top: 0,
   bottom: 0,
@@ -152,6 +171,9 @@ const LinearProgressSegment = styled('span')({
 
 // Secondary bar — delayed animation for indeterminate/query, buffer amount in buffer mode.
 const LinearProgressBarSecondary = styled('span', {
+  name: 'LinearProgress',
+  slot: 'secondaryBar',
+  label: 'LinearProgressBarSecondary',
   shouldForwardProp: barShouldForwardProp,
 })<BarProps>(({ buffer, easing = 'linear' }) => ({
   position: 'absolute',
@@ -169,8 +191,9 @@ const LinearProgressBarSecondary = styled('span', {
 
 // ─── Styling functions ────────────────────────────────────────────────────────
 
-const colorStyle = ({ color = 'primary', theme }: LinearProgressProps & { theme?: Theme }) => {
-  if (!theme || color === 'inherit') return {}
+const colorStyle = ({ color: colorProp, theme }: LinearProgressProps & { theme: Theme }) => {
+  const color = colorProp ?? themeDefault(theme, 'color', 'primary')
+  if (color === 'inherit') return {}
   return { color: theme.palette[color].main }
 }
 
@@ -195,21 +218,19 @@ const roundStyle = ({ round }: LinearProgressProps) => (round ? { borderRadius: 
 
 // ─── Styled root ──────────────────────────────────────────────────────────────
 
-const LinearProgressRoot = styled('span', { shouldForwardProp })<LinearProgressProps>(
-  baseStyle,
-  thicknessStyle,
-  colorStyle,
-  directionStyle,
-  roundStyle,
-  space,
-  layout
-)
+const LinearProgressRoot = styled('span', {
+  name: 'LinearProgress',
+  label: 'LinearProgress',
+  shouldForwardProp,
+  systemProps: [space, layout],
+})<LinearProgressProps>(baseStyle, thicknessStyle, colorStyle, directionStyle, roundStyle)
 
 // ─── Public component ─────────────────────────────────────────────────────────
 
 export function LinearProgress({
   variant = 'indeterminate',
-  color = 'primary',
+  // undefined resolves to themeDefault(theme, 'color', 'primary') in the styled layer.
+  color,
   thickness = THICKNESS_DEFAULT,
   value,
   buffer = false,

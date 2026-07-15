@@ -1,6 +1,8 @@
-import { screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent, render } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
+import { ThemeProvider } from '../ThemeProvider'
+import { createTheme, baseTheme } from '../themes'
 import { useFormControl } from '../FormControl'
 import { Form } from './Form'
 
@@ -41,6 +43,20 @@ describe('Form', () => {
     expect(probe).toHaveAttribute('data-fullwidth', 'true')
     expect(probe).toHaveAttribute('data-color', 'secondary')
     expect(probe).toHaveAttribute('data-textcolor', 'info')
+  })
+
+  it('applies theme.components.Form.styleOverrides.root to the form element', () => {
+    const theme = createTheme(baseTheme, {
+      components: { Form: { styleOverrides: { root: { display: 'grid' } } } },
+    })
+    render(
+      <ThemeProvider theme={theme}>
+        <Form data-testid="form">
+          <span>child</span>
+        </Form>
+      </ThemeProvider>
+    )
+    expect(screen.getByTestId('form')).toHaveStyle({ display: 'grid' })
   })
 
   it('calls onSubmit when the form is submitted', () => {

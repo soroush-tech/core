@@ -12,45 +12,45 @@ How the theme is built, how components are structured, and the conventions every
 | Theme tokens              | `styled-system` (space, layout, typography, flexbox, border, position) |
 | Custom prop→scale mapping | `styled-system` `system()`                                             |
 | Prop filtering            | `@styled-system/should-forward-prop`                                   |
-| Component stories         | Storybook v9 (`@storybook/react-vite`)                                 |
-| Theme augmentation        | `@types/emotion_react/index.d.ts`                                      |
+| Component stories         | Storybook v10 (`@storybook/react-vite`)                                |
+| Theme augmentation        | `declare module '@emotion/react'` block in `src/themes.ts`             |
 
 ---
 
 ## Theme
 
-`@soroush.tech/design-system/themes.ts` exports `light` and `dark`, both implementing the `Theme` interface. There are no hardcoded hex values in `themes.ts` — every value references a palette constant from `@soroush.tech/design-system/colors/`.
+`@soroush.tech/design-system/themes.ts` exports `baseTheme` — one complete, dark-schemed default `Theme`. Its color values are raw hex literals: palettes belong to the consumer, who owns the brand color files and builds every brand theme with `createTheme(baseTheme, …)` (this site's palettes and `light`/`dark` themes live in `apps/web/src/theme/`). Components must never hardcode colors — they read theme tokens only; `baseTheme` is the single place in the package where hex values are allowed.
 
-### Palette files (`@soroush.tech/design-system/colors/`)
-
-| File                | Purpose                                    |
-| ------------------- | ------------------------------------------ |
-| `kineticSurface.ts` | Dark neutral stack — backgrounds, surfaces |
-| `kineticGreen.ts`   | Primary neon accent                        |
-| `cyberCyan.ts`      | Secondary accent / info                    |
-| `neonRed.ts`        | Error / destructive                        |
-| `solarAmber.ts`     | Warning                                    |
-| `carbonBlack.ts`    | Deep terminal blacks                       |
-
-Rgba opacity is expressed via hex suffix — `${kineticSurface[100]}B3` = rgba(255,255,255,0.7). Never use `rgba()` strings directly.
+Rgba opacity is expressed via hex suffix — `#FFFFFFB3` = rgba(255,255,255,0.7). Never use `rgba()` strings directly.
 
 ### Theme scales
 
-| Scale           | Key in Theme           | Prop type                       |
-| --------------- | ---------------------- | ------------------------------- |
-| Text colors     | `theme.text`           | `keyof Theme['text']`           |
-| Backgrounds     | `theme.background`     | `keyof Theme['background']`     |
-| Space           | `theme.space`          | `keyof Theme['space']`          |
-| Font sizes      | `theme.fontSizes`      | index (number)                  |
-| Font weights    | `theme.fontWeights`    | `keyof Theme['fontWeights']`    |
-| Line heights    | `theme.lineHeights`    | `keyof Theme['lineHeights']`    |
-| Letter spacings | `theme.letterSpacings` | `keyof Theme['letterSpacings']` |
-| Fonts           | `theme.fonts`          | `keyof Theme['fonts']`          |
-| Radii           | `theme.radii`          | `keyof Theme['radii']`          |
+Each scale is a named, consumer-extensible interface (declared in `src/themes.ts`); the `Theme` composition wraps them in `OpenScale<…>` mapped types so styled-system's Record-based constraint is satisfied while `keyof` keeps the literal keys.
+
+| Scale           | Key in Theme           | Interface                 | Prop type                       |
+| --------------- | ---------------------- | ------------------------- | ------------------------------- |
+| Defaults        | `theme.defaults`       | `ThemeDefaults`           | — (component prop fallbacks)    |
+| Palette         | `theme.palette`        | `ThemePalette`            | `PaletteColor`                  |
+| Text colors     | `theme.text`           | `ThemeText`               | `keyof Theme['text']`           |
+| Backgrounds     | `theme.background`     | `ThemeBackground`         | `keyof Theme['background']`     |
+| Borders         | `theme.border`         | `ThemeBorder`             | `keyof Theme['border']`         |
+| Space           | `theme.space`          | `ThemeSpace`              | `keyof Theme['space']`          |
+| Sizes           | `theme.sizes`          | `ThemeSizes`              | `keyof Theme['sizes']`          |
+| Font sizes      | `theme.fontSizes`      | `number[]`                | index (number)                  |
+| Font weights    | `theme.fontWeights`    | `ThemeFontWeights`        | `keyof Theme['fontWeights']`    |
+| Line heights    | `theme.lineHeights`    | `ThemeLineHeights`        | `keyof Theme['lineHeights']`    |
+| Letter spacings | `theme.letterSpacings` | `ThemeLetterSpacings`     | `keyof Theme['letterSpacings']` |
+| Fonts           | `theme.fonts`          | `ThemeFonts`              | `keyof Theme['fonts']`          |
+| Radii           | `theme.radii`          | `ThemeRadii`              | `keyof Theme['radii']`          |
+| Typography      | `theme.typography`     | `ThemeTypographyVariants` | `TypographyVariant`             |
+| Icon sizes      | `theme.icon`           | `ThemeIconSizes`          | `keyof Theme['icon']`           |
+| Switch tokens   | `theme.switch`         | `ThemeSwitch`             | —                               |
+| Shadow tokens   | `theme.shadow`         | `ThemeShadow`             | —                               |
+| Syntax          | `theme.syntax`         | `ThemeSyntax`             | —                               |
 
 ### Theme augmentation
 
-`@types/emotion_react/index.d.ts` merges the custom `Theme` into `@emotion/react`'s `Theme` interface. This means `Theme` imported from `@emotion/react` is the full custom theme — no separate import needed.
+The entire type layer lives inside one `declare module '@emotion/react'` block in `src/themes.ts` — emotion's module is the augmentation surface (not this package's own specifier) because the published d.ts is chunk-bundled by tsdown, and only an external, stable module merges reliably for both monorepo-source and npm consumers. `Theme` imported from `@emotion/react` (or re-exported from this package) is therefore the full custom theme.
 
 ```ts
 import { type Theme } from '@emotion/react'
@@ -59,13 +59,36 @@ type MyColorProp = keyof Theme['text'] // 'inherit' | 'initial' | 'primary' | ..
 type MyBgProp = keyof Theme['background'] // 'backdrop' | 'modal' | 'primary' | ...
 ```
 
+**Consumers of the published package** extend scales by augmenting `@emotion/react` (see the README's "Theming" section), build the values with `createTheme(base, overrides)`, and pass the finished theme to `ThemeProvider`'s `theme` prop. `type-tests/augmentation.ts` (run by `pnpm test:types`) verifies this recipe against the real dist d.ts.
+
+**The in-repo app must NOT augment scale interfaces with new keys** — the monorepo consumes package _source_, so a merged required key would fail the `light: Theme` completeness check inside `src/themes.ts`. The app only overrides values (`apps/web/src/theme/themes.ts` via `createTheme`).
+
+**New scale interfaces must be declared inside the `declare module '@emotion/react'` block** (as `themes.ts` does), so member identity stays stable across d.ts chunks.
+
+### Per-component customization (`theme.components`)
+
+Full consumer guide: [`docs/customization.md`](./docs/customization.md); theming overview: [`docs/theming.md`](./docs/theming.md).
+
+The engine `styled` (in `src/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles — but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
+
+Rules when converting a component:
+
+- Pass `name` (the `ThemeComponents` key) on the root, and `slot` on named sub-elements (`label`, `icon`, …). Slot names are public API — renaming one is a breaking change.
+- Move the styled-system parsers (`space`, `layout`, …) from the style arguments into the `systemProps` option so instance props keep beating theme overrides.
+- Resolve `defaultProps` via `useDefaultProps(name)` in the wrapper, in the standard chain: explicit prop → group context → `defaultProps` → `theme.defaults.*` → literal fallback.
+- Type the component's entry in `ThemeComponents` (`ComponentConfig<OwnerState, Slots>`) and, if it has variants, expose them via an augmentable interface (see `ButtonVariants`).
+
+`Button` is the reference implementation; `Theme/Customization` in Storybook is the living contract, locked by Chromatic.
+
+**Every styled element is named** — every `styled(...)` call in the package carries a `name` (roots) or `name` + `slot` (sub-elements), including the layout primitives `View`/`Flex`/`Grid`. The full key/slot list is the `ThemeComponents` interface in `src/themes.ts`, and `src/themeComponents.spec.tsx` locks each element's `styleOverrides` wiring. `pnpm audit:styled` regenerates `styled-audit.md` and reports any call that loses its `name` (`--check` exits non-zero); intentional omissions must carry `// audit-styled-ignore: <reason>` on the preceding line. Beware that an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component — that reach is deliberate, so use those keys for app-wide policy only.
+
 ---
 
 ## Component Architecture
 
 **Every component lives in its own folder** `packages/design-system/src/ComponentName/` with: `index.ts` (`export * from './ComponentName'`) · `ComponentName.tsx` · `README.md` · `ComponentName.stories.tsx` · `ComponentName.test.tsx`
 
-**Prop types** — derive from `Theme` (imported from `@emotion/react`, which is augmented via `@types/emotion_react/index.d.ts`), never write manual unions:
+**Prop types** — derive from `Theme` (imported from `@emotion/react`, augmented by the type layer in `src/themes.ts`), never write manual unions:
 
 - `color?: keyof Theme['text']`
 - `bg?: keyof Theme['background']`
@@ -85,7 +108,7 @@ type MyBgProp = keyof Theme['background'] // 'backdrop' | 'modal' | 'primary' | 
 - Do NOT use top-level `name:` in argTypes (breaks `controls.include` matching)
 - Always add `table.category` — use: Content · Typography · Layout · Visual · Spacing · State · Progress · Behavior · Focus — make sure it matches the category; if unsure, suggest a name and verify before implementing.
 
-**No hardcoded hex values** anywhere in `@soroush.tech/design-system/` — all colors reference palette constants from `@soroush.tech/design-system/colors/`. Rgba opacity uses hex suffix pattern: `${kineticSurface[100]}B3`.
+**No hardcoded hex values in components** — all component colors read theme tokens; hex literals are allowed only inside `themes.ts` (`baseTheme`) and test/story fixtures. Rgba opacity uses the hex suffix pattern: `#FFFFFFB3`.
 
 **`Typography` is the reference implementation** — follow its structure for every new component.
 
@@ -282,4 +305,4 @@ Use `/new_theme_component ComponentName` to scaffold all files automatically.
 - [ ] `ComponentName/ComponentName.stories.tsx` — imports from `storiesArgs` (shared props) or `storiesOptions` (component-specific), `controls.include` whitelist, argType categories
 - [ ] New token arrays added to `@soroush.tech/design-system/utils/test/storiesOptions.ts` with `satisfies`
 - [ ] `ComponentName/ComponentName.test.tsx` — prop→CSS, element mapping, HTML passthrough
-- [ ] No hardcoded hex values anywhere in `@soroush.tech/design-system/`
+- [ ] No hardcoded hex values in the component — colors read theme tokens only

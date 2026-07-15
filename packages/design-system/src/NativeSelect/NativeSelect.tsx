@@ -11,8 +11,10 @@ import {
   type SpaceProps,
   type LayoutProps,
   system,
+  useTheme,
 } from '../index'
 import { inputVariantStyles } from '../utils/inputVariantStyles'
+import { themeDefault } from '../utils/themeDefault'
 
 export type NativeSelectColor = keyof Theme['palette']
 export type NativeSelectTextColor = keyof Theme['text']
@@ -39,9 +41,9 @@ export interface NativeSelectProps
   placeholder?: string
   /** Corner radius — applies only to `default` and `outlined` variants. Resolves against `theme.radii`. */
   borderRadius?: keyof Theme['radii']
-  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: `'primary'`. */
+  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: NativeSelectColor
-  /** Text color of the selected value — resolves against `theme.text`. Default: `'primary'`. */
+  /** Text color of the selected value — resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
   textColor?: NativeSelectTextColor
   /** Background color — resolves against `theme.background`. Default: `'terminal'`. */
   bg?: NativeSelectBackgroundToken
@@ -60,7 +62,7 @@ export interface NativeSelectProps
   id?: string
   name?: string
   required?: boolean
-  /** Controls padding and font size. Default: `'md'`. */
+  /** Controls padding and font size. Default: 'md', overridable via `theme.defaults.size`. */
   size?: NativeSelectSize
   /**
    * Visual style of the select.
@@ -105,41 +107,47 @@ const baseStyle = {
 }
 
 const backgroundStyle = ({
-  textColor = 'primary',
-  bg = 'terminal',
   theme,
-}: NativeSelectRootProps & { theme?: Theme }) => ({
-  backgroundColor: get(theme, `background.${bg}`),
-  color: get(theme, `text.${textColor}`),
-  fontFamily: get(theme, 'fonts.body'),
-  fontSize: get(theme, 'fontSizes.1'),
-  lineHeight: get(theme, 'lineHeights.base'),
-})
+  textColor = themeDefault(theme, 'accentTextColor', 'primary'),
+  bg = themeDefault(theme, 'inputBg', 'terminal'),
+}: NativeSelectRootProps & { theme: Theme }) => {
+  return {
+    backgroundColor: get(theme, `background.${bg}`),
+    color: get(theme, `text.${textColor}`),
+    fontFamily: get(theme, 'fonts.body'),
+    fontSize: get(theme, 'fontSizes.1'),
+    lineHeight: get(theme, 'lineHeights.base'),
+  }
+}
 
 const colorBorder = ({
-  color = 'primary',
-  error,
   theme,
-}: NativeSelectRootProps & { theme?: Theme }) => ({
-  borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.light`),
-})
+  color = themeDefault(theme, 'color', 'primary'),
+  error,
+}: NativeSelectRootProps & { theme: Theme }) => {
+  return {
+    borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.light`),
+  }
+}
 
 const focusWithinColor = ({
-  color = 'primary',
-  error,
   theme,
-}: NativeSelectRootProps & { theme?: Theme }) => ({
-  '&:focus-within': {
-    borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`),
-  },
-})
+  color = themeDefault(theme, 'color', 'primary'),
+  error,
+}: NativeSelectRootProps & { theme: Theme }) => {
+  return {
+    '&:focus-within': {
+      borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`),
+    },
+  }
+}
 
 // Keyboard-only focus ring on the wrapper (the inner select keeps `outline: none`).
 const focusVisibleRing = ({
-  color = 'primary',
-  error,
   theme,
-}: NativeSelectRootProps & { theme?: Theme }) => {
+  color = themeDefault(theme, 'color', 'primary'),
+  error,
+}: NativeSelectRootProps & { theme: Theme }) => {
   const ringColor = error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`)
   return {
     '&:has(:focus-visible)': {
@@ -166,8 +174,10 @@ const layoutStyles = ({ fullWidth, disabled }: NativeSelectRootProps) => ({
 const widthStyles = system({ width: true, minWidth: true, maxWidth: true })
 
 const NativeSelectRoot = styled('div', {
+  name: 'NativeSelect',
   label: 'NativeSelect',
   shouldForwardProp,
+  systemProps: [space, widthStyles],
 })<NativeSelectRootProps>(
   baseStyle,
   inputVariantStyles,
@@ -176,9 +186,7 @@ const NativeSelectRoot = styled('div', {
   focusWithinColor,
   focusVisibleRing,
   backgroundStyle,
-  layoutStyles,
-  space,
-  widthStyles
+  layoutStyles
 )
 
 // ─── Native select ────────────────────────────────────────────────────────────
@@ -211,9 +219,9 @@ const sizeVariants = ({ theme, sizeToken }: StyledNativeSelectProps & { theme: T
 // options) directly from `bg`/`textColor` so the popup that opens below matches.
 // Chromium/Firefox honor these; the option hover highlight stays OS-controlled.
 const selectSurface = ({
-  bg = 'terminal',
-  textColor,
   theme,
+  bg = themeDefault(theme, 'inputBg', 'terminal'),
+  textColor,
 }: StyledNativeSelectProps & { theme: Theme }) => {
   const backgroundColor = get(theme, `background.${bg}`)
   const color = get(theme, `text.${textColor}`)
@@ -225,6 +233,9 @@ const selectSurface = ({
 }
 
 const StyledNativeSelect = styled('select', {
+  name: 'NativeSelect',
+  slot: 'select',
+  label: 'NativeSelectSelect',
   shouldForwardProp: shouldForwardNativeSelectProps,
 })<StyledNativeSelectProps>(
   {
@@ -246,7 +257,11 @@ const StyledNativeSelect = styled('select', {
   selectSurface
 )
 
-const DropdownIcon = styled(Icon)({
+const DropdownIcon = styled(Icon, {
+  name: 'NativeSelect',
+  slot: 'icon',
+  label: 'NativeSelectIcon',
+})({
   position: 'absolute',
   right: '0.375rem',
   top: '50%',
@@ -276,7 +291,7 @@ export function NativeSelect({
   name,
   required: requiredProp,
   size: sizeProp,
-  variant = 'default',
+  variant: variantProp,
   className,
   'data-testid': dataTestid,
   ...spaceProps
@@ -293,8 +308,10 @@ export function NativeSelect({
     textColor: textColorProp,
   })
   const { id, error, disabled, required, size, fullWidth } = fc
-  const color = fc.color ?? 'primary'
-  const textColor = fc.textColor ?? 'primary'
+  const theme = useTheme()
+  const color = fc.color ?? themeDefault(theme, 'color', 'primary')
+  const textColor = fc.textColor ?? themeDefault(theme, 'accentTextColor', 'primary')
+  const variant = variantProp ?? themeDefault(theme, 'inputVariant', 'default')
 
   // The DOM casts option values to strings — map back to the option's original
   // value so numeric options round-trip as numbers.

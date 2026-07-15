@@ -50,7 +50,7 @@ const defaultDisplayedRowsLabel = ({ from, to, count }: TablePaginationDisplayed
 
 const defaultGetItemAriaLabel = (type: TablePaginationActionType) => `Go to ${type} page`
 
-const Toolbar = styled('div', { label: 'TablePaginationToolbar' })({
+const Toolbar = styled('div', { name: 'TablePagination', label: 'TablePaginationToolbar' })({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',

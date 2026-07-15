@@ -15,10 +15,12 @@ import {
   space,
   system,
   get,
+  useTheme,
   type SpaceProps,
   type LayoutProps,
 } from '../index'
 import { inputVariantStyles } from '../utils/inputVariantStyles'
+import { themeDefault } from '../utils/themeDefault'
 
 export type TextInputColor = keyof Theme['palette']
 export type TextInputTextColor = keyof Theme['text']
@@ -40,9 +42,9 @@ export interface TextInputProps
   classes?: TextInputClasses
   /** Override components for the Root and Input slots. */
   components?: { Input?: ElementType; Root?: ElementType }
-  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: `'primary'`. */
+  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: TextInputColor
-  /** Text color of the typed value — resolves against `theme.text`. Default: `'primary'`. */
+  /** Text color of the typed value — resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
   textColor?: TextInputTextColor
   /** Disables the input. */
   disabled?: boolean
@@ -73,7 +75,7 @@ export interface TextInputProps
   required?: boolean
   /** Auto-grows the textarea as content increases. Requires `multiline`. */
   resize?: boolean
-  /** Controls padding and font size. Default: `'md'`. */
+  /** Controls padding and font size. Default: 'md', overridable via `theme.defaults.size`. */
   size?: TextInputSize
   /**
    * Fixes the textarea height to this many rows. Also enables `multiline`
@@ -130,11 +132,11 @@ const baseStyle = {
 // system() raw function skipped here: createParser iterates props with for...in which
 // doesn't see 'variant' reliably in this styled context. Destructuring is reliable.
 const backgroundStyle = ({
-  textColor = 'primary',
   theme,
-}: TextInputRootProps & { theme?: Theme }) => {
+  textColor = themeDefault(theme, 'accentTextColor', 'primary'),
+}: TextInputRootProps & { theme: Theme }) => {
   return {
-    backgroundColor: get(theme, 'background.terminal'),
+    backgroundColor: get(theme, `background.${themeDefault(theme, 'inputBg', 'terminal')}`),
     color: get(theme, `text.${textColor}`),
     fontFamily: get(theme, 'fonts.body'),
     fontSize: get(theme, 'fontSizes.1'),
@@ -145,28 +147,30 @@ const backgroundStyle = ({
 // Plain functions avoid the SSR crash: system() transformers returning nested CSS objects
 // (e.g. '&:focus-within') cause stylis to throw in the server renderer.
 const colorBorder = ({
-  color = 'primary',
-  error,
   theme,
-}: TextInputRootProps & { theme?: Theme }) => ({
-  borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.light`),
-})
+  color = themeDefault(theme, 'color', 'primary'),
+  error,
+}: TextInputRootProps & { theme: Theme }) => {
+  return {
+    borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.light`),
+  }
+}
 
 // Keyboard-only focus ring on the wrapper (the inner input keeps `outline: none`).
 // Covers every variant, including the borderless `default` / `text` that the
 // `:focus-within` border-color change alone can't show.
-const focusVisibleRing = ({ theme }: TextInputRootProps & { theme?: Theme }) => ({
+const focusVisibleRing = ({ theme }: TextInputRootProps & { theme: Theme }) => ({
   '&:has(:focus-visible)': {
-    outline: `2px solid ${get(theme, 'palette.primary.main')}`,
+    outline: `2px solid ${get(theme, `palette.${themeDefault(theme, 'color', 'primary')}.main`)}`,
     outlineOffset: '2px',
   },
 })
 
 const focusWithinColor = ({
-  color = 'primary',
-  error,
   theme,
-}: TextInputRootProps & { theme?: Theme }) => ({
+  color = themeDefault(theme, 'color', 'primary'),
+  error,
+}: TextInputRootProps & { theme: Theme }) => ({
   '&:focus-within': {
     borderColor: error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`),
   },
@@ -243,7 +247,12 @@ const sizeVariants = ({ theme, size }: StyledInputProps & { theme: Theme }) => {
   }
 }
 
-const TextInputRoot = styled('div', { label: 'TextInput', shouldForwardProp })<TextInputRootProps>(
+const TextInputRoot = styled('div', {
+  name: 'TextInput',
+  label: 'TextInput',
+  shouldForwardProp,
+  systemProps: [space, widthStyles],
+})<TextInputRootProps>(
   baseStyle,
   inputVariantStyles,
   borderRadiusStyle,
@@ -251,22 +260,30 @@ const TextInputRoot = styled('div', { label: 'TextInput', shouldForwardProp })<T
   focusWithinColor,
   focusVisibleRing,
   backgroundStyle,
-  layoutStyles,
-  space,
-  widthStyles
+  layoutStyles
 )
 
-const StyledInput = styled(InputBase)<StyledInputProps>(nativeBaseStyles, sizeVariants)
+const StyledInput = styled(InputBase, {
+  name: 'TextInput',
+  slot: 'input',
+  label: 'TextInputInput',
+})<StyledInputProps>(nativeBaseStyles, sizeVariants)
 
 const shouldForwardInputProps = (prop: string) => prop !== 'size'
 
 // Fixed-rows only — scrolls when content overflows.
 const StyledTextarea = styled('textarea', {
+  name: 'TextInput',
+  slot: 'input',
+  label: 'TextInputTextarea',
   shouldForwardProp: shouldForwardInputProps,
 })<StyledInputProps>(nativeBaseStyles, textAreaBaseStyles, sizeVariants)
 
 // Auto-grow — TextAreaAutoResize owns the resize behavior; style applied here.
 const StyledAutoResizeTextarea = styled(TextAreaAutoResize, {
+  name: 'TextInput',
+  slot: 'input',
+  label: 'TextInputTextarea',
   shouldForwardProp: shouldForwardInputProps,
 })<StyledInputProps>(nativeBaseStyles, textAreaBaseStyles, sizeVariants)
 
@@ -300,7 +317,7 @@ export function TextInput({
   size: sizeProp,
   type = 'text',
   value,
-  variant = 'default',
+  variant: variantProp,
   className,
   'data-testid': dataTestid,
   ...spaceProps
@@ -318,8 +335,10 @@ export function TextInput({
     textColor: textColorProp,
   })
   const { id, error, disabled, required, size, fullWidth } = fc
-  const color = fc.color ?? 'primary'
-  const textColor = fc.textColor ?? 'primary'
+  const theme = useTheme()
+  const color = fc.color ?? themeDefault(theme, 'color', 'primary')
+  const textColor = fc.textColor ?? themeDefault(theme, 'accentTextColor', 'primary')
+  const variant = variantProp ?? themeDefault(theme, 'inputVariant', 'default')
 
   const isAutoResize = resize
   // rows > 1 implicitly enables multiline; rows === 1 stays as <input>

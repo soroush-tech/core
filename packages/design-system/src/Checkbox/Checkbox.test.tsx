@@ -1,10 +1,11 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { ThemeProvider } from '../ThemeProvider'
+import { createTheme, baseTheme, type Theme } from '../themes'
 import { FormControl } from '../FormControl'
 import { FormHelperText } from '../FormHelperText'
-import { Checkbox } from '../Checkbox'
+import { Checkbox, type CheckboxSize } from '../Checkbox'
 
 describe('Checkbox', () => {
   // ─── element ─────────────────────────────────────────────────────────────────
@@ -122,14 +123,14 @@ describe('Checkbox', () => {
   describe('color', () => {
     it('default color resolves to theme.text.secondary', () => {
       renderWithTheme(<Checkbox color="default" data-testid="cb" />)
-      expect(screen.getByTestId('cb')).toHaveStyle({ color: dark.text.secondary })
+      expect(screen.getByTestId('cb')).toHaveStyle({ color: baseTheme.text.secondary })
     })
 
     it('resolves theme.palette[color].main for named colors', () => {
       const colors = ['primary', 'secondary', 'success', 'error', 'info', 'warning'] as const
       colors.forEach((color) => {
         const { unmount } = renderWithTheme(<Checkbox color={color} data-testid="cb" />)
-        expect(screen.getByTestId('cb')).toHaveStyle({ color: dark.palette[color].main })
+        expect(screen.getByTestId('cb')).toHaveStyle({ color: baseTheme.palette[color].main })
         unmount()
       })
     })
@@ -143,19 +144,30 @@ describe('Checkbox', () => {
   // ─── size ─────────────────────────────────────────────────────────────────────
 
   describe('size', () => {
-    it('sm — sets 16px font-size on icon wrapper', () => {
+    it('sm — sets theme.icon.sm font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Checkbox size="sm" />)
-      expect(container.querySelector('span')).toHaveStyle({ fontSize: '16px' })
+      expect(container.querySelector('span')).toHaveStyle({ fontSize: '1rem' })
     })
 
-    it('md — sets 20px font-size on icon wrapper', () => {
+    it('md — sets theme.icon.md font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Checkbox size="md" />)
-      expect(container.querySelector('span')).toHaveStyle({ fontSize: '20px' })
+      expect(container.querySelector('span')).toHaveStyle({ fontSize: '1.25rem' })
     })
 
-    it('lg — sets 24px font-size on icon wrapper', () => {
+    it('lg — sets theme.icon.lg font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Checkbox size="lg" />)
-      expect(container.querySelector('span')).toHaveStyle({ fontSize: '24px' })
+      expect(container.querySelector('span')).toHaveStyle({ fontSize: '1.5rem' })
+    })
+
+    it('reads augmented sizes from theme.icon (the theme supplies the glyph size)', () => {
+      const augmented = createTheme(baseTheme, {
+        sizes: { xl: { ...baseTheme.sizes.lg } } as Partial<Theme['sizes']>,
+        icon: { xl: '2rem' } as Partial<Theme['icon']>,
+      })
+      const { container } = renderWithTheme(<Checkbox size={'xl' as CheckboxSize} />, {
+        wrapper: ({ children }) => <ThemeProvider theme={augmented}>{children}</ThemeProvider>,
+      })
+      expect(container.querySelector('span')).toHaveStyle({ fontSize: '2rem' })
     })
 
     it('does not forward size to DOM', () => {
@@ -285,7 +297,7 @@ describe('Checkbox', () => {
           <Checkbox data-testid="cb" />
         </FormControl>
       )
-      expect(screen.getByTestId('cb')).toHaveStyle({ color: dark.palette.success.main })
+      expect(screen.getByTestId('cb')).toHaveStyle({ color: baseTheme.palette.success.main })
     })
 
     it('sets aria-describedby from the FormControl helper text', () => {
@@ -314,7 +326,7 @@ describe('Checkbox', () => {
           <Checkbox color="error" data-testid="cb" />
         </FormControl>
       )
-      expect(screen.getByTestId('cb')).toHaveStyle({ color: dark.palette.error.main })
+      expect(screen.getByTestId('cb')).toHaveStyle({ color: baseTheme.palette.error.main })
     })
   })
 })

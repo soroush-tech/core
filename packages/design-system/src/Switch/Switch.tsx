@@ -5,10 +5,11 @@ import {
   createShouldForwardProp,
   props,
   space,
+  useTheme,
   type SpaceProps,
 } from '../index'
-import { carbonBlack, kineticSurface } from '../colors'
 import { alpha } from '../utils'
+import { themeDefault } from '../utils/themeDefault'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,6 +75,13 @@ const INSIDE_THUMB: Record<SwitchSize, string> = { sm: '16px', md: '22px', lg: '
 const INSIDE_THUMB_START: Record<SwitchSize, string> = { sm: '2px', md: '2px', lg: '2px' }
 const INSIDE_TRANSLATE: Record<SwitchSize, string> = { sm: '16px', md: '20px', lg: '24px' }
 
+// Resolves the effective size (prop → theme.defaults.size → 'md') to a metric key.
+// Sizes added by theme augmentation have no metrics here — fall back to md.
+const knownSize = (size: SwitchSize | undefined, theme: Theme): 'sm' | 'md' | 'lg' => {
+  const resolved = size ?? themeDefault(theme, 'size', 'md')
+  return resolved === 'sm' || resolved === 'lg' ? resolved : 'md'
+}
+
 // ─── Mark icons (outside + marked) ───────────────────────────────────────────
 
 const CheckMarkIcon = () => (
@@ -96,7 +104,7 @@ const XMarkIcon = () => (
 
 // ─── HiddenInput ─────────────────────────────────────────────────────────────
 
-const HiddenInput = styled('input')({
+const HiddenInput = styled('input', { name: 'Switch', slot: 'input', label: 'SwitchInput' })({
   position: 'absolute',
   width: 0,
   height: 0,
@@ -109,12 +117,16 @@ const HiddenInput = styled('input')({
 // ─── SwitchTrack ─────────────────────────────────────────────────────────────
 
 const SwitchTrack = styled('span', {
+  name: 'Switch',
+  slot: 'track',
+  label: 'SwitchTrack',
   shouldForwardProp: (p) => p !== 'size' && p !== 'variant' && p !== 'bg',
 })<{
   size?: SwitchSize
   variant?: SwitchVariant
   bg?: keyof Theme['background']
-}>(({ size = 'md', variant = 'outside', bg = 'default', theme }) => {
+}>(({ theme, size, variant = 'outside', bg = themeDefault(theme, 'bg', 'default') }) => {
+  const trackBg = theme.background[bg]
   if (variant === 'outside') {
     // Track element is a wrapper (height = thumbSize).
     // The visual pill lives in ::before (height = trackHeight, centered).
@@ -122,18 +134,18 @@ const SwitchTrack = styled('span', {
       display: 'inline-block',
       position: 'relative' as const,
       flexShrink: 0,
-      width: OUTSIDE_TRACK[size].width,
-      height: OUTSIDE_THUMB[size],
+      width: OUTSIDE_TRACK[knownSize(size, theme)].width,
+      height: OUTSIDE_THUMB[knownSize(size, theme)],
       '&::before': {
         content: '""',
         position: 'absolute' as const,
         top: '50%',
         left: 0,
         right: 0,
-        height: OUTSIDE_TRACK[size].height,
+        height: OUTSIDE_TRACK[knownSize(size, theme)].height,
         transform: 'translateY(-50%)',
         borderRadius: '999px',
-        backgroundColor: theme?.background[bg],
+        backgroundColor: trackBg,
         transition: 'background-color 0.15s ease',
       },
     }
@@ -144,10 +156,10 @@ const SwitchTrack = styled('span', {
     display: 'inline-block',
     position: 'relative' as const,
     flexShrink: 0,
-    width: INSIDE_TRACK[size].width,
-    height: INSIDE_TRACK[size].height,
+    width: INSIDE_TRACK[knownSize(size, theme)].width,
+    height: INSIDE_TRACK[knownSize(size, theme)].height,
     borderRadius: '999px',
-    backgroundColor: theme?.background[bg],
+    backgroundColor: trackBg,
     transition: 'background-color 0.3s ease',
   }
 })
@@ -155,10 +167,19 @@ const SwitchTrack = styled('span', {
 // ─── SwitchThumb ─────────────────────────────────────────────────────────────
 
 const SwitchThumb = styled('span', {
+  name: 'Switch',
+  slot: 'thumb',
+  label: 'SwitchThumb',
   shouldForwardProp: (p) => p !== 'size' && p !== 'variant',
-})<{ size?: SwitchSize; variant?: SwitchVariant }>(({ size = 'md', variant = 'outside' }) => {
-  const thumbSize = variant === 'outside' ? OUTSIDE_THUMB[size] : INSIDE_THUMB[size]
-  const thumbStart = variant === 'outside' ? OUTSIDE_THUMB_START[size] : INSIDE_THUMB_START[size]
+})<{ size?: SwitchSize; variant?: SwitchVariant }>(({ size, variant = 'outside', theme }) => {
+  const thumbSize =
+    variant === 'outside'
+      ? OUTSIDE_THUMB[knownSize(size, theme)]
+      : INSIDE_THUMB[knownSize(size, theme)]
+  const thumbStart =
+    variant === 'outside'
+      ? OUTSIDE_THUMB_START[knownSize(size, theme)]
+      : INSIDE_THUMB_START[knownSize(size, theme)]
   const transitionDuration = variant === 'inside' ? '0.3s' : '0.15s'
 
   return {
@@ -169,8 +190,8 @@ const SwitchThumb = styled('span', {
     width: thumbSize,
     height: thumbSize,
     borderRadius: '50%',
-    backgroundColor: kineticSurface[100],
-    boxShadow: `0px 2px 1px -1px ${alpha(carbonBlack[900], 0.2)},0px 1px 1px 0px ${alpha(carbonBlack[900], 0.14)},0px 1px 3px 0px ${alpha(carbonBlack[900], 0.12)}`,
+    backgroundColor: theme.switch.thumb,
+    boxShadow: `0px 2px 1px -1px ${alpha(theme.shadow.color, 0.2)},0px 1px 1px 0px ${alpha(theme.shadow.color, 0.14)},0px 1px 3px 0px ${alpha(theme.shadow.color, 0.12)}`,
     transition: `transform ${transitionDuration} ease, background-color ${transitionDuration} ease`,
     display: 'flex',
     alignItems: 'center',
@@ -203,12 +224,16 @@ const shouldForwardProp = createShouldForwardProp([
 
 const baseStyle = ({
   disabled,
-  size = 'md',
+  size,
   variant = 'outside',
-  color = 'default',
   theme,
-}: SwitchRootProps & { theme?: Theme }) => {
-  const thumbTranslate = variant === 'outside' ? OUTSIDE_TRANSLATE[size] : INSIDE_TRANSLATE[size]
+  color = themeDefault(theme, 'neutralColor', 'default'),
+}: SwitchRootProps & { theme: Theme }) => {
+  const focusRing = theme.palette[themeDefault(theme, 'color', 'primary')].main
+  const thumbTranslate =
+    variant === 'outside'
+      ? OUTSIDE_TRANSLATE[knownSize(size, theme)]
+      : INSIDE_TRANSLATE[knownSize(size, theme)]
   const gap = theme?.space?.[1]
 
   return {
@@ -229,7 +254,7 @@ const baseStyle = ({
       ? {
           '& input:checked ~ .sw-track::before': { backgroundColor: theme?.palette[color].dark },
           '&:has(input:focus-visible) .sw-track::before': {
-            outline: `2px solid ${theme?.palette.primary.main}`,
+            outline: `2px solid ${focusRing}`,
             outlineOffset: '2px',
             borderRadius: '999px',
           },
@@ -237,7 +262,7 @@ const baseStyle = ({
       : {
           '& input:checked ~ .sw-track': { backgroundColor: theme?.palette[color].dark },
           '&:has(input:focus-visible) .sw-track': {
-            outline: `2px solid ${theme?.palette.primary.main}`,
+            outline: `2px solid ${focusRing}`,
             outlineOffset: '2px',
             borderRadius: '999px',
           },
@@ -271,7 +296,10 @@ const baseStyle = ({
   }
 }
 
-const colorStyle = ({ color = 'default', theme }: SwitchRootProps & { theme: Theme }) => {
+const colorStyle = ({
+  theme,
+  color = themeDefault(theme, 'neutralColor', 'default'),
+}: SwitchRootProps & { theme: Theme }) => {
   return {
     color: theme.palette[color].main,
   }
@@ -285,12 +313,12 @@ const edgeStyle = ({ edge }: SwitchRootProps) => {
   }
 }
 
-const SwitchRoot = styled('label', { shouldForwardProp })<SwitchRootProps>(
-  baseStyle,
-  colorStyle,
-  edgeStyle,
-  space
-)
+const SwitchRoot = styled('label', {
+  name: 'Switch',
+  label: 'Switch',
+  shouldForwardProp,
+  systemProps: [space],
+})<SwitchRootProps>(baseStyle, colorStyle, edgeStyle)
 
 // ─── Public component ─────────────────────────────────────────────────────────
 
@@ -299,9 +327,10 @@ export function Switch({
   defaultChecked,
   disabled = false,
   disableRipple: _disableRipple,
-  color = 'default',
-  size = 'md',
-  variant = 'outside',
+  // undefined color/size resolve to theme.defaults in the styled layer.
+  color,
+  size,
+  variant: variantProp,
   marked = false,
   bg,
   edge = false,
@@ -318,6 +347,8 @@ export function Switch({
   'data-testid': dataTestid,
   ...spaceProps
 }: Readonly<SwitchProps>) {
+  const theme = useTheme()
+  const variant = variantProp ?? themeDefault(theme, 'switchVariant', 'outside')
   // outside + marked: inject default SVG mark icons unless the caller overrides them.
   const effectiveIcon = icon ?? (marked && variant === 'outside' ? <XMarkIcon /> : null)
   const effectiveCheckedIcon =

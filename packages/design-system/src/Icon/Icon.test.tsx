@@ -35,10 +35,18 @@ describe('Icon', () => {
     expect(container.querySelector('[data-testid="hub-icon"]')).toBeInTheDocument()
   })
 
+  it('preserves fill="none" on stroke-based icon paths (icons are generated without svgo)', () => {
+    // Icon's root CSS sets `fill: currentColor`, which paths inherit unless they
+    // carry their own fill attribute — stroke icons must keep `fill="none"` or
+    // they render as filled blobs. Guards the svgr --no-svgo generation contract.
+    const { container } = renderWithTheme(<Icon name="external_link" />)
+    expect(container.querySelector('path')).toHaveAttribute('fill', 'none')
+  })
+
   it.each(Object.keys(icons) as IconName[])('renders the %s icon from the registry', (name) => {
     const { container } = renderWithTheme(<Icon name={name} />)
     const svg = container.querySelector('svg')
     expect(svg).toBeInTheDocument()
-    expect(svg?.querySelector('path, circle, rect')).toBeInTheDocument()
+    expect(svg?.querySelector('path, circle, rect, line, polyline, polygon')).toBeInTheDocument()
   })
 })

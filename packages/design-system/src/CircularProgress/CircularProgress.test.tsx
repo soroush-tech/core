@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { baseTheme } from '../themes'
 import { CircularProgress } from '../CircularProgress'
 
 const VIEWBOX = 44
@@ -175,14 +175,14 @@ describe('CircularProgress', () => {
   describe('color', () => {
     it('resolves theme.palette[color].main as CSS color on the root', () => {
       renderWithTheme(<CircularProgress color="primary" data-testid="cp" />)
-      expect(screen.getByTestId('cp')).toHaveStyle({ color: dark.palette.primary.main })
+      expect(screen.getByTestId('cp')).toHaveStyle({ color: baseTheme.palette.primary.main })
     })
 
     it('each color resolves to the correct theme token', () => {
       const colors = ['primary', 'secondary', 'success', 'error', 'info', 'warning'] as const
       colors.forEach((color) => {
         const { unmount } = renderWithTheme(<CircularProgress color={color} data-testid="cp" />)
-        expect(screen.getByTestId('cp')).toHaveStyle({ color: dark.palette[color].main })
+        expect(screen.getByTestId('cp')).toHaveStyle({ color: baseTheme.palette[color].main })
         unmount()
       })
     })

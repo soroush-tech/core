@@ -34,9 +34,9 @@ const gapSystem = system({
   rowGap: { property: 'rowGap', scale: 'space' },
 })
 
-export const Grid = styled(View, { label: 'grid', shouldForwardProp })<GridProps>(
-  { display: 'grid' },
-  gapSystem,
-  grid,
-  flexbox
-)
+export const Grid = styled(View, {
+  name: 'Grid',
+  label: 'grid',
+  shouldForwardProp,
+  systemProps: [gapSystem, grid, flexbox],
+})<GridProps>({ display: 'grid' })

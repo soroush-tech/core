@@ -1,6 +1,7 @@
 import { type CSSProperties, type ElementType } from 'react'
-import { styled, type Theme, createShouldForwardProp, system } from '../index'
+import { styled, type Theme, createShouldForwardProp, system, useTheme } from '../index'
 import { Flex, type FlexProps } from '../Flex'
+import { themeDefault } from '../utils/themeDefault'
 
 export type PaperElevation =
   | 0
@@ -64,14 +65,21 @@ const paperSystem = system({
   borderStyle: { property: 'borderStyle' },
 })
 
-const PaperRoot = styled(Flex, { label: 'paper', shouldForwardProp })<PaperProps>(paperSystem)
+const PaperRoot = styled(Flex, {
+  name: 'Paper',
+  label: 'paper',
+  shouldForwardProp,
+})<PaperProps>(paperSystem)
 
-export function Paper({
-  elevation = 1,
-  p = 2,
-  bg = 'paper',
-  borderRadius = 'sq',
-  ...rest
-}: Readonly<PaperProps>) {
-  return <PaperRoot elevation={elevation} p={p} bg={bg} borderRadius={borderRadius} {...rest} />
+export function Paper({ elevation = 1, p = 2, bg, borderRadius, ...rest }: Readonly<PaperProps>) {
+  const theme = useTheme()
+  return (
+    <PaperRoot
+      elevation={elevation}
+      p={p}
+      bg={bg ?? themeDefault(theme, 'surfaceBg', 'paper')}
+      borderRadius={borderRadius ?? themeDefault(theme, 'surfaceRadius', 'sq')}
+      {...rest}
+    />
+  )
 }

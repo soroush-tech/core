@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
+import { baseTheme } from '../../themes'
 import { Table } from '../Table'
 import { TableHead } from '../TableHead'
 import { TableBody } from '../TableBody'
@@ -151,9 +151,9 @@ describe('TableCell', () => {
       </Table>
     )
     expect(screen.getByTestId('cell')).toHaveStyle({
-      borderBottomWidth: dark.borderWidths.thin,
+      borderBottomWidth: baseTheme.borderWidths.thin,
       borderBottomStyle: 'solid',
-      borderBottomColor: dark.border.light,
+      borderBottomColor: baseTheme.border.light,
     })
   })
 
@@ -169,10 +169,10 @@ describe('TableCell', () => {
       </Table>
     )
     expect(screen.getByTestId('cascaded')).toHaveStyle({
-      borderBottomColor: dark.border.primary,
+      borderBottomColor: baseTheme.border.primary,
     })
     expect(screen.getByTestId('overridden')).toHaveStyle({
-      borderBottomColor: dark.border.dark,
+      borderBottomColor: baseTheme.border.dark,
     })
   })
 
@@ -183,10 +183,10 @@ describe('TableCell', () => {
 
   it('applies md density padding by default', () => {
     renderCell(<TableCell data-testid="cell" />)
-    const { paddingTop, fontSize } = dark.sizes.md
+    const { paddingTop, fontSize } = baseTheme.sizes.md
     expect(screen.getByTestId('cell')).toHaveStyle({
-      paddingTop: dark.space[paddingTop],
-      fontSize: dark.fontSizes[fontSize],
+      paddingTop: baseTheme.space[paddingTop],
+      fontSize: baseTheme.fontSizes[fontSize],
     })
   })
 
@@ -202,10 +202,10 @@ describe('TableCell', () => {
       </Table>
     )
     expect(screen.getByTestId('inherited')).toHaveStyle({
-      paddingTop: dark.space[dark.sizes.lg.paddingTop],
+      paddingTop: baseTheme.space[baseTheme.sizes.lg.paddingTop],
     })
     expect(screen.getByTestId('overridden')).toHaveStyle({
-      paddingTop: dark.space[dark.sizes.sm.paddingTop],
+      paddingTop: baseTheme.space[baseTheme.sizes.sm.paddingTop],
     })
   })
 
@@ -243,7 +243,7 @@ describe('TableCell', () => {
     expect(screen.getByTestId('head-cell')).toHaveStyle({
       position: 'sticky',
       top: '0',
-      backgroundColor: dark.background.paper,
+      backgroundColor: baseTheme.background.paper,
     })
     expect(screen.getByTestId('body-cell')).not.toHaveStyle({ position: 'sticky' })
   })
@@ -260,7 +260,7 @@ describe('TableCell', () => {
     )
     expect(screen.getByTestId('head-cell')).toHaveStyle({
       position: 'sticky',
-      backgroundColor: dark.background.secondary,
+      backgroundColor: baseTheme.background.secondary,
     })
   })
 
@@ -316,9 +316,9 @@ describe('TableCell', () => {
       />
     )
     expect(screen.getByTestId('cell')).toHaveStyle({
-      borderColor: dark.border.light,
-      backgroundColor: dark.background.paper,
-      color: dark.text.secondary,
+      borderColor: baseTheme.border.light,
+      backgroundColor: baseTheme.background.paper,
+      color: baseTheme.text.secondary,
     })
   })
 

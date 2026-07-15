@@ -20,21 +20,9 @@ import {
   type PositionProps,
 } from '../index'
 
-export type TypographyVariant =
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'h5'
-  | 'h6'
-  | 'subtitle1'
-  | 'subtitle2'
-  | 'body1'
-  | 'body2'
-  | 'caption'
-  | 'overline'
-  | 'button'
-  | 'inherit'
+import type { TypographyVariant } from '../themes'
+
+export type { TypographyVariant }
 
 export type TypographyAlign = 'left' | 'right' | 'center' | 'justify' | 'inherit'
 
@@ -96,15 +84,13 @@ const typographyVariants = ({ variant = 'body1', theme }: TypographyProps & { th
   }
 }
 
-const TypographyBase = styled('p', { shouldForwardProp })<TypographyProps>(
+const TypographyBase = styled('p', {
+  name: 'Typography',
+  label: 'Typography',
+  shouldForwardProp,
+  systemProps: [space, layout, colorSystem, typography, flexbox, border, position],
+})<TypographyProps>(
   typographyVariants,
-  space,
-  layout,
-  colorSystem,
-  typography,
-  flexbox,
-  border,
-  position,
   ({ align }: TypographyProps) => (align ? { textAlign: align } : {}),
   ({ gutterBottom }: TypographyProps) => (gutterBottom ? { marginBottom: '0.5em' } : {}),
   ({ noWrap }: TypographyProps) =>

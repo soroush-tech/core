@@ -1,6 +1,6 @@
 export * from './useTheme'
+export * from './useDefaultProps'
 export * from './useStyle'
-export * from './useThemeMode'
 export * from './StylesConsumer'
 export * from './withStyles'
 export * from './withTheme'

@@ -1,7 +1,12 @@
 import { useId, useMemo, useState, type ReactNode } from 'react'
 import { type Theme } from '@emotion/react'
+import { styled } from '../index'
 import { View, type ViewProps } from '../View'
 import { FormControlContext } from './FormControlContext'
+
+// Named styled root — theme-customizable via
+// `theme.components.FormControl.styleOverrides.root`.
+const FormControlRoot = styled(View, { name: 'FormControl', label: 'FormControl' })<ViewProps>()
 
 export interface FormControlProps extends Omit<ViewProps, 'color'> {
   children: ReactNode
@@ -68,9 +73,9 @@ export function FormControl({
 
   return (
     <FormControlContext.Provider value={value}>
-      <View width={fullWidth ? '100%' : undefined} {...viewProps}>
+      <FormControlRoot width={fullWidth ? '100%' : undefined} {...viewProps}>
         {children}
-      </View>
+      </FormControlRoot>
     </FormControlContext.Provider>
   )
 }

@@ -1,14 +1,9 @@
 import { STORYBOOK_URL } from 'src/config'
-import {
-  forestGreen,
-  kineticGreen,
-  kineticSurface,
-  lightSurface,
-} from '@soroush.tech/design-system/colors'
+import { forestGreen, kineticGreen, kineticSurface, lightSurface } from 'src/theme/colors'
 import { Card } from '@soroush.tech/design-system/Card'
-import { ColorPalette } from '@soroush.tech/design-system/ColorPalette'
+import { ColorPalette } from 'src/theme/ColorPalette'
 import { Flex } from '@soroush.tech/design-system/Flex'
-import { useThemeMode } from '@soroush.tech/design-system/hooks'
+import { useThemeMode } from 'src/theme/useThemeMode'
 import { CardTitle } from './CardTitle'
 
 export function ColorCard() {

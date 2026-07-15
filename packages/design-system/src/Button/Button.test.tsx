@@ -1,7 +1,10 @@
-import { fireEvent, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
+import type { ReactNode } from 'react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { dark } from '../themes'
+import { ThemeProvider } from '../ThemeProvider'
+import { ButtonGroup } from '../ButtonGroup'
+import { createTheme, baseTheme } from '../themes'
 import { Button, type ButtonColor, type ButtonVariant, type ButtonSize } from '../Button'
 import type { ButtonShape } from '../Button'
 
@@ -59,7 +62,7 @@ describe('Button', () => {
     it('applies tight letter spacing', () => {
       renderWithTheme(<Button data-testid="btn">Click</Button>)
       expect(screen.getByTestId('btn')).toHaveStyle({
-        letterSpacing: dark.letterSpacings.tight,
+        letterSpacing: baseTheme.letterSpacings.tight,
       })
     })
   })
@@ -85,18 +88,186 @@ describe('Button', () => {
         </Button>
       )
       expect(screen.getByTestId('btn')).toHaveStyle({
-        backgroundColor: dark.palette.primary.main,
-        color: dark.palette.primary.contrastText,
+        backgroundColor: baseTheme.palette.primary.main,
+        color: baseTheme.palette.primary.contrastText,
       })
     })
 
+    it('reads its default color from theme.defaults via the ThemeProvider defaults prop', () => {
+      render(
+        <ThemeProvider defaults={{ color: 'error' }}>
+          <Button variant="contained" data-testid="btn">
+            btn
+          </Button>
+        </ThemeProvider>
+      )
+      expect(screen.getByTestId('btn')).toHaveStyle({
+        backgroundColor: baseTheme.palette.error.main,
+        color: baseTheme.palette.error.contrastText,
+      })
+    })
+  })
+
+  describe('theme.components.Button', () => {
+    const withComponents = (
+      components: NonNullable<Parameters<typeof createTheme>[1]['components']>,
+      ui: ReactNode
+    ) => render(<ThemeProvider theme={createTheme(baseTheme, { components })}>{ui}</ThemeProvider>)
+
+    describe('defaultProps', () => {
+      it('applies theme-contributed default props', () => {
+        withComponents(
+          { Button: { defaultProps: { color: 'error', shape: 'pill' } } },
+          <Button data-testid="btn">btn</Button>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          backgroundColor: baseTheme.palette.error.main,
+          borderRadius: '9999px',
+        })
+      })
+
+      it('explicit props beat defaultProps', () => {
+        withComponents(
+          { Button: { defaultProps: { color: 'error' } } },
+          <Button color="primary" data-testid="btn">
+            btn
+          </Button>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          backgroundColor: baseTheme.palette.primary.main,
+        })
+      })
+
+      it('ButtonGroup context beats defaultProps', () => {
+        withComponents(
+          { Button: { defaultProps: { color: 'error' } } },
+          <ButtonGroup color="success">
+            <Button data-testid="btn">btn</Button>
+          </ButtonGroup>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          borderColor: baseTheme.palette.success.main,
+        })
+      })
+
+      it('defaultProps beat theme.defaults', () => {
+        render(
+          <ThemeProvider
+            theme={createTheme(baseTheme, {
+              defaults: { color: 'success' },
+              components: { Button: { defaultProps: { color: 'error' } } },
+            })}
+          >
+            <Button data-testid="btn">btn</Button>
+          </ThemeProvider>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          backgroundColor: baseTheme.palette.error.main,
+        })
+      })
+    })
+
+    describe('styleOverrides', () => {
+      it('applies root overrides after the component styles (theme wins)', () => {
+        withComponents(
+          { Button: { styleOverrides: { root: { textTransform: 'none', borderRadius: '7px' } } } },
+          <Button data-testid="btn">btn</Button>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          textTransform: 'none',
+          borderRadius: '7px',
+        })
+      })
+
+      it('callback overrides receive the theme and the resolved ownerState', () => {
+        withComponents(
+          {
+            Button: {
+              styleOverrides: {
+                root: ({ theme, ownerState }) => ({
+                  outlineColor:
+                    ownerState.variant === 'contained' ? theme.palette.error.main : undefined,
+                }),
+              },
+            },
+          },
+          <Button data-testid="btn">btn</Button>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          outlineColor: baseTheme.palette.error.main,
+        })
+      })
+
+      it('targets non-root slots', () => {
+        withComponents(
+          { Button: { styleOverrides: { label: { letterSpacing: '0.5em' } } } },
+          <Button data-testid="btn">btn</Button>
+        )
+        const label = screen.getByText('btn')
+        expect(label).toHaveStyle({ letterSpacing: '0.5em' })
+      })
+
+      it('per-instance styled-system props beat styleOverrides', () => {
+        withComponents(
+          { Button: { styleOverrides: { root: { margin: '0px' } } } },
+          <Button m={2} data-testid="btn">
+            btn
+          </Button>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({ margin: '16px' })
+      })
+    })
+
+    describe('variants', () => {
+      it('applies a matching theme-contributed variant', () => {
+        withComponents(
+          {
+            Button: {
+              variants: [
+                {
+                  props: { variant: 'dashed' as ButtonVariant },
+                  style: ({ theme }) => ({
+                    borderStyle: 'dashed',
+                    borderColor: theme.border.primary,
+                  }),
+                },
+              ],
+            },
+          },
+          <Button variant={'dashed' as ButtonVariant} data-testid="btn">
+            btn
+          </Button>
+        )
+        expect(screen.getByTestId('btn')).toHaveStyle({
+          borderStyle: 'dashed',
+          borderColor: baseTheme.border.primary,
+        })
+      })
+
+      it('skips non-matching variants', () => {
+        withComponents(
+          {
+            Button: {
+              variants: [{ props: { variant: 'outlined' }, style: { borderStyle: 'dotted' } }],
+            },
+          },
+          <Button variant="contained" data-testid="btn">
+            btn
+          </Button>
+        )
+        expect(screen.getByTestId('btn')).not.toHaveStyle({ borderStyle: 'dotted' })
+      })
+    })
+  })
+
+  describe('variant styles', () => {
     it('outlined — applies main color as text and border color', () => {
       renderWithTheme(
         <Button variant="outlined" color="primary" data-testid="btn">
           btn
         </Button>
       )
-      expect(screen.getByTestId('btn')).toHaveStyle({ color: dark.palette.primary.main })
+      expect(screen.getByTestId('btn')).toHaveStyle({ color: baseTheme.palette.primary.main })
     })
 
     it('text — applies main color as text with no border', () => {
@@ -106,7 +277,7 @@ describe('Button', () => {
         </Button>
       )
       expect(screen.getByTestId('btn')).toHaveStyle({
-        color: dark.palette.primary.main,
+        color: baseTheme.palette.primary.main,
       })
     })
   })
@@ -124,7 +295,7 @@ describe('Button', () => {
             btn
           </Button>
         )
-        expect(screen.getByTestId('btn')).toHaveStyle({ color: dark.palette[color].main })
+        expect(screen.getByTestId('btn')).toHaveStyle({ color: baseTheme.palette[color].main })
       }
     )
 
@@ -135,7 +306,7 @@ describe('Button', () => {
         </Button>
       )
       expect(screen.getByTestId('btn')).toHaveStyle({
-        backgroundColor: dark.palette[color].main,
+        backgroundColor: baseTheme.palette[color].main,
       })
     })
 

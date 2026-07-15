@@ -2,6 +2,8 @@
 
 A surface component with an optional title, caption, and variant-based visual treatment. Extends `Paper` — all `Paper`, `Flex`, and space/layout props pass through.
 
+Theme-customizable via `theme.components.Card` — slots `root` / `title` / `caption` for `styleOverrides`, plus `defaultProps.titleProps`/`.captionProps` (token-typed) to restyle the title/caption Typography app-wide; per-instance `titleProps`/`captionProps` always win. See [`docs/customization.md`](../../docs/customization.md#slot-props--customizing-composed-sub-elements).
+
 ---
 
 ## Card-specific props

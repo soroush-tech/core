@@ -9,9 +9,10 @@ import {
   space,
   type SpaceProps,
 } from '../index'
+import { themeDefault } from '../utils/themeDefault'
 
 export type CheckboxColor = PaletteColor
-export type CheckboxSize = 'sm' | 'md' | 'lg'
+export type CheckboxSize = keyof Theme['sizes']
 
 export interface CheckboxProps extends SpaceProps<Theme> {
   /** Controlled checked state. */
@@ -48,13 +49,8 @@ export interface CheckboxProps extends SpaceProps<Theme> {
   'data-testid'?: string
 }
 
-// ─── Icon size map ────────────────────────────────────────────────────────────
-
-const ICON_SIZE: Record<CheckboxSize, string> = {
-  sm: '16px',
-  md: '20px',
-  lg: '24px',
-}
+// Glyph size comes from theme.icon — mapped over theme.sizes, so augmenting a
+// size key forces the matching icon size to be supplied by the theme.
 
 // ─── Default icons ────────────────────────────────────────────────────────────
 
@@ -87,7 +83,11 @@ const IndeterminateIcon = () => (
 
 // ─── Styled sub-components ────────────────────────────────────────────────────
 
-const HiddenInput = styled('input')({
+const HiddenInput = styled('input', {
+  name: 'Checkbox',
+  slot: 'input',
+  label: 'CheckboxInput',
+})({
   position: 'absolute',
   width: 0,
   height: 0,
@@ -98,13 +98,16 @@ const HiddenInput = styled('input')({
 })
 
 const CheckboxIconWrapper = styled('span', {
+  name: 'Checkbox',
+  slot: 'icon',
+  label: 'CheckboxIcon',
   shouldForwardProp: (prop) => prop !== 'size',
-})<{ size?: CheckboxSize }>(({ size = 'md' }) => ({
+})<{ size?: CheckboxSize }>(({ theme, size = themeDefault(theme, 'size', 'md') }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexShrink: 0,
-  fontSize: ICON_SIZE[size],
+  fontSize: theme.icon[size],
   // 0 (not 1) so the inline SVG's line box can't inflate the wrapper height —
   // keeps it square so the focus outline sits evenly on all sides.
   lineHeight: 0,
@@ -152,7 +155,10 @@ const baseStyle = ({ disabled, theme }: CheckboxRootProps & { theme: Theme }) =>
   },
 })
 
-const colorStyle = ({ color = 'default', theme }: CheckboxRootProps & { theme: Theme }) => {
+const colorStyle = ({
+  theme,
+  color = themeDefault(theme, 'neutralColor', 'default'),
+}: CheckboxRootProps & { theme: Theme }) => {
   return {
     color: color === 'default' ? theme.text.secondary : theme.palette[color].main,
   }
@@ -161,12 +167,12 @@ const colorStyle = ({ color = 'default', theme }: CheckboxRootProps & { theme: T
 const fullWidthStyle = ({ fullWidth }: CheckboxRootProps) =>
   fullWidth ? ({ display: 'flex', width: '100%' } as const) : {}
 
-const CheckboxRoot = styled('label', { shouldForwardProp })<CheckboxRootProps>(
-  baseStyle,
-  colorStyle,
-  fullWidthStyle,
-  space
-)
+const CheckboxRoot = styled('label', {
+  name: 'Checkbox',
+  label: 'Checkbox',
+  shouldForwardProp,
+  systemProps: [space],
+})<CheckboxRootProps>(baseStyle, colorStyle, fullWidthStyle)
 
 // ─── Public component ─────────────────────────────────────────────────────────
 
@@ -203,7 +209,8 @@ export function Checkbox({
     fullWidth: fullWidthProp,
   })
   const { id, disabled, required, size, fullWidth } = fc
-  const color = colorProp ?? fc.color ?? 'default'
+  // Left unresolved when unset — the styled layer falls back to themeDefault(theme, 'neutralColor', 'default').
+  const color = colorProp ?? fc.color
   const describedBy = ariaDescribedby ?? fc['aria-describedby']
 
   const inputRef = useRef<HTMLInputElement>(null)

@@ -31,7 +31,7 @@ export type ViewBorderColorToken = keyof Theme['border']
 export type ViewBorderWidthToken = keyof Theme['borderWidths']
 
 /** Valid theme tokens for border-radius. Raw CSS pixel values (e.g. '6px', '9999px') are also accepted. */
-export type ViewBorderRadiusToken = 'sq' | 'sm' | 'md' | 'lg' | `${number}px`
+export type ViewBorderRadiusToken = keyof Theme['radii'] | `${number}px`
 
 export interface ViewProps
   extends
@@ -68,11 +68,9 @@ const colorSystem = system({
   order: { property: 'order' },
 })
 
-export const View = styled('div', { label: 'View', shouldForwardProp })<ViewProps>(
-  space,
-  layout,
-  colorSystem,
-  typography,
-  border,
-  position
-)
+export const View = styled('div', {
+  name: 'View',
+  label: 'View',
+  shouldForwardProp,
+  systemProps: [space, layout, colorSystem, typography, border, position],
+})<ViewProps>()

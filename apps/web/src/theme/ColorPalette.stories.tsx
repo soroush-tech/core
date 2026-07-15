@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import * as colors from '../colors'
-import { Flex } from '../Flex'
-import { Typography } from '../Typography'
-import { ColorPalette } from './ColorPalette'
+import { ColorPalette } from 'src/theme/ColorPalette'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import * as colors from 'src/theme/colors'
 
 const paletteEntries = Object.entries(colors) as [string, Record<string | number, string>][]
 const paletteNames = paletteEntries.map(([name]) => name)

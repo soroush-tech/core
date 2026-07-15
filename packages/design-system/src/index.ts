@@ -2,7 +2,7 @@
 // Engine abstraction — import all styling primitives from here.
 // To swap the CSS-in-JS engine, update only this section.
 // =============================================================================
-export { default as styled } from '@emotion/styled'
+export { styled, type ThemeCustomizationOptions } from './styled'
 export {
   css,
   Global,

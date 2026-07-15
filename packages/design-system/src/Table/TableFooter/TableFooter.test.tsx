@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { dark } from '../../themes'
+import { baseTheme } from '../../themes'
 import { TableSectionContext } from '../TableSectionContext'
 import { TableFooter } from './TableFooter'
 
@@ -48,9 +48,9 @@ describe('TableFooter', () => {
       </table>
     )
     expect(screen.getByTestId('footer')).toHaveStyle({
-      backgroundColor: dark.background.secondary,
-      color: dark.text.secondary,
-      borderColor: dark.border.dark,
+      backgroundColor: baseTheme.background.secondary,
+      color: baseTheme.text.secondary,
+      borderColor: baseTheme.border.dark,
     })
   })
 

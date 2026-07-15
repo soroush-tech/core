@@ -1,6 +1,8 @@
-import { screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
+import { ThemeProvider } from '../ThemeProvider'
+import { createTheme, baseTheme } from '../themes'
 import { Card } from './Card'
 
 describe('Card', () => {
@@ -73,6 +75,90 @@ describe('Card', () => {
     it('captionProps are applied to the caption Typography', () => {
       renderWithTheme(<Card caption="My Subtitle" captionProps={{ className: 'custom-caption' }} />)
       expect(screen.getByText('My Subtitle')).toHaveClass('custom-caption')
+    })
+  })
+
+  describe('theme.components.Card', () => {
+    const withComponents = (
+      components: NonNullable<Parameters<typeof createTheme>[1]['components']>,
+      ui: React.ReactNode
+    ) => render(<ThemeProvider theme={createTheme(baseTheme, { components })}>{ui}</ThemeProvider>)
+
+    it('defaultProps.titleProps restyle the title tokens (variant changes the element)', () => {
+      withComponents(
+        { Card: { defaultProps: { titleProps: { variant: 'subtitle1', color: 'secondary' } } } },
+        <Card title="My Title" />
+      )
+      const heading = screen.getByText('My Title')
+      expect(heading.tagName).toBe('H6') // subtitle1 renders as h6 instead of overline's span
+      expect(heading).toHaveStyle({ color: baseTheme.text.secondary })
+    })
+
+    it('per-instance titleProps beat the theme titleProps', () => {
+      withComponents(
+        { Card: { defaultProps: { titleProps: { color: 'secondary' } } } },
+        <Card title="My Title" titleProps={{ color: 'error' }} />
+      )
+      expect(screen.getByText('My Title')).toHaveStyle({ color: baseTheme.text.error })
+    })
+
+    it('defaultProps.iconProps restyle the icon (instance iconProps still win)', () => {
+      withComponents(
+        { Card: { defaultProps: { iconProps: { color: 'warning', size: '3rem' } } } },
+        <Card icon="code" />
+      )
+      const svg = document.querySelector('svg')
+      expect(svg).toHaveStyle({ width: '3rem', height: '3rem' })
+      expect(svg).toHaveStyle({ fill: baseTheme.text.warning })
+    })
+
+    it('defaultProps.captionProps restyle the caption', () => {
+      withComponents(
+        { Card: { defaultProps: { captionProps: { color: 'warning' } } } },
+        <Card caption="My Subtitle" />
+      )
+      expect(screen.getByText('My Subtitle')).toHaveStyle({ color: baseTheme.text.warning })
+    })
+
+    it('styleOverrides target the title and caption slots independently', () => {
+      withComponents(
+        {
+          Card: {
+            styleOverrides: {
+              title: { letterSpacing: '0.5em' },
+              caption: { textDecoration: 'underline' },
+            },
+          },
+        },
+        <Card title="My Title" caption="My Subtitle" />
+      )
+      expect(screen.getByText('My Title')).toHaveStyle({ letterSpacing: '0.5em' })
+      expect(screen.getByText('My Subtitle')).toHaveStyle({ textDecoration: 'underline' })
+      expect(screen.getByText('My Title')).not.toHaveStyle({ textDecoration: 'underline' })
+    })
+
+    it('styleOverrides.root receives ownerState for variant-conditional CSS', () => {
+      withComponents(
+        {
+          Card: {
+            styleOverrides: {
+              root: ({ ownerState }) => ({
+                outlineStyle: ownerState.variant === 'interactive' ? 'dashed' : 'none',
+              }),
+            },
+          },
+        },
+        <Card variant="interactive" data-testid="card" />
+      )
+      expect(screen.getByTestId('card')).toHaveStyle({ outlineStyle: 'dashed' })
+    })
+
+    it('defaultProps.variant applies when no variant prop is passed', () => {
+      withComponents(
+        { Card: { defaultProps: { variant: 'bracketBox' } } },
+        <Card data-testid="card" />
+      )
+      expect(screen.getByTestId('card')).toHaveStyle({ borderTopLeftRadius: '0' })
     })
   })
 
