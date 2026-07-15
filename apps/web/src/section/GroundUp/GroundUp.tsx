@@ -1,5 +1,5 @@
-import { View } from 'src/theme/View'
-import { Typography } from 'src/theme/Typography'
+import { View } from '@soroush.tech/design-system/View'
+import { Typography } from '@soroush.tech/design-system/Typography'
 
 export function GroundUp() {
   return (

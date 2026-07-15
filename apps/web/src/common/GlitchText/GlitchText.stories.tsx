@@ -5,8 +5,8 @@ import {
   fontWeightTokens,
   textColorTokens,
   typographyVariantTokens,
-} from 'src/theme/utils/test/storiesOptions'
-import { Flex } from 'src/theme/Flex'
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
+import { Flex } from '@soroush.tech/design-system/Flex'
 import { GlitchText } from './GlitchText'
 
 const meta = {

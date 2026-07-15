@@ -8,11 +8,11 @@ Conventions for everything in `src/section/`. Sections are large, page-specific 
 
 `src/section/` is for **page-specific sections** — self-contained UI regions that belong to exactly one page.
 
-| Belongs in `src/section/`                         | Belongs elsewhere                                              |
-| ------------------------------------------------- | -------------------------------------------------------------- |
-| Hero, Philosophy, Bento grid, CTA on the homepage | Reusable shell components (`Header`, `Footer`) → `src/common/` |
-| "Technical Stack" block on the about page         | Design primitives (`Flex`, `View`) → `src/theme/`              |
-| "Open Source" section on the projects page        | Utility functions → `src/utils/`                               |
+| Belongs in `src/section/`                         | Belongs elsewhere                                                   |
+| ------------------------------------------------- | ------------------------------------------------------------------- |
+| Hero, Philosophy, Bento grid, CTA on the homepage | Reusable shell components (`Header`, `Footer`) → `src/common/`      |
+| "Technical Stack" block on the about page         | Design primitives (`Flex`, `View`) → `@soroush.tech/design-system/` |
+| "Open Source" section on the projects page        | Utility functions → `src/utils/`                                    |
 
 **One page, one section.** If a section appears on more than one page, move it to `src/common/`.
 

@@ -1,4 +1,4 @@
-import { Flex, type FlexProps } from 'src/theme/Flex'
+import { Flex, type FlexProps } from '@soroush.tech/design-system/Flex'
 
 interface ColorProps extends Omit<FlexProps, 'color'> {
   color: string

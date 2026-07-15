@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
-import { Button } from 'src/theme/Button'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
 
 export interface GraphControlsProps {
   onZoomIn: () => void

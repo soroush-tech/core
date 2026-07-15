@@ -27,7 +27,7 @@ Displays a named color palette as a card: a header swatch showing the base color
 }
 ```
 
-All registered palettes are in `src/theme/colors/`.
+All registered palettes are in `@soroush.tech/design-system/colors/`.
 
 ---
 
@@ -58,13 +58,13 @@ Each shade swatch exposes its hex value as a `title` tooltip.
 ## Examples
 
 ```tsx
-import { kineticGreen } from 'src/theme/colors/kineticGreen'
+import { kineticGreen } from '@soroush.tech/design-system/colors/kineticGreen'
 ;<ColorPalette name="PRIMARY" palette={kineticGreen} />
 ```
 
 ```tsx
 // All registered palettes
-import * as colors from 'src/theme/colors'
+import * as colors from '@soroush.tech/design-system/colors'
 
 Object.entries(colors).map(([name, palette]) => (
   <ColorPalette key={name} name={name} palette={palette} />

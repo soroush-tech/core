@@ -1,4 +1,4 @@
-import { type IconName } from 'src/theme/Icon'
+import { type IconName } from '@soroush.tech/design-system/Icon'
 
 export const domains: Array<{ icon: IconName; title: string; body: string; stack: string }> = [
   {

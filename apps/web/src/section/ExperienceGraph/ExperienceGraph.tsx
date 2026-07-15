@@ -1,5 +1,5 @@
 import { NetworkGraph } from 'src/common/NetworkGraph'
-import { Typography } from 'src/theme/Typography'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { experienceGraphData } from './ExperienceGraph.data.generated'
 import { GraphLegend } from './components/GraphLegend'
 

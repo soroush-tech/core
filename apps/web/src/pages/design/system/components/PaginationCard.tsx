@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Pagination } from 'src/theme/Pagination'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Pagination } from '@soroush.tech/design-system/Pagination'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 import { CardTitle } from './CardTitle'
 
 const PAGE_COUNT = 12

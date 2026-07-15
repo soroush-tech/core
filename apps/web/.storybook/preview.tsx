@@ -2,8 +2,9 @@ import type { Preview } from '@storybook/react-vite'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { initialize, mswLoader } from 'msw-storybook-addon'
 import type { PageContext as VikePageContext } from 'vike/types'
-import { GlobalStyles, ThemeProvider } from '../src/theme/ThemeProvider'
+import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
 import { light, dark } from '../src/theme/themes'
+import { GlobalStyles } from '../src/theme/GlobalStyles'
 import { PageContext } from '../src/common/PageContext'
 
 initialize()

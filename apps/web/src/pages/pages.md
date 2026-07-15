@@ -8,12 +8,12 @@ Conventions for everything in `src/pages/`. Pages are Vike file-based routes —
 
 `src/pages/` contains **route-level components and their Vike hook files**. Nothing else.
 
-| Belongs in `src/pages/`                                | Belongs elsewhere                    |
-| ------------------------------------------------------ | ------------------------------------ |
-| `+Page.tsx` — the rendered page component              | Reusable UI → `src/common/`          |
-| `+route.ts` — custom route matching logic              | Design primitives → `src/theme/`     |
-| `+onBeforeRender.ts` — SSR data prefetch               | Shared data / helpers → `src/utils/` |
-| `+onBeforePrerenderStart.ts` — static path enumeration | Shared hooks → `src/hooks/`          |
+| Belongs in `src/pages/`                                | Belongs elsewhere                                  |
+| ------------------------------------------------------ | -------------------------------------------------- |
+| `+Page.tsx` — the rendered page component              | Reusable UI → `src/common/`                        |
+| `+route.ts` — custom route matching logic              | Design primitives → `@soroush.tech/design-system/` |
+| `+onBeforeRender.ts` — SSR data prefetch               | Shared data / helpers → `src/utils/`               |
+| `+onBeforePrerenderStart.ts` — static path enumeration | Shared hooks → `src/hooks/`                        |
 
 ---
 
@@ -54,7 +54,7 @@ Rules:
 - **Always `export default`** — Vike requires a default export; no named exports alongside it
 - **Always wrap in `<Layout>`** — never render page content outside `Layout`
 - **Function name matches the route** — `ArticlesPage`, `DomainPage`, `AboutPage`; not `Page`, `App`, or anonymous
-- **Compose, don't build** — assemble from `src/section/`, `src/common/`, and `src/theme/` components; keep `+Page.tsx` thin. Page-specific regions belong in `src/section/`, not inline in `+Page.tsx`
+- **Compose, don't build** — assemble from `src/section/`, `src/common/`, and `@soroush.tech/design-system/` components; keep `+Page.tsx` thin. Page-specific regions belong in `src/section/`, not inline in `+Page.tsx`
 
 ---
 

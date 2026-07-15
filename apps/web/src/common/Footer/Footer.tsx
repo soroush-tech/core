@@ -1,13 +1,13 @@
 import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
-import { View } from 'src/theme/View'
+import { View } from '@soroush.tech/design-system/View'
 import { Logo } from 'src/common/Logo'
-import { Flex } from 'src/theme/Flex'
-import { Grid } from 'src/theme/Grid'
-import { Typography } from 'src/theme/Typography'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Grid } from '@soroush.tech/design-system/Grid'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { Navbar } from 'src/common/Navbar'
-import { Quote } from 'src/theme/Quote'
-import { alpha } from 'src/theme/utils'
+import { Quote } from '@soroush.tech/design-system/Quote'
+import { alpha } from '@soroush.tech/design-system/utils'
 
 const DIRECTORIES = [
   { href: '/design/system/', label: 'Design System' },

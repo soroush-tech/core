@@ -1,6 +1,6 @@
 import { Suspense, type ReactNode } from 'react'
-import { Flex } from 'src/theme/Flex'
-import { CircularProgress } from 'src/theme/CircularProgress'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { CircularProgress } from '@soroush.tech/design-system/CircularProgress'
 import { Header } from 'src/common/Header'
 import { Footer } from 'src/common/Footer'
 import { CookieNotice } from 'src/common/CookieNotice'

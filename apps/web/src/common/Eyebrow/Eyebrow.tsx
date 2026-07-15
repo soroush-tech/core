@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
-import { Flex, type FlexProps } from 'src/theme/Flex'
-import { Typography, type TypographyProps } from 'src/theme/Typography'
+import { Flex, type FlexProps } from '@soroush.tech/design-system/Flex'
+import { Typography, type TypographyProps } from '@soroush.tech/design-system/Typography'
 
 // palette.primary.main is not in theme.background scale
 const EyebrowRule = styled('span', { label: 'EyebrowRule' })`

@@ -11,12 +11,12 @@ If either word is missing or invalid, stop and say:
 
 ## Directory mapping
 
-| `<dir>`   | Root path             |
-| --------- | --------------------- |
-| `theme`   | `src/theme/<Name>/`   |
-| `common`  | `src/common/<Name>/`  |
-| `page`    | `src/pages/<Name>/`   |
-| `section` | `src/section/<Name>/` |
+| `<dir>`   | Root path                            |
+| --------- | ------------------------------------ |
+| `theme`   | `packages/design-system/src/<Name>/` |
+| `common`  | `src/common/<Name>/`                 |
+| `page`    | `src/pages/<Name>/`                  |
+| `section` | `src/section/<Name>/`                |
 
 ---
 
@@ -24,7 +24,7 @@ If either word is missing or invalid, stop and say:
 
 Read ALL of these before doing anything else — they are the authoritative source of truth:
 
-1. `src/theme/design-system.md` — architecture rules
+1. `packages/design-system/design-system.md` — architecture rules
 2. `.claude/skills/theme-usage/SKILL.md` — rules for consuming theme primitives in non-theme components
 3. `.claude/skills/css-in-js/SKILL.md` — CSS-in-JS and styled-system conventions
 4. `.claude/skills/code-style/SKILL.md` — TypeScript and JavaScript coding conventions
@@ -59,7 +59,7 @@ Do not generate any files until you have enough information to make concrete dec
 
 Before writing any code, scan for existing work that should be reused instead of duplicated:
 
-**Theme primitives** — check `src/theme/` for components that cover the layout or styling need:
+**Theme primitives** — check `@soroush.tech/design-system/` for components that cover the layout or styling need:
 
 - Block container → `View`
 - Flex layout → `Flex`
@@ -99,7 +99,7 @@ Rules that apply to **all** `<dir>` values:
 - Do **not** write custom CSS (`styled`, template literals, or `css` prop) without first presenting a proposal that explains why a theme primitive cannot cover the case. Wait for approval before implementing.
 - **Assets:** SVG icons and images used by the component must be placed in `src/assets/` (icons in `src/assets/icons/`), not inlined or co-located next to the component.
 
-**If `<dir>` is `theme`** — additionally follow all `src/theme/design-system.md` rules:
+**If `<dir>` is `theme`** — additionally follow all `packages/design-system/design-system.md` rules:
 
 - `styled` base with `createShouldForwardProp([...props, ...customProps])`
 - Custom props wired via `system()` against theme scales
@@ -156,7 +156,7 @@ Wait for confirmation before committing to a specific variant or size token.
 
 ### `<Name>.stories.tsx` — Storybook (required for `theme`; optional but recommended for `common` / `section`)
 
-- Import option arrays from `src/theme/utils/test/storiesArgs.ts` and `src/theme/utils/test/storiesOptions.ts` — never hardcode inline.
+- Import option arrays from `@soroush.tech/design-system/utils/test/storiesArgs.ts` and `@soroush.tech/design-system/utils/test/storiesOptions.ts` — never hardcode inline.
 - `controls.include` whitelist — no autodiscovery.
 - Every prop in `controls.include` must have a matching `argType` with `control`, `description`, and `table.category`.
 - Category names: Content · Typography · Layout · Visual · Spacing.

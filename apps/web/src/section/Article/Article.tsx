@@ -1,6 +1,6 @@
-import { Preview } from 'src/theme/Markdown'
+import { Preview } from '@soroush.tech/design-system/Markdown'
 import type { Gist } from 'src/types/github'
-import { View } from 'src/theme/View'
+import { View } from '@soroush.tech/design-system/View'
 
 export interface ArticleProps {
   data: Gist

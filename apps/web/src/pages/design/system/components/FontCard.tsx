@@ -1,6 +1,6 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
 import { FontStyle } from 'src/common/FontStyle'
 import { CardTitle } from './CardTitle'
 

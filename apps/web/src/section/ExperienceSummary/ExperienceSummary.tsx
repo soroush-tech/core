@@ -1,8 +1,8 @@
-import { styled } from 'src/theme'
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Grid } from 'src/theme/Grid'
-import { Typography } from 'src/theme/Typography'
+import { styled } from '@soroush.tech/design-system'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Grid } from '@soroush.tech/design-system/Grid'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { stats, skills } from './ExperienceSummary.data'
 
 // palette.primary.main is not in the background scale, so the neon progress fill is

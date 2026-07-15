@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import styled from '@emotion/styled'
-import { Card } from 'src/theme/Card'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 
 export interface GraphHeaderProps {
   activeNode: string

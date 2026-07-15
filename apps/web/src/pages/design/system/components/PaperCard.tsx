@@ -1,8 +1,8 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Paper } from 'src/theme/Paper'
-import { Typography } from 'src/theme/Typography'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Paper } from '@soroush.tech/design-system/Paper'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { CardTitle } from './CardTitle'
 
 const ELEVATIONS = [1, 3, 4, 5] as const

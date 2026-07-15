@@ -1,20 +1,20 @@
 ---
-description: CSS-in-JS and styled-system conventions for this design system. Use when writing or reviewing code in src/theme/, when building design system components, or when the user asks about styling patterns.
+description: CSS-in-JS and styled-system conventions for this design system. Use when writing or reviewing code in @soroush.tech/design-system/, when building design system components, or when the user asks about styling patterns.
 argument-hint: [component-name or filename]
-paths: src/theme/**
+paths: @soroush.tech/design-system/**
 ---
 
 ## Canonical reference
 
-Read `src/theme/Avatar/Avatar.tsx` before writing any new component — it is the correct styled-system pattern.
+Read `@soroush.tech/design-system/Avatar/Avatar.tsx` before writing any new component — it is the correct styled-system pattern.
 
 ---
 
 ## Rules
 
-### 0. All engine imports come from `src/theme` — never from the underlying packages
+### 0. All engine imports come from `@soroush.tech/design-system` — never from the underlying packages
 
-Inside `src/theme/`, every styling primitive must be imported from the barrel, not from its original package:
+Inside `@soroush.tech/design-system/`, every styling primitive must be imported from the barrel, not from its original package:
 
 ```ts
 // ✗
@@ -24,12 +24,12 @@ import { system, variant, compose, layout, color } from 'styled-system'
 import shouldForwardProp from '@styled-system/should-forward-prop'
 
 // ✓
-import { styled, css, Global, keyframes, ThemeContext } from 'src/theme'
-import { system, variant, compose, layout, color } from 'src/theme'
-import { createShouldForwardProp } from 'src/theme'
+import { styled, css, Global, keyframes, ThemeContext } from '@soroush.tech/design-system'
+import { system, variant, compose, layout, color } from '@soroush.tech/design-system'
+import { createShouldForwardProp } from '@soroush.tech/design-system'
 ```
 
-This applies to every file in `src/theme/` and `src/common/`. The barrel (`src/theme/index.ts`) is the single choke-point for the styling engine; swapping engines means editing one file.
+This applies to every file in `@soroush.tech/design-system/` and `src/common/`. The barrel (`@soroush.tech/design-system/index.ts`) is the single choke-point for the styling engine; swapping engines means editing one file.
 
 ---
 

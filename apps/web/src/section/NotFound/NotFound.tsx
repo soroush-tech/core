@@ -1,8 +1,8 @@
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Button } from 'src/theme/Button'
-import { Icon } from 'src/theme/Icon'
-import { Card } from 'src/theme/Card'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Icon } from '@soroush.tech/design-system/Icon'
+import { Card } from '@soroush.tech/design-system/Card'
 import { GlitchText } from 'src/common/GlitchText'
 import { Flicker } from 'src/common/Flicker'
 

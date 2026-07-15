@@ -1,5 +1,5 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
+import { Card } from '@soroush.tech/design-system/Card'
 import {
   Table,
   TableBody,
@@ -13,7 +13,7 @@ import {
   TableSortLabel,
   useTablePagination,
   useTableSort,
-} from 'src/theme/Table'
+} from '@soroush.tech/design-system/Table'
 import { CardTitle } from './CardTitle'
 import { SERVICES } from './TableCard.data'
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { m, p } from 'src/theme/utils/test/storiesArgs'
-import { typographyVariantTokens } from 'src/theme/utils/test/storiesOptions'
+import { m, p } from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { typographyVariantTokens } from '@soroush.tech/design-system/utils/test/storiesOptions'
 import { NavLink } from './NavLink'
 
 const meta = {

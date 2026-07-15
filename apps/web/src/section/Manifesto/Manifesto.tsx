@@ -1,7 +1,7 @@
-import { styled } from 'src/theme'
-import { View } from 'src/theme/View'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
+import { styled } from '@soroush.tech/design-system'
+import { View } from '@soroush.tech/design-system/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { beliefs } from './Manifesto.data'
 
 // palette.primary.main / contrastText are not in the background / text scales, so the

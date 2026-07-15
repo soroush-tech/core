@@ -1,6 +1,6 @@
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { Button } from 'src/theme/Button'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { Button } from '@soroush.tech/design-system/Button'
 import { Eyebrow } from 'src/common/Eyebrow'
 import { PageHeader } from 'src/common/PageHeader'
 

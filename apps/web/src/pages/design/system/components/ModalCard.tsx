@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { STORYBOOK_URL } from 'src/config'
-import { Button } from 'src/theme/Button'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Modal } from 'src/theme/Modal'
-import { Paper } from 'src/theme/Paper'
-import { Typography } from 'src/theme/Typography'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Modal } from '@soroush.tech/design-system/Modal'
+import { Paper } from '@soroush.tech/design-system/Paper'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { CardTitle } from './CardTitle'
 
 export function ModalCard() {

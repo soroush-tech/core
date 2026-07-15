@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react'
-import { styled } from 'src/theme'
-import { Flex, type FlexProps } from 'src/theme/Flex'
+import { styled } from '@soroush.tech/design-system'
+import { Flex, type FlexProps } from '@soroush.tech/design-system/Flex'
 
 export type FlickerProps = FlexProps
 

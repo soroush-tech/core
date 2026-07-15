@@ -1,0 +1,177 @@
+// Audits every `styled(...)` call in src for theme-customization coverage.
+//
+// A styled element with a `name` option is part of the public theming API
+// (`theme.components[name].styleOverrides[slot]`). This script reports every
+// call that lacks one so the omission is always a decision, never an accident.
+//
+//   pnpm audit:styled            writes styled-audit.md and prints a summary
+//   pnpm audit:styled --check    additionally exits 1 when unnamed calls exist
+//
+// Intentional omissions are declared in code, on the line above the call:
+//   // audit-styled-ignore: <reason>
+// and are reported in their own section instead of counting as unnamed.
+
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join, relative, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
+const srcRoot = join(packageRoot, 'src')
+const reportPath = join(packageRoot, 'styled-audit.md')
+
+const isSourceFile = (file) => file.endsWith('.tsx') && !/\.(test|spec|stories)\.tsx$/.test(file)
+
+function* walk(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name)
+    if (entry.isDirectory()) {
+      yield* walk(path)
+    } else if (isSourceFile(entry.name)) {
+      yield path
+    }
+  }
+}
+
+/** Returns the text of the first argument list: from `(` at `start` to its balanced `)`. */
+function balancedArgs(source, start) {
+  let depth = 0
+  for (let i = start; i < source.length; i++) {
+    if (source[i] === '(') depth++
+    if (source[i] === ')') depth--
+    if (depth === 0) {
+      return source.slice(start + 1, i)
+    }
+  }
+  return source.slice(start + 1)
+}
+
+const optionValue = (args, key) => args.match(new RegExp(String.raw`\b${key}:\s*'([^']+)'`))?.[1]
+
+/** Reads the reason from an `audit-styled-ignore: <reason>` marker, if the line carries one. */
+function parseIgnoreReason(line) {
+  const marker = 'audit-styled-ignore:'
+  const start = line.indexOf(marker)
+  if (start === -1) {
+    return undefined
+  }
+  let reason = line.slice(start + marker.length).trim()
+  if (reason.endsWith('*/')) {
+    reason = reason.slice(0, -2).trimEnd()
+  }
+  return reason === '' ? undefined : reason
+}
+
+function auditFile(path) {
+  const source = readFileSync(path, 'utf8')
+  const lines = source.split('\n')
+  const calls = []
+  const callPattern = /(?:const|export const)\s+(\w+)\s*=\s*styled(?:\.(\w+)|\()/g
+
+  for (const match of source.matchAll(callPattern)) {
+    const line = source.slice(0, match.index).split('\n').length
+    const variable = match[1]
+    let base = match[2] // styled.div shortcut
+    let args = ''
+    if (!base) {
+      args = balancedArgs(source, match.index + match[0].length - 1)
+      base = args.split(',')[0].trim()
+      // A quoted tag ('div') → the text between the quotes; a component stays as-is.
+      if (base.startsWith("'") || base.startsWith('"')) {
+        base = base.slice(1, base.indexOf(base[0], 1))
+      }
+    }
+    const previousLine = lines[line - 2] ?? ''
+    const ignore = parseIgnoreReason(previousLine)
+    calls.push({
+      file: relative(packageRoot, path).replaceAll('\\', '/'),
+      line,
+      variable,
+      base,
+      name: optionValue(args, 'name'),
+      slot: optionValue(args, 'slot'),
+      label: optionValue(args, 'label'),
+      ignore,
+    })
+  }
+  return calls
+}
+
+const calls = [...walk(srcRoot)].flatMap(auditFile)
+const unnamed = calls.filter((call) => !call.name && !call.ignore)
+const ignored = calls.filter((call) => !call.name && call.ignore)
+const roots = calls.filter((call) => call.name && !call.slot)
+const slots = calls.filter((call) => call.name && call.slot)
+
+/** Wraps a value as inline markdown code, or an em dash when it is absent. */
+const code = (value) => (value ? `\`${value}\`` : '—')
+
+const slotCell = (call) => {
+  if (call.slot) {
+    return code(call.slot)
+  }
+  return call.name ? '`root`' : '—'
+}
+
+const row = (call) => {
+  const location = `${call.file}:${call.line}`
+  const cells = [code(location), code(call.variable), code(call.base), code(call.name)]
+  return `| ${cells.join(' | ')} | ${slotCell(call)} | ${code(call.label)} |`
+}
+
+const section = (title, entries) =>
+  entries.length === 0
+    ? `## ${title} (0)\n\nNone.`
+    : [
+        `## ${title} (${entries.length})`,
+        '',
+        '| Location | Variable | Base | Name | Slot | Label |',
+        '| --- | --- | --- | --- | --- | --- |',
+        ...entries.map(row),
+      ].join('\n')
+
+const ignoredSection =
+  ignored.length === 0
+    ? '## Ignored (0)\n\nNone.'
+    : [
+        `## Ignored (${ignored.length})`,
+        '',
+        '| Location | Variable | Base | Reason |',
+        '| --- | --- | --- | --- |',
+        ...ignored.map(
+          (call) =>
+            `| \`${call.file}:${call.line}\` | \`${call.variable}\` | \`${call.base}\` | ${call.ignore} |`
+        ),
+      ].join('\n')
+
+const report = [
+  '# Styled-call theming audit',
+  '',
+  `Generated by \`pnpm audit:styled\` — do not edit by hand.`,
+  '',
+  `Every \`styled(...)\` call in \`src\`: ${calls.length} total — ${roots.length} named roots, ${slots.length} named slots, ${unnamed.length} unnamed, ${ignored.length} ignored.`,
+  '',
+  `Unnamed calls are not theme-customizable via \`theme.components\`. Either give them a \`name\` (+ \`slot\` for sub-elements) or record the decision with \`// audit-styled-ignore: <reason>\` on the preceding line.`,
+  '',
+  section('Unnamed — decision needed', unnamed),
+  '',
+  ignoredSection,
+  '',
+  section('Named slots', slots),
+  '',
+  section('Named roots', roots),
+  '',
+].join('\n')
+
+writeFileSync(reportPath, report)
+
+console.log(
+  `styled audit: ${calls.length} calls — ${roots.length} named roots, ${slots.length} named slots, ${unnamed.length} unnamed, ${ignored.length} ignored`
+)
+console.log(`report: ${relative(process.cwd(), reportPath)}`)
+for (const call of unnamed) {
+  console.log(`  unnamed  ${call.file}:${call.line}  ${call.variable} (${call.base})`)
+}
+
+if (process.argv.includes('--check') && unnamed.length > 0) {
+  process.exitCode = 1
+}

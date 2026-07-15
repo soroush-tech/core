@@ -14,7 +14,7 @@ const { mockToggleTheme, mockUseThemeMode } = vi.hoisted(() => ({
   mockUseThemeMode: vi.fn(() => ({ isDark: true, toggleTheme: vi.fn() })),
 }))
 
-vi.mock('src/theme/hooks/useThemeMode', () => ({
+vi.mock('src/theme/useThemeMode', () => ({
   useThemeMode: mockUseThemeMode,
 }))
 

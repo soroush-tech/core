@@ -1,10 +1,10 @@
 import mascotDebugger from 'src/assets/soroush_mascot_debugger.png'
 import mascotExplorer from 'src/assets/soroush_mascot_explorer.png'
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { Image } from 'src/theme/Image'
-import { Typography } from 'src/theme/Typography'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Image } from '@soroush.tech/design-system/Image'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { CardTitle } from './CardTitle'
 
 const FITS = ['cover', 'contain'] as const

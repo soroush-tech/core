@@ -1,10 +1,10 @@
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { MenuItem } from 'src/theme/MenuItem'
-import { NativeSelect } from 'src/theme/NativeSelect'
-import { Select } from 'src/theme/Select'
-import { Typography } from 'src/theme/Typography'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { MenuItem } from '@soroush.tech/design-system/MenuItem'
+import { NativeSelect } from '@soroush.tech/design-system/NativeSelect'
+import { Select } from '@soroush.tech/design-system/Select'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { CardTitle } from './CardTitle'
 
 const PLATFORMS = [

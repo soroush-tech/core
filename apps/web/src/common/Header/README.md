@@ -43,7 +43,7 @@ The `Switch` is bound to `useThemeMode()` from `src/hooks/useThemeMode`:
 - `checked={isDark}` — switch is on when dark mode is active (default)
 - `onChange={toggleTheme}` — clicking the switch calls `toggleTheme`, which flips the global theme
 
-The theme state lives in `ThemeModeProvider` (above `ThemeProvider` in the tree). Toggling re-renders `ThemeProvider` with either `dark` or `light` from `src/theme/themes.ts`.
+The theme state lives in `ThemeModeProvider` (above `ThemeProvider` in the tree). Toggling re-renders `ThemeProvider` with either `dark` or `light` from `@soroush.tech/design-system/themes.ts`.
 
 ---
 
@@ -55,10 +55,10 @@ The theme state lives in `ThemeModeProvider` (above `ThemeProvider` in the tree)
 
 ## Cross-component dependencies
 
-| Import                             | Used for                      |
-| ---------------------------------- | ----------------------------- |
-| `src/theme/AppBar`                 | Root element                  |
-| `src/theme/Switch`                 | Theme toggle control          |
-| `src/theme/Flex`, `src/theme/View` | Layout                        |
-| `src/common/NavLink`               | Active-aware navigation links |
-| `src/hooks/useThemeMode`           | Theme state + toggle function |
+| Import                                                                 | Used for                      |
+| ---------------------------------------------------------------------- | ----------------------------- |
+| `@soroush.tech/design-system/AppBar`                                   | Root element                  |
+| `@soroush.tech/design-system/Switch`                                   | Theme toggle control          |
+| `@soroush.tech/design-system/Flex`, `@soroush.tech/design-system/View` | Layout                        |
+| `src/common/NavLink`                                                   | Active-aware navigation links |
+| `src/hooks/useThemeMode`                                               | Theme state + toggle function |

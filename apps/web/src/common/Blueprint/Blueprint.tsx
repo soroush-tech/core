@@ -1,8 +1,8 @@
 import { type ElementType } from 'react'
 import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Flex, type FlexProps } from 'src/theme/Flex'
-import { alpha } from 'src/theme/utils'
+import { Flex, type FlexProps } from '@soroush.tech/design-system/Flex'
+import { alpha } from '@soroush.tech/design-system/utils'
 import { useSpotlight } from './hooks/useSpotlight'
 
 export interface BlueprintProps extends FlexProps {

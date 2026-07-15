@@ -1,7 +1,7 @@
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
-import { luminance } from 'src/theme/utils'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
+import { luminance } from '@soroush.tech/design-system/utils'
 import { Color } from './Color'
 
 interface ColorPaletteProps {

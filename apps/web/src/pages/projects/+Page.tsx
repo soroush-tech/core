@@ -1,7 +1,7 @@
 import { Layout } from 'src/common/Layout'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 
 function Projects() {
   return (

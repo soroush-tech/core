@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { STORYBOOK_URL } from 'src/config'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { LinearProgress, type LinearProgressProps } from 'src/theme/LinearProgress'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import {
+  LinearProgress,
+  type LinearProgressProps,
+} from '@soroush.tech/design-system/LinearProgress'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 import { CardTitle } from './CardTitle'
 
 export function LinearProgressCard() {

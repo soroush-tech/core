@@ -18,6 +18,7 @@ on:
         options:
           - all
           - bench
+          - design-system
           - playwright-coverage
           - styled-system
           - vite-plugin-msw-server

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Flex } from 'src/theme/Flex'
+import { Flex } from '@soroush.tech/design-system/Flex'
 
 // cursor has no styled-system prop. D3 class selectors live here since D3
 // appends SVG elements directly into this container.

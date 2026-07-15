@@ -1,11 +1,11 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { renderWithTheme } from 'src/test/utils/wrapper'
-import { useThemeMode } from 'src/theme/hooks'
+import { useThemeMode } from 'src/theme/useThemeMode'
 import { ColorCard } from './ColorCard'
 
-vi.mock('src/theme/hooks', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('src/theme/hooks')>()
+vi.mock('src/theme/useThemeMode', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('src/theme/useThemeMode')>()
   return { ...actual, useThemeMode: vi.fn(() => ({ isDark: true, toggleTheme: vi.fn() })) }
 })
 

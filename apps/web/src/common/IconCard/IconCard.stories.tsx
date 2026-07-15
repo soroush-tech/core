@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Typography } from 'src/theme/Typography'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { IconCard } from './IconCard'
 
 const meta: Meta<typeof IconCard> = {

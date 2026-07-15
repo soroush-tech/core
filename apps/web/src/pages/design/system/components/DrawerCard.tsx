@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { STORYBOOK_URL } from 'src/config'
-import { Button } from 'src/theme/Button'
-import { Card } from 'src/theme/Card'
-import { Drawer, type DrawerAnchor } from 'src/theme/Drawer'
-import { Flex } from 'src/theme/Flex'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Button } from '@soroush.tech/design-system/Button'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Drawer, type DrawerAnchor } from '@soroush.tech/design-system/Drawer'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 import { CardTitle } from './CardTitle'
 
 const ANCHORS: DrawerAnchor[] = ['left', 'right', 'top', 'bottom']

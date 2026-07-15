@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { STORYBOOK_URL } from 'src/config'
-import { Button } from 'src/theme/Button'
-import { ButtonGroup, type ButtonGroupProps } from 'src/theme/ButtonGroup'
-import { Card } from 'src/theme/Card'
-import { Flex } from 'src/theme/Flex'
-import { ToggleButton, ToggleButtonGroup, type ToggleButtonValue } from 'src/theme/ToggleButton'
-import { Typography } from 'src/theme/Typography'
-import { View } from 'src/theme/View'
+import { Button } from '@soroush.tech/design-system/Button'
+import { ButtonGroup, type ButtonGroupProps } from '@soroush.tech/design-system/ButtonGroup'
+import { Card } from '@soroush.tech/design-system/Card'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+  type ToggleButtonValue,
+} from '@soroush.tech/design-system/ToggleButton'
+import { Typography } from '@soroush.tech/design-system/Typography'
+import { View } from '@soroush.tech/design-system/View'
 import { CardTitle } from './CardTitle'
 
 const VARIANTS: NonNullable<ButtonGroupProps['variant']>[] = ['contained', 'outlined', 'text']

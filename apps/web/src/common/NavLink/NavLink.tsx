@@ -1,5 +1,5 @@
 import { usePageContext } from 'src/hooks/usePageContext'
-import { Link, type LinkProps } from 'src/theme/Link'
+import { Link, type LinkProps } from '@soroush.tech/design-system/Link'
 
 export type NavLinkProps = LinkProps
 

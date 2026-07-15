@@ -1,6 +1,10 @@
 import { keyframes } from '@emotion/react'
-import { styled } from 'src/theme'
-import { Typography, type TypographyProps, type TextColorToken } from 'src/theme/Typography'
+import { styled } from '@soroush.tech/design-system'
+import {
+  Typography,
+  type TypographyProps,
+  type TextColorToken,
+} from '@soroush.tech/design-system/Typography'
 
 export interface GlitchTextProps extends TypographyProps {
   /** theme.text token for the first RGB-split layer (also the glyph fill). Default: 'primary'. */

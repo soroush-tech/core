@@ -1,9 +1,9 @@
 import { STORYBOOK_URL } from 'src/config'
 import { forestGreen, kineticGreen, kineticSurface, lightSurface } from 'src/theme/colors'
-import { Card } from 'src/theme/Card'
+import { Card } from '@soroush.tech/design-system/Card'
 import { ColorPalette } from 'src/theme/ColorPalette'
-import { Flex } from 'src/theme/Flex'
-import { useThemeMode } from 'src/theme/hooks'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { useThemeMode } from 'src/theme/useThemeMode'
 import { CardTitle } from './CardTitle'
 
 export function ColorCard() {
