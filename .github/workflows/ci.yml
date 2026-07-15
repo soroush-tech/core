@@ -122,7 +122,13 @@ jobs:
           // CI gating: a root or workflow change validates the whole workspace.
           const infra = root || workflows.length > 0
           const pkgsForCI = infra ? allPackages : packages
-          const include = pkgsForCI.map((dir) => ({ dir, filter: require(`./packages/${dir}/package.json`).name, flag: dir }))
+          // `browsers` marks packages with a real-browser vitest tier — they declare
+          // `playwright` themselves, and their CI row must install Chromium first.
+          const include = pkgsForCI.map((dir) => {
+            const pkg = require(`./packages/${dir}/package.json`)
+            const browsers = Boolean(pkg.devDependencies?.playwright || pkg.dependencies?.playwright)
+            return { dir, filter: pkg.name, flag: dir, browsers }
+          })
           console.log(`web=${apps.includes('web') || packages.length > 0 || infra}`)
           console.log(`worker=${worker.includes('api') || packages.includes('schema') || infra}`)
           console.log(`has_packages=${pkgsForCI.length ? 'true' : 'false'}`)
@@ -189,6 +195,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.changed_packages) }}
+    # Same pinned browser location as the `web`/`e2e` jobs so browser-tier package rows
+    # share their Playwright cache.
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
@@ -205,10 +215,35 @@ jobs:
           node-version: ${{ needs.prepare.outputs.node_version }}
           cache: ${{ needs.prepare.outputs.manager }}
 
+      - name: Restore cache - Playwright binaries
+        if: matrix.browsers
+        uses: actions/cache/restore@v5
+        id: playwright-cache
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
+
       - name: Install dependencies
         env:
           CI: true
         run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
+
+      # Only Chromium is needed — the browser test tier runs headless Chromium.
+      - name: Install Playwright browsers
+        if: matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter ${{ matrix.filter }} exec playwright install --with-deps chromium
+
+      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
+      - name: Install Playwright system deps
+        if: matrix.browsers && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter ${{ matrix.filter }} exec playwright install-deps chromium
+
+      - name: Save cache - Playwright binaries
+        if: always() && matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
 
       - name: Run Tests with Coverage
         run: ${{ needs.prepare.outputs.runner }} --filter ${{ matrix.filter }} test:coverage

@@ -69,14 +69,14 @@ jobs consume via `needs.prepare.outputs.*`.
 
 ### Outputs
 
-| Output                           | Meaning                                                                           |
-| -------------------------------- | --------------------------------------------------------------------------------- |
-| `node_version`                   | from `.nvmrc`                                                                     |
-| `manager` / `command` / `runner` | package-manager triple                                                            |
-| `playwright_version`             | `@playwright/test` semver (cache key input)                                       |
-| `web` / `worker`                 | `'true'` when that area, a dep it bundles, or infra changed                       |
-| `has_packages`                   | `'true'` when ≥1 package (or infra) changed                                       |
-| `changed_packages`               | `fromJSON`-ready matrix `{include:[{dir,filter,flag}]}` for the CI `packages` job |
+| Output                           | Meaning                                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------------------------ |
+| `node_version`                   | from `.nvmrc`                                                                              |
+| `manager` / `command` / `runner` | package-manager triple                                                                     |
+| `playwright_version`             | `@playwright/test` semver (cache key input)                                                |
+| `web` / `worker`                 | `'true'` when that area, a dep it bundles, or infra changed                                |
+| `has_packages`                   | `'true'` when ≥1 package (or infra) changed                                                |
+| `changed_packages`               | `fromJSON`-ready matrix `{include:[{dir,filter,flag,browsers}]}` for the CI `packages` job |
 
 ### `changes.json`
 
@@ -127,8 +127,14 @@ strategy:
 | #   | Step                                                      | Detail                                                                                                             |
 | --- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                               |
-| 5   | Tests with coverage                                       | `${runner} --filter ${{ matrix.filter }} test:coverage`                                                            |
-| 6   | Upload to Codecov                                         | `codecov/codecov-action@v7`, `files: ./packages/${{ matrix.dir }}/coverage/lcov.info`, `flags: ${{ matrix.flag }}` |
+| 5   | Playwright cache/install (browser-tier rows only)         | gated on `matrix.browsers`; same restore → install → save shape and cache key as the `web` job                     |
+| 6   | Tests with coverage                                       | `${runner} --filter ${{ matrix.filter }} test:coverage`                                                            |
+| 7   | Upload to Codecov                                         | `codecov/codecov-action@v7`, `files: ./packages/${{ matrix.dir }}/coverage/lcov.info`, `flags: ${{ matrix.flag }}` |
+
+A matrix row sets `browsers: true` when the package declares `playwright` in its own
+dependencies (assembled in `prepare`) — i.e. it has a real-browser vitest tier (e.g.
+`design-system`'s `*.browser.test.*`). Only those rows pay for the Chromium install;
+the job pins `PLAYWRIGHT_BROWSERS_PATH` so they share the `web`/`e2e` browser cache.
 
 ---
 
