@@ -45,7 +45,21 @@ function balancedArgs(source, start) {
   return source.slice(start + 1)
 }
 
-const optionValue = (args, key) => args.match(new RegExp(`\\b${key}:\\s*'([^']+)'`))?.[1]
+const optionValue = (args, key) => args.match(new RegExp(String.raw`\b${key}:\s*'([^']+)'`))?.[1]
+
+/** Reads the reason from an `audit-styled-ignore: <reason>` marker, if the line carries one. */
+function parseIgnoreReason(line) {
+  const marker = 'audit-styled-ignore:'
+  const start = line.indexOf(marker)
+  if (start === -1) {
+    return undefined
+  }
+  let reason = line.slice(start + marker.length).trim()
+  if (reason.endsWith('*/')) {
+    reason = reason.slice(0, -2).trimEnd()
+  }
+  return reason === '' ? undefined : reason
+}
 
 function auditFile(path) {
   const source = readFileSync(path, 'utf8')
@@ -60,13 +74,14 @@ function auditFile(path) {
     let args = ''
     if (!base) {
       args = balancedArgs(source, match.index + match[0].length - 1)
-      base = args
-        .split(',')[0]
-        .trim()
-        .replace(/^['"]|['"].*$/g, '')
+      base = args.split(',')[0].trim()
+      // A quoted tag ('div') → the text between the quotes; a component stays as-is.
+      if (base.startsWith("'") || base.startsWith('"')) {
+        base = base.slice(1, base.indexOf(base[0], 1))
+      }
     }
     const previousLine = lines[line - 2] ?? ''
-    const ignore = previousLine.match(/audit-styled-ignore:\s*(.+?)\s*(?:\*\/)?$/)?.[1]
+    const ignore = parseIgnoreReason(previousLine)
     calls.push({
       file: relative(packageRoot, path).replaceAll('\\', '/'),
       line,
@@ -87,12 +102,17 @@ const ignored = calls.filter((call) => !call.name && call.ignore)
 const roots = calls.filter((call) => call.name && !call.slot)
 const slots = calls.filter((call) => call.name && call.slot)
 
+const slotCell = (call) => {
+  if (call.slot) {
+    return `\`${call.slot}\``
+  }
+  return call.name ? '`root`' : '—'
+}
+
 const row = (call) =>
   `| \`${call.file}:${call.line}\` | \`${call.variable}\` | \`${call.base}\` | ${
     call.name ? `\`${call.name}\`` : '—'
-  } | ${call.slot ? `\`${call.slot}\`` : call.name ? '`root`' : '—'} | ${
-    call.label ? `\`${call.label}\`` : '—'
-  } |`
+  } | ${slotCell(call)} | ${call.label ? `\`${call.label}\`` : '—'} |`
 
 const section = (title, entries) =>
   entries.length === 0

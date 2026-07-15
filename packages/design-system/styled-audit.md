@@ -46,18 +46,18 @@ None.
 | `src/Popover/Popover.tsx:80`                           | `Positioner`                 | `div`                | `Popover`          | `positioner`      | `PopoverPositioner`          |
 | `src/Radio/Radio.tsx:67`                               | `HiddenInput`                | `input`              | `Radio`            | `input`           | `RadioInput`                 |
 | `src/Radio/Radio.tsx:77`                               | `RadioIconWrapper`           | `span`               | `Radio`            | `icon`            | `RadioIcon`                  |
-| `src/Select/Select.tsx:240`                            | `ValueArea`                  | `span`               | `Select`           | `valueArea`       | `SelectValueArea`            |
-| `src/Select/Select.tsx:253`                            | `ValueGhost`                 | `span`               | `Select`           | `valueGhost`      | `SelectValueGhost`           |
-| `src/Select/Select.tsx:268`                            | `TriggerValue`               | `span`               | `Select`           | `value`           | `SelectValue`                |
-| `src/Select/Select.tsx:277`                            | `ListBox`                    | `ul`                 | `Select`           | `listbox`         | `SelectListbox`              |
+| `src/Select/Select.tsx:241`                            | `ValueArea`                  | `span`               | `Select`           | `valueArea`       | `SelectValueArea`            |
+| `src/Select/Select.tsx:254`                            | `ValueGhost`                 | `span`               | `Select`           | `valueGhost`      | `SelectValueGhost`           |
+| `src/Select/Select.tsx:269`                            | `TriggerValue`               | `span`               | `Select`           | `value`           | `SelectValue`                |
+| `src/Select/Select.tsx:278`                            | `ListBox`                    | `ul`                 | `Select`           | `listbox`         | `SelectListbox`              |
 | `src/Skeleton/Skeleton.tsx:126`                        | `HiddenContent`              | `span`               | `Skeleton`         | `content`         | `SkeletonContent`            |
 | `src/Switch/Switch.tsx:107`                            | `HiddenInput`                | `input`              | `Switch`           | `input`           | `SwitchInput`                |
 | `src/Switch/Switch.tsx:119`                            | `SwitchTrack`                | `span`               | `Switch`           | `track`           | `SwitchTrack`                |
 | `src/Switch/Switch.tsx:169`                            | `SwitchThumb`                | `span`               | `Switch`           | `thumb`           | `SwitchThumb`                |
 | `src/Table/TableSortLabel/TableSortLabel.tsx:74`       | `SortIcon`                   | `Icon`               | `TableSortLabel`   | `icon`            | `TableSortLabelIcon`         |
-| `src/TextInput/TextInput.tsx:266`                      | `StyledInput`                | `InputBase`          | `TextInput`        | `input`           | `TextInputInput`             |
-| `src/TextInput/TextInput.tsx:275`                      | `StyledTextarea`             | `textarea`           | `TextInput`        | `input`           | `TextInputTextarea`          |
-| `src/TextInput/TextInput.tsx:283`                      | `StyledAutoResizeTextarea`   | `TextAreaAutoResize` | `TextInput`        | `input`           | `TextInputTextarea`          |
+| `src/TextInput/TextInput.tsx:269`                      | `StyledInput`                | `InputBase`          | `TextInput`        | `input`           | `TextInputInput`             |
+| `src/TextInput/TextInput.tsx:278`                      | `StyledTextarea`             | `textarea`           | `TextInput`        | `input`           | `TextInputTextarea`          |
+| `src/TextInput/TextInput.tsx:286`                      | `StyledAutoResizeTextarea`   | `TextAreaAutoResize` | `TextInput`        | `input`           | `TextInputTextarea`          |
 
 ## Named roots (51)
 
@@ -96,7 +96,7 @@ None.
 | `src/Popover/Popover.tsx:90`                                     | `Surface`               | `Paper`                                                         | `Popover`                | `root` | `Popover`                |
 | `src/Quote/Quote.tsx:7`                                          | `Quote`                 | `View`                                                          | `Quote`                  | `root` | `Quote`                  |
 | `src/Radio/Radio.tsx:132`                                        | `RadioRoot`             | `label`                                                         | `Radio`                  | `root` | `Radio`                  |
-| `src/Select/Select.tsx:221`                                      | `Trigger`               | `div`                                                           | `Select`                 | `root` | `Select`                 |
+| `src/Select/Select.tsx:222`                                      | `Trigger`               | `div`                                                           | `Select`                 | `root` | `Select`                 |
 | `src/Skeleton/Skeleton.tsx:110`                                  | `SkeletonRoot`          | `span`                                                          | `Skeleton`               | `root` | `skeleton`               |
 | `src/Switch/Switch.tsx:316`                                      | `SwitchRoot`            | `label`                                                         | `Switch`                 | `root` | `Switch`                 |
 | `src/Table/Table/Table.tsx:120`                                  | `TableBase`             | `TableElement`                                                  | `Table`                  | `root` | `Table`                  |
@@ -109,7 +109,7 @@ None.
 | `src/Table/TablePaginationActions/TablePaginationActions.tsx:27` | `ActionsRoot`           | `div`                                                           | `TablePaginationActions` | `root` | `TablePaginationActions` |
 | `src/Table/TableRow/TableRow.tsx:74`                             | `TableRowBase`          | `tr`                                                            | `TableRow`               | `root` | `TableRow`               |
 | `src/Table/TableSortLabel/TableSortLabel.tsx:38`                 | `SortLabelRoot`         | `button`                                                        | `TableSortLabel`         | `root` | `TableSortLabel`         |
-| `src/TextInput/TextInput.tsx:250`                                | `TextInputRoot`         | `div`                                                           | `TextInput`              | `root` | `TextInput`              |
+| `src/TextInput/TextInput.tsx:253`                                | `TextInputRoot`         | `div`                                                           | `TextInput`              | `root` | `TextInput`              |
 | `src/ToggleButton/ToggleButton/ToggleButton.tsx:50`              | `ToggleButtonRoot`      | `Button`                                                        | `ToggleButton`           | `root` | `ToggleButton`           |
 | `src/ToggleButton/ToggleButtonGroup/ToggleButtonGroup.tsx:39`    | `ToggleButtonGroupRoot` | `ButtonGroup`                                                   | `ToggleButtonGroup`      | `root` | `ToggleButtonGroup`      |
 | `src/Typography/Typography.tsx:87`                               | `TypographyBase`        | `p`                                                             | `Typography`             | `root` | `Typography`             |

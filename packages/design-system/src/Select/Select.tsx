@@ -170,11 +170,12 @@ const colorBorder = ({ color, error, theme }: TriggerProps & { theme: Theme }) =
 // The trigger is itself focusable, so drive the active border from its own focus/open state.
 const activeBorder = ({ color, error, open, theme }: TriggerProps & { theme: Theme }) => {
   const activeColor = error ? get(theme, 'palette.error.main') : get(theme, `palette.${color}.main`)
+  const focusColor = get(theme, `palette.${themeDefault(theme, 'color', 'primary')}.main`)
   return {
     ...(open ? { borderColor: activeColor } : {}),
     '&:focus': { borderColor: activeColor },
     '&:focus-visible': {
-      outline: `2px solid ${get(theme, `palette.${themeDefault(theme, 'color', 'primary')}.main`)}`,
+      outline: `2px solid ${focusColor}`,
       outlineOffset: '2px',
     },
   }

@@ -7,7 +7,7 @@ import {
   type SyntheticEvent,
 } from 'react'
 import { Flex } from '../../Flex'
-import { styled } from '../../index'
+import { styled, useTheme } from '../../index'
 import { Typography } from '../../Typography'
 
 // Named styled root — theme-customizable via
@@ -20,7 +20,6 @@ import {
   type TextInputTextColor,
   type TextInputVariant,
 } from '../../TextInput'
-import { useTheme } from '../../index'
 import { applyAction } from '../utils/applyAction'
 import { MarkdownContext, type MarkdownSelection } from '../MarkdownContext'
 import type { LinePrefixAction } from '../const'
