@@ -102,17 +102,21 @@ const ignored = calls.filter((call) => !call.name && call.ignore)
 const roots = calls.filter((call) => call.name && !call.slot)
 const slots = calls.filter((call) => call.name && call.slot)
 
+/** Wraps a value as inline markdown code, or an em dash when it is absent. */
+const code = (value) => (value ? `\`${value}\`` : '—')
+
 const slotCell = (call) => {
   if (call.slot) {
-    return `\`${call.slot}\``
+    return code(call.slot)
   }
   return call.name ? '`root`' : '—'
 }
 
-const row = (call) =>
-  `| \`${call.file}:${call.line}\` | \`${call.variable}\` | \`${call.base}\` | ${
-    call.name ? `\`${call.name}\`` : '—'
-  } | ${slotCell(call)} | ${call.label ? `\`${call.label}\`` : '—'} |`
+const row = (call) => {
+  const location = `${call.file}:${call.line}`
+  const cells = [code(location), code(call.variable), code(call.base), code(call.name)]
+  return `| ${cells.join(' | ')} | ${slotCell(call)} | ${code(call.label)} |`
+}
 
 const section = (title, entries) =>
   entries.length === 0
