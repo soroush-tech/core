@@ -1,4 +1,4 @@
-import type { Theme } from '@emotion/react'
+import type { Theme } from '../themes'
 
 /**
  * Recursive partial of a theme shape. Plain objects recurse; arrays and

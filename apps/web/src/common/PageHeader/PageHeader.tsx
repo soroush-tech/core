@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import { styled } from '@soroush.tech/design-system'
 import type { ReactNode } from 'react'
 import { View } from '@soroush.tech/design-system/View'
 import { Typography } from '@soroush.tech/design-system/Typography'

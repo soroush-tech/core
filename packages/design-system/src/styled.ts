@@ -6,7 +6,8 @@ import type {
   Interpolation,
   StyledOptions,
 } from '@emotion/styled'
-import type { PropsOf, Theme } from '@emotion/react'
+import type { PropsOf } from '@emotion/react'
+import type { Theme } from './themes'
 import type { ComponentClass, ComponentProps, ComponentType, JSX, Ref } from 'react'
 
 /**
@@ -48,8 +49,21 @@ const resolveStyle = (style: unknown, props: Record<string, unknown>) =>
 const matchesProps = (props: Record<string, unknown>, matcher: Record<string, unknown>) =>
   Object.entries(matcher).every(([key, value]) => props[key] === value)
 
+/**
+ * The `styled.div`, `styled.span`, … tag shorthands — mirrors Emotion's own
+ * `StyledTags`, retyped against this package's `Theme` instead of Emotion's
+ * (otherwise-empty) one, so `${({ theme }) => theme.space[2]}` template
+ * interpolations resolve to the real theme shape.
+ */
+type StyledTags = {
+  [Tag in keyof JSX.IntrinsicElements]: CreateStyledComponent<
+    { theme?: Theme; as?: React.ElementType },
+    JSX.IntrinsicElements[Tag]
+  >
+}
+
 /** Overloads mirroring Emotion's, with the theme-customization options added. */
-interface CreateThemedStyled extends EmotionCreateStyled {
+interface CreateThemedStyled extends StyledTags {
   <
     C extends ComponentClass<ComponentProps<C>>,
     ForwardedProps extends keyof ComponentProps<C> & string = keyof ComponentProps<C> & string,
@@ -138,7 +152,7 @@ const createThemedStyled = (
  * The design system's `styled` — Emotion's styled plus theme-level component
  * customization (`theme.components[name].styleOverrides` / `.variants`).
  */
-export const styled: CreateThemedStyled = Object.assign(
+export const styled = Object.assign(
   createThemedStyled as unknown as EmotionCreateStyled,
   emotionStyled
-)
+) as unknown as CreateThemedStyled

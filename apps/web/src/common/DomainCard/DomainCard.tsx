@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import styled from '@emotion/styled'
+import { styled } from '@soroush.tech/design-system'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Image } from '@soroush.tech/design-system/Image'

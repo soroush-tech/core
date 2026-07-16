@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import { styled } from '@soroush.tech/design-system'
 import { Flex } from '@soroush.tech/design-system/Flex'
 
 // cursor has no styled-system prop. D3 class selectors live here since D3

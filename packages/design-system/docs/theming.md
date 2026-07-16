@@ -55,12 +55,12 @@ The full key table lives in the [README's Theming section](../README.md#componen
 
 ## Extending the type system
 
-Every scale is an open interface declared on `@emotion/react` — the augmentation surface is Emotion's module because the published d.ts is chunk-bundled, and only an external, stable module merges reliably for every consumer:
+Every scale is an open interface owned by `@soroush.tech/design-system/themes` — that module (not Emotion, an internal implementation detail) is the augmentation surface, and it merges reliably across tsdown's chunked d.ts for every consumer:
 
 ```ts
 import type { PaletteEntry, SizeEntry } from '@soroush.tech/design-system/themes'
 
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/themes' {
   interface ThemePalette {
     brand: PaletteEntry // new palette color
   }

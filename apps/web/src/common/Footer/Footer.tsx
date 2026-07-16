@@ -1,5 +1,4 @@
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
+import { keyframes, styled } from '@soroush.tech/design-system'
 import { View } from '@soroush.tech/design-system/View'
 import { Logo } from 'src/common/Logo'
 import { Flex } from '@soroush.tech/design-system/Flex'

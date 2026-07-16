@@ -1,4 +1,4 @@
-import type { ThemeComponents } from '@emotion/react'
+import type { ThemeComponents } from '../themes'
 import { useTheme } from './useTheme'
 
 type DefaultPropsOf<N extends keyof ThemeComponents> = NonNullable<

@@ -19,7 +19,7 @@ For the conventions every component must follow (prop typing, `system()` wiring,
 npm i @soroush.tech/design-system
 ```
 
-`react`, `react-dom`, `@emotion/react`, and `@emotion/styled` are peer dependencies.
+`react` and `react-dom` are peer dependencies. Emotion is an internal implementation detail — it ships as a regular dependency, not a peer, so you never install it yourself.
 
 ---
 
@@ -207,7 +207,7 @@ const brand = createTheme(baseTheme, {
       },
 
       // A new variant value — register it first so it typechecks:
-      // declare module '@emotion/react' { interface ButtonVariants { dashed: true } }
+      // declare module '@soroush.tech/design-system/themes' { interface ButtonVariants { dashed: true } }
       variants: [
         {
           props: { variant: 'dashed' },
@@ -228,12 +228,12 @@ Your own components can join the same mechanism: create their roots with this pa
 
 ### Extending tokens (declaration merging)
 
-Every scale is an open interface declared on `@emotion/react`, so you can add palette colors, tokens, or whole scales — and every component prop union (`color`, `bg`, `size`, …) widens automatically:
+Every scale is an open interface declared on `@soroush.tech/design-system/themes`, so you can add palette colors, tokens, or whole scales — and every component prop union (`color`, `bg`, `size`, …) widens automatically:
 
 ```ts
 import type { PaletteEntry } from '@soroush.tech/design-system/themes'
 
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/themes' {
   interface ThemePalette {
     brand: PaletteEntry // new palette color
   }

@@ -1,5 +1,4 @@
-import styled from '@emotion/styled'
-import { type Theme, useTheme } from '@emotion/react'
+import { styled, type Theme, useTheme } from '@soroush.tech/design-system'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { Paper } from '@soroush.tech/design-system/Paper'

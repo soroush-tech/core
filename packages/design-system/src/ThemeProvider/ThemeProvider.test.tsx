@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react'
-import { useTheme } from '@emotion/react'
+import { useTheme } from '../hooks/useTheme'
 import { describe, it, expect } from 'vitest'
 import type { ReactNode } from 'react'
 import { createTheme, baseTheme } from '../themes'

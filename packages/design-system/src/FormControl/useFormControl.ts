@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { type Theme } from '@emotion/react'
+import { type Theme } from '../themes'
 import { useTheme } from '../hooks/useTheme'
 import { FormContext } from '../Form/FormContext'
 import { FormControlContext } from './FormControlContext'

@@ -48,10 +48,6 @@
     "deploy:storybook": "wrangler pages deploy"
   },
   "dependencies": {
-    "@emotion/cache": "^11.14.0",
-    "@emotion/css": "^11.13.5",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@soroush.tech/design-system": "workspace:*",

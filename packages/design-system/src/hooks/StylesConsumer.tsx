@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { EmotionThemeContext, type CSSObject } from '../index'
-import type { Theme } from '../themes'
+import { EmotionThemeContext } from '../engine'
+import type { CSSObject, Theme } from '../themes'
 import type { StyleFactory } from './useStyle'
 
 type StylesConsumerProps = {

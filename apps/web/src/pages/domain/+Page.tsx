@@ -1,5 +1,4 @@
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
+import { keyframes, styled } from '@soroush.tech/design-system'
 import { Layout } from 'src/common/Layout'
 import { Grid as BentoGrid } from '@soroush.tech/design-system/Grid'
 import { View } from '@soroush.tech/design-system/View'

@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react'
-import { useTheme } from '@emotion/react'
+import { useTheme } from '@soroush.tech/design-system'
 import { describe, it, expect } from 'vitest'
 import type { ReactNode } from 'react'
 import { dark, light } from 'src/theme/themes'

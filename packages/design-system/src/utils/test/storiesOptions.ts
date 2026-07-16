@@ -44,7 +44,7 @@ import {
   space,
   typography,
 } from '../../themes'
-import type { CSSObject } from '@emotion/react'
+import type { CSSObject } from '../../themes'
 
 const objectKeys = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
 

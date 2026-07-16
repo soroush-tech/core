@@ -59,7 +59,7 @@ Extra variant entries matched by props: an entry applies when every key in its `
 **New variant values** need two things — the type registration and the styles:
 
 ```ts
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/themes' {
   interface ButtonVariants {
     dashed: true // widens ButtonVariant so variant="dashed" typechecks
   }
@@ -99,7 +99,7 @@ The mechanism is infrastructure, not just configuration. Create your roots with 
 import { styled } from '@soroush.tech/design-system'
 import type { ComponentConfig } from '@soroush.tech/design-system/themes'
 
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/themes' {
   interface ThemeComponents {
     MyWidget?: ComponentConfig<{ tone?: 'calm' | 'loud' }, 'root' | 'handle'>
   }

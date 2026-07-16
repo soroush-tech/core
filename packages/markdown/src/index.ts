@@ -31,13 +31,13 @@ export interface MermaidThemeVariables {
 
 // This package renders through design-system's `styled` engine, so its named roots
 // (`MarkdownEditor`, `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) resolve
-// `theme.components` at runtime. Registering the slots here — on the external
-// `@emotion/react` module, the only augmentation surface that merges reliably across
-// tsdown's d.ts chunks — lets consumers type `theme.components.MarkdownPreview = { … }`.
-// `ComponentConfig` is pulled in via an inline `import(...)` type (no top-level import) so
-// nothing reads as unused under the app's `noUnusedLocals`, which ignores usage inside
-// `declare module`.
-declare module '@emotion/react' {
+// `theme.components` at runtime. Registering the slots here — on
+// `@soroush.tech/design-system/themes`, the module that owns `Theme`/`ThemeComponents`
+// and merges reliably across tsdown's d.ts chunks — lets consumers type
+// `theme.components.MarkdownPreview = { … }`. `ComponentConfig` is pulled in via an
+// inline `import(...)` type (no top-level import) so nothing reads as unused under the
+// app's `noUnusedLocals`, which ignores usage inside `declare module`.
+declare module '@soroush.tech/design-system/themes' {
   interface ThemeComponents {
     MarkdownEditor?: import('@soroush.tech/design-system/themes').ComponentConfig
     MarkdownPreview?: import('@soroush.tech/design-system/themes').ComponentConfig

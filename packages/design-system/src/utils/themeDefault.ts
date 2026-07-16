@@ -1,4 +1,4 @@
-import type { Theme, ThemeDefaults } from '@emotion/react'
+import type { Theme, ThemeDefaults } from '../themes'
 
 /**
  * Resolves a component's default token/variant key: the theme's optional

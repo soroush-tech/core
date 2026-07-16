@@ -22,18 +22,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@emotion/cache':
-        specifier: ^11.14.0
-        version: 11.14.0
-      '@emotion/css':
-        specifier: ^11.13.5
-        version: 11.13.5
-      '@emotion/react':
-        specifier: ^11.14.0
-        version: 11.14.0(@types/react@19.2.17)(react@19.2.7)
-      '@emotion/styled':
-        specifier: ^11.14.1
-        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.2.8
         version: 5.2.8
@@ -308,6 +296,12 @@ importers:
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
+      '@emotion/react':
+        specifier: ^11.14.0
+        version: 11.14.0(@types/react@19.2.17)(react@19.2.7)
+      '@emotion/styled':
+        specifier: ^11.14.1
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
       '@soroush.tech/styled-system':
         specifier: workspace:^
         version: link:../styled-system
@@ -315,12 +309,6 @@ importers:
       '@emotion/css':
         specifier: ^11.13.5
         version: 11.13.5
-      '@emotion/react':
-        specifier: ^11.14.0
-        version: 11.14.0(@types/react@19.2.17)(react@19.2.7)
-      '@emotion/styled':
-        specifier: ^11.14.1
-        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
       '@soroush.tech/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
@@ -440,12 +428,6 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
     devDependencies:
-      '@emotion/react':
-        specifier: ^11.14.0
-        version: 11.14.0(@types/react@19.2.17)(react@19.2.7)
-      '@emotion/styled':
-        specifier: ^11.14.1
-        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
       '@soroush.tech/design-system':
         specifier: workspace:*
         version: link:../design-system

@@ -32,10 +32,10 @@ sub-component adds `SubName.README.md` + `SubName.stories.tsx` next to its sibli
 
 - **Theme slots via augmentation.** Unlike an in-repo design-system component, this package is a
   _consumer_ of the design system, so it registers its `theme.components` slots (`MarkdownEditor`,
-  `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) by augmenting `@emotion/react` in
-  `src/index.ts` — the consumer recipe from design-system `docs/theming.md`. Its own
-  `themeComponents.spec.tsx` locks that wiring (design-system's spec covers only design-system
-  components).
+  `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) by augmenting
+  `@soroush.tech/design-system/themes` in `src/index.ts` — the consumer recipe from design-system
+  `docs/theming.md`. Its own `themeComponents.spec.tsx` locks that wiring (design-system's spec
+  covers only design-system components).
 - **No `audit:styled`.** The styled-audit tooling is design-system-only. Markdown's named `styled`
   roots (`MarkdownEditor`, `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) are instead locked by
   `themeComponents.spec.tsx`.

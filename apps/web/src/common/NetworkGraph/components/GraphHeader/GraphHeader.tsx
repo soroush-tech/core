@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import styled from '@emotion/styled'
+import { styled } from '@soroush.tech/design-system'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { View } from '@soroush.tech/design-system/View'

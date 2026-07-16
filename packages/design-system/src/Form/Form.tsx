@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode, type SyntheticEvent } from 'react'
-import { type Theme } from '@emotion/react'
+import { type Theme } from '../themes'
 import { styled } from '../index'
 import { FormContext } from './FormContext'
 

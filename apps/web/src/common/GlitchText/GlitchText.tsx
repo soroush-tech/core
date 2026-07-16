@@ -1,5 +1,4 @@
-import { keyframes } from '@emotion/react'
-import { styled } from '@soroush.tech/design-system'
+import { keyframes, styled } from '@soroush.tech/design-system'
 import {
   Typography,
   type TypographyProps,

@@ -1,8 +1,8 @@
 // Type-level test: consumer-style theme augmentation against the PUBLISHED d.ts.
 // Runs via `pnpm test:types` (builds dist first, then typechecks this isolated
-// program). Guards two things: the `declare module '@emotion/react'` block
-// survives tsdown's d.ts chunking, and consumer augmentations widen the scale
-// unions that component props derive from.
+// program). Guards two things: the `declare module '@soroush.tech/design-system/themes'`
+// block survives tsdown's d.ts chunking, and consumer augmentations widen the
+// scale unions that component props derive from.
 import type {
   ComponentConfig,
   Theme,
@@ -15,7 +15,7 @@ import type { ButtonColor, ButtonVariant } from '@soroush.tech/design-system/But
 import type { CheckboxSize } from '@soroush.tech/design-system/Checkbox'
 import type { ViewBackgroundToken } from '@soroush.tech/design-system/View'
 
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/themes' {
   interface ThemePalette {
     brand: PaletteEntry
   }

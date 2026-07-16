@@ -6,7 +6,7 @@ import {
   type FormValidateOrFn,
   type FormAsyncValidateOrFn,
 } from '@tanstack/react-form'
-import { type Theme } from '@emotion/react'
+import { type Theme } from '../themes'
 import { Flex } from '../Flex'
 import { FormControl } from '../FormControl'
 import { FormLabel, type FormLabelProps } from '../FormLabel'

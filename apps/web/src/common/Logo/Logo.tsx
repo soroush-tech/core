@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import { styled } from '@soroush.tech/design-system'
 import LogoSvg from 'src/assets/soroush.svg'
 
 interface LogoProps {
