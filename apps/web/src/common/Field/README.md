@@ -1,12 +1,11 @@
 # Field
 
 The single bridge between the design-system form layer and **TanStack Form**. It wraps `form.Field`,
-derives the error-display flag, and composes [`FormControl`](../FormControl/README.md),
-[`FormLabel`](../FormLabel/README.md), and [`FormHelperText`](../FormHelperText/README.md) so id /
-`htmlFor` / `aria-describedby` wiring is automatic.
+derives the error-display flag, and composes `FormControl`, `FormLabel`, and `FormHelperText`
+(`@soroush.tech/design-system`) so id / `htmlFor` / `aria-describedby` wiring is automatic.
 
-Everything below `Field` is form-library-agnostic — `Field` is the only component that imports
-TanStack types.
+`Field` lives in the app, not `@soroush.tech/design-system` — it's the only piece of the form layer
+coupled to TanStack Form; everything it composes is form-library-agnostic.
 
 **Type safety:** `Field` is generic over the form instance, so `name` is checked against the form's
 value schema (`DeepKeys<TFormData>`). The generics are inferred from the `form` prop — callers never

@@ -6,11 +6,11 @@ import {
   type FormValidateOrFn,
   type FormAsyncValidateOrFn,
 } from '@tanstack/react-form'
-import { type Theme } from '../themes'
-import { Flex } from '../Flex'
-import { FormControl } from '../FormControl'
-import { FormLabel, type FormLabelProps } from '../FormLabel'
-import { FormHelperText } from '../FormHelperText'
+import { type Theme } from '@soroush.tech/design-system'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { FormControl } from '@soroush.tech/design-system/FormControl'
+import { FormLabel, type FormLabelProps } from '@soroush.tech/design-system/FormLabel'
+import { FormHelperText } from '@soroush.tech/design-system/FormHelperText'
 
 /** The subset of control props Field injects when cloning its child. */
 interface BoundControlProps {

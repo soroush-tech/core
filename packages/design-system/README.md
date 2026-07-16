@@ -94,7 +94,6 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 | `NativeSelect`                                       | Platform `<select>`                           |
 | `Select`                                             | Custom select built on `Popover` + `MenuItem` |
 | `MenuItem`                                           | Option row for `Select`'s listbox             |
-| `Field`                                              | Composed input field                          |
 | `Form`, `FormControl`, `FormLabel`, `FormHelperText` | Form composition and labeling                 |
 | `Pagination`                                         | Page navigation control                       |
 

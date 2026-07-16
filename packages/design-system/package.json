@@ -38,7 +38,6 @@
     "./Checkbox": "./src/Checkbox/index.ts",
     "./CircularProgress": "./src/CircularProgress/index.ts",
     "./Drawer": "./src/Drawer/index.ts",
-    "./Field": "./src/Field/index.ts",
     "./Flex": "./src/Flex/index.ts",
     "./FocusTrap": "./src/FocusTrap/index.ts",
     "./Form": "./src/Form/index.ts",
@@ -179,16 +178,6 @@
         "require": {
           "types": "./dist/Drawer.d.cts",
           "default": "./dist/Drawer.cjs"
-        }
-      },
-      "./Field": {
-        "import": {
-          "types": "./dist/Field.d.mts",
-          "default": "./dist/Field.mjs"
-        },
-        "require": {
-          "types": "./dist/Field.d.cts",
-          "default": "./dist/Field.cjs"
         }
       },
       "./Flex": {
@@ -551,20 +540,13 @@
     "@soroush.tech/styled-system": "workspace:^"
   },
   "peerDependencies": {
-    "@tanstack/react-form": "^1.33.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@tanstack/react-form": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@emotion/css": "^11.13.5",
     "@soroush.tech/eslint-config": "workspace:*",
     "@storybook/react-vite": "^10.5.0",
-    "@tanstack/react-form": "^1.33.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.1.1",

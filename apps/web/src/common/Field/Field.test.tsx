@@ -2,8 +2,8 @@ import { useForm, revalidateLogic } from '@tanstack/react-form'
 import { z } from 'zod'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { TextInput } from '../TextInput'
+import { TextInput } from '@soroush.tech/design-system/TextInput'
+import { renderWithTheme } from 'src/test/utils/wrapper'
 import { Field } from './Field'
 
 const schema = z.object({ email: z.email('Invalid email'), note: z.string() })
