@@ -1,4 +1,4 @@
-import type { IconName } from '../Icon'
+import type { IconName } from '@soroush.tech/design-system/Icon'
 
 /** How a text label is rendered — mirrors the mark it inserts. */
 export type ToolbarLabelEmphasis = 'bold' | 'italic' | 'strike'

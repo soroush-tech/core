@@ -7,7 +7,7 @@
 [![types included](https://img.shields.io/npm/types/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
 [![license](https://img.shields.io/npm/l/@soroush.tech/design-system.svg)](./LICENSE)
 
-An Emotion + [@soroush.tech/styled-system](https://www.npmjs.com/package/@soroush.tech/styled-system) React component library with a token-driven, consumer-extensible theme — layout primitives, forms, overlays, data display, and a headless markdown editor/renderer.
+An Emotion + [@soroush.tech/styled-system](https://www.npmjs.com/package/@soroush.tech/styled-system) React component library with a token-driven, consumer-extensible theme — layout primitives, forms, overlays, and data display. A headless markdown editor/renderer built on it ships separately as [@soroush.tech/markdown](https://www.npmjs.com/package/@soroush.tech/markdown).
 
 The library takes inspiration from [Material UI](https://mui.com/) — its component vocabulary and prop conventions will feel familiar — but it is written entirely in house. It is not a clone or a fork: every component is built from scratch on our own engine and token system, and the API is free to diverge wherever it serves its consumers better.
 
@@ -84,7 +84,6 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 | `Avatar`     | User/entity avatar                                                                                                                                                                                                                           |
 | `Table`      | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `@soroush.tech/design-system/Table` |
 | `CodeBlock`  | Scrollable fenced-code surface with a copy-to-clipboard button                                                                                                                                                                               |
-| `Markdown`   | Headless markdown editor + renderer — exports `Control`, `Toolbar`, `Editor`, and `Preview` from `@soroush.tech/design-system/Markdown`                                                                                                      |
 
 ### Inputs & forms
 

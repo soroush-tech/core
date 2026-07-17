@@ -11,6 +11,7 @@ const config: StorybookConfig = {
   stories: [
     '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../../packages/design-system/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../../../packages/markdown/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
     '@chromatic-com/storybook',

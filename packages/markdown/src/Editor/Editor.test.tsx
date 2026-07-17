@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { useState } from 'react'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { Control } from '../Control'
 import { Editor } from './Editor'
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { Preview } from './Preview'
 
 const content = [

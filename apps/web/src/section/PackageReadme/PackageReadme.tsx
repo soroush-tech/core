@@ -1,5 +1,5 @@
 import { View } from '@soroush.tech/design-system/View'
-import { Preview } from '@soroush.tech/design-system/Markdown'
+import { Preview } from '@soroush.tech/markdown'
 import { stripReadmeChrome } from './utils'
 
 export interface PackageReadmeProps {

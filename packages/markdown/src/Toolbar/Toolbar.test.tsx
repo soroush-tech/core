@@ -1,6 +1,6 @@
 import { fireEvent, screen, within } from '@testing-library/react'
 import { beforeEach, describe, it, expect, vi } from 'vitest'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { MarkdownContext, type MarkdownContextValue } from '../MarkdownContext'
 import { HEADING_ACTIONS, TOOLBAR_ACTIONS } from '../const'
 import { Toolbar } from './Toolbar'

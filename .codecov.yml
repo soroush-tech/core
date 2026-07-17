@@ -28,6 +28,7 @@ coverage:
           - bench
           - design-system
           - eslint-config
+          - markdown
           - playwright-coverage
           - schema
           - styled-system
@@ -53,6 +54,9 @@ flag_management:
     - name: eslint-config
       paths:
         - packages/eslint-config/
+    - name: markdown
+      paths:
+        - packages/markdown/
     - name: playwright-coverage
       paths:
         - packages/playwright-coverage/
@@ -106,6 +110,10 @@ component_management:
       name: eslint-config
       paths:
         - packages/eslint-config/**
+    - component_id: markdown
+      name: markdown
+      paths:
+        - packages/markdown/**
     - component_id: playwright-coverage
       name: playwright-coverage
       paths:

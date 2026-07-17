@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { TablePicker } from './TablePicker'
 
 describe('TablePicker', () => {

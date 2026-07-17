@@ -19,6 +19,7 @@ on:
           - all
           - bench
           - design-system
+          - markdown
           - playwright-coverage
           - styled-system
           - vite-plugin-msw-server

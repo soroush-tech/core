@@ -2,11 +2,11 @@ import { createContext, useContext, type ReactNode } from 'react'
 import ReactMarkdown, { type Components, type Options } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import { styled } from '../../index'
-import { Quote, type QuoteProps } from '../../Quote'
-import { Checkbox, type CheckboxProps } from '../../Checkbox'
-import { Image, type ImageProps } from '../../Image'
-import { Link, type LinkProps } from '../../Link'
+import { styled } from '@soroush.tech/design-system'
+import { Quote, type QuoteProps } from '@soroush.tech/design-system/Quote'
+import { Checkbox, type CheckboxProps } from '@soroush.tech/design-system/Checkbox'
+import { Image, type ImageProps } from '@soroush.tech/design-system/Image'
+import { Link, type LinkProps } from '@soroush.tech/design-system/Link'
 import {
   Table,
   TableBody,
@@ -19,10 +19,10 @@ import {
   type TableHeadProps,
   type TableProps,
   type TableRowProps,
-} from '../../Table'
-import { Typography, type TypographyProps } from '../../Typography'
-import { View, type ViewProps } from '../../View'
-import { CodeBlock, type CodeBlockProps } from '../../CodeBlock'
+} from '@soroush.tech/design-system/Table'
+import { Typography, type TypographyProps } from '@soroush.tech/design-system/Typography'
+import { View, type ViewProps } from '@soroush.tech/design-system/View'
+import { CodeBlock, type CodeBlockProps } from '@soroush.tech/design-system/CodeBlock'
 
 const remarkPlugins: Options['remarkPlugins'] = [remarkGfm]
 // `ignoreMissing` keeps unknown fence languages from throwing — they render unhighlighted.

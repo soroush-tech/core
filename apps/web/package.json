@@ -55,6 +55,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@soroush.tech/design-system": "workspace:*",
+    "@soroush.tech/markdown": "workspace:*",
     "@soroush.tech/schema": "workspace:*",
     "@tanstack/react-form": "^1.33.2",
     "@tanstack/react-query": "^5.101.2",

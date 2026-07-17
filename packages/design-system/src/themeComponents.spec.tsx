@@ -22,7 +22,6 @@ import { Icon } from './Icon'
 import { Image } from './Image'
 import { LinearProgress } from './LinearProgress'
 import { Link } from './Link'
-import { Control, Editor, Preview, Toolbar } from './Markdown'
 import { MenuItem } from './MenuItem'
 import { Modal } from './Modal'
 import { NativeSelect } from './NativeSelect'
@@ -151,27 +150,6 @@ const cases: Case[] = [
   { name: 'Image', slot: 'root', label: 'image', ui: <Image src="p.jpg" alt="t" /> },
   { name: 'LinearProgress', slot: 'root', label: 'LinearProgress', ui: <LinearProgress /> },
   { name: 'Link', slot: 'root', label: 'Link', ui: <Link href="/">x</Link> },
-  {
-    name: 'MarkdownEditor',
-    slot: 'root',
-    label: 'MarkdownEditor',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Editor />
-      </Control>
-    ),
-  },
-  { name: 'MarkdownPreview', slot: 'root', label: 'MarkdownPreview', ui: <Preview>t</Preview> },
-  {
-    name: 'MarkdownToolbar',
-    slot: 'root',
-    label: 'MarkdownToolbar',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Toolbar />
-      </Control>
-    ),
-  },
   { name: 'MenuItem', slot: 'root', label: 'MenuItem', ui: <MenuItem value="a">A</MenuItem> },
   {
     name: 'Modal',
@@ -340,27 +318,6 @@ const cases: Case[] = [
     slot: 'secondaryBar',
     label: 'LinearProgressBarSecondary',
     ui: <LinearProgress />,
-  },
-  {
-    name: 'MarkdownToolbar',
-    slot: 'strike',
-    label: 'MarkdownStrike',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Toolbar />
-      </Control>
-    ),
-  },
-  {
-    name: 'MarkdownToolbar',
-    slot: 'tablePickerCell',
-    label: 'MarkdownEditorTableCell',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Toolbar />
-      </Control>
-    ),
-    open: () => fireEvent.click(screen.getByRole('button', { name: 'Table' })),
   },
   {
     name: 'MenuItem',

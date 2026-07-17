@@ -398,12 +398,6 @@ declare module '@emotion/react' {
       'root' | 'track' | 'dash' | 'bar' | 'traveler' | 'segment' | 'secondaryBar'
     >
     Link?: ComponentConfig
-    MarkdownEditor?: ComponentConfig
-    MarkdownPreview?: ComponentConfig
-    MarkdownToolbar?: ComponentConfig<
-      Record<string, unknown>,
-      'root' | 'strike' | 'tablePickerCell'
-    >
     MenuItem?: ComponentConfig<Record<string, unknown>, 'root' | 'check'>
     Modal?: ComponentConfig
     NativeSelect?: ComponentConfig<Record<string, unknown>, 'root' | 'select' | 'icon'>

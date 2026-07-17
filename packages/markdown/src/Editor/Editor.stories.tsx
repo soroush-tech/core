@@ -5,7 +5,7 @@ import {
   textInputColorTokens,
   textInputSizeTokens,
   textInputVariantTokens,
-} from '../../utils/test/storiesOptions'
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
 import { Control } from '../Control'
 import { Editor, type EditorProps } from './Editor'
 
