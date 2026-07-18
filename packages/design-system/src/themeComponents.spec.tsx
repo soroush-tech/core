@@ -13,7 +13,6 @@ import { Button } from './Button'
 import { ButtonGroup } from './ButtonGroup'
 import { Checkbox } from './Checkbox'
 import { CircularProgress } from './CircularProgress'
-import { CodeBlock } from './CodeBlock'
 import { Drawer } from './Drawer'
 import { FormControl } from './FormControl'
 import { FormHelperText } from './FormHelperText'
@@ -136,7 +135,6 @@ const cases: Case[] = [
     label: 'CircularProgress',
     ui: <CircularProgress />,
   },
-  { name: 'CodeBlock', slot: 'root', label: 'CodeBlock', ui: <CodeBlock>code</CodeBlock> },
   { name: 'Drawer', slot: 'root', label: 'Drawer', ui: <Drawer isOpen>x</Drawer> },
   { name: 'FormControl', slot: 'root', label: 'FormControl', ui: <FormControl>x</FormControl> },
   {
@@ -282,7 +280,6 @@ const cases: Case[] = [
     label: 'CircularProgressCircle',
     ui: <CircularProgress />,
   },
-  { name: 'CodeBlock', slot: 'surface', label: 'CodeSurface', ui: <CodeBlock>c</CodeBlock> },
   {
     name: 'LinearProgress',
     slot: 'track',

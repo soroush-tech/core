@@ -12,14 +12,25 @@ import {
   CODE_LANGUAGES,
   HEADING_ACTIONS,
   INLINE_CODE_ACTION,
+  MERMAID_DIAGRAMS,
   TOOLBAR_ACTIONS,
   codeBlockAction,
+  mermaidDiagramAction,
   type LinePrefixAction,
   type ToolbarAction,
 } from '../const'
 import { TablePicker } from './TablePicker'
 
 const HEADING_OPTIONS = HEADING_ACTIONS.map((action) => ({ label: action.label, value: action.id }))
+
+const DIAGRAM_OPTIONS = MERMAID_DIAGRAMS.map((diagram) => ({
+  label: diagram.label,
+  value: diagram.value,
+}))
+
+const DIAGRAM_SNIPPET_BY_VALUE: Record<string, string> = Object.fromEntries(
+  MERMAID_DIAGRAMS.map((diagram) => [diagram.value, diagram.snippet])
+)
 
 const HEADING_BY_ID: Record<string, LinePrefixAction> = Object.fromEntries(
   HEADING_ACTIONS.map((action) => [action.id, action])
@@ -126,6 +137,17 @@ export function Toolbar() {
           options={CODE_LANGUAGES}
           onChange={(value) => dispatch(codeBlockAction(String(value)))}
           selectProps={{ 'aria-label': 'Code block language' }}
+        />
+        <NativeSelect
+          size="sm"
+          variant="outlined"
+          placeholder="Diagram"
+          value=""
+          options={DIAGRAM_OPTIONS}
+          onChange={(value) =>
+            dispatch(mermaidDiagramAction(DIAGRAM_SNIPPET_BY_VALUE[String(value)]))
+          }
+          selectProps={{ 'aria-label': 'Mermaid diagram type' }}
         />
       </Flex>
     </ToolbarRoot>

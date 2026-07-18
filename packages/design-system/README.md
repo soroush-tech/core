@@ -83,7 +83,6 @@ Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `READM
 | `Image`      | Image with styled-system props                                                                                                                                                                                                               |
 | `Avatar`     | User/entity avatar                                                                                                                                                                                                                           |
 | `Table`      | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `@soroush.tech/design-system/Table` |
-| `CodeBlock`  | Scrollable fenced-code surface with a copy-to-clipboard button                                                                                                                                                                               |
 
 ### Inputs & forms
 

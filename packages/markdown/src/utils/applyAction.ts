@@ -138,12 +138,38 @@ function applyLinePrefix(
   return { value: value_, selectionStart: lineStart, selectionEnd: lineStart + prefixed.length }
 }
 
+// If `pos` falls inside a fenced code block (``` … ```), returns the offset at the end of the
+// closing fence line; otherwise null. Lets an inserted block land after the fence instead of
+// nesting inside it (e.g. a mermaid diagram added while the caret sits in another mermaid block).
+function fenceEndAfter(value: string, pos: number): number | null {
+  let offset = 0
+  let openStart = -1
+  for (const line of value.split('\n')) {
+    const lineEnd = offset + line.length
+    if (line.startsWith('```')) {
+      if (openStart === -1) {
+        openStart = offset
+      } else {
+        if (pos >= openStart && pos <= lineEnd) return lineEnd
+        openStart = -1
+      }
+    }
+    offset = lineEnd + 1
+  }
+  return null
+}
+
 function applyInsert(
   action: InsertAction,
   { value, selectionStart, selectionEnd }: EditorSelection
 ): EditorSelection {
-  const value_ = value.slice(0, selectionStart) + action.snippet + value.slice(selectionEnd)
-  const caret = selectionStart + action.snippet.length
+  // Inside a code fence: insert after it, leaving the existing block intact. Otherwise replace the
+  // selection at the caret.
+  const fenceEnd = fenceEndAfter(value, selectionStart)
+  const at = fenceEnd ?? selectionEnd
+  const from = fenceEnd ?? selectionStart
+  const value_ = value.slice(0, from) + action.snippet + value.slice(at)
+  const caret = from + action.snippet.length
   return { value: value_, selectionStart: caret, selectionEnd: caret }
 }
 

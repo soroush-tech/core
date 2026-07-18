@@ -24,6 +24,7 @@ import FirstPageIcon from './icons/FirstPage'
 import FormatListBulletedIcon from './icons/FormatListBulleted'
 import FormatListNumberedIcon from './icons/FormatListNumbered'
 import FormatQuoteIcon from './icons/FormatQuote'
+import FullscreenIcon from './icons/Fullscreen'
 import GridViewIcon from './icons/GridView'
 import GroupsIcon from './icons/Groups'
 import HubIcon from './icons/Hub'
@@ -36,6 +37,7 @@ import MenuIcon from './icons/Menu'
 import NeurologyIcon from './icons/Neurology'
 import PsychologyIcon from './icons/Psychology'
 import RebaseEditIcon from './icons/RebaseEdit'
+import RefreshIcon from './icons/Refresh'
 import SchemaIcon from './icons/Schema'
 import SecurityIcon from './icons/Security'
 import SettingsInputComponentIcon from './icons/SettingsInputComponent'
@@ -48,6 +50,8 @@ import TerminalIcon from './icons/Terminal'
 import VisibilityIcon from './icons/Visibility'
 import WarningIcon from './icons/Warning'
 import WebAssetIcon from './icons/WebAsset'
+import ZoomInIcon from './icons/ZoomIn'
+import ZoomOutIcon from './icons/ZoomOut'
 
 /** Registry of available icons, keyed by their asset file name. */
 export const icons = {
@@ -77,6 +81,7 @@ export const icons = {
   format_list_bulleted: FormatListBulletedIcon,
   format_list_numbered: FormatListNumberedIcon,
   format_quote: FormatQuoteIcon,
+  fullscreen: FullscreenIcon,
   grid_view: GridViewIcon,
   groups: GroupsIcon,
   hub: HubIcon,
@@ -89,6 +94,7 @@ export const icons = {
   neurology: NeurologyIcon,
   psychology: PsychologyIcon,
   rebase_edit: RebaseEditIcon,
+  refresh: RefreshIcon,
   schema: SchemaIcon,
   security: SecurityIcon,
   settings_input_component: SettingsInputComponentIcon,
@@ -101,6 +107,8 @@ export const icons = {
   visibility: VisibilityIcon,
   warning: WarningIcon,
   web_asset: WebAssetIcon,
+  zoom_in: ZoomInIcon,
+  zoom_out: ZoomOutIcon,
 } as const
 
 /** Valid values for the Icon `name` prop — derived from the registry keys. */

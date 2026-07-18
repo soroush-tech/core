@@ -235,5 +235,23 @@ describe('applyAction', () => {
       const result = applyAction(rule, { value: 'ab', selectionStart: 0, selectionEnd: 2 })
       expect(result).toEqual({ value: '---', selectionStart: 3, selectionEnd: 3 })
     })
+
+    it('inserts after the enclosing code fence instead of nesting inside it', () => {
+      // Caret sits inside the `graph TD` line of a mermaid fence.
+      const value = '```mermaid\ngraph TD\n```'
+      const result = applyAction(rule, { value, selectionStart: 15, selectionEnd: 15 })
+      expect(result).toEqual({
+        value: '```mermaid\ngraph TD\n```---',
+        selectionStart: 26,
+        selectionEnd: 26,
+      })
+    })
+
+    it('inserts at the caret when it sits outside any fence', () => {
+      // A fence exists earlier, but the caret is in the text after it.
+      const value = '```js\nx\n```\nafter'
+      const result = applyAction(rule, { value, selectionStart: 14, selectionEnd: 14 })
+      expect(result.value).toBe('```js\nx\n```\naf---ter')
+    })
   })
 })

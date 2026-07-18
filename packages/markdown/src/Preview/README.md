@@ -22,7 +22,7 @@ README bodies.
 
 `slotProps` overrides the props of **any** mapped element — keyed by the markdown tag: `h1`–`h6`,
 `p`, `a`, `strong`, `em`, `ul`, `ol`, `li`, `code`, `blockquote`, `img`, `hr`, `th`, `td`, `pre`
-(the code block wrapper), `input` (the task-list checkbox), and the table wrappers `table`,
+(the fenced `CodeBlock`), `input` (the task-list checkbox), and the table wrappers `table`,
 `thead`, `tbody`, `tr`. Provided props are spread **after** the defaults, so common props like
 `variant` / `color` / `textColor` win:
 
@@ -32,6 +32,21 @@ README bodies.
     p: { color: 'primary', variant: 'body2' },
     h1: { variant: 'h2' },
     a: { underline: 'always' },
+  }}
+>
+  {source}
+</Preview>
+```
+
+A ` ```mermaid ` fence renders through the `Mermaid` component, configured via the `mermaid` slot.
+Its nested `diagram` key forwards to the zoom/pan viewer (`DiagramViewer`) — so **code**, **mermaid**,
+and **diagram** props all flow through `slotProps`:
+
+```tsx
+<Preview
+  slotProps={{
+    pre: {/* CodeBlock props for fenced code */},
+    mermaid: { diagram: { expandable: false } }, // DiagramViewer props for mermaid diagrams
   }}
 >
   {source}

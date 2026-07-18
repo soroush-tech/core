@@ -22,7 +22,9 @@ import {
 } from '@soroush.tech/design-system/Table'
 import { Typography, type TypographyProps } from '@soroush.tech/design-system/Typography'
 import { View, type ViewProps } from '@soroush.tech/design-system/View'
-import { CodeBlock, type CodeBlockProps } from '@soroush.tech/design-system/CodeBlock'
+import { CodeBlock, type CodeBlockProps } from '../CodeBlock'
+import { Mermaid, type MermaidProps } from '../Mermaid'
+import { MERMAID_LANGUAGE, isMermaidBlock, mermaidSource } from './mermaidBlock'
 
 const remarkPlugins: Options['remarkPlugins'] = [remarkGfm]
 // `ignoreMissing` keeps unknown fence languages from throwing — they render unhighlighted.
@@ -67,6 +69,8 @@ export interface PreviewSlotProps {
   thead?: TableHeadProps
   tbody?: TableBodyProps
   tr?: TableRowProps
+  /** Props for a ` ```mermaid ` fence's `Mermaid` renderer — including `diagram` (viewer) props. */
+  mermaid?: Omit<MermaidProps, 'chart'>
 }
 
 const EMPTY_SLOT_PROPS: PreviewSlotProps = {}
@@ -175,8 +179,12 @@ const components: Components = {
       {children}
     </Quote>
   )),
-  code: slotted(({ code }, { className, children }) => {
-    const isBlock = (className ?? '').includes('language-')
+  code: slotted(({ code, mermaid }, { className, children }) => {
+    const classes = className ?? ''
+    if (classes.includes(MERMAID_LANGUAGE)) {
+      return <Mermaid chart={mermaidSource(children)} {...mermaid} />
+    }
+    const isBlock = classes.includes('language-')
     return (
       <Typography
         as="code"
@@ -193,7 +201,9 @@ const components: Components = {
       </Typography>
     )
   }),
-  pre: slotted(({ pre }, { children }) => <CodeBlock {...pre}>{children}</CodeBlock>),
+  pre: slotted(({ pre }, { children }) =>
+    isMermaidBlock(children) ? children : <CodeBlock {...pre}>{children}</CodeBlock>
+  ),
   table: slotted(({ table }, { children }) => (
     <TableContainer my={2}>
       <Table bg="terminal" borderRadius="md" {...table}>

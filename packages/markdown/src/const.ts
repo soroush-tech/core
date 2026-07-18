@@ -215,3 +215,126 @@ const headingAction = (level: number): LinePrefixAction => ({
 
 /** Every heading level the `Markdown` renderer supports (h1–h6) — offered via the toolbar select. */
 export const HEADING_ACTIONS: readonly LinePrefixAction[] = [1, 2, 3, 4, 5, 6].map(headingAction)
+
+/** A mermaid diagram type offered by the toolbar's diagram select, with a starter template. */
+export interface MermaidDiagram {
+  /** Shown in the select. */
+  label: string
+  /** Option value / id. */
+  value: string
+  /** The starter diagram body inserted inside a ` ```mermaid ` fence. */
+  snippet: string
+}
+
+/**
+ * Every mermaid diagram type the renderer can draw, each with a minimal valid starter, validated
+ * against mermaid's own parser.
+ */
+export const MERMAID_DIAGRAMS: readonly MermaidDiagram[] = [
+  { label: 'Flowchart', value: 'flowchart', snippet: 'graph TD\n  A[Start] --> B[End]' },
+  {
+    label: 'Sequence',
+    value: 'sequence',
+    snippet: 'sequenceDiagram\n  Alice->>Bob: Hello\n  Bob-->>Alice: Hi',
+  },
+  {
+    label: 'Class',
+    value: 'class',
+    snippet:
+      'classDiagram\n  class Animal {\n    +String name\n    +move()\n  }\n  Animal <|-- Dog',
+  },
+  {
+    label: 'State',
+    value: 'state',
+    snippet: 'stateDiagram-v2\n  [*] --> Active\n  Active --> [*]',
+  },
+  {
+    label: 'Entity Relationship',
+    value: 'er',
+    snippet: 'erDiagram\n  CUSTOMER ||--o{ ORDER : places',
+  },
+  {
+    label: 'User Journey',
+    value: 'journey',
+    snippet: 'journey\n  title My Day\n  section Work\n    Code: 5: Me',
+  },
+  {
+    label: 'Gantt',
+    value: 'gantt',
+    snippet:
+      'gantt\n  title Schedule\n  dateFormat YYYY-MM-DD\n  section Phase\n    Task A :a1, 2024-01-01, 3d',
+  },
+  {
+    label: 'Git',
+    value: 'git',
+    snippet: 'gitGraph\n  commit\n  branch develop\n  commit\n  checkout main\n  merge develop',
+  },
+  { label: 'Pie', value: 'pie', snippet: 'pie title Pets\n  "Dogs" : 40\n  "Cats" : 60' },
+  {
+    label: 'Mindmap',
+    value: 'mindmap',
+    snippet: 'mindmap\n  root((mindmap))\n    Origins\n    Tools',
+  },
+  {
+    label: 'Timeline',
+    value: 'timeline',
+    snippet: 'timeline\n  title History\n  2021 : Started\n  2022 : Grew',
+  },
+  {
+    label: 'Quadrant',
+    value: 'quadrant',
+    snippet:
+      'quadrantChart\n  title Reach vs Effort\n  x-axis Low --> High\n  y-axis Low --> High\n  Campaign: [0.3, 0.6]',
+  },
+  {
+    label: 'Requirement',
+    value: 'requirement',
+    snippet:
+      'requirementDiagram\n  requirement test_req {\n    id: 1\n    text: the test text.\n    risk: high\n    verifymethod: test\n  }',
+  },
+  {
+    label: 'C4',
+    value: 'c4',
+    snippet:
+      'C4Context\n  title System Context\n  Person(user, "User")\n  System(sys, "System")\n  Rel(user, sys, "Uses")',
+  },
+  { label: 'Sankey', value: 'sankey', snippet: 'sankey-beta\n\nA,B,10\nA,C,5' },
+  {
+    label: 'XY',
+    value: 'xy',
+    snippet:
+      'xychart-beta\n  title "Sales"\n  x-axis [jan, feb, mar]\n  y-axis "Revenue" 0 --> 100\n  bar [30, 50, 80]',
+  },
+  { label: 'Block', value: 'block', snippet: 'block-beta\n  columns 2\n  A B' },
+  {
+    label: 'Packet',
+    value: 'packet',
+    snippet: 'packet-beta\n  0-15: "Source Port"\n  16-31: "Destination Port"',
+  },
+  {
+    label: 'Kanban',
+    value: 'kanban',
+    snippet: 'kanban\n  Todo\n    [Create sample]\n  Doing\n    [In progress]',
+  },
+  {
+    label: 'Architecture',
+    value: 'architecture',
+    snippet:
+      'architecture-beta\n  group api(cloud)[API]\n  service db(database)[Database] in api\n  service server(server)[Server] in api\n  server:R --> L:db',
+  },
+  {
+    label: 'Radar',
+    value: 'radar',
+    snippet: 'radar-beta\n  axis a, b, c, d, e\n  curve c1{1, 2, 3, 4, 5}',
+  },
+  { label: 'Treemap', value: 'treemap', snippet: 'treemap\n  "Root"\n    "A": 10\n    "B": 20' },
+]
+
+/** Builds the insert action that drops a chosen mermaid diagram's starter as a fenced block. */
+export const mermaidDiagramAction = (snippet: string): InsertAction => ({
+  id: 'mermaid',
+  label: 'Diagram',
+  ariaLabel: 'Insert mermaid diagram',
+  kind: 'insert',
+  snippet: `\n\`\`\`mermaid\n${snippet}\n\`\`\`\n`,
+})

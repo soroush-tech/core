@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest'
-import { screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { screen, waitFor } from '@testing-library/react'
 import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { Preview } from './Preview'
+
+// mermaid is browser-only and lazily imported by <Mermaid>; stub it so a ```mermaid block
+// renders a diagram in jsdom.
+vi.mock('mermaid', () => ({
+  default: {
+    initialize: vi.fn(),
+    render: vi.fn().mockResolvedValue({ svg: '<svg data-testid="mermaid-svg"></svg>' }),
+  },
+}))
 
 const content = [
   '# Heading 1',
@@ -121,5 +130,22 @@ describe('Preview', () => {
     // A new inline slotProps object must not remount the tree — same node, updated props.
     rerender(<Preview slotProps={{ p: { color: 'secondary' } }}>{'a paragraph'}</Preview>)
     expect(screen.getByText('a paragraph')).toBe(paragraph)
+  })
+
+  it('renders a mermaid fence as a diagram instead of a code block', async () => {
+    renderWithTheme(<Preview>{'```mermaid\ngraph TD; A-->B\n```'}</Preview>)
+    await waitFor(() => expect(screen.getByTestId('mermaid-svg')).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Expand diagram' })).toBeInTheDocument()
+  })
+
+  it('forwards mermaid slotProps to the diagram viewer', async () => {
+    renderWithTheme(
+      <Preview slotProps={{ mermaid: { diagram: { expandable: false } } }}>
+        {'```mermaid\ngraph TD; A-->B\n```'}
+      </Preview>
+    )
+    await waitFor(() => expect(screen.getByTestId('mermaid-svg')).toBeInTheDocument())
+    // expandable: false → the diagram viewer omits its expand-to-fullscreen control.
+    expect(screen.queryByRole('button', { name: 'Expand diagram' })).toBeNull()
   })
 })

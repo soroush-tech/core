@@ -2,7 +2,7 @@ import { fireEvent, screen, within } from '@testing-library/react'
 import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { MarkdownContext, type MarkdownContextValue } from '../MarkdownContext'
-import { HEADING_ACTIONS, TOOLBAR_ACTIONS } from '../const'
+import { HEADING_ACTIONS, MERMAID_DIAGRAMS, TOOLBAR_ACTIONS, mermaidDiagramAction } from '../const'
 import { Toolbar } from './Toolbar'
 
 const dispatch = vi.fn()
@@ -47,6 +47,15 @@ describe('Toolbar', () => {
     renderToolbar()
     fireEvent.click(screen.getByRole('button', { name: 'Bold' }))
     expect(dispatch).toHaveBeenCalledWith(TOOLBAR_ACTIONS.find((a) => a.id === 'bold'))
+  })
+
+  it('inserts the chosen mermaid diagram from the diagram select', () => {
+    renderToolbar()
+    fireEvent.change(screen.getByRole('combobox', { name: 'Mermaid diagram type' }), {
+      target: { value: 'sequence' },
+    })
+    const sequence = MERMAID_DIAGRAMS.find((diagram) => diagram.value === 'sequence')
+    expect(dispatch).toHaveBeenCalledWith(mermaidDiagramAction(sequence!.snippet))
   })
 
   it('dispatches the chosen heading level', () => {

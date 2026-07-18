@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { renderWithTheme } from '../utils/test/renderWithTheme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { CodeBlock } from './CodeBlock'
 
 const writeText = vi.fn()

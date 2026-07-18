@@ -82,6 +82,7 @@ Read the relevant doc before working in that area:
 | Layer                 | Convention doc                            | What it covers                                                                                                              |
 | --------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Design system         | `packages/design-system/design-system.md` | Styled components, `system()`, `shouldForwardProp`, Storybook argTypes, token rules                                         |
+| Markdown package      | `packages/markdown/markdown.md`           | Companion component library — **follows design-system.md verbatim** + packages.md; theme-slot augmentation, lazy mermaid    |
 | Theming/customization | `packages/design-system/docs/`            | `theming.md` (createTheme, defaults, augmentation) · `customization.md` (`theme.components`)                                |
 | Common components     | `src/common/common.md`                    | Folder structure, composition rules, custom CSS, testing with `renderWithTheme`                                             |
 | Sections              | `src/section/section.md`                  | Page-specific composed sections: folder structure, co-located data/logic, testing                                           |

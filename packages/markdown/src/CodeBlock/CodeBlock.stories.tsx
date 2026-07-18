@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { bg, p, m } from '../utils/test/storiesArgs'
+import { bg, p, m } from '@soroush.tech/design-system/utils/test/storiesArgs'
 import { CodeBlock } from './CodeBlock'
 
 const SAMPLE = `function greet(name) {

@@ -4,6 +4,7 @@ import { render, cleanup, fireEvent, screen } from '@testing-library/react'
 import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
 import { createTheme, baseTheme } from '@soroush.tech/design-system/themes'
 import type { ThemeComponents } from '@emotion/react'
+import { CodeBlock } from './CodeBlock'
 import { Control } from './Control'
 import { Editor } from './Editor'
 import { Preview } from './Preview'
@@ -51,6 +52,8 @@ const cases: Case[] = [
     ),
   },
   { name: 'MarkdownPreview', slot: 'root', label: 'MarkdownPreview', ui: <Preview>t</Preview> },
+  { name: 'CodeBlock', slot: 'root', label: 'CodeBlock', ui: <CodeBlock>code</CodeBlock> },
+  { name: 'CodeBlock', slot: 'surface', label: 'CodeSurface', ui: <CodeBlock>c</CodeBlock> },
   {
     name: 'MarkdownToolbar',
     slot: 'root',

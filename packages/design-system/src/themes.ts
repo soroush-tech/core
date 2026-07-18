@@ -382,7 +382,6 @@ declare module '@emotion/react' {
     Card?: ComponentConfig<CardOwnerState, 'root' | 'title' | 'caption' | 'icon'>
     Checkbox?: ComponentConfig<Record<string, unknown>, 'root' | 'input' | 'icon'>
     CircularProgress?: ComponentConfig<Record<string, unknown>, 'root' | 'track' | 'circle'>
-    CodeBlock?: ComponentConfig<Record<string, unknown>, 'root' | 'surface'>
     Drawer?: ComponentConfig
     Flex?: ComponentConfig
     FocusTrap?: ComponentConfig

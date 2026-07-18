@@ -18,6 +18,63 @@ const SAMPLE = [
   '| Name | Role |',
   '| :--- | ---: |',
   '| Ada  | Dev  |',
+  '',
+  '```mermaid',
+  'sequenceDiagram',
+  'Alice->>John: Hello John, how are you?',
+  'loop HealthCheck',
+  '    John->>John: Fight against hypochondria',
+  'end',
+  'Note right of John: Rational thoughts!',
+  'John-->>Alice: Great!',
+  'John->>Bob: How about you?',
+  'Bob-->>John: Jolly good!',
+  '```',
+].join('\n')
+
+const MERMAID = [
+  '# Flow diagram',
+  '',
+  'A fenced `mermaid` block renders as a themed diagram instead of a code block:',
+  '',
+  '```mermaid',
+  'graph TD',
+  '  A[Markdown source] --> B{Fenced mermaid?}',
+  '  B -->|yes| C[Render as diagram]',
+  '  B -->|no| D[Render as code]',
+  '```',
+].join('\n')
+
+// A diagram can carry its own `config` frontmatter — mermaid applies these `themeVariables`
+// per-diagram, overriding the theme-derived defaults the Mermaid component supplies.
+const MERMAID_CONFIG = [
+  '```mermaid',
+  '---',
+  'config:',
+  "  theme: 'base'",
+  '  themeVariables:',
+  "    primaryColor: '#BB2528'",
+  "    primaryTextColor: '#fff'",
+  "    primaryBorderColor: '#7C0000'",
+  "    lineColor: '#F8B229'",
+  "    secondaryColor: '#006100'",
+  "    tertiaryColor: '#fff'",
+  '---',
+  'graph TD',
+  '  A[Christmas] -->|Get money| B(Go shopping)',
+  '  B --> C{Let me think}',
+  '  B --> G[/Another/]',
+  '  C ==>|One| D[Laptop]',
+  '  C -->|Two| E[iPhone]',
+  '  C -->|Three| F[fa:fa-car Car]',
+  '  subgraph section',
+  '    C',
+  '    D',
+  '    E',
+  '    F',
+  '    G',
+  '  end',
+  '```',
 ].join('\n')
 
 const meta: Meta<typeof Preview> = {
@@ -61,4 +118,14 @@ export const WithOverrides: Story = {
       a: { underline: 'always' },
     },
   },
+}
+
+// A ` ```mermaid ` fenced block is rendered as a diagram, themed from the active theme.
+export const MermaidDiagram: Story = {
+  args: { children: MERMAID },
+}
+
+// A diagram overriding its colors via inline `config` frontmatter `themeVariables`.
+export const MermaidConfig: Story = {
+  args: { children: MERMAID_CONFIG },
 }

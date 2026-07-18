@@ -1,6 +1,6 @@
 # Packages
 
-Conventions for everything under `packages/` — the workspace's shared code. Most packages are framework-agnostic tooling; `design-system` is the React component library. Each folder is its own pnpm package, globbed by `packages/*` in `pnpm-workspace.yaml` and consumed by apps (and by each other) via `workspace:*`.
+Conventions for everything under `packages/` — the workspace's shared code. Most packages are framework-agnostic tooling; `design-system` is the React component library, and `markdown` is a companion React library that builds on it (a headless markdown editor/renderer). Both React packages follow [`design-system/design-system.md`](./design-system/design-system.md) for component conventions — the `markdown` package's specifics are in [`markdown/markdown.md`](./markdown/markdown.md). Each folder is its own pnpm package, globbed by `packages/*` in `pnpm-workspace.yaml` and consumed by apps (and by each other) via `workspace:*`.
 
 For a plain-English overview of what currently lives here, see [`README.md`](./README.md).
 
