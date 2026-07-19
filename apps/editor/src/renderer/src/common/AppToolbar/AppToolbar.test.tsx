@@ -9,12 +9,21 @@ const actions = {
   onOpen: vi.fn(),
   onSave: vi.fn(),
   onSaveAs: vi.fn(),
+  onUndo: vi.fn(),
+  onRedo: vi.fn(),
 }
 
 const renderToolbar = (props: Partial<AppToolbarProps> = {}) =>
   render(
     <ThemeProvider theme={editorTheme}>
-      <AppToolbar filePath={null} isDirty={false} {...actions} {...props} />
+      <AppToolbar
+        filePath={null}
+        isDirty={false}
+        canUndo={false}
+        canRedo={false}
+        {...actions}
+        {...props}
+      />
     </ThemeProvider>
   )
 
@@ -38,6 +47,21 @@ describe('AppToolbar', () => {
     ['Save As', 'onSaveAs'],
   ] as const)('fires %s', async (label, handler) => {
     renderToolbar()
+    await userEvent.click(screen.getByRole('button', { name: label }))
+    expect(actions[handler]).toHaveBeenCalledTimes(1)
+  })
+
+  it('disables undo/redo until history exists', () => {
+    renderToolbar()
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Redo' })).toBeDisabled()
+  })
+
+  it.each([
+    ['Undo', 'onUndo'],
+    ['Redo', 'onRedo'],
+  ] as const)('fires %s when enabled', async (label, handler) => {
+    renderToolbar({ canUndo: true, canRedo: true })
     await userEvent.click(screen.getByRole('button', { name: label }))
     expect(actions[handler]).toHaveBeenCalledTimes(1)
   })
