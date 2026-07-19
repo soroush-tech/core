@@ -68,7 +68,7 @@ type MyBgProp = keyof Theme['background'] // 'backdrop' | 'modal' | 'primary' | 
 
 Full consumer guide: [`docs/customization.md`](./docs/customization.md); theming overview: [`docs/theming.md`](./docs/theming.md).
 
-The engine `styled` (in `src/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles — but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
+The engine `styled` (in `src/style/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles — but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
 
 Rules when converting a component:
 
