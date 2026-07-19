@@ -176,6 +176,12 @@ describe('checkRatio', () => {
       /baseline case "nope" not found among: color\(\) :: local, color\(\) :: upstream/
     )
   })
+
+  it('throws when only the baseline survived — a crashed case must not pass', () => {
+    expect(() => checkRatio([{ label: 'n :: base', avg: 100, p75: 100 }], 'base', 80)).toThrow(
+      /no case besides the baseline "base" produced results/
+    )
+  })
 })
 
 describe('formatRatioFailure', () => {

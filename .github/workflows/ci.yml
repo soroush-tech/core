@@ -266,6 +266,56 @@ jobs:
           flags: ${{ matrix.flag }}
           name: ${{ matrix.dir }}
 
+  # Performance gate: styled-system's bench suite runs in the pinned Docker
+  # sandbox against the last npm release (via soroush-tech/bench-action); any
+  # case below the minimum speed ratio fails the job — and, via ci-ok, the PR.
+  # Runs when styled-system or the bench tooling changed (infra changes put
+  # every package in the matrix, so they trigger it too).
+  bench:
+    needs: [prepare, lint]
+    if: >-
+      contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'styled-system') ||
+      contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'bench')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # bench-action posts/updates the results comment
+    environment: CI
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: needs.prepare.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ needs.prepare.outputs.node_version }}
+          cache: ${{ needs.prepare.outputs.manager }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
+
+      # The bench file imports this package's built dist so the comparison
+      # against the npm release's prebuilt dist is like-for-like.
+      - name: Build styled-system
+        run: ${{ needs.prepare.outputs.runner }} --filter @soroush.tech/styled-system build
+
+      - name: Run benchmark gate
+        uses: soroush-tech/bench-action@1e0ea2c76714bdd5dbbe1ca0b88d500dc24683a7 # v1
+        with:
+          bench-dir: packages/styled-system/bench
+          baseline-case: previous
+          min-ratio: '80'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   # Cloudflare Worker API.
   worker:
     needs: [prepare, lint]
@@ -539,7 +589,7 @@ jobs:
   ci-ok:
     name: ci-ok
     if: always()
-    needs: [prepare, lint, packages, worker, web, e2e]
+    needs: [prepare, lint, packages, bench, worker, web, e2e]
     runs-on: ubuntu-latest
     permissions: {}
     timeout-minutes: 5

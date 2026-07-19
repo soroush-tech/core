@@ -139,8 +139,10 @@ export interface RatioBreach {
  * returns the ones whose speed ratio (`baseline.avg / avg`, as a percent)
  * falls below `minRatioPct` — e.g. a 80% target fails any case slower than
  * 1.25× the baseline. The baseline is matched by its case key (the part after
- * the `name :: ` prefix) or by full label. Throws when no row matches, so a
- * typo'd key can't silently pass the gate.
+ * the `name :: ` prefix) or by full label. Throws when no row matches — or
+ * when no *other* row survived to compare (a config always has ≥ 2 cases, so
+ * an empty comparison means a case crashed) — so neither a typo'd key nor a
+ * crashed case can silently pass the gate.
  */
 export function checkRatio(
   rows: CaseRow[],
@@ -154,8 +156,13 @@ export function checkRatio(
     const labels = rows.map((r) => r.label).join(', ')
     throw new Error(`bench: baseline case "${baselineCase}" not found among: ${labels}`)
   }
-  return rows
-    .filter((r) => r !== baseline)
+  const others = rows.filter((r) => r !== baseline)
+  if (others.length === 0) {
+    throw new Error(
+      `bench: no case besides the baseline "${baselineCase}" produced results — nothing to gate`
+    )
+  }
+  return others
     .map((r) => ({ label: r.label, ratioPct: (baseline.avg / r.avg) * 100 }))
     .filter((r) => r.ratioPct < minRatioPct)
 }

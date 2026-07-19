@@ -30,24 +30,27 @@ concurrency:
 flowchart TD
     prepare --> lint
     lint --> packages
+    lint --> bench
     lint --> worker
     lint --> web
     web --> e2e
     prepare --> packages
+    prepare --> bench
     prepare --> worker
     prepare --> web
     prepare --> e2e
     prepare --> ciok["ci-ok"]
     lint --> ciok
     packages --> ciok
+    bench --> ciok
     worker --> ciok
     web --> ciok
     e2e --> ciok
 ```
 
-`packages`, `worker`, `web`, and `e2e` only run when their area changed (see
-[`prepare`](#job-prepare)). `ci-ok` runs `if: always()` so it can turn skips into a
-pass and real failures into a fail.
+`packages`, `bench`, `worker`, `web`, and `e2e` only run when their area changed
+(see [`prepare`](#job-prepare)). `ci-ok` runs `if: always()` so it can turn skips
+into a pass and real failures into a fail.
 
 ---
 
@@ -138,6 +141,39 @@ the job pins `PLAYWRIGHT_BROWSERS_PATH` so they share the `web`/`e2e` browser ca
 
 ---
 
+## Job: `bench`
+
+`needs: [prepare, lint]` · `environment: CI` · ubuntu · 20 min. The performance
+gate: runs `packages/styled-system/bench/*.bench.ts` in the pinned Docker
+sandbox via the standalone
+[`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action)
+(SHA-pinned like every non-`actions/*` action) and fails when any case's speed
+drops below **80%** of the `previous` baseline (the last
+`@soroush.tech/styled-system` npm release, installed inside the sandbox via
+the `latest` dist-tag). Results are upserted as one sticky PR comment.
+
+Change-gated without its own filter: it runs when `styled-system` or `bench`
+appears in `changed_packages` — and since a root/workflow change puts every
+package in that matrix, infra changes (including edits to `ci.yml` itself,
+e.g. bumping the pinned action SHA) trigger it too.
+
+```yaml
+if: >-
+  contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'styled-system') ||
+  contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'bench')
+```
+
+| #   | Step                                                      | Detail                                                                                                         |
+| --- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                           |
+| 5   | Build styled-system                                       | the bench file imports the built dist, so the comparison against npm's prebuilt dist is fair                   |
+| 6   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@<sha> # v1` with `baseline-case: previous`, `min-ratio: '80'`, `GITHUB_TOKEN` |
+
+The job needs `pull-requests: write` for the results comment; on a read-only
+token the comment is skipped with a warning and only the gate decides the job.
+
+---
+
 ## Job: `worker`
 
 `needs: [prepare, lint]` · `if: worker == 'true'` · `environment: CI` · ubuntu · 15 min.
@@ -224,7 +260,7 @@ Firefox and WebKit run for cross-engine signal only.
 
 ## Job: `ci-ok`
 
-`if: always()` · `needs: [prepare, lint, packages, worker, web, e2e]` · ubuntu · 5 min.
+`if: always()` · `needs: [prepare, lint, packages, bench, worker, web, e2e]` · ubuntu · 5 min.
 The single required check for branch protection.
 
 ```yaml
