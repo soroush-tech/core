@@ -16,6 +16,7 @@
     "gen:publish-options": "node scripts/gen-publish-options.mjs",
     "check:release-notes": "node scripts/check-release-notes.mjs",
     "dev": "pnpm --parallel -r dev",
+    "dev:editor": "pnpm --filter @soroush/editor dev",
     "dev:web": "pnpm --filter @soroush/web dev",
     "dev:api": "pnpm --filter @soroush/api dev",
     "build": "pnpm --filter @soroush/web build",
