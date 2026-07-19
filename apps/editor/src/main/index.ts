@@ -1,6 +1,9 @@
+import { spawn } from 'node:child_process'
 import { join } from 'node:path'
 import { app, BrowserWindow, session } from 'electron'
+import { editSelection } from './claude/editSelection'
 import { buildCspResponseHeaders } from './csp'
+import { registerClaudeHandlers } from './ipc/claudeHandlers'
 import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
 
 // Set by electron-vite in dev; production loads the built renderer from disk.
@@ -32,6 +35,7 @@ app.whenReady().then(() => {
   })
 
   const fileState = registerFileHandlers(() => mainWindow!)
+  registerClaudeHandlers((request) => editSelection(request, spawn))
 
   // Closing with unsaved changes prompts before the window is destroyed.
   app.on('browser-window-created', (_event, window) => {

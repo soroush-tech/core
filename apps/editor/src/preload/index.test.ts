@@ -1,4 +1,4 @@
-import { FILE_CHANNELS } from '../shared/ipc'
+import { CLAUDE_CHANNELS, FILE_CHANNELS } from '../shared/ipc'
 import type { EditorAPI } from './index'
 
 const { exposeInMainWorld, invoke } = vi.hoisted(() => ({
@@ -33,5 +33,8 @@ describe('preload editorAPI', () => {
 
     await api.file.confirmDiscard()
     expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.confirmDiscard)
+
+    await api.claude.editSelection('old', 'improve')
+    expect(invoke).toHaveBeenLastCalledWith(CLAUDE_CHANNELS.editSelection, 'old', 'improve')
   })
 })
