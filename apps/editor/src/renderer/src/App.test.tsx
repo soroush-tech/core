@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
 
@@ -49,6 +49,21 @@ describe('App', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'New' }))
     expect(screen.getByLabelText('Markdown source')).toHaveValue('')
+  })
+
+  it('undoes and redoes typed edits from the toolbar', async () => {
+    render(<App />)
+    const source = screen.getByLabelText('Markdown source')
+    await userEvent.type(source, 'hi')
+
+    const undoButton = screen.getByRole('button', { name: 'Undo' })
+    await waitFor(() => expect(undoButton).toBeEnabled(), { timeout: 2000 })
+
+    await userEvent.click(undoButton)
+    expect(source).toHaveValue('')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Redo' }))
+    expect(source).toHaveValue('hi')
   })
 
   it('shows IPC failures as an alert', async () => {
