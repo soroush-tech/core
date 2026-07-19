@@ -5,11 +5,11 @@ import {
   createShouldForwardProp,
   props,
   space,
-  useTheme,
   type SpaceProps,
 } from '../index'
+import { useTheme } from '../theme'
 import { alpha } from '../utils'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

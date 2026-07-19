@@ -5,9 +5,9 @@ priority** in the override chain — a [`FormControl`](../FormControl/README.md)
 a control always wins.
 
 **Architecture:** `Form` is purely presentational + context. It holds no form state, runs no
-validation, and is not tied to any form library — [`Field`](../Field/README.md) is the only piece
-that bridges to TanStack Form. Pass `onSubmit` straight through; wire it to your form library's submit
-handler (e.g. `form.handleSubmit()`).
+validation, and is not tied to any form library — bridging to a specific one (e.g. TanStack Form's
+`Field`) is left to the consuming app. Pass `onSubmit` straight through; wire it to your form
+library's submit handler (e.g. `form.handleSubmit()`).
 
 ---
 

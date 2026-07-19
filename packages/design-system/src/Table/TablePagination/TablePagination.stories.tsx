@@ -6,12 +6,12 @@ import {
   paginationCount,
   shouldShowFirstButton,
   shouldShowLastButton,
-} from '../../utils/test/storiesArgs'
+} from '@soroush.tech/design-system/utils/test/storiesArgs'
 import {
   tableSizeTokens,
   tableCellPaddingTokens,
   textColorTokens,
-} from '../../utils/test/storiesOptions'
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
 import { Table } from '../Table'
 import { TableHead } from '../TableHead'
 import { TableBody } from '../TableBody'

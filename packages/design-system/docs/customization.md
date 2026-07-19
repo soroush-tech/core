@@ -30,7 +30,7 @@ const brand = createTheme(baseTheme, {
 
 The `Theme/Customization` Storybook story renders all three mechanisms under a customized theme and is locked by Chromatic — it is the living contract.
 
-Every styled element is registered — the `ThemeComponents` interface in `src/themes.ts` is the authoritative key/slot list, so `styleOverrides` reaches every root and every sub-element slot (Switch's `track`/`thumb`/`input`, Select's `listbox`, LinearProgress's bars, …), including the layout primitives `View`/`Flex`/`Grid`. Two cautions: an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component (use those keys for app-wide policy only), and hidden/structural slots (`input`, `valueGhost`, `positioner`) carry accessibility or layout behavior — restyle their looks, not their geometry/visibility. Note that `defaultProps` is honored only by components that resolve props through `useDefaultProps` (currently `Button` and `Card`); everywhere else, use `styleOverrides`/`variants`.
+Every styled element is registered — the `ThemeComponents` interface in `src/theme/themes.ts` is the authoritative key/slot list, so `styleOverrides` reaches every root and every sub-element slot (Switch's `track`/`thumb`/`input`, Select's `listbox`, LinearProgress's bars, …), including the layout primitives `View`/`Flex`/`Grid`. Two cautions: an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component (use those keys for app-wide policy only), and hidden/structural slots (`input`, `valueGhost`, `positioner`) carry accessibility or layout behavior — restyle their looks, not their geometry/visibility. Note that `defaultProps` is honored only by components that resolve props through `useDefaultProps` (currently `Button` and `Card`); everywhere else, use `styleOverrides`/`variants`.
 
 ---
 
@@ -59,7 +59,7 @@ Extra variant entries matched by props: an entry applies when every key in its `
 **New variant values** need two things — the type registration and the styles:
 
 ```ts
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/theme' {
   interface ButtonVariants {
     dashed: true // widens ButtonVariant so variant="dashed" typechecks
   }
@@ -97,9 +97,9 @@ The mechanism is infrastructure, not just configuration. Create your roots with 
 
 ```ts
 import { styled } from '@soroush.tech/design-system'
-import type { ComponentConfig } from '@soroush.tech/design-system/themes'
+import type { ComponentConfig } from '@soroush.tech/design-system/theme'
 
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/theme' {
   interface ThemeComponents {
     MyWidget?: ComponentConfig<{ tone?: 'calm' | 'loud' }, 'root' | 'handle'>
   }

@@ -13,7 +13,7 @@ import {
 } from '../index'
 import type { ButtonColor } from '../Button'
 import { clamp } from '../utils'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type CircularProgressVariant = 'indeterminate' | 'determinate'
 export type CircularProgressColor = ButtonColor | 'inherit'

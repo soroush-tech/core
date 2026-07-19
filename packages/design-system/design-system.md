@@ -6,26 +6,26 @@ How the theme is built, how components are structured, and the conventions every
 
 ## Stack
 
-| Concern                   | Library                                                                |
-| ------------------------- | ---------------------------------------------------------------------- |
-| CSS-in-JS                 | `@emotion/styled` + `@emotion/react`                                   |
-| Theme tokens              | `styled-system` (space, layout, typography, flexbox, border, position) |
-| Custom prop→scale mapping | `styled-system` `system()`                                             |
-| Prop filtering            | `@styled-system/should-forward-prop`                                   |
-| Component stories         | Storybook v10 (`@storybook/react-vite`)                                |
-| Theme augmentation        | `declare module '@emotion/react'` block in `src/themes.ts`             |
+| Concern                   | Library                                                                                                                |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| CSS-in-JS                 | `@emotion/styled` + `@emotion/react` (internal only — see `src/theme/emotion.ts`)                                      |
+| Theme tokens              | `styled-system` (space, layout, typography, flexbox, border, position)                                                 |
+| Custom prop→scale mapping | `styled-system` `system()`                                                                                             |
+| Prop filtering            | `@styled-system/should-forward-prop`                                                                                   |
+| Component stories         | Storybook v10 (`@storybook/react-vite`)                                                                                |
+| Theme augmentation        | native interfaces owned by `src/theme/themes.ts`, augmentable via `declare module '@soroush.tech/design-system/theme'` |
 
 ---
 
 ## Theme
 
-`@soroush.tech/design-system/themes.ts` exports `baseTheme` — one complete, dark-schemed default `Theme`. Its color values are raw hex literals: palettes belong to the consumer, who owns the brand color files and builds every brand theme with `createTheme(baseTheme, …)` (this site's palettes and `light`/`dark` themes live in `apps/web/src/theme/`). Components must never hardcode colors — they read theme tokens only; `baseTheme` is the single place in the package where hex values are allowed.
+`src/theme/themes.ts` exports `baseTheme` — one complete, dark-schemed default `Theme`. Its color values are raw hex literals: palettes belong to the consumer, who owns the brand color files and builds every brand theme with `createTheme(baseTheme, …)` (this site's palettes and `light`/`dark` themes live in `apps/web/src/theme/`). Components must never hardcode colors — they read theme tokens only; `baseTheme` is the single place in the package where hex values are allowed.
 
 Rgba opacity is expressed via hex suffix — `#FFFFFFB3` = rgba(255,255,255,0.7). Never use `rgba()` strings directly.
 
 ### Theme scales
 
-Each scale is a named, consumer-extensible interface (declared in `src/themes.ts`); the `Theme` composition wraps them in `OpenScale<…>` mapped types so styled-system's Record-based constraint is satisfied while `keyof` keeps the literal keys.
+Each scale is a named, consumer-extensible interface (declared in `src/theme/themes.ts`); the `Theme` composition wraps them in `OpenScale<…>` mapped types so styled-system's Record-based constraint is satisfied while `keyof` keeps the literal keys.
 
 | Scale           | Key in Theme           | Interface                 | Prop type                       |
 | --------------- | ---------------------- | ------------------------- | ------------------------------- |
@@ -46,30 +46,29 @@ Each scale is a named, consumer-extensible interface (declared in `src/themes.ts
 | Icon sizes      | `theme.icon`           | `ThemeIconSizes`          | `keyof Theme['icon']`           |
 | Switch tokens   | `theme.switch`         | `ThemeSwitch`             | —                               |
 | Shadow tokens   | `theme.shadow`         | `ThemeShadow`             | —                               |
-| Syntax          | `theme.syntax`         | `ThemeSyntax`             | —                               |
 
 ### Theme augmentation
 
-The entire type layer lives inside one `declare module '@emotion/react'` block in `src/themes.ts` — emotion's module is the augmentation surface (not this package's own specifier) because the published d.ts is chunk-bundled by tsdown, and only an external, stable module merges reliably for both monorepo-source and npm consumers. `Theme` imported from `@emotion/react` (or re-exported from this package) is therefore the full custom theme.
+The entire type layer is declared natively — as plain exported interfaces owned by this package — in `src/theme/themes.ts`. `Theme` is this package's own type, not Emotion's: Emotion is an internal implementation detail (see `src/theme/emotion.ts`) and is never part of the public type surface. `declare module '@soroush.tech/design-system/theme'` is the augmentation surface consumers use to extend scales by declaration merging; it survives tsdown's chunked d.ts output the same way augmenting an external module used to (verified by `type-tests/augmentation.ts`).
 
 ```ts
-import { type Theme } from '@emotion/react'
+import { type Theme } from '@soroush.tech/design-system/theme'
 
 type MyColorProp = keyof Theme['text'] // 'inherit' | 'initial' | 'primary' | ...
 type MyBgProp = keyof Theme['background'] // 'backdrop' | 'modal' | 'primary' | ...
 ```
 
-**Consumers of the published package** extend scales by augmenting `@emotion/react` (see the README's "Theming" section), build the values with `createTheme(base, overrides)`, and pass the finished theme to `ThemeProvider`'s `theme` prop. `type-tests/augmentation.ts` (run by `pnpm test:types`) verifies this recipe against the real dist d.ts.
+**Consumers of the published package** extend scales by augmenting `@soroush.tech/design-system/theme` (see the README's "Theming" section), build the values with `createTheme(base, overrides)`, and pass the finished theme to `ThemeProvider`'s `theme` prop. `type-tests/augmentation.ts` (run by `pnpm test:types`) verifies this recipe against the real dist d.ts.
 
-**The in-repo app must NOT augment scale interfaces with new keys** — the monorepo consumes package _source_, so a merged required key would fail the `light: Theme` completeness check inside `src/themes.ts`. The app only overrides values (`apps/web/src/theme/themes.ts` via `createTheme`).
+**The in-repo app must NOT augment scale interfaces with new keys** — the monorepo consumes package _source_, so a merged required key would fail the `light: Theme` completeness check inside `src/theme/themes.ts`. The app only overrides values (`apps/web/src/theme/themes.ts` via `createTheme`).
 
-**New scale interfaces must be declared inside the `declare module '@emotion/react'` block** (as `themes.ts` does), so member identity stays stable across d.ts chunks.
+**New scale interfaces must be declared natively in `src/theme/themes.ts`** (not inside a `declare module` block — this package owns them outright), so member identity stays stable across d.ts chunks.
 
 ### Per-component customization (`theme.components`)
 
 Full consumer guide: [`docs/customization.md`](./docs/customization.md); theming overview: [`docs/theming.md`](./docs/theming.md).
 
-The engine `styled` (in `src/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles — but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
+The engine `styled` (in `src/style/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles — but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
 
 Rules when converting a component:
 
@@ -80,7 +79,7 @@ Rules when converting a component:
 
 `Button` is the reference implementation; `Theme/Customization` in Storybook is the living contract, locked by Chromatic.
 
-**Every styled element is named** — every `styled(...)` call in the package carries a `name` (roots) or `name` + `slot` (sub-elements), including the layout primitives `View`/`Flex`/`Grid`. The full key/slot list is the `ThemeComponents` interface in `src/themes.ts`, and `src/themeComponents.spec.tsx` locks each element's `styleOverrides` wiring. `pnpm audit:styled` regenerates `styled-audit.md` and reports any call that loses its `name` (`--check` exits non-zero); intentional omissions must carry `// audit-styled-ignore: <reason>` on the preceding line. Beware that an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component — that reach is deliberate, so use those keys for app-wide policy only.
+**Every styled element is named** — every `styled(...)` call in the package carries a `name` (roots) or `name` + `slot` (sub-elements), including the layout primitives `View`/`Flex`/`Grid`. The full key/slot list is the `ThemeComponents` interface in `src/theme/themes.ts`, and `src/themeComponents.spec.tsx` locks each element's `styleOverrides` wiring. `pnpm audit:styled` regenerates `styled-audit.md` and reports any call that loses its `name` (`--check` exits non-zero); intentional omissions must carry `// audit-styled-ignore: <reason>` on the preceding line. Beware that an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component — that reach is deliberate, so use those keys for app-wide policy only.
 
 ---
 
@@ -88,7 +87,7 @@ Rules when converting a component:
 
 **Every component lives in its own folder** `packages/design-system/src/ComponentName/` with: `index.ts` (`export * from './ComponentName'`) · `ComponentName.tsx` · `README.md` · `ComponentName.stories.tsx` · `ComponentName.test.tsx`
 
-**Prop types** — derive from `Theme` (imported from `@emotion/react`, augmented by the type layer in `src/themes.ts`), never write manual unions:
+**Prop types** — derive from `Theme` (this package's own type, owned by `src/theme/themes.ts` — Emotion is internal-only), never write manual unions:
 
 - `color?: keyof Theme['text']`
 - `bg?: keyof Theme['background']`
@@ -125,7 +124,7 @@ This reads the current Typography files and `design-system.md` before generating
 Extend the styled-system prop groups and declare custom props. Derive types from `Theme` — never write manual unions.
 
 ```ts
-import { type Theme } from '@emotion/react'
+import { type Theme } from '@soroush.tech/design-system/theme'
 
 // Derive from Theme — stays in sync automatically
 export type TextColorToken  = keyof Theme['text']

@@ -13,7 +13,7 @@ import {
 } from '../index'
 import type { ButtonColor } from '../Button'
 import { clamp } from '../utils'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type LinearProgressVariant = 'indeterminate' | 'determinate' | 'query'
 export type LinearProgressColor = ButtonColor | 'inherit'

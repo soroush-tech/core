@@ -1,9 +1,9 @@
 import { useContext } from 'react'
-import { type Theme } from '@emotion/react'
-import { useTheme } from '../hooks/useTheme'
+import { type Theme } from '../theme/themes'
+import { useTheme } from '../theme'
 import { FormContext } from '../Form/FormContext'
 import { FormControlContext } from './FormControlContext'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 /** Explicit props a control passes in — always win over context when defined. */
 export interface FormControlOverrides {

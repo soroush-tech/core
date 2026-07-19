@@ -6,7 +6,7 @@ import { Typography } from '@soroush.tech/design-system/Typography'
 import { Image } from '@soroush.tech/design-system/Image'
 import { Icon } from '@soroush.tech/design-system/Icon'
 import dataCenter from 'src/assets/datacenter-server-room.png?w=256;384;512&format=avif;webp;png&as=picture'
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
+import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { dark } from 'src/theme/themes'
 
 // Cover-fill bento tile — ~792px tall once the grid goes multi-column at the 52em (832px)

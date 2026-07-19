@@ -7,8 +7,8 @@ import {
   borderWidth,
   borderStyle,
   borderColor,
-} from '../../utils/test/storiesArgs'
-import { textColorTokens } from '../../utils/test/storiesOptions'
+} from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { textColorTokens } from '@soroush.tech/design-system/utils/test/storiesOptions'
 import { Table } from '../Table'
 import { TableBody } from '../TableBody'
 import { TableRow } from '../TableRow'

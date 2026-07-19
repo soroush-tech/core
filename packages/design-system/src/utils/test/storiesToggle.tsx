@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components -- shared story scaffolding, not an HMR'd component module */
 import { useState, type ChangeEvent, type ReactNode } from 'react'
 import type { Decorator } from '@storybook/react-vite'
-import { Flex } from '../../Flex'
-import { Typography } from '../../Typography'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
 
 /** Args injected by {@link WithCheckedState} into a controlled toggle story. */
 export interface ControlledArgs {

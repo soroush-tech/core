@@ -12,16 +12,15 @@ import {
   border,
   typography,
   system,
-  useTheme,
   type SpaceProps,
   type LayoutProps,
   type BorderProps,
   type TypographyProps,
 } from '../index'
 import { alpha } from '../utils'
-import { themeDefault } from '../utils/themeDefault'
-import { useDefaultProps } from '../hooks/useDefaultProps'
-import type { ButtonVariants } from '../themes'
+import { themeDefault } from '../theme/utils/themeDefault'
+import { useDefaultProps, useTheme } from '../theme'
+import type { ButtonVariants } from '../theme/themes'
 
 /** Augmentable via the `ButtonVariants` interface — style new values through `theme.components.Button.variants`. */
 export type ButtonVariant = keyof ButtonVariants

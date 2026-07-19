@@ -1,5 +1,5 @@
 import { Children, isValidElement, type ReactNode } from 'react'
-import { type MenuItemProps } from '../../MenuItem'
+import { type MenuItemProps } from '@soroush.tech/design-system/MenuItem'
 
 export interface SelectOption {
   value: string | number

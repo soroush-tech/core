@@ -19,20 +19,20 @@ import {
   createShouldForwardProp,
   props,
   space,
-  variant,
   get,
   system,
-  useTheme,
   type SpaceProps,
   type LayoutProps,
 } from '../index'
+import { useTheme } from '../theme'
+import { inputVariantStyles } from '../utils/inputVariantStyles'
 import { useSelectPopover } from './hooks/useSelectPopover'
 import { getOptionsFromChildren } from './utils/getOptionsFromChildren'
 import { getNextEnabledIndex, getEdgeEnabledIndex } from './utils/getNextEnabledIndex'
 import { isOptionSelected, type SelectValue } from './utils/isOptionSelected'
 import { computeNextValue } from './utils/computeNextValue'
 import { resolveDisplayLabel } from './utils/resolveDisplayLabel'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type { SelectValue }
 export type SelectColor = keyof Theme['palette']
@@ -138,22 +138,6 @@ const baseStyle = ({ theme }: TriggerProps & { theme: Theme }) => ({
   transition: 'border-color 0.15s ease',
 })
 
-// Mirrors NativeSelect / TextInput variant rules so mixed forms look uniform.
-const variantStyles = variant({
-  prop: 'variant',
-  variants: {
-    outlined: { borderRadius: 'sq', borderWidth: 'thin', borderStyle: 'solid' },
-    default: { borderRadius: 'sq', borderStyle: 'none' },
-    underline: {
-      borderRadius: 'sq',
-      borderStyle: 'none',
-      borderBottomWidth: 'thin',
-      borderBottomStyle: 'solid',
-    },
-    text: { borderRadius: 'sq', borderStyle: 'none' },
-  },
-})
-
 const borderRadiusStyle = ({
   variant: v,
   borderRadius,
@@ -226,7 +210,7 @@ const Trigger = styled('div', {
   systemProps: [space, widthStyles],
 })<TriggerProps>(
   baseStyle,
-  variantStyles,
+  inputVariantStyles,
   borderRadiusStyle,
   colorBorder,
   activeBorder,

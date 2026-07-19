@@ -1,10 +1,10 @@
+import type { ReactNode } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import type { ReactNode } from 'react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { ThemeProvider } from '../ThemeProvider'
+import { ThemeProvider } from '../theme'
 import { ButtonGroup } from '../ButtonGroup'
-import { createTheme, baseTheme } from '../themes'
+import { createTheme, baseTheme } from '../theme/themes'
 import { Button, type ButtonColor, type ButtonVariant, type ButtonSize } from '../Button'
 import type { ButtonShape } from '../Button'
 

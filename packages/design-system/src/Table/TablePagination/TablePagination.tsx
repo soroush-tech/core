@@ -1,9 +1,9 @@
 import { type ElementType, type ReactNode } from 'react'
-import { NativeSelect, type NativeSelectOption } from '../../NativeSelect'
-import { Typography } from '../../Typography'
+import { NativeSelect, type NativeSelectOption } from '@soroush.tech/design-system/NativeSelect'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { TableCell, type TableCellProps } from '../TableCell'
 import { TablePaginationActions, type TablePaginationActionType } from '../TablePaginationActions'
-import { styled } from '../../index'
+import { styled } from '@soroush.tech/design-system'
 
 export interface TablePaginationDisplayedRowsInfo {
   from: number

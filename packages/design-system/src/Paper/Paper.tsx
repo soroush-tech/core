@@ -1,7 +1,8 @@
 import { type CSSProperties, type ElementType } from 'react'
-import { styled, type Theme, createShouldForwardProp, system, useTheme } from '../index'
+import { styled, type Theme, createShouldForwardProp, system } from '../index'
+import { useTheme } from '../theme'
 import { Flex, type FlexProps } from '../Flex'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type PaperElevation =
   | 0

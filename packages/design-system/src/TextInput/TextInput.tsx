@@ -15,12 +15,12 @@ import {
   space,
   system,
   get,
-  useTheme,
   type SpaceProps,
   type LayoutProps,
 } from '../index'
+import { useTheme } from '../theme'
 import { inputVariantStyles } from '../utils/inputVariantStyles'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type TextInputColor = keyof Theme['palette']
 export type TextInputTextColor = keyof Theme['text']

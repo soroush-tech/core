@@ -1,11 +1,11 @@
 import { type ReactNode } from 'react'
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, cleanup, fireEvent, screen } from '@testing-library/react'
-import { ThemeProvider } from './ThemeProvider'
+import { ThemeProvider } from './theme'
 import { Flex } from './Flex'
 import { Grid } from './Grid'
 import { View } from './View'
-import { createTheme, baseTheme, type ThemeComponents } from './themes'
+import { createTheme, baseTheme, type ThemeComponents } from './theme/themes'
 import { AppBar } from './AppBar'
 import { Avatar } from './Avatar'
 import { Backdrop } from './Backdrop'
@@ -13,7 +13,6 @@ import { Button } from './Button'
 import { ButtonGroup } from './ButtonGroup'
 import { Checkbox } from './Checkbox'
 import { CircularProgress } from './CircularProgress'
-import { CodeBlock } from './CodeBlock'
 import { Drawer } from './Drawer'
 import { FormControl } from './FormControl'
 import { FormHelperText } from './FormHelperText'
@@ -22,7 +21,6 @@ import { Icon } from './Icon'
 import { Image } from './Image'
 import { LinearProgress } from './LinearProgress'
 import { Link } from './Link'
-import { Control, Editor, Preview, Toolbar } from './Markdown'
 import { MenuItem } from './MenuItem'
 import { Modal } from './Modal'
 import { NativeSelect } from './NativeSelect'
@@ -137,7 +135,6 @@ const cases: Case[] = [
     label: 'CircularProgress',
     ui: <CircularProgress />,
   },
-  { name: 'CodeBlock', slot: 'root', label: 'CodeBlock', ui: <CodeBlock>code</CodeBlock> },
   { name: 'Drawer', slot: 'root', label: 'Drawer', ui: <Drawer isOpen>x</Drawer> },
   { name: 'FormControl', slot: 'root', label: 'FormControl', ui: <FormControl>x</FormControl> },
   {
@@ -151,27 +148,6 @@ const cases: Case[] = [
   { name: 'Image', slot: 'root', label: 'image', ui: <Image src="p.jpg" alt="t" /> },
   { name: 'LinearProgress', slot: 'root', label: 'LinearProgress', ui: <LinearProgress /> },
   { name: 'Link', slot: 'root', label: 'Link', ui: <Link href="/">x</Link> },
-  {
-    name: 'MarkdownEditor',
-    slot: 'root',
-    label: 'MarkdownEditor',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Editor />
-      </Control>
-    ),
-  },
-  { name: 'MarkdownPreview', slot: 'root', label: 'MarkdownPreview', ui: <Preview>t</Preview> },
-  {
-    name: 'MarkdownToolbar',
-    slot: 'root',
-    label: 'MarkdownToolbar',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Toolbar />
-      </Control>
-    ),
-  },
   { name: 'MenuItem', slot: 'root', label: 'MenuItem', ui: <MenuItem value="a">A</MenuItem> },
   {
     name: 'Modal',
@@ -304,7 +280,6 @@ const cases: Case[] = [
     label: 'CircularProgressCircle',
     ui: <CircularProgress />,
   },
-  { name: 'CodeBlock', slot: 'surface', label: 'CodeSurface', ui: <CodeBlock>c</CodeBlock> },
   {
     name: 'LinearProgress',
     slot: 'track',
@@ -340,27 +315,6 @@ const cases: Case[] = [
     slot: 'secondaryBar',
     label: 'LinearProgressBarSecondary',
     ui: <LinearProgress />,
-  },
-  {
-    name: 'MarkdownToolbar',
-    slot: 'strike',
-    label: 'MarkdownStrike',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Toolbar />
-      </Control>
-    ),
-  },
-  {
-    name: 'MarkdownToolbar',
-    slot: 'tablePickerCell',
-    label: 'MarkdownEditorTableCell',
-    ui: (
-      <Control value="" onChange={() => {}}>
-        <Toolbar />
-      </Control>
-    ),
-    open: () => fireEvent.click(screen.getByRole('button', { name: 'Table' })),
   },
   {
     name: 'MenuItem',

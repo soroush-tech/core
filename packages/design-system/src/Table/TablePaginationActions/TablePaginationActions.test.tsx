@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { TablePaginationActions } from './TablePaginationActions'
 
 const label = (type: string) => `Go to ${type} page`

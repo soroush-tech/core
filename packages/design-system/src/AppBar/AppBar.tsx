@@ -18,7 +18,7 @@ import {
   system,
 } from '../index'
 import { Flex, type FlexProps } from '../Flex'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 /** Valid values for the color prop — derived from theme.background keys. */
 export type AppBarColor = keyof Theme['background']

@@ -1,8 +1,8 @@
 import { type CSSProperties, type ElementType, type HTMLAttributes } from 'react'
+import { useTheme } from '../theme'
 import {
   styled,
   type Theme,
-  useTheme,
   createShouldForwardProp,
   props,
   space,
@@ -20,7 +20,7 @@ import {
   type PositionProps,
 } from '../index'
 
-import type { TypographyVariant } from '../themes'
+import type { TypographyVariant } from '../theme/themes'
 
 export type { TypographyVariant }
 

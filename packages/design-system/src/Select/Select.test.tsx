@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen, within } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import { MenuItem } from '../MenuItem'
 import { Select } from './Select'
 

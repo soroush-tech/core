@@ -14,7 +14,7 @@ import {
   type SpaceProps,
   type LayoutProps,
   type BorderProps,
-} from '../../index'
+} from '@soroush.tech/design-system'
 
 /** Valid values for the bg prop — derived from theme.background keys. */
 export type TableBackgroundToken = keyof Theme['background']

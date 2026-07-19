@@ -21,9 +21,6 @@ const collectFolderEntries = (dir: string): [string, string][] =>
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
-    themes: 'src/themes.ts',
-    'utils/styleCache': 'src/utils/styleCache.ts',
-    'hooks/useCopyToClipboard': 'src/hooks/useCopyToClipboard.ts',
     ...Object.fromEntries(collectFolderEntries('')),
   },
   format: ['esm', 'cjs'],

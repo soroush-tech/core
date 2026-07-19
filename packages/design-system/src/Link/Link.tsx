@@ -1,7 +1,8 @@
 import { type AnchorHTMLAttributes, type ComponentType, type ElementType } from 'react'
-import { styled, system, useTheme, type CSSObject, type Theme } from '../index'
+import { styled, system, type CSSObject, type Theme } from '../index'
+import { useTheme } from '../theme'
 import { Typography, type TypographyProps } from '../Typography'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type LinkUnderline = 'always' | 'hover' | 'none'
 

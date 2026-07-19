@@ -1,6 +1,5 @@
 import { type ElementType } from 'react'
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
+import { keyframes, styled } from '@soroush.tech/design-system'
 import { Flex, type FlexProps } from '@soroush.tech/design-system/Flex'
 import { alpha } from '@soroush.tech/design-system/utils'
 import { useSpotlight } from './hooks/useSpotlight'

@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
-import { ThemeProvider } from '../ThemeProvider'
-import { createTheme, baseTheme } from '../themes'
+import { ThemeProvider } from '../theme'
+import { createTheme, baseTheme } from '../theme/themes'
 import { FocusTrap } from './'
 
 afterEach(cleanup)

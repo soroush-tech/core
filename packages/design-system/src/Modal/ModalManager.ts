@@ -1,4 +1,4 @@
-import { ownerWindow } from '../utils/ownerWindow'
+import { ownerWindow } from './utils/ownerWindow'
 import { ownerDocument } from '../utils/ownerDocument'
 import { getScrollbarSize } from './utils/getScrollbarSize'
 

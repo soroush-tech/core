@@ -1,5 +1,5 @@
 import { useId, useMemo, useState, type ReactNode } from 'react'
-import { type Theme } from '@emotion/react'
+import { type Theme } from '../theme/themes'
 import { styled } from '../index'
 import { View, type ViewProps } from '../View'
 import { FormControlContext } from './FormControlContext'

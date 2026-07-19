@@ -1,4 +1,4 @@
-import { Preview } from '@soroush.tech/design-system/Markdown'
+import { Preview } from '@soroush.tech/markdown'
 import type { Gist } from 'src/types/github'
 import { View } from '@soroush.tech/design-system/View'
 

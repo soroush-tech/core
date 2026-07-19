@@ -17,8 +17,8 @@ The theme belongs to you — the package ships defaults, every part is replaceab
 `ThemeProvider` provides exactly one theme. The package ships a single complete default — `baseTheme` — and you derive every mode from it; switching (dark/light, or ten brand modes) is your state:
 
 ```tsx
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
-import { baseTheme, createTheme } from '@soroush.tech/design-system/themes'
+import { ThemeProvider } from '@soroush.tech/design-system/theme'
+import { baseTheme, createTheme } from '@soroush.tech/design-system/theme'
 
 const dark = createTheme(baseTheme, { name: 'dark' /* your palettes */ })
 const light = createTheme(baseTheme, { name: 'light', colorScheme: 'light' /* your palettes */ })
@@ -32,7 +32,7 @@ const [isDark, setIsDark] = useState(true)
 `createTheme(base, overrides)` deep-merges sparse patches onto a base theme:
 
 ```ts
-import { baseTheme, createTheme } from '@soroush.tech/design-system/themes'
+import { baseTheme, createTheme } from '@soroush.tech/design-system/theme'
 
 export const brandDark = createTheme(baseTheme, {
   palette: { primary: { main: '#00ff88' } }, // sibling fields (light/dark/contrastText) survive
@@ -55,12 +55,12 @@ The full key table lives in the [README's Theming section](../README.md#componen
 
 ## Extending the type system
 
-Every scale is an open interface declared on `@emotion/react` — the augmentation surface is Emotion's module because the published d.ts is chunk-bundled, and only an external, stable module merges reliably for every consumer:
+Every scale is an open interface owned by `@soroush.tech/design-system/theme` — that module (not Emotion, an internal implementation detail) is the augmentation surface, and it merges reliably across tsdown's chunked d.ts for every consumer:
 
 ```ts
-import type { PaletteEntry, SizeEntry } from '@soroush.tech/design-system/themes'
+import type { PaletteEntry, SizeEntry } from '@soroush.tech/design-system/theme'
 
-declare module '@emotion/react' {
+declare module '@soroush.tech/design-system/theme' {
   interface ThemePalette {
     brand: PaletteEntry // new palette color
   }
@@ -111,7 +111,6 @@ Two rules: new object-valued keys (like a `PaletteEntry`) must be supplied compl
 | Icon sizes      | `theme.icon`           | `ThemeIconSizes`          |
 | Switch tokens   | `theme.switch`         | `ThemeSwitch`             |
 | Shadow tokens   | `theme.shadow`         | `ThemeShadow`             |
-| Syntax colors   | `theme.syntax`         | `ThemeSyntax`             |
 | Defaults        | `theme.defaults`       | `ThemeDefaults`           |
 | Components      | `theme.components`     | `ThemeComponents`         |
 

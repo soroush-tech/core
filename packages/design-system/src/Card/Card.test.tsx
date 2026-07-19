@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { ThemeProvider } from '../ThemeProvider'
-import { createTheme, baseTheme } from '../themes'
+import { ThemeProvider } from '../theme'
+import { createTheme, baseTheme } from '../theme/themes'
 import { Card } from './Card'
 
 describe('Card', () => {

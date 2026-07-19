@@ -1,7 +1,7 @@
 {
   "name": "@soroush.tech/design-system",
   "version": "0.1.0",
-  "description": "Emotion + @soroush.tech/styled-system React component library — token-driven light/dark themes, layout primitives, forms, overlays, and a headless markdown editor/renderer.",
+  "description": "Emotion + @soroush.tech/styled-system React component library — token-driven light/dark themes, layout primitives, forms, and overlays.",
   "keywords": [
     "design-system",
     "react",
@@ -9,12 +9,11 @@
     "styled-system",
     "components",
     "theme",
-    "markdown",
     "typescript"
   ],
   "author": "Masoud Soroush <masoud@soroush.tech>",
   "license": "MIT",
-  "homepage": "https://soroush.tech",
+  "homepage": "https://soroush.tech/design-system",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/soroush-tech/core.git",
@@ -30,13 +29,51 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./themes": "./src/themes.ts",
-    "./utils/styleCache": "./src/utils/styleCache.ts",
-    "./hooks/useCopyToClipboard": "./src/hooks/useCopyToClipboard.ts",
+    "./AppBar": "./src/AppBar/index.ts",
+    "./Avatar": "./src/Avatar/index.ts",
+    "./Backdrop": "./src/Backdrop/index.ts",
+    "./Button": "./src/Button/index.ts",
+    "./ButtonGroup": "./src/ButtonGroup/index.ts",
+    "./Card": "./src/Card/index.ts",
+    "./Checkbox": "./src/Checkbox/index.ts",
+    "./CircularProgress": "./src/CircularProgress/index.ts",
+    "./Drawer": "./src/Drawer/index.ts",
+    "./Flex": "./src/Flex/index.ts",
+    "./FocusTrap": "./src/FocusTrap/index.ts",
+    "./Form": "./src/Form/index.ts",
+    "./FormControl": "./src/FormControl/index.ts",
+    "./FormHelperText": "./src/FormHelperText/index.ts",
+    "./FormLabel": "./src/FormLabel/index.ts",
+    "./Grid": "./src/Grid/index.ts",
+    "./Icon": "./src/Icon/index.ts",
+    "./Image": "./src/Image/index.ts",
+    "./LinearProgress": "./src/LinearProgress/index.ts",
+    "./Link": "./src/Link/index.ts",
+    "./MenuItem": "./src/MenuItem/index.ts",
+    "./Modal": "./src/Modal/index.ts",
+    "./NativeSelect": "./src/NativeSelect/index.ts",
+    "./Pagination": "./src/Pagination/index.ts",
+    "./Paper": "./src/Paper/index.ts",
+    "./Popover": "./src/Popover/index.ts",
+    "./Portal": "./src/Portal/index.ts",
+    "./Quote": "./src/Quote/index.ts",
+    "./Radio": "./src/Radio/index.ts",
+    "./Select": "./src/Select/index.ts",
+    "./Skeleton": "./src/Skeleton/index.ts",
+    "./Switch": "./src/Switch/index.ts",
+    "./Table": "./src/Table/index.ts",
+    "./TextInput": "./src/TextInput/index.ts",
+    "./ToggleButton": "./src/ToggleButton/index.ts",
+    "./Typography": "./src/Typography/index.ts",
+    "./View": "./src/View/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./style": "./src/style/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./engine": "./src/engine/index.ts",
+    "./utils/test/renderWithTheme": "./src/utils/test/renderWithTheme.tsx",
     "./utils/test/storiesArgs": "./src/utils/test/storiesArgs.ts",
     "./utils/test/storiesOptions": "./src/utils/test/storiesOptions.ts",
-    "./utils/test/storiesToggle": "./src/utils/test/storiesToggle.tsx",
-    "./*": "./src/*/index.ts"
+    "./utils/test/storiesToggle": "./src/utils/test/storiesToggle.tsx"
   },
   "types": "./src/index.ts",
   "publishConfig": {
@@ -52,14 +89,414 @@
           "default": "./dist/index.cjs"
         }
       },
-      "./*": {
+      "./AppBar": {
         "import": {
-          "types": "./dist/*.d.mts",
-          "default": "./dist/*.mjs"
+          "types": "./dist/AppBar.d.mts",
+          "default": "./dist/AppBar.mjs"
         },
         "require": {
-          "types": "./dist/*.d.cts",
-          "default": "./dist/*.cjs"
+          "types": "./dist/AppBar.d.cts",
+          "default": "./dist/AppBar.cjs"
+        }
+      },
+      "./Avatar": {
+        "import": {
+          "types": "./dist/Avatar.d.mts",
+          "default": "./dist/Avatar.mjs"
+        },
+        "require": {
+          "types": "./dist/Avatar.d.cts",
+          "default": "./dist/Avatar.cjs"
+        }
+      },
+      "./Backdrop": {
+        "import": {
+          "types": "./dist/Backdrop.d.mts",
+          "default": "./dist/Backdrop.mjs"
+        },
+        "require": {
+          "types": "./dist/Backdrop.d.cts",
+          "default": "./dist/Backdrop.cjs"
+        }
+      },
+      "./Button": {
+        "import": {
+          "types": "./dist/Button.d.mts",
+          "default": "./dist/Button.mjs"
+        },
+        "require": {
+          "types": "./dist/Button.d.cts",
+          "default": "./dist/Button.cjs"
+        }
+      },
+      "./ButtonGroup": {
+        "import": {
+          "types": "./dist/ButtonGroup.d.mts",
+          "default": "./dist/ButtonGroup.mjs"
+        },
+        "require": {
+          "types": "./dist/ButtonGroup.d.cts",
+          "default": "./dist/ButtonGroup.cjs"
+        }
+      },
+      "./Card": {
+        "import": {
+          "types": "./dist/Card.d.mts",
+          "default": "./dist/Card.mjs"
+        },
+        "require": {
+          "types": "./dist/Card.d.cts",
+          "default": "./dist/Card.cjs"
+        }
+      },
+      "./Checkbox": {
+        "import": {
+          "types": "./dist/Checkbox.d.mts",
+          "default": "./dist/Checkbox.mjs"
+        },
+        "require": {
+          "types": "./dist/Checkbox.d.cts",
+          "default": "./dist/Checkbox.cjs"
+        }
+      },
+      "./CircularProgress": {
+        "import": {
+          "types": "./dist/CircularProgress.d.mts",
+          "default": "./dist/CircularProgress.mjs"
+        },
+        "require": {
+          "types": "./dist/CircularProgress.d.cts",
+          "default": "./dist/CircularProgress.cjs"
+        }
+      },
+      "./Drawer": {
+        "import": {
+          "types": "./dist/Drawer.d.mts",
+          "default": "./dist/Drawer.mjs"
+        },
+        "require": {
+          "types": "./dist/Drawer.d.cts",
+          "default": "./dist/Drawer.cjs"
+        }
+      },
+      "./Flex": {
+        "import": {
+          "types": "./dist/Flex.d.mts",
+          "default": "./dist/Flex.mjs"
+        },
+        "require": {
+          "types": "./dist/Flex.d.cts",
+          "default": "./dist/Flex.cjs"
+        }
+      },
+      "./FocusTrap": {
+        "import": {
+          "types": "./dist/FocusTrap.d.mts",
+          "default": "./dist/FocusTrap.mjs"
+        },
+        "require": {
+          "types": "./dist/FocusTrap.d.cts",
+          "default": "./dist/FocusTrap.cjs"
+        }
+      },
+      "./Form": {
+        "import": {
+          "types": "./dist/Form.d.mts",
+          "default": "./dist/Form.mjs"
+        },
+        "require": {
+          "types": "./dist/Form.d.cts",
+          "default": "./dist/Form.cjs"
+        }
+      },
+      "./FormControl": {
+        "import": {
+          "types": "./dist/FormControl.d.mts",
+          "default": "./dist/FormControl.mjs"
+        },
+        "require": {
+          "types": "./dist/FormControl.d.cts",
+          "default": "./dist/FormControl.cjs"
+        }
+      },
+      "./FormHelperText": {
+        "import": {
+          "types": "./dist/FormHelperText.d.mts",
+          "default": "./dist/FormHelperText.mjs"
+        },
+        "require": {
+          "types": "./dist/FormHelperText.d.cts",
+          "default": "./dist/FormHelperText.cjs"
+        }
+      },
+      "./FormLabel": {
+        "import": {
+          "types": "./dist/FormLabel.d.mts",
+          "default": "./dist/FormLabel.mjs"
+        },
+        "require": {
+          "types": "./dist/FormLabel.d.cts",
+          "default": "./dist/FormLabel.cjs"
+        }
+      },
+      "./Grid": {
+        "import": {
+          "types": "./dist/Grid.d.mts",
+          "default": "./dist/Grid.mjs"
+        },
+        "require": {
+          "types": "./dist/Grid.d.cts",
+          "default": "./dist/Grid.cjs"
+        }
+      },
+      "./Icon": {
+        "import": {
+          "types": "./dist/Icon.d.mts",
+          "default": "./dist/Icon.mjs"
+        },
+        "require": {
+          "types": "./dist/Icon.d.cts",
+          "default": "./dist/Icon.cjs"
+        }
+      },
+      "./Image": {
+        "import": {
+          "types": "./dist/Image.d.mts",
+          "default": "./dist/Image.mjs"
+        },
+        "require": {
+          "types": "./dist/Image.d.cts",
+          "default": "./dist/Image.cjs"
+        }
+      },
+      "./LinearProgress": {
+        "import": {
+          "types": "./dist/LinearProgress.d.mts",
+          "default": "./dist/LinearProgress.mjs"
+        },
+        "require": {
+          "types": "./dist/LinearProgress.d.cts",
+          "default": "./dist/LinearProgress.cjs"
+        }
+      },
+      "./Link": {
+        "import": {
+          "types": "./dist/Link.d.mts",
+          "default": "./dist/Link.mjs"
+        },
+        "require": {
+          "types": "./dist/Link.d.cts",
+          "default": "./dist/Link.cjs"
+        }
+      },
+      "./MenuItem": {
+        "import": {
+          "types": "./dist/MenuItem.d.mts",
+          "default": "./dist/MenuItem.mjs"
+        },
+        "require": {
+          "types": "./dist/MenuItem.d.cts",
+          "default": "./dist/MenuItem.cjs"
+        }
+      },
+      "./Modal": {
+        "import": {
+          "types": "./dist/Modal.d.mts",
+          "default": "./dist/Modal.mjs"
+        },
+        "require": {
+          "types": "./dist/Modal.d.cts",
+          "default": "./dist/Modal.cjs"
+        }
+      },
+      "./NativeSelect": {
+        "import": {
+          "types": "./dist/NativeSelect.d.mts",
+          "default": "./dist/NativeSelect.mjs"
+        },
+        "require": {
+          "types": "./dist/NativeSelect.d.cts",
+          "default": "./dist/NativeSelect.cjs"
+        }
+      },
+      "./Pagination": {
+        "import": {
+          "types": "./dist/Pagination.d.mts",
+          "default": "./dist/Pagination.mjs"
+        },
+        "require": {
+          "types": "./dist/Pagination.d.cts",
+          "default": "./dist/Pagination.cjs"
+        }
+      },
+      "./Paper": {
+        "import": {
+          "types": "./dist/Paper.d.mts",
+          "default": "./dist/Paper.mjs"
+        },
+        "require": {
+          "types": "./dist/Paper.d.cts",
+          "default": "./dist/Paper.cjs"
+        }
+      },
+      "./Popover": {
+        "import": {
+          "types": "./dist/Popover.d.mts",
+          "default": "./dist/Popover.mjs"
+        },
+        "require": {
+          "types": "./dist/Popover.d.cts",
+          "default": "./dist/Popover.cjs"
+        }
+      },
+      "./Portal": {
+        "import": {
+          "types": "./dist/Portal.d.mts",
+          "default": "./dist/Portal.mjs"
+        },
+        "require": {
+          "types": "./dist/Portal.d.cts",
+          "default": "./dist/Portal.cjs"
+        }
+      },
+      "./Quote": {
+        "import": {
+          "types": "./dist/Quote.d.mts",
+          "default": "./dist/Quote.mjs"
+        },
+        "require": {
+          "types": "./dist/Quote.d.cts",
+          "default": "./dist/Quote.cjs"
+        }
+      },
+      "./Radio": {
+        "import": {
+          "types": "./dist/Radio.d.mts",
+          "default": "./dist/Radio.mjs"
+        },
+        "require": {
+          "types": "./dist/Radio.d.cts",
+          "default": "./dist/Radio.cjs"
+        }
+      },
+      "./Select": {
+        "import": {
+          "types": "./dist/Select.d.mts",
+          "default": "./dist/Select.mjs"
+        },
+        "require": {
+          "types": "./dist/Select.d.cts",
+          "default": "./dist/Select.cjs"
+        }
+      },
+      "./Skeleton": {
+        "import": {
+          "types": "./dist/Skeleton.d.mts",
+          "default": "./dist/Skeleton.mjs"
+        },
+        "require": {
+          "types": "./dist/Skeleton.d.cts",
+          "default": "./dist/Skeleton.cjs"
+        }
+      },
+      "./Switch": {
+        "import": {
+          "types": "./dist/Switch.d.mts",
+          "default": "./dist/Switch.mjs"
+        },
+        "require": {
+          "types": "./dist/Switch.d.cts",
+          "default": "./dist/Switch.cjs"
+        }
+      },
+      "./Table": {
+        "import": {
+          "types": "./dist/Table.d.mts",
+          "default": "./dist/Table.mjs"
+        },
+        "require": {
+          "types": "./dist/Table.d.cts",
+          "default": "./dist/Table.cjs"
+        }
+      },
+      "./TextInput": {
+        "import": {
+          "types": "./dist/TextInput.d.mts",
+          "default": "./dist/TextInput.mjs"
+        },
+        "require": {
+          "types": "./dist/TextInput.d.cts",
+          "default": "./dist/TextInput.cjs"
+        }
+      },
+      "./theme": {
+        "import": {
+          "types": "./dist/theme.d.mts",
+          "default": "./dist/theme.mjs"
+        },
+        "require": {
+          "types": "./dist/theme.d.cts",
+          "default": "./dist/theme.cjs"
+        }
+      },
+      "./style": {
+        "import": {
+          "types": "./dist/style.d.mts",
+          "default": "./dist/style.mjs"
+        },
+        "require": {
+          "types": "./dist/style.d.cts",
+          "default": "./dist/style.cjs"
+        }
+      },
+      "./ToggleButton": {
+        "import": {
+          "types": "./dist/ToggleButton.d.mts",
+          "default": "./dist/ToggleButton.mjs"
+        },
+        "require": {
+          "types": "./dist/ToggleButton.d.cts",
+          "default": "./dist/ToggleButton.cjs"
+        }
+      },
+      "./Typography": {
+        "import": {
+          "types": "./dist/Typography.d.mts",
+          "default": "./dist/Typography.mjs"
+        },
+        "require": {
+          "types": "./dist/Typography.d.cts",
+          "default": "./dist/Typography.cjs"
+        }
+      },
+      "./View": {
+        "import": {
+          "types": "./dist/View.d.mts",
+          "default": "./dist/View.mjs"
+        },
+        "require": {
+          "types": "./dist/View.d.cts",
+          "default": "./dist/View.cjs"
+        }
+      },
+      "./utils": {
+        "import": {
+          "types": "./dist/utils.d.mts",
+          "default": "./dist/utils.mjs"
+        },
+        "require": {
+          "types": "./dist/utils.d.cts",
+          "default": "./dist/utils.cjs"
+        }
+      },
+      "./engine": {
+        "import": {
+          "types": "./dist/engine.d.mts",
+          "default": "./dist/engine.mjs"
+        },
+        "require": {
+          "types": "./dist/engine.d.cts",
+          "default": "./dist/engine.cjs"
         }
       }
     },
@@ -87,30 +524,18 @@
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
-    "@soroush.tech/styled-system": "workspace:^",
-    "react-markdown": "^10.1.0",
-    "rehype-highlight": "^7.0.2",
-    "remark-gfm": "^4.0.1"
-  },
-  "peerDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@tanstack/react-form": "^1.33.2",
+    "@soroush.tech/styled-system": "workspace:^"
+  },
+  "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
-  "peerDependenciesMeta": {
-    "@tanstack/react-form": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@emotion/css": "^11.13.5",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
     "@soroush.tech/eslint-config": "workspace:*",
     "@storybook/react-vite": "^10.5.0",
-    "@tanstack/react-form": "^1.33.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.1.1",

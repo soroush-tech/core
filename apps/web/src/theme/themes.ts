@@ -1,6 +1,6 @@
 import type { Theme } from '@soroush.tech/design-system'
-import { baseTheme } from '@soroush.tech/design-system/themes'
-import { alpha, createTheme, generateBoxShadow } from '@soroush.tech/design-system/utils'
+import { baseTheme, createTheme } from '@soroush.tech/design-system/theme'
+import { alpha, generateBoxShadow } from '@soroush.tech/design-system/utils'
 import {
   blackAlpha,
   carbonBlack,
@@ -129,6 +129,7 @@ export const light: Theme = createTheme(baseTheme, {
     type: pineTeal[600], // #137B86 ≈ JB type #007e8a
     comment: lightSurface[850], // #747878 ≈ JB comment #8c8c8c
     tag: pineTeal[600], // #137B86 ≈ JB tag #008077
+    font: baseTheme.fonts.mono,
   },
   shadows: lightShadows,
 })
@@ -228,6 +229,7 @@ export const dark: Theme = createTheme(baseTheme, {
     type: pineTeal[400], // #2AACB8 ≈ Islands type #16baac
     comment: neutral[600], // #919191 ≈ Islands comment #7a7e85
     tag: sandGold[400], // #D5B778 = Islands markup tag #d5b778
+    font: baseTheme.fonts.mono,
   },
   shadows: darkShadows,
 })

@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import { styled } from '@soroush.tech/design-system'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'

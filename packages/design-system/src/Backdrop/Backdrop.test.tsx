@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { screen, fireEvent } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import { Backdrop } from './'
 
 describe('Backdrop', () => {

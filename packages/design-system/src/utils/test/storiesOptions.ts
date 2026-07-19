@@ -1,35 +1,49 @@
-import type { TypographyAlign } from '../../Typography'
+import type { TypographyAlign } from '@soroush.tech/design-system/Typography'
 import type {
   ButtonVariant,
   ButtonColor,
   ButtonSize,
   ButtonShape,
   ButtonLoadingPosition,
-} from '../../Button'
-import type { AvatarVariant } from '../../Avatar'
+} from '@soroush.tech/design-system/Button'
+import type { AvatarVariant } from '@soroush.tech/design-system/Avatar'
 import type {
   CircularProgressColor,
   CircularProgressEasing,
   CircularProgressVariant,
-} from '../../CircularProgress'
+} from '@soroush.tech/design-system/CircularProgress'
 import type {
   LinearProgressColor,
   LinearProgressEasing,
   LinearProgressVariant,
-} from '../../LinearProgress'
-import type { CheckboxColor, CheckboxSize } from '../../Checkbox'
-import type { RadioColor, RadioSize } from '../../Radio'
-import type { SwitchColor, SwitchEdge, SwitchSize, SwitchVariant } from '../../Switch'
-import type { TextInputColor, TextInputVariant, TextInputSize } from '../../TextInput'
-import type { SelectColor, SelectVariant, SelectSize } from '../../Select'
-import type { SkeletonVariant, SkeletonAnimation } from '../../Skeleton'
-import type { FormControlProps } from '../../FormControl'
-import type { AppBarSize } from '../../AppBar'
-import type { LinkUnderline } from '../../Link'
-import type { CardVariant } from '../../Card'
-import type { TableSize, TableCellPadding, TableCellVariant, TableCellAlign } from '../../Table'
-import type { DrawerAnchor } from '../../Drawer'
-import type { ModalScroll } from '../../Modal'
+} from '@soroush.tech/design-system/LinearProgress'
+import type { CheckboxColor, CheckboxSize } from '@soroush.tech/design-system/Checkbox'
+import type { RadioColor, RadioSize } from '@soroush.tech/design-system/Radio'
+import type {
+  SwitchColor,
+  SwitchEdge,
+  SwitchSize,
+  SwitchVariant,
+} from '@soroush.tech/design-system/Switch'
+import type {
+  TextInputColor,
+  TextInputVariant,
+  TextInputSize,
+} from '@soroush.tech/design-system/TextInput'
+import type { SelectColor, SelectVariant, SelectSize } from '@soroush.tech/design-system/Select'
+import type { SkeletonVariant, SkeletonAnimation } from '@soroush.tech/design-system/Skeleton'
+import type { FormControlProps } from '@soroush.tech/design-system/FormControl'
+import type { AppBarSize } from '@soroush.tech/design-system/AppBar'
+import type { LinkUnderline } from '@soroush.tech/design-system/Link'
+import type { CardVariant } from '@soroush.tech/design-system/Card'
+import type {
+  TableSize,
+  TableCellPadding,
+  TableCellVariant,
+  TableCellAlign,
+} from '@soroush.tech/design-system/Table'
+import type { DrawerAnchor } from '@soroush.tech/design-system/Drawer'
+import type { ModalScroll } from '@soroush.tech/design-system/Modal'
 import {
   baseTheme,
   radii,
@@ -43,8 +57,8 @@ import {
   avatar,
   space,
   typography,
-} from '../../themes'
-import type { CSSObject } from '@emotion/react'
+  type CSSObject,
+} from '@soroush.tech/design-system/theme'
 
 const objectKeys = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
 

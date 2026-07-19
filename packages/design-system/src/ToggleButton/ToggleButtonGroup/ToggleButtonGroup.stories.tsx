@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { buttonColorTokens, tableSizeTokens } from '../../utils/test/storiesOptions'
-import { Flex } from '../../Flex'
+import {
+  buttonColorTokens,
+  tableSizeTokens,
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
+import { Flex } from '@soroush.tech/design-system/Flex'
 import { ToggleButton } from '../ToggleButton'
 import { ToggleButtonGroup, type ToggleButtonGroupProps } from './ToggleButtonGroup'
 import { type ToggleButtonValue } from '../ToggleButtonGroupContext'

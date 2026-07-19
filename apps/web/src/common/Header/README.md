@@ -43,7 +43,7 @@ The `Switch` is bound to `useThemeMode()` from `src/hooks/useThemeMode`:
 - `checked={isDark}` — switch is on when dark mode is active (default)
 - `onChange={toggleTheme}` — clicking the switch calls `toggleTheme`, which flips the global theme
 
-The theme state lives in `ThemeModeProvider` (above `ThemeProvider` in the tree). Toggling re-renders `ThemeProvider` with either `dark` or `light` from `@soroush.tech/design-system/themes.ts`.
+The theme state lives in `ThemeModeProvider` (above `ThemeProvider` in the tree). Toggling re-renders `ThemeProvider` with either `dark` or `light` from `@soroush.tech/design-system/theme`.
 
 ---
 

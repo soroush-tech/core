@@ -1,8 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
-import { ThemeProvider } from '../../ThemeProvider'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { createTheme, baseTheme, type Theme } from '../../themes'
+import {
+  ThemeProvider,
+  createTheme,
+  baseTheme,
+  type Theme,
+} from '@soroush.tech/design-system/theme'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { PaginationItem, type PaginationItemProps } from './PaginationItem'
 
 describe('PaginationItem', () => {

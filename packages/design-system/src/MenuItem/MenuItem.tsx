@@ -8,8 +8,9 @@ import {
   type ReactNode,
 } from 'react'
 import { Icon } from '../Icon'
-import { styled, type Theme, createShouldForwardProp, get, useTheme } from '../index'
-import { themeDefault } from '../utils/themeDefault'
+import { styled, type Theme, createShouldForwardProp, get } from '../index'
+import { useTheme } from '../theme'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type MenuItemColor = keyof Theme['palette']
 export type MenuItemSize = keyof Theme['sizes']

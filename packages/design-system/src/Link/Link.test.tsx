@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import { Link } from '../Link'
 
 describe('Link', () => {

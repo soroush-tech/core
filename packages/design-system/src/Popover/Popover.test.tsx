@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createRef } from 'react'
 import { fireEvent, screen } from '@testing-library/react'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import { Popover, type PopoverActions } from './Popover'
 
 function makeAnchor() {
