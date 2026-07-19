@@ -23,3 +23,7 @@ export const FILE_CHANNELS = {
   setDirty: 'file:set-dirty',
   confirmDiscard: 'file:confirm-discard',
 } as const
+
+export const CLAUDE_CHANNELS = {
+  editSelection: 'claude:edit-selection',
+} as const

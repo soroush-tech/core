@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
 
@@ -8,8 +8,9 @@ const fileApi = {
   setDirty: vi.fn().mockResolvedValue({ success: true, data: null }),
   confirmDiscard: vi.fn(),
 }
+const claudeApi = { editSelection: vi.fn() }
 
-vi.stubGlobal('editorAPI', { file: fileApi })
+vi.stubGlobal('editorAPI', { file: fileApi, claude: claudeApi })
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -64,6 +65,23 @@ describe('App', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Redo' }))
     expect(source).toHaveValue('hi')
+  })
+
+  it('replaces the selection with a Claude rewrite', async () => {
+    claudeApi.editSelection.mockResolvedValue({ success: true, data: 'HELLO' })
+    render(<App />)
+    const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
+    await userEvent.type(source, 'hello world')
+
+    source.setSelectionRange(0, 5)
+    fireEvent.select(source)
+    expect(screen.getByText('Selection · 5 characters')).toBeInTheDocument()
+
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'shout it')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    expect(claudeApi.editSelection).toHaveBeenCalledWith('hello', 'shout it')
+    await waitFor(() => expect(source).toHaveValue('HELLO world'))
   })
 
   it('shows IPC failures as an alert', async () => {
