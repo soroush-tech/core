@@ -18,7 +18,7 @@ import {
   borderStyle,
   borderColor,
   borderRadius,
-} from '../../utils/test/storiesArgs'
+} from '@soroush.tech/design-system/utils/test/storiesArgs'
 import { Table } from '../Table'
 import { TableHead } from '../TableHead'
 import { TableBody } from '../TableBody'

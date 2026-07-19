@@ -11,8 +11,8 @@ import {
   system,
   type SpaceProps,
   type BorderProps,
-} from '../../index'
-import { themeDefault } from '../../utils/themeDefault'
+} from '@soroush.tech/design-system'
+import { themeDefault } from '@soroush.tech/design-system/theme'
 
 /** Palette color driving the hover/selected shading — a `theme.palette` key. */
 export type TableRowColor = PaletteColor

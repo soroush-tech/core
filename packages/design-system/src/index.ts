@@ -1,14 +1,12 @@
 // =============================================================================
 // Engine abstraction — import all styling primitives from here.
-// To swap the CSS-in-JS engine, update only this section (and ./engine.ts).
+// To swap the CSS-in-JS engine, update only this section (and ./theme/emotion.ts).
 // =============================================================================
-export { styled, type ThemeCustomizationOptions } from './styled'
+export { styled, type ThemeCustomizationOptions } from './style/styled'
 export { css, keyframes } from '@emotion/react'
-export { useTheme } from './hooks/useTheme'
-// `Global` is retyped against this package's `Theme`; `CacheProvider` pairs with
-// `./utils/styleCache` for SSR critical-CSS extraction (e.g. `@emotion/server`) —
-// a legitimate integration point, not a Theme concern.
-export { Global, CacheProvider } from './engine'
-export type { Theme, CSSObject, PaletteColor } from './themes'
+// `ThemeProvider`, `useTheme`, and theme hooks live at the `./theme` subpath.
+// `Global`, `globalStyles`, and `CacheProvider`/`styleCache` live at the `./engine`
+// subpath — raw engine primitives for building your own global styles, not barrel exports.
+export type { Theme, CSSObject, PaletteColor } from './theme/themes'
 export * from '@soroush.tech/styled-system'
 export { createShouldForwardProp, props } from '@soroush.tech/styled-system/should-forward-prop'

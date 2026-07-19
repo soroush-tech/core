@@ -4,8 +4,8 @@ import {
   paginationVariant,
   paginationShape,
   paginationSize,
-} from '../../utils/test/storiesArgs'
-import { Flex } from '../../Flex'
+} from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { Flex } from '@soroush.tech/design-system/Flex'
 import { PaginationItem } from './PaginationItem'
 
 const meta: Meta<typeof PaginationItem> = {

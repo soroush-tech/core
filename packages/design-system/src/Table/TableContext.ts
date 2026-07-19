@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { type Theme } from '../themes'
+import { type Theme } from '../theme/themes'
 
 /** Cell padding modes broadcast from `Table` to descendant cells. */
 export type TableCellPadding = 'normal' | 'none'

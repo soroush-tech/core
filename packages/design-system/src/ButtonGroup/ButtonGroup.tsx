@@ -11,7 +11,7 @@ import {
   get,
   type SpaceProps,
 } from '../index'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type ButtonGroupOrientation = 'horizontal' | 'vertical'
 

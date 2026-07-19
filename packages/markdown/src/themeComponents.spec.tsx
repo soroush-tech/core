@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react'
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, cleanup, fireEvent, screen } from '@testing-library/react'
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
-import { createTheme, baseTheme } from '@soroush.tech/design-system/themes'
-import type { ThemeComponents } from '@soroush.tech/design-system/themes'
+import { ThemeProvider, createTheme, baseTheme } from '@soroush.tech/design-system/theme'
+import type { ThemeComponents } from '@soroush.tech/design-system/theme'
 import { CodeBlock } from './CodeBlock'
+import { syntaxDark } from './CodeBlock/CodeBlock.data'
 import { Control } from './Control'
 import { Editor } from './Editor'
 import { Preview } from './Preview'
@@ -90,6 +90,7 @@ const cases: Case[] = [
 describe('theme.components styleOverrides', () => {
   it.each(cases)('$name applies styleOverrides.$slot', ({ name, slot, label, ui, open }) => {
     const theme = createTheme(baseTheme, {
+      syntax: syntaxDark,
       components: { [name]: { styleOverrides: { [slot]: MARKER } } },
     })
     render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)

@@ -2,7 +2,7 @@ import { css, keyframes } from '@emotion/css'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 import { m, p } from '../utils/test/storiesArgs'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import {
   borderRadiiTokens,
   buttonColorTokens,

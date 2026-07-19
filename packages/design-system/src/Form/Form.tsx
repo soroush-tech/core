@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode, type SyntheticEvent } from 'react'
-import { type Theme } from '../themes'
+import { type Theme } from '../theme/themes'
 import { styled } from '../index'
 import { FormContext } from './FormContext'
 

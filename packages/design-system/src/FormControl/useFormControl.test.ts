@@ -1,7 +1,7 @@
 import { createElement, type ReactNode } from 'react'
 import { renderHook } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { ThemeProvider } from '../ThemeProvider'
+import { ThemeProvider } from '../theme'
 import { FormContext, type FormContextValue } from '../Form/FormContext'
 import { FormControlContext, type FormControlContextValue } from './FormControlContext'
 import { useFormControl } from './useFormControl'

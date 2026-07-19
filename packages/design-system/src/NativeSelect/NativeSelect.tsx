@@ -11,10 +11,10 @@ import {
   type SpaceProps,
   type LayoutProps,
   system,
-  useTheme,
 } from '../index'
+import { useTheme } from '../theme'
 import { inputVariantStyles } from '../utils/inputVariantStyles'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type NativeSelectColor = keyof Theme['palette']
 export type NativeSelectTextColor = keyof Theme['text']

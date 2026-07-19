@@ -15,6 +15,7 @@ body:
         - bench
         - design-system
         - eslint-config
+        - hooks
         - markdown
         - playwright-coverage
         - schema

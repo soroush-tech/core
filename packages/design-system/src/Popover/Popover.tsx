@@ -8,7 +8,8 @@ import {
   type ReactNode,
   type Ref,
 } from 'react'
-import { styled, useTheme, type Theme, createShouldForwardProp } from '../index'
+import { styled, type Theme, createShouldForwardProp } from '../index'
+import { useTheme } from '../theme'
 import { Modal, type ModalCloseReason } from '../Modal'
 import { Paper, type PaperProps, type PaperElevation } from '../Paper'
 import { resolveAnchorEl, type PopoverAnchorEl } from './utils/resolveAnchorEl'

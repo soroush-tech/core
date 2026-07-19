@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
 import { Paper } from '../Paper'
 

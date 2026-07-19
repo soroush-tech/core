@@ -33,7 +33,7 @@ sub-component adds `SubName.README.md` + `SubName.stories.tsx` next to its sibli
 - **Theme slots via augmentation.** Unlike an in-repo design-system component, this package is a
   _consumer_ of the design system, so it registers its `theme.components` slots (`MarkdownEditor`,
   `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) by augmenting
-  `@soroush.tech/design-system/themes` in `src/index.ts` — the consumer recipe from design-system
+  `@soroush.tech/design-system/theme` in `src/index.ts` — the consumer recipe from design-system
   `docs/theming.md`. Its own `themeComponents.spec.tsx` locks that wiring (design-system's spec
   covers only design-system components).
 - **No `audit:styled`.** The styled-audit tooling is design-system-only. Markdown's named `styled`
@@ -44,6 +44,11 @@ sub-component adds `SubName.README.md` + `SubName.stories.tsx` next to its sibli
   rest) with `darkMode` from `theme.colorScheme`, and lets consumers override any variable via the
   augmented `theme.mermaid` key (typed `MermaidThemeVariables`). Hex literals appear only in
   test/story fixtures.
+- **`theme.syntax`** (typed `ThemeSyntax`, defined in `CodeBlock/CodeBlock.data.ts`) is likewise a
+  markdown-owned augmentation, not a design-system scale — it exists solely for `CodeBlock`'s
+  highlight.js token mapping and its own `font` (independent of `theme.fonts.mono`). It's required,
+  with no runtime fallback: any theme rendering `CodeBlock` (directly, or via `Preview`/`Mermaid`'s
+  fallback) must merge one of the exported `syntaxDark`/`syntaxLight` presets, or its own.
 - **Browser-only libraries are lazy-loaded.** `mermaid` is imported inside an effect, never at
   module scope, so the package stays SSR-safe and it lands in a lazy chunk. Invalid diagrams fall
   back to their source (`suppressErrorRendering`).

@@ -7,11 +7,10 @@
 [![types included](https://img.shields.io/npm/types/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
 [![license](https://img.shields.io/npm/l/@soroush.tech/design-system.svg)](./LICENSE)
 
-An Emotion + [@soroush.tech/styled-system](https://www.npmjs.com/package/@soroush.tech/styled-system) React component library with a token-driven, consumer-extensible theme — layout primitives, forms, overlays, and data display. A headless markdown editor/renderer built on it ships separately as [@soroush.tech/markdown](https://www.npmjs.com/package/@soroush.tech/markdown).
+**Your design system. Your tokens. Your rules.**
+A fully typed React component library where nothing is hardcoded — every color, scale, and default belongs to you, not the package.
 
-The library takes inspiration from [Material UI](https://mui.com/) — its component vocabulary and prop conventions will feel familiar — but it is written entirely in house. It is not a clone or a fork: every component is built from scratch on our own engine and token system, and the API is free to diverge wherever it serves its consumers better.
-
-For the conventions every component must follow (prop typing, `system()` wiring, `shouldForwardProp`, Storybook rules, testing), read **[`design-system.md`](./design-system.md)** — this README is the map, that file is the law.
+Tired of forking a component library just to change a color? Every token here is designed to be overridden — theming isn't an afterthought, it's the whole point.
 
 ## Install
 
@@ -32,29 +31,33 @@ import { Typography } from '@soroush.tech/design-system/Typography'
 import { Flex } from '@soroush.tech/design-system/Flex'
 ```
 
-Styling primitives (the engine) come from the barrel `@soroush.tech/design-system` — `styled`, `css`, `keyframes`, `useTheme`, the `Theme` type, styled-system functions, and `createShouldForwardProp`. The barrel (`src/index.ts`) is the engine abstraction layer: to swap the CSS-in-JS engine, only that file changes.
+Styling primitives (the engine) come from the barrel `@soroush.tech/design-system` — `styled`, `css`, `keyframes`, the `Theme` type, styled-system functions, and `createShouldForwardProp`. The barrel (`src/index.ts`) is the engine abstraction layer: to swap the CSS-in-JS engine, only that file changes.
 
 ```ts
-import { styled, css, useTheme, type Theme } from '@soroush.tech/design-system'
+import { styled, css, type Theme } from '@soroush.tech/design-system'
 ```
 
----
+`ThemeProvider` and the theme-value hooks (`useTheme`, `useDefaultProps`, `withTheme`) live at their own subpath:
 
-## Folder map
+```ts
+import { ThemeProvider, useTheme } from '@soroush.tech/design-system/theme'
+```
 
-| Path               | What it is                                                                                                                 |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| `index.ts`         | Engine barrel — the themed `styled`, Emotion + `@soroush.tech/styled-system` re-exports                                    |
-| `styled.ts`        | The themed `styled` wrapper — `name`/`slot` options enable `theme.components` customization                                |
-| `themes.ts`        | `baseTheme` (the complete default theme — the only place hex values live), the `Theme` type layer, `createTheme`           |
-| `hooks/`           | `useTheme`, `useDefaultProps`, `useStyle`, `useCopyToClipboard`, `withTheme`, `withStyles`, `StylesConsumer`               |
-| `utils/`           | Style helpers — `alpha`, `spacing`, `clamp`, `luminance`, `generateBoxShadow`, `styleCache`, `createTheme`, `themeDefault` |
-| `utils/test/`      | `storiesOptions.ts` (token option arrays) and `storiesArgs.ts` (pre-built argTypes) for Storybook                          |
-| `docs/`            | Guides — [`theming.md`](./docs/theming.md) and [`customization.md`](./docs/customization.md)                               |
-| `design-system.md` | Architecture and conventions for building components                                                                       |
-| `ComponentName/`   | One folder per component (see inventory below)                                                                             |
+Style-computation helpers (`useStyle`, `withStyles`, `StylesConsumer`) — resolving a `StyleInput`/`StyleFactory` into a `CSSObject` — live at their own subpath:
 
-Every component folder contains `index.ts` (barrel), `ComponentName.tsx`, `README.md` (prop reference), `ComponentName.stories.tsx`, and `ComponentName.test.tsx`. Each component's own README documents its full prop API.
+```ts
+import { useStyle } from '@soroush.tech/design-system/style'
+```
+
+Raw engine primitives for building your own global styles — `Global`, `globalStyles`, and the SSR-only `CacheProvider`/`styleCache` pairing — live at their own subpath, not the barrel:
+
+```ts
+import { Global, globalStyles, CacheProvider, styleCache } from '@soroush.tech/design-system/engine'
+```
+
+`Global` (retyped against this package's `Theme`) applies app-wide CSS and should render inside `ThemeProvider` so it resolves against the active theme. `globalStyles(theme)` is the base reset this package owns — box-sizing, margin/table resets, and theme-driven body colors — compose it into your own `Global` styles array alongside your app's own concerns (font-family, webfont loading, and anything else app-specific stay entirely app policy).
+
+SSR critical-CSS extraction (e.g. with `@emotion/server`) is a separate, opt-in concern most apps never need — that's what `CacheProvider` and its paired `styleCache` instance are for.
 
 ---
 
@@ -142,8 +145,8 @@ The theme belongs to you — the package only ships defaults. This section is th
 `ThemeProvider` provides exactly one theme — the built-in dark theme when you pass nothing. Bring one theme, or as many as you like: switching between them is your state, not the provider's.
 
 ```tsx
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
-import { baseTheme, createTheme } from '@soroush.tech/design-system/themes'
+import { ThemeProvider } from '@soroush.tech/design-system/theme'
+import { baseTheme, createTheme } from '@soroush.tech/design-system/theme'
 
 // Zero-config: the built-in `baseTheme`.
 <ThemeProvider>{app}</ThemeProvider>
@@ -157,7 +160,7 @@ const [isDark, setIsDark] = useState(true)
 <ThemeProvider theme={isDark ? brandDark : brandLight}>{app}</ThemeProvider>
 ```
 
-`createTheme(base, overrides)` (exported from `…/themes` and `…/utils`) is the merge primitive: plain objects recurse, arrays (`shadows`, `fontSizes`) and functions replace wholesale, `undefined` values are ignored — keys are added or replaced, never removed.
+`createTheme(base, overrides)` (exported from `@soroush.tech/design-system/theme`) is the merge primitive: plain objects recurse, arrays (`shadows`, `fontSizes`) and functions replace wholesale, `undefined` values are ignored — keys are added or replaced, never removed.
 
 ### Component defaults
 
@@ -206,7 +209,7 @@ const brand = createTheme(baseTheme, {
       },
 
       // A new variant value — register it first so it typechecks:
-      // declare module '@soroush.tech/design-system/themes' { interface ButtonVariants { dashed: true } }
+      // declare module '@soroush.tech/design-system/theme' { interface ButtonVariants { dashed: true } }
       variants: [
         {
           props: { variant: 'dashed' },
@@ -227,12 +230,12 @@ Your own components can join the same mechanism: create their roots with this pa
 
 ### Extending tokens (declaration merging)
 
-Every scale is an open interface declared on `@soroush.tech/design-system/themes`, so you can add palette colors, tokens, or whole scales — and every component prop union (`color`, `bg`, `size`, …) widens automatically:
+Every scale is an open interface declared on `@soroush.tech/design-system/theme`, so you can add palette colors, tokens, or whole scales — and every component prop union (`color`, `bg`, `size`, …) widens automatically:
 
 ```ts
-import type { PaletteEntry } from '@soroush.tech/design-system/themes'
+import type { PaletteEntry } from '@soroush.tech/design-system/theme'
 
-declare module '@soroush.tech/design-system/themes' {
+declare module '@soroush.tech/design-system/theme' {
   interface ThemePalette {
     brand: PaletteEntry // new palette color
   }
@@ -273,3 +276,14 @@ Scaffold with the skill — it reads the live `Typography` files and `design-sys
 ```
 
 Then work through the checklist at the bottom of [`design-system.md`](./design-system.md).
+
+---
+
+The library takes inspiration from [Material UI](https://mui.com/) — its component vocabulary and prop conventions will feel familiar — but it is written entirely in house. It is not a clone or a fork: every component is built from scratch on our own engine and token system, and the API is free to diverge wherever it serves its consumers better.
+
+---
+
+## Release notes
+
+Per-version notes for every published release live in
+[`release-notes/`](https://github.com/soroush-tech/core/tree/main/packages/design-system/release-notes).

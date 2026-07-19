@@ -7,7 +7,8 @@ import {
   type SyntheticEvent,
 } from 'react'
 import { Flex } from '@soroush.tech/design-system/Flex'
-import { styled, useTheme } from '@soroush.tech/design-system'
+import { styled } from '@soroush.tech/design-system'
+import { useTheme, themeDefault } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
 
 // Named styled root — theme-customizable via
@@ -23,7 +24,6 @@ import {
 import { applyAction } from '../utils/applyAction'
 import { MarkdownContext, type MarkdownSelection } from '../MarkdownContext'
 import type { LinePrefixAction } from '../const'
-import { themeDefault } from '@soroush.tech/design-system/utils'
 
 // Tab indents: a single tab at the caret, or one tab per line for a multi-line selection.
 const INDENT_ACTION: LinePrefixAction = {

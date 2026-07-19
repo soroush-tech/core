@@ -7,7 +7,7 @@ import {
   borderWidth,
   borderStyle,
   borderColor,
-} from '../../utils/test/storiesArgs'
+} from '@soroush.tech/design-system/utils/test/storiesArgs'
 import {
   tableCellVariantTokens,
   tableCellAlignTokens,
@@ -19,7 +19,7 @@ import {
   fontWeightTokens,
   lineHeightTokens,
   letterSpacingTokens,
-} from '../../utils/test/storiesOptions'
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
 import { Table } from '../Table'
 import { TableHead } from '../TableHead'
 import { TableBody } from '../TableBody'

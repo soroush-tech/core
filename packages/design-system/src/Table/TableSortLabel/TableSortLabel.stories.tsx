@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { p, m } from '../../utils/test/storiesArgs'
+import { p, m } from '@soroush.tech/design-system/utils/test/storiesArgs'
 import { Table } from '../Table'
 import { TableHead } from '../TableHead'
 import { TableBody } from '../TableBody'

@@ -10,7 +10,7 @@ import {
   system,
   type SpaceProps,
   type BorderProps,
-} from '../../index'
+} from '@soroush.tech/design-system'
 
 /** Valid values for the color prop — derived from theme.text keys. */
 export type TableHeadColorToken = keyof Theme['text']

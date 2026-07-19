@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { type Theme } from '../themes'
+import { type Theme } from '../theme/themes'
 
 /** Form-wide defaults, lowest priority in the override chain (overridden by FormControl, then explicit props). */
 export interface FormContextValue {

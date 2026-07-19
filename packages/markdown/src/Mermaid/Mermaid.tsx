@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react'
-import { useTheme, type Theme } from '@soroush.tech/design-system'
+import type { Theme } from '@soroush.tech/design-system'
+import { useTheme } from '@soroush.tech/design-system/theme'
 import { CodeBlock } from '../CodeBlock'
 import { DiagramViewer, type DiagramViewerProps } from './DiagramViewer'
 

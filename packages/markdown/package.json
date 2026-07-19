@@ -91,6 +91,7 @@
   "devDependencies": {
     "@soroush.tech/design-system": "workspace:*",
     "@soroush.tech/eslint-config": "workspace:*",
+    "@soroush.tech/hooks": "workspace:*",
     "@storybook/react-vite": "^10.5.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

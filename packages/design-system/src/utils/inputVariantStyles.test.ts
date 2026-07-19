@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { baseTheme } from '../themes'
+import { baseTheme } from '../theme/themes'
 import { inputVariantStyles } from './inputVariantStyles'
 
 const resolve = (variant: string) => inputVariantStyles({ variant, theme: baseTheme })

@@ -4,9 +4,9 @@ import {
   paginationCount,
   shouldShowFirstButton,
   shouldShowLastButton,
-} from '../../utils/test/storiesArgs'
-import { Flex } from '../../Flex'
-import { Typography } from '../../Typography'
+} from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { Flex } from '@soroush.tech/design-system/Flex'
+import { Typography } from '@soroush.tech/design-system/Typography'
 import { TablePaginationActions } from './TablePaginationActions'
 
 const meta: Meta<typeof TablePaginationActions> = {

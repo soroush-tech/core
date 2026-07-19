@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { ToggleButtonGroupContext, type ToggleButtonValue } from '../ToggleButtonGroupContext'
-import { ButtonGroup, type ButtonGroupProps } from '../../ButtonGroup'
-import { styled, type Theme, useTheme } from '../../index'
-import { themeDefault } from '../../utils/themeDefault'
+import { ButtonGroup, type ButtonGroupProps } from '@soroush.tech/design-system/ButtonGroup'
+import { styled, type Theme } from '@soroush.tech/design-system'
+import { useTheme, themeDefault } from '@soroush.tech/design-system/theme'
 
 export interface ToggleButtonGroupProps extends Omit<ButtonGroupProps, 'variant' | 'onChange'> {
   /** Selected value(s) — single when `isExclusive`, array otherwise. Controlled. */

@@ -14,7 +14,7 @@ vi.mock('vike/server', () => ({
   dangerouslySkipEscape: (s: string) => s,
 }))
 vi.mock('../common/Bootstrap', () => ({ Bootstrap: () => null }))
-vi.mock('@soroush.tech/design-system/utils/styleCache', () => ({ default: { key: 'soroush' } }))
+vi.mock('@soroush.tech/design-system/engine', () => ({ styleCache: { key: 'soroush' } }))
 
 import { onRenderHtml } from './+onRenderHtml'
 import createEmotionServer from '@emotion/server/create-instance'

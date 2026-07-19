@@ -9,7 +9,7 @@ import {
   space,
   type SpaceProps,
 } from '../index'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type RadioColor = PaletteColor
 export type RadioSize = keyof Theme['sizes']

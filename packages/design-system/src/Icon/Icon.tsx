@@ -6,13 +6,13 @@ import {
   layout,
   space,
   system,
-  useTheme,
   type LayoutProps,
   type SpaceProps,
 } from '../index'
+import { useTheme } from '../theme'
 import { type TextColorToken } from '../Typography'
 import { icons, type IconName } from './icons'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export interface IconProps
   extends

@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { renderHook } from '@testing-library/react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useTheme } from '@soroush.tech/design-system'
+import { useTheme } from '@soroush.tech/design-system/theme'
 import { describe, it, expect } from 'vitest'
 import {
   queryClient,

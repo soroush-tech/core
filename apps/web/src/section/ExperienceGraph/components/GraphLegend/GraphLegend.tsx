@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
-import { styled, useTheme } from '@soroush.tech/design-system'
+import { styled } from '@soroush.tech/design-system'
+import { useTheme } from '@soroush.tech/design-system/theme'
 import type { GraphChildProps } from 'src/common/NetworkGraph'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Switch } from '@soroush.tech/design-system/Switch'

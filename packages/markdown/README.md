@@ -53,7 +53,7 @@ yarn add @soroush.tech/markdown @soroush.tech/design-system
 Wrap your app in the design system's `ThemeProvider` once, then render markdown anywhere inside it:
 
 ```tsx
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
+import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Preview } from '@soroush.tech/markdown'
 
 export function App() {
@@ -78,7 +78,7 @@ The `Editor` works standalone via `value`/`onChange` — no `Control` needed:
 ```tsx
 import { useState } from 'react'
 import { Editor } from '@soroush.tech/markdown'
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
+import { ThemeProvider } from '@soroush.tech/design-system/theme'
 
 function MarkdownField() {
   const [value, setValue] = useState('# Start writing\n\nJust the source editor — no preview.')
@@ -139,8 +139,7 @@ Everything is styled through the design system's theme, and there are two levels
 `Preview` renders design-system components that read theme tokens, so your theme already governs how markdown looks. Build one with `createTheme` — palette, spacing, type scale, radii — and pass it to `ThemeProvider`; the markdown output changes along with the rest of your UI, no markdown-specific setup. See the [design system's theming guide](https://www.npmjs.com/package/@soroush.tech/design-system) for the full token set.
 
 ```tsx
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
-import { createTheme, baseTheme } from '@soroush.tech/design-system/themes'
+import { ThemeProvider, createTheme, baseTheme } from '@soroush.tech/design-system/theme'
 
 const theme = createTheme(baseTheme, {
   palette: {

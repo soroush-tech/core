@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { buttonColorTokens, tableSizeTokens } from '../../utils/test/storiesOptions'
-import { Icon } from '../../Icon'
+import {
+  buttonColorTokens,
+  tableSizeTokens,
+} from '@soroush.tech/design-system/utils/test/storiesOptions'
+import { Icon } from '@soroush.tech/design-system/Icon'
 import { ToggleButton } from './ToggleButton'
 
 const meta: Meta<typeof ToggleButton> = {

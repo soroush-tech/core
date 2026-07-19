@@ -1,4 +1,5 @@
-import { styled, type Theme, useTheme } from '@soroush.tech/design-system'
+import { styled, type Theme } from '@soroush.tech/design-system'
+import { useTheme } from '@soroush.tech/design-system/theme'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { Paper } from '@soroush.tech/design-system/Paper'

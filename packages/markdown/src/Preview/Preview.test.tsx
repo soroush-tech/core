@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
+import { ThemeProvider, createTheme, baseTheme } from '@soroush.tech/design-system/theme'
+import { syntaxDark } from '../CodeBlock/CodeBlock.data'
 import { Preview } from './Preview'
 
 // mermaid is browser-only and lazily imported by <Mermaid>; stub it so a ```mermaid block
@@ -46,7 +48,13 @@ const content = [
   '![alt text](https://example.com/img.png)',
 ].join('\n')
 
-const renderPreview = () => renderWithTheme(<Preview>{content}</Preview>)
+const syntaxTheme = createTheme(baseTheme, { syntax: syntaxDark })
+const renderPreview = () =>
+  render(
+    <ThemeProvider theme={syntaxTheme}>
+      <Preview>{content}</Preview>
+    </ThemeProvider>
+  )
 
 describe('Preview', () => {
   it('maps headings to styled Typography elements', () => {
@@ -133,16 +141,23 @@ describe('Preview', () => {
   })
 
   it('renders a mermaid fence as a diagram instead of a code block', async () => {
-    renderWithTheme(<Preview>{'```mermaid\ngraph TD; A-->B\n```'}</Preview>)
+    // `Mermaid` renders a `CodeBlock` fallback until its diagram resolves, so this needs syntax too.
+    render(
+      <ThemeProvider theme={syntaxTheme}>
+        <Preview>{'```mermaid\ngraph TD; A-->B\n```'}</Preview>
+      </ThemeProvider>
+    )
     await waitFor(() => expect(screen.getByTestId('mermaid-svg')).toBeInTheDocument())
     expect(screen.getByRole('button', { name: 'Expand diagram' })).toBeInTheDocument()
   })
 
   it('forwards mermaid slotProps to the diagram viewer', async () => {
-    renderWithTheme(
-      <Preview slotProps={{ mermaid: { diagram: { expandable: false } } }}>
-        {'```mermaid\ngraph TD; A-->B\n```'}
-      </Preview>
+    render(
+      <ThemeProvider theme={syntaxTheme}>
+        <Preview slotProps={{ mermaid: { diagram: { expandable: false } } }}>
+          {'```mermaid\ngraph TD; A-->B\n```'}
+        </Preview>
+      </ThemeProvider>
     )
     await waitFor(() => expect(screen.getByTestId('mermaid-svg')).toBeInTheDocument())
     // expandable: false → the diagram viewer omits its expand-to-fullscreen control.

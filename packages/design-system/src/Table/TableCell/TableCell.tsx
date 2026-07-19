@@ -14,8 +14,8 @@ import {
   type SpaceProps,
   type TypographyProps as SystemTypographyProps,
   type BorderProps,
-} from '../../index'
-import { themeDefault } from '../../utils/themeDefault'
+} from '@soroush.tech/design-system'
+import { themeDefault } from '@soroush.tech/design-system/theme'
 
 /** Cell type — inherited from the enclosing section, overridable per cell. */
 export type TableCellVariant = TableSection

@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { baseTheme } from '../../themes'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
+import { baseTheme } from '@soroush.tech/design-system/theme'
 import { TableSectionContext } from '../TableSectionContext'
 import { TableBody } from './TableBody'
 

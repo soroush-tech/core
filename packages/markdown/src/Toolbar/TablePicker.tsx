@@ -1,6 +1,6 @@
 import { useState, type MouseEvent } from 'react'
 import { styled, type Theme } from '@soroush.tech/design-system'
-import { themeDefault } from '@soroush.tech/design-system/utils'
+import { themeDefault } from '@soroush.tech/design-system/theme'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Icon } from '@soroush.tech/design-system/Icon'

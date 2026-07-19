@@ -4,62 +4,12 @@
 // missing weights to synthesize).
 import '@fontsource-variable/space-grotesk/wght.css'
 import '@fontsource-variable/jetbrains-mono/wght.css'
-import { Global, css, type Theme } from '@soroush.tech/design-system'
+import { css, type Theme } from '@soroush.tech/design-system'
+import { Global, globalStyles } from '@soroush.tech/design-system/engine'
 
-const globalStyles = (theme: Theme) => css`
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
+const globalLocalStyles = (theme: Theme) => css`
   html {
     font-family: ${theme.fonts.body};
-    line-height: 1.15;
-    -webkit-text-size-adjust: 100%;
-    tab-size: 4;
-    color-scheme: ${theme.colorScheme};
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  body {
-    background: ${theme.background.primary};
-    color: ${theme.text.initial};
-  }
-
-  p,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 0;
-    font-weight: inherit;
-    margin-block-end: 0.5em;
-  }
-
-  textarea {
-    overflow: auto;
-  }
-
-  table {
-    border-collapse: collapse;
-    border-spacing: 0;
-  }
-
-  td,
-  th {
-    padding: 0;
   }
 
   #root {
@@ -67,6 +17,8 @@ const globalStyles = (theme: Theme) => css`
   }
 `
 
-// The app's global CSS (reset, brand webfonts, token-driven body styles). Rendered
-// inside the ThemeProvider so the styles resolve against the active brand theme.
-export const GlobalStyles = () => <Global styles={globalStyles} />
+// This app's own global CSS — brand font-family and #root sizing. Rendered inside
+// ThemeProvider so styles resolve against the active brand theme. The package's own
+// `globalStyles` (box-sizing/margin/table resets, theme-driven body colors) composes
+// alongside it — that reset is shared, not this app's concern.
+export const GlobalStyles = () => <Global styles={[globalLocalStyles, globalStyles]} />

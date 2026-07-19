@@ -1,9 +1,9 @@
+import type { ReactNode } from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render as renderRTL, screen, waitFor } from '@testing-library/react'
-import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
-import { createTheme, baseTheme } from '@soroush.tech/design-system/themes'
+import { ThemeProvider, createTheme, baseTheme } from '@soroush.tech/design-system/theme'
 import mermaid from 'mermaid'
+import { syntaxDark } from '../CodeBlock/CodeBlock.data'
 import { Mermaid } from './Mermaid'
 
 vi.mock('mermaid', () => ({
@@ -18,6 +18,12 @@ beforeEach(() => {
 })
 
 const flush = () => new Promise((resolve) => setTimeout(resolve))
+
+// `Mermaid` always renders a `CodeBlock` fallback until its diagram resolves, so every
+// theme rendering it here — success or failure — needs `theme.syntax`.
+const theme = createTheme(baseTheme, { syntax: syntaxDark })
+const renderWithTheme = (ui: ReactNode) =>
+  renderRTL(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
 
 describe('Mermaid', () => {
   it('renders the diagram SVG once mermaid resolves', async () => {
@@ -34,13 +40,14 @@ describe('Mermaid', () => {
 
   it('uses light-mode derivations and merges theme.mermaid overrides for a light theme', async () => {
     render.mockResolvedValue({ svg: '<svg data-testid="override"></svg>' } as never)
-    const theme = createTheme(baseTheme, {
+    const lightTheme = createTheme(baseTheme, {
       colorScheme: 'light',
       mermaid: { primaryColor: '#BB2528' },
+      syntax: syntaxDark,
     })
 
     renderRTL(
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={lightTheme}>
         <Mermaid chart="graph TD; A-->B" />
       </ThemeProvider>
     )

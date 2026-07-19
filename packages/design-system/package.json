@@ -13,7 +13,7 @@
   ],
   "author": "Masoud Soroush <masoud@soroush.tech>",
   "license": "MIT",
-  "homepage": "https://soroush.tech",
+  "homepage": "https://soroush.tech/design-system",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/soroush-tech/core.git",
@@ -63,18 +63,17 @@
     "./Switch": "./src/Switch/index.ts",
     "./Table": "./src/Table/index.ts",
     "./TextInput": "./src/TextInput/index.ts",
-    "./ThemeProvider": "./src/ThemeProvider/index.ts",
     "./ToggleButton": "./src/ToggleButton/index.ts",
     "./Typography": "./src/Typography/index.ts",
     "./View": "./src/View/index.ts",
-    "./themes": "./src/themes.ts",
+    "./theme": "./src/theme/index.ts",
+    "./style": "./src/style/index.ts",
     "./utils": "./src/utils/index.ts",
-    "./utils/styleCache": "./src/utils/styleCache.ts",
+    "./engine": "./src/engine/index.ts",
     "./utils/test/renderWithTheme": "./src/utils/test/renderWithTheme.tsx",
     "./utils/test/storiesArgs": "./src/utils/test/storiesArgs.ts",
     "./utils/test/storiesOptions": "./src/utils/test/storiesOptions.ts",
-    "./utils/test/storiesToggle": "./src/utils/test/storiesToggle.tsx",
-    "./hooks/useCopyToClipboard": "./src/hooks/useCopyToClipboard.ts"
+    "./utils/test/storiesToggle": "./src/utils/test/storiesToggle.tsx"
   },
   "types": "./src/index.ts",
   "publishConfig": {
@@ -430,14 +429,24 @@
           "default": "./dist/TextInput.cjs"
         }
       },
-      "./ThemeProvider": {
+      "./theme": {
         "import": {
-          "types": "./dist/ThemeProvider.d.mts",
-          "default": "./dist/ThemeProvider.mjs"
+          "types": "./dist/theme.d.mts",
+          "default": "./dist/theme.mjs"
         },
         "require": {
-          "types": "./dist/ThemeProvider.d.cts",
-          "default": "./dist/ThemeProvider.cjs"
+          "types": "./dist/theme.d.cts",
+          "default": "./dist/theme.cjs"
+        }
+      },
+      "./style": {
+        "import": {
+          "types": "./dist/style.d.mts",
+          "default": "./dist/style.mjs"
+        },
+        "require": {
+          "types": "./dist/style.d.cts",
+          "default": "./dist/style.cjs"
         }
       },
       "./ToggleButton": {
@@ -470,16 +479,6 @@
           "default": "./dist/View.cjs"
         }
       },
-      "./themes": {
-        "import": {
-          "types": "./dist/themes.d.mts",
-          "default": "./dist/themes.mjs"
-        },
-        "require": {
-          "types": "./dist/themes.d.cts",
-          "default": "./dist/themes.cjs"
-        }
-      },
       "./utils": {
         "import": {
           "types": "./dist/utils.d.mts",
@@ -490,24 +489,14 @@
           "default": "./dist/utils.cjs"
         }
       },
-      "./utils/styleCache": {
+      "./engine": {
         "import": {
-          "types": "./dist/utils/styleCache.d.mts",
-          "default": "./dist/utils/styleCache.mjs"
+          "types": "./dist/engine.d.mts",
+          "default": "./dist/engine.mjs"
         },
         "require": {
-          "types": "./dist/utils/styleCache.d.cts",
-          "default": "./dist/utils/styleCache.cjs"
-        }
-      },
-      "./hooks/useCopyToClipboard": {
-        "import": {
-          "types": "./dist/hooks/useCopyToClipboard.d.mts",
-          "default": "./dist/hooks/useCopyToClipboard.mjs"
-        },
-        "require": {
-          "types": "./dist/hooks/useCopyToClipboard.d.cts",
-          "default": "./dist/hooks/useCopyToClipboard.cjs"
+          "types": "./dist/engine.d.cts",
+          "default": "./dist/engine.cjs"
         }
       }
     },

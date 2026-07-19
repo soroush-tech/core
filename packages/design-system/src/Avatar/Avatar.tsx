@@ -5,11 +5,11 @@ import {
   createShouldForwardProp,
   props,
   system,
-  useTheme,
   variant as styledVariant,
 } from '../index'
+import { useTheme } from '../theme'
 import { Flex, type FlexProps } from '../Flex'
-import { themeDefault } from '../utils/themeDefault'
+import { themeDefault } from '../theme/utils/themeDefault'
 
 export type AvatarVariant = 'circular' | 'rounded' | 'square'
 export type AvatarSize = keyof Theme['avatar']

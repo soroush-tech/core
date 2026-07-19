@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
-import { CacheProvider } from '@soroush.tech/design-system'
+import { CacheProvider, styleCache } from '@soroush.tech/design-system/engine'
 import type { PageContext } from 'vike/types'
-import styleCache from '@soroush.tech/design-system/utils/styleCache'
 import { Routes } from 'src/common/Routes'
 import { Providers } from 'src/common/Providers'
 export function Bootstrap({ pageContext }: Readonly<{ pageContext: PageContext }>) {

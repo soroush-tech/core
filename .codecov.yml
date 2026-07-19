@@ -28,6 +28,7 @@ coverage:
           - bench
           - design-system
           - eslint-config
+          - hooks
           - markdown
           - playwright-coverage
           - schema
@@ -54,6 +55,9 @@ flag_management:
     - name: eslint-config
       paths:
         - packages/eslint-config/
+    - name: hooks
+      paths:
+        - packages/hooks/
     - name: markdown
       paths:
         - packages/markdown/
@@ -110,6 +114,10 @@ component_management:
       name: eslint-config
       paths:
         - packages/eslint-config/**
+    - component_id: hooks
+      name: hooks
+      paths:
+        - packages/hooks/**
     - component_id: markdown
       name: markdown
       paths:

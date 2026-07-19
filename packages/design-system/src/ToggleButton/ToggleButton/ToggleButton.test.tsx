@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, screen } from '@testing-library/react'
-import { renderWithTheme } from '../../utils/test/renderWithTheme'
-import { baseTheme } from '../../themes'
+import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
+import { baseTheme } from '@soroush.tech/design-system/theme'
 import { ToggleButtonGroup } from '../ToggleButtonGroup'
 import { ToggleButton } from './ToggleButton'
 

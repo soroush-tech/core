@@ -1,7 +1,7 @@
 import { type HTMLAttributes } from 'react'
-import { PaginationItem, type PaginationItemSize } from '../../Pagination/PaginationItem'
-import { styled, useTheme } from '../../index'
-import { themeDefault } from '../../utils/themeDefault'
+import { PaginationItem, type PaginationItemSize } from '@soroush.tech/design-system/Pagination'
+import { styled } from '@soroush.tech/design-system'
+import { useTheme, themeDefault } from '@soroush.tech/design-system/theme'
 
 export type TablePaginationActionType = 'first' | 'previous' | 'next' | 'last'
 

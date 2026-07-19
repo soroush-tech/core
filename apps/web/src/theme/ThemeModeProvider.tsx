@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
-import { ThemeProvider } from '@soroush.tech/design-system/ThemeProvider'
+import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { dark, light } from 'src/theme/themes'
 import { ThemeModeContext } from 'src/theme/useThemeMode'
 

@@ -3,34 +3,37 @@ import { styled, type Theme } from '@soroush.tech/design-system'
 import { View, type ViewProps } from '@soroush.tech/design-system/View'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Icon } from '@soroush.tech/design-system/Icon'
-import { useCopyToClipboard } from '@soroush.tech/design-system/hooks/useCopyToClipboard'
+import { useCopyToClipboard } from '@soroush.tech/hooks/useCopyToClipboard'
 
 // Maps highlight.js token classes to the theme's `syntax` tokens. Descendant
 // selectors are required because `rehype-highlight` emits `<span class="hljs-*">`
 // children inside the code element that props can't reach. Colors come from the
 // active theme, so blocks re-tint for light and dark automatically.
+// `theme.syntax` is optional only so design-system's own `baseTheme` literal still
+// satisfies `Theme` — CodeBlock requires it in practice, with no fallback, so any
+// theme rendering this component must merge `syntaxDark`/`syntaxLight` (or its own).
 const syntaxStyles = ({ theme }: { theme: Theme }) => ({
-  color: theme.syntax.base,
-  fontFamily: theme.fonts.mono,
+  color: theme.syntax!.base,
+  fontFamily: theme.syntax!.font,
   // `.hljs-meta.prompt_` is the shell `$`/`#` CLI prompt — dim it like a comment.
   '& .hljs-comment, & .hljs-quote, & .hljs-doctag, & .hljs-meta.prompt_': {
-    color: theme.syntax.comment,
+    color: theme.syntax!.comment,
     fontStyle: 'italic',
   },
   '& .hljs-keyword, & .hljs-built_in, & .hljs-literal, & .hljs-selector-tag, & .hljs-selector-pseudo, & .hljs-selector-attr':
-    { color: theme.syntax.keyword },
+    { color: theme.syntax!.keyword },
   // Two-class selectors (specificity 0,2,0) win over the single-class rules below.
-  '& .hljs-type, & .hljs-title.class_': { color: theme.syntax.type },
+  '& .hljs-type, & .hljs-title.class_': { color: theme.syntax!.type },
   '& .hljs-string, & .hljs-regexp, & .hljs-char, & .hljs-meta .hljs-string, & .hljs-addition': {
-    color: theme.syntax.string,
+    color: theme.syntax!.string,
   },
-  '& .hljs-number, & .hljs-symbol, & .hljs-bullet, & .hljs-link': { color: theme.syntax.number },
-  '& .hljs-variable.constant_, & .hljs-property': { color: theme.syntax.constant },
+  '& .hljs-number, & .hljs-symbol, & .hljs-bullet, & .hljs-link': { color: theme.syntax!.number },
+  '& .hljs-variable.constant_, & .hljs-property': { color: theme.syntax!.constant },
   '& .hljs-title, & .hljs-section, & .hljs-attr, & .hljs-attribute, & .hljs-selector-id': {
-    color: theme.syntax.title,
+    color: theme.syntax!.title,
   },
   '& .hljs-tag, & .hljs-name, & .hljs-meta, & .hljs-variable, & .hljs-selector-class, & .hljs-deletion':
-    { color: theme.syntax.tag },
+    { color: theme.syntax!.tag },
   '& .hljs-emphasis': { fontStyle: 'italic' },
   '& .hljs-strong': { fontWeight: 'bold' },
 })

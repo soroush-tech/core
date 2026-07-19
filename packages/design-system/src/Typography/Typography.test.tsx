@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from '../utils/test/renderWithTheme'
-import { baseTheme, typography, fonts } from '../themes'
+import { baseTheme, typography, fonts } from '../theme/themes'
 import { Typography, type TypographyVariant, type TextColorToken } from '../Typography'
 
 describe('Typography', () => {
