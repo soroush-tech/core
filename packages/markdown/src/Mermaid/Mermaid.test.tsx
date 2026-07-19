@@ -31,7 +31,7 @@ describe('Mermaid', () => {
 
     renderWithTheme(<Mermaid chart="graph TD; A-->B" />)
 
-    await waitFor(() => expect(screen.getByTestId('diagram')).toBeInTheDocument())
+    expect(await screen.findByTestId('diagram')).toBeInTheDocument()
     expect(initialize).toHaveBeenCalledWith(
       expect.objectContaining({ startOnLoad: false, securityLevel: 'strict', theme: 'dark' })
     )
@@ -52,7 +52,7 @@ describe('Mermaid', () => {
       </ThemeProvider>
     )
 
-    await waitFor(() => expect(screen.getByTestId('override')).toBeInTheDocument())
+    expect(await screen.findByTestId('override')).toBeInTheDocument()
     expect(initialize).toHaveBeenCalledWith(
       expect.objectContaining({
         theme: 'default',

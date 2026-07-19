@@ -37,7 +37,7 @@ async function toSvg(id: string, chart: string, theme: Theme): Promise<string> {
       background: theme.background.paper,
       fontFamily: theme.fonts.body,
       mainBkg: theme.background.primary,
-      ...(theme.mermaid || {}),
+      ...theme.mermaid,
     },
   })
   const { svg } = await mermaid.render(id, chart)

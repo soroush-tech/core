@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { renderWithTheme } from '@soroush.tech/design-system/utils/test/renderWithTheme'
 import { ThemeProvider, createTheme, baseTheme } from '@soroush.tech/design-system/theme'
 import { syntaxDark } from '../CodeBlock/CodeBlock.data'
@@ -147,7 +147,7 @@ describe('Preview', () => {
         <Preview>{'```mermaid\ngraph TD; A-->B\n```'}</Preview>
       </ThemeProvider>
     )
-    await waitFor(() => expect(screen.getByTestId('mermaid-svg')).toBeInTheDocument())
+    expect(await screen.findByTestId('mermaid-svg')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Expand diagram' })).toBeInTheDocument()
   })
 
@@ -159,7 +159,7 @@ describe('Preview', () => {
         </Preview>
       </ThemeProvider>
     )
-    await waitFor(() => expect(screen.getByTestId('mermaid-svg')).toBeInTheDocument())
+    expect(await screen.findByTestId('mermaid-svg')).toBeInTheDocument()
     // expandable: false → the diagram viewer omits its expand-to-fullscreen control.
     expect(screen.queryByRole('button', { name: 'Expand diagram' })).toBeNull()
   })
