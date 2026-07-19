@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/design-system",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Emotion + @soroush.tech/styled-system React component library — token-driven light/dark themes, layout primitives, forms, and overlays.",
   "keywords": [
     "design-system",
