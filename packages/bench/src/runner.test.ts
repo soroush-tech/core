@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import defineBench from './index'
 import {
+  checkRatio,
   formatDeltas,
   formatMarkdown,
+  formatRatioFailure,
   installSpecs,
   loadModules,
   median,
@@ -120,6 +122,81 @@ describe('formatMarkdown', () => {
         '| --- | ---: | ---: | ---: | ---: | :--- |',
         '| a | 1.00 µs | 1.10 µs | 2.00 KB (least) | 500.00 µs | fastest |',
         '| b | 3.00 µs | 3.10 µs | 4.00 KB (+100.0%) | — | +200.0% |',
+      ].join('\n')
+    )
+  })
+})
+
+describe('checkRatio', () => {
+  const rows = [
+    { label: 'color() :: local', avg: 125, p75: 130 },
+    { label: 'color() :: upstream', avg: 100, p75: 105 },
+  ]
+
+  it('matches the baseline by case key and reports cases below the target', () => {
+    // local runs at 100/125 = 80% of the baseline's speed — fails a 90% target.
+    expect(checkRatio(rows, 'upstream', 90)).toEqual([{ label: 'color() :: local', ratioPct: 80 }])
+  })
+
+  it('passes cases at or above the target', () => {
+    expect(checkRatio(rows, 'upstream', 80)).toEqual([])
+    expect(checkRatio(rows, 'upstream', 79)).toEqual([])
+  })
+
+  it('matches the baseline by full label too', () => {
+    expect(checkRatio(rows, 'color() :: upstream', 90)).toEqual([
+      { label: 'color() :: local', ratioPct: 80 },
+    ])
+  })
+
+  it('uses the whole label as the key for rows without a name prefix', () => {
+    expect(
+      checkRatio(
+        [
+          { label: 'slow', avg: 400, p75: 400 },
+          { label: 'n :: base', avg: 100, p75: 100 },
+        ],
+        'base',
+        50
+      )
+    ).toEqual([{ label: 'slow', ratioPct: 25 }])
+  })
+
+  it('flags a case faster than the baseline only against a >100% target', () => {
+    const fast = [
+      { label: 'n :: base', avg: 100, p75: 100 },
+      { label: 'n :: quick', avg: 50, p75: 50 },
+    ]
+    expect(checkRatio(fast, 'base', 100)).toEqual([])
+    expect(checkRatio(fast, 'base', 250)).toEqual([{ label: 'n :: quick', ratioPct: 200 }])
+  })
+
+  it('throws when the baseline case is missing, listing what exists', () => {
+    expect(() => checkRatio(rows, 'nope', 80)).toThrow(
+      /baseline case "nope" not found among: color\(\) :: local, color\(\) :: upstream/
+    )
+  })
+})
+
+describe('formatRatioFailure', () => {
+  it('returns an empty string when nothing breached', () => {
+    expect(formatRatioFailure([], 80)).toBe('')
+  })
+
+  it('names each breaching case with its percentage and the target', () => {
+    expect(
+      formatRatioFailure(
+        [
+          { label: 'n :: a', ratioPct: 72.34 },
+          { label: 'n :: b', ratioPct: 55 },
+        ],
+        80
+      )
+    ).toBe(
+      [
+        'bench: performance target failed (min ratio 80%):',
+        '  n :: a — 72.3% of baseline speed',
+        '  n :: b — 55.0% of baseline speed',
       ].join('\n')
     )
   })

@@ -9,8 +9,14 @@ export interface CliOptions {
   imageTag: string
   mounts: string[]
   md: boolean
+  /** Container path the markdown results table is also written to. */
+  mdFile?: string
   rounds: number
   gcInner: boolean
+  /** Case key the ratio gate compares every other case against. */
+  baselineCase?: string
+  /** Minimum speed vs the baseline, in percent; below it the run fails. */
+  minRatio?: number
 }
 
 /** Host-side sandbox defaults from a bench file's `options.sandbox`. */
@@ -53,6 +59,14 @@ function parseRounds(value: string | undefined): number {
   return rounds
 }
 
+function parseMinRatio(value: string | undefined): number {
+  const ratio = Number(requireValue(value, '--min-ratio'))
+  if (!Number.isFinite(ratio) || ratio <= 0) {
+    throw new Error('bench: --min-ratio must be a positive number (percent)')
+  }
+  return ratio
+}
+
 /** Parses `soroush-bench <file> [--cpus N] [--cpuset C] [--memory M] [--tag T]`. */
 export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}): CliOptions {
   // Precedence: hardcoded defaults < bench-file options.sandbox < CLI flags.
@@ -63,7 +77,10 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
   if (fileSandbox.tag !== undefined) opts.imageTag = fileSandbox.tag
   const mounts: string[] = fileSandbox.mount ? [...fileSandbox.mount] : []
   let md = false
+  let mdFile: string | undefined
   let gcInner = false
+  let baselineCase: string | undefined
+  let minRatio: number | undefined
   let benchFile: string | undefined
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -93,12 +110,24 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
       case '--md':
         md = true
         break
+      case '--md-file':
+        i += 1
+        mdFile = requireValue(argv[i], '--md-file')
+        break
       case '--rounds':
         i += 1
         opts.rounds = parseRounds(argv[i])
         break
       case '--gc-inner':
         gcInner = true
+        break
+      case '--baseline-case':
+        i += 1
+        baselineCase = requireValue(argv[i], '--baseline-case')
+        break
+      case '--min-ratio':
+        i += 1
+        minRatio = parseMinRatio(argv[i])
         break
       case '--':
         // Ignore a bare `--` (package managers forward it to scripts).
@@ -117,7 +146,11 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
   if (benchFile === undefined) {
     throw new Error('bench: a bench file path is required')
   }
-  return { benchFile, ...opts, mounts, md, gcInner }
+  // The gate needs both a reference case and a target to compare against.
+  if ((baselineCase === undefined) !== (minRatio === undefined)) {
+    throw new Error('bench: --baseline-case and --min-ratio must be given together')
+  }
+  return { benchFile, ...opts, mounts, md, mdFile, gcInner, baselineCase, minRatio }
 }
 
 /** Maps parsed options + host paths into the concrete sandbox run options. */
@@ -141,8 +174,11 @@ export function resolveSandboxOptions(
     memory: cli.memory,
     extraMounts: cli.mounts,
     md: cli.md,
+    mdFile: cli.mdFile,
     rounds: cli.rounds,
     gcInner: cli.gcInner,
+    baselineCase: cli.baselineCase,
+    minRatio: cli.minRatio,
   }
 }
 

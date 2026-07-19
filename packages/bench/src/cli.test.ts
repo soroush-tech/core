@@ -60,9 +60,15 @@ describe('parseCliArgs', () => {
         '--mount',
         'b:/b',
         '--md',
+        '--md-file',
+        '/out/results.md',
         '--rounds',
         '5',
         '--gc-inner',
+        '--baseline-case',
+        'upstream',
+        '--min-ratio',
+        '80',
         'f.bench.ts',
       ])
     ).toEqual({
@@ -73,9 +79,18 @@ describe('parseCliArgs', () => {
       imageTag: 'x',
       mounts: ['a:/a', 'b:/b'],
       md: true,
+      mdFile: '/out/results.md',
       rounds: 5,
       gcInner: true,
+      baselineCase: 'upstream',
+      minRatio: 80,
     })
+  })
+
+  it('accepts a fractional --min-ratio', () => {
+    expect(
+      parseCliArgs(['--baseline-case', 'up', '--min-ratio', '87.5', 'f.bench.ts']).minRatio
+    ).toBe(87.5)
   })
 
   it.each([
@@ -90,6 +105,14 @@ describe('parseCliArgs', () => {
     [['--memory'], /--memory requires a value/],
     [['--tag'], /--tag requires a value/],
     [['--mount'], /--mount requires a value/],
+    [['--md-file'], /--md-file requires a value/],
+    [['--baseline-case'], /--baseline-case requires a value/],
+    [['--min-ratio'], /--min-ratio requires a value/],
+    [['--min-ratio', '0', 'f'], /--min-ratio must be a positive number/],
+    [['--min-ratio', '-5', 'f'], /--min-ratio must be a positive number/],
+    [['--min-ratio', 'abc', 'f'], /--min-ratio must be a positive number/],
+    [['--baseline-case', 'up', 'f'], /--baseline-case and --min-ratio must be given together/],
+    [['--min-ratio', '80', 'f'], /--baseline-case and --min-ratio must be given together/],
     [['--nope', 'f'], /unknown option --nope/],
     [['a', 'b'], /only one bench file/],
     [[], /a bench file path is required/],
@@ -107,8 +130,11 @@ describe('resolveSandboxOptions', () => {
     imageTag: 'tag',
     mounts: ['/host:/mnt/host:ro'],
     md: true,
+    mdFile: '/mnt/host/results.md',
     rounds: 3,
     gcInner: false,
+    baselineCase: 'upstream',
+    minRatio: 80,
   }
 
   it('mounts cwd as the repo and the package as the app, posix-ifying the path', () => {
@@ -123,8 +149,11 @@ describe('resolveSandboxOptions', () => {
       memory: '512m',
       extraMounts: ['/host:/mnt/host:ro'],
       md: true,
+      mdFile: '/mnt/host/results.md',
       rounds: 3,
       gcInner: false,
+      baselineCase: 'upstream',
+      minRatio: 80,
     })
   })
 

@@ -77,6 +77,19 @@ describe('buildRunArgs', () => {
     expect(buildRunArgs(opts)).not.toContain('--gc-inner')
   })
 
+  it('appends --md-file with its path when set, and omits it otherwise', () => {
+    const args = buildRunArgs({ ...opts, mdFile: '/mnt/out/results.md' })
+    expect(args.slice(-2)).toEqual(['--md-file', '/mnt/out/results.md'])
+    expect(buildRunArgs(opts)).not.toContain('--md-file')
+  })
+
+  it('appends the ratio-gate flags when set, and omits them otherwise', () => {
+    const args = buildRunArgs({ ...opts, baselineCase: 'upstream', minRatio: 80 })
+    expect(args.slice(-4)).toEqual(['--baseline-case', 'upstream', '--min-ratio', '80'])
+    expect(buildRunArgs(opts)).not.toContain('--baseline-case')
+    expect(buildRunArgs(opts)).not.toContain('--min-ratio')
+  })
+
   it('appends each extra mount as its own -v before the workdir', () => {
     const args = buildRunArgs({
       ...opts,
