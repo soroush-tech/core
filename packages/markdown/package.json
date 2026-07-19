@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/markdown",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Headless, composable markdown editor + renderer for @soroush.tech/design-system — Control, Toolbar, Editor, and Preview built on react-markdown, remark-gfm, and rehype-highlight.",
   "keywords": [
     "markdown",
