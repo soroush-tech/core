@@ -1,11 +1,11 @@
 # @soroush.tech/styled-system
 
-[![npm version](https://img.shields.io/npm/v/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
-[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
+[![npm version](https://img.shields.io/npm/v/@soroush.tech/styled-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/styled-system)
+[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/styled-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/styled-system)
 [![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=styled-system)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=styled-system)
-[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
-[![types included](https://img.shields.io/npm/types/@soroush.tech/styled-system.svg)](https://www.npmjs.com/package/@soroush.tech/styled-system)
-[![license](https://img.shields.io/npm/l/@soroush.tech/styled-system.svg)](./LICENSE)
+[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/styled-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/styled-system)
+[![types included](https://img.shields.io/npm/types/@soroush.tech/styled-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/styled-system)
+[![license](https://img.shields.io/npm/l/@soroush.tech/styled-system.svg?cacheSeconds=86400)](./LICENSE)
 
 A maintained, first-class-TypeScript rewrite of [styled-system](https://github.com/jxnblk/styled-system) v5 — responsive, theme-aware style props for CSS-in-JS.
 
