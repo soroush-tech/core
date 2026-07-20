@@ -67,14 +67,20 @@ function parseMinRatio(value: string | undefined): number {
   return ratio
 }
 
-/** Parses `soroush-bench <file> [--cpus N] [--cpuset C] [--memory M] [--tag T]`. */
-export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}): CliOptions {
-  // Precedence: hardcoded defaults < bench-file options.sandbox < CLI flags.
+/** Hardcoded defaults overridden by a bench file's `options.sandbox`. */
+function sandboxBaseOptions(fileSandbox: SandboxDefaults): typeof DEFAULTS {
   const opts = { ...DEFAULTS }
   if (fileSandbox.cpuset !== undefined) opts.cpuset = fileSandbox.cpuset
   if (fileSandbox.cpus !== undefined) opts.cpus = fileSandbox.cpus
   if (fileSandbox.memory !== undefined) opts.memory = fileSandbox.memory
   if (fileSandbox.tag !== undefined) opts.imageTag = fileSandbox.tag
+  return opts
+}
+
+/** Parses `soroush-bench <file> [--cpus N] [--cpuset C] [--memory M] [--tag T]`. */
+export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}): CliOptions {
+  // Precedence: hardcoded defaults < bench-file options.sandbox < CLI flags.
+  const opts = sandboxBaseOptions(fileSandbox)
   const mounts: string[] = fileSandbox.mount ? [...fileSandbox.mount] : []
   let md = false
   let mdFile: string | undefined

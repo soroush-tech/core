@@ -147,7 +147,7 @@ the job pins `PLAYWRIGHT_BROWSERS_PATH` so they share the `web`/`e2e` browser ca
 gate: runs `packages/styled-system/bench/*.bench.ts` in the pinned Docker
 sandbox via the standalone
 [`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action)
-(SHA-pinned like every non-`actions/*` action) and fails when any case's speed
+(own-org, so version-tagged `@v1` like `actions/*`) and fails when any case's speed
 drops below **80%** of the `previous` baseline (the last
 `@soroush.tech/styled-system` npm release, installed inside the sandbox via
 the `latest` dist-tag). Results are upserted as one sticky PR comment.
@@ -155,7 +155,7 @@ the `latest` dist-tag). Results are upserted as one sticky PR comment.
 Change-gated without its own filter: it runs when `styled-system` or `bench`
 appears in `changed_packages` — and since a root/workflow change puts every
 package in that matrix, infra changes (including edits to `ci.yml` itself,
-e.g. bumping the pinned action SHA) trigger it too.
+e.g. changing the action pin) trigger it too.
 
 ```yaml
 if: >-
@@ -163,11 +163,11 @@ if: >-
   contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'bench')
 ```
 
-| #   | Step                                                      | Detail                                                                                                         |
-| --- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                           |
-| 5   | Build styled-system                                       | the bench file imports the built dist, so the comparison against npm's prebuilt dist is fair                   |
-| 6   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@<sha> # v1` with `baseline-case: previous`, `min-ratio: '80'`, `GITHUB_TOKEN` |
+| #   | Step                                                      | Detail                                                                                                 |
+| --- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                   |
+| 5   | Build styled-system                                       | the bench file imports the built dist, so the comparison against npm's prebuilt dist is fair           |
+| 6   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@v1` with `baseline-case: previous`, `min-ratio: '80'`, `GITHUB_TOKEN` |
 
 The job needs `pull-requests: write` for the results comment; on a read-only
 token the comment is skipped with a warning and only the gate decides the job.

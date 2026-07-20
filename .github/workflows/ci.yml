@@ -309,7 +309,7 @@ jobs:
         run: ${{ needs.prepare.outputs.runner }} --filter @soroush.tech/styled-system build
 
       - name: Run benchmark gate
-        uses: soroush-tech/bench-action@1e0ea2c76714bdd5dbbe1ca0b88d500dc24683a7 # v1
+        uses: soroush-tech/bench-action@v1
         with:
           bench-dir: packages/styled-system/bench
           baseline-case: previous
