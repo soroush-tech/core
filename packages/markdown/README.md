@@ -1,9 +1,9 @@
-[![npm version](https://img.shields.io/npm/v/@soroush.tech/markdown.svg)](https://www.npmjs.com/package/@soroush.tech/markdown)
-[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/markdown.svg)](https://www.npmjs.com/package/@soroush.tech/markdown)
+[![npm version](https://img.shields.io/npm/v/@soroush.tech/markdown.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/markdown)
+[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/markdown.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/markdown)
 [![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=markdown)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=markdown)
-[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/markdown.svg)](https://www.npmjs.com/package/@soroush.tech/markdown)
-[![types included](https://img.shields.io/npm/types/@soroush.tech/markdown.svg)](https://www.npmjs.com/package/@soroush.tech/markdown)
-[![license](https://img.shields.io/npm/l/@soroush.tech/markdown.svg)](./LICENSE)
+[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/markdown.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/markdown)
+[![types included](https://img.shields.io/npm/types/@soroush.tech/markdown.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/markdown)
+[![license](https://img.shields.io/npm/l/@soroush.tech/markdown.svg?cacheSeconds=86400)](./LICENSE)
 
 ## A **headless markdown editor and preview**.
 

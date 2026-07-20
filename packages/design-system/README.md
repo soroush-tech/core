@@ -1,11 +1,11 @@
 # @soroush.tech/design-system
 
-[![npm version](https://img.shields.io/npm/v/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
-[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
+[![npm version](https://img.shields.io/npm/v/@soroush.tech/design-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/design-system)
+[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/design-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/design-system)
 [![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=design-system)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=design-system)
-[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
-[![types included](https://img.shields.io/npm/types/@soroush.tech/design-system.svg)](https://www.npmjs.com/package/@soroush.tech/design-system)
-[![license](https://img.shields.io/npm/l/@soroush.tech/design-system.svg)](./LICENSE)
+[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/design-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/design-system)
+[![types included](https://img.shields.io/npm/types/@soroush.tech/design-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/design-system)
+[![license](https://img.shields.io/npm/l/@soroush.tech/design-system.svg?cacheSeconds=86400)](./LICENSE)
 
 **Your design system. Your tokens. Your rules.**
 A fully typed React component library where nothing is hardcoded — every color, scale, and default belongs to you, not the package.
