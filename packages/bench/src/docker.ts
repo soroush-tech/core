@@ -24,10 +24,20 @@ export interface SandboxOptions {
   extraMounts: string[]
   /** Emit a markdown results table instead of mitata's default output. */
   md: boolean
+  /**
+   * Container path the markdown results table is also written to. Must point
+   * inside a writable mount (see `extraMounts`) — `/repo` and `/app` are
+   * read-only and `/bench` is a tmpfs that dies with the container.
+   */
+  mdFile?: string
   /** Repeat the whole suite this many times and report the median per case. */
   rounds: number
   /** Run GC before each iteration (mitata `gc('inner')`) for a per-iter GC row. */
   gcInner: boolean
+  /** Case key the ratio gate compares every other case against. */
+  baselineCase?: string
+  /** Minimum speed vs the baseline, in percent; below it the run exits non-zero. */
+  minRatio?: number
 }
 
 /** Argv for `docker build` of the sandbox image. */
@@ -67,8 +77,11 @@ export function buildRunArgs(opts: SandboxOptions): string[] {
     '/app/dist/harness.mjs',
     `/repo/${opts.benchRelPath}`,
     ...(opts.md ? ['--md'] : []),
+    ...(opts.mdFile !== undefined ? ['--md-file', opts.mdFile] : []),
     ...(opts.rounds > 1 ? ['--rounds', String(opts.rounds)] : []),
     ...(opts.gcInner ? ['--gc-inner'] : []),
+    ...(opts.baselineCase !== undefined ? ['--baseline-case', opts.baselineCase] : []),
+    ...(opts.minRatio !== undefined ? ['--min-ratio', String(opts.minRatio)] : []),
   ]
 }
 

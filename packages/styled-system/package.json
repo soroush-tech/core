@@ -319,6 +319,7 @@
   },
   "devDependencies": {
     "@emotion/is-prop-valid": "^1.4.0",
+    "@soroush.tech/bench": "workspace:*",
     "@soroush.tech/eslint-config": "workspace:*",
     "@types/prop-types": "^15.7.15",
     "@vitest/coverage-v8": "^4.1.10",

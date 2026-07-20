@@ -1,17 +1,21 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process'
+import { writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { bench, boxplot, run, summary } from 'mitata'
 import defineBench, { isBenchConfig, type BenchConfig } from './index'
 import {
+  checkRatio,
   formatDeltas,
   formatMarkdown,
+  formatRatioFailure,
   installSpecs,
   loadModules,
   medianRounds,
   registerCases,
+  type CaseRow,
 } from './runner'
 
 /** Writable tmpfs the sandbox mounts; aliased package versions install here. */
@@ -81,6 +85,14 @@ const extract = (results: RunResults): Row[] =>
 const options = config.options ?? {}
 const md = process.argv.includes('--md')
 
+const argValue = (flag: string): string | undefined => {
+  const at = process.argv.indexOf(flag)
+  return at >= 0 ? process.argv[at + 1] : undefined
+}
+const mdFile = argValue('--md-file')
+const baselineCase = argValue('--baseline-case')
+const minRatio = argValue('--min-ratio')
+
 // gc: `--gc-inner` forces 'inner'; otherwise config.options.gc (mitata default 'once').
 const gcMode = process.argv.includes('--gc-inner') ? 'inner' : options.gc
 const registrar =
@@ -104,6 +116,7 @@ if (warmup > 0) {
   }
 }
 
+let finalRows: CaseRow[]
 if (rounds > 1) {
   // Repeat the whole suite (re-registering each round — run() consumes the
   // registered cases). Each round's mitata output is suppressed; we print a
@@ -122,8 +135,9 @@ if (rounds > 1) {
     const summary = roundRows.map((r) => `${shortLabel(r.label)} ${(r.avg / 1000).toFixed(2)}µs`)
     process.stderr.write(`\r\x1b[Kround ${i + 1}/${rounds} · ${summary.join(' · ')}\n`)
   }
+  finalRows = medianRounds(perRound)
   console.log(`\n# median of ${rounds} rounds\n`)
-  console.log(formatMarkdown(medianRounds(perRound)))
+  console.log(formatMarkdown(finalRows))
 } else {
   // boxplot draws a comparative chart; summary adds the "Nx faster …" line.
   // mitata always prints its full report (chart + per-case histograms incl. the
@@ -134,11 +148,30 @@ if (rounds > 1) {
       register()
     })
   })
-  const rows = extract((await run()) as RunResults)
+  finalRows = extract((await run()) as RunResults)
   if (md) {
-    console.log(`\n${formatMarkdown(rows)}`)
+    console.log(`\n${formatMarkdown(finalRows)}`)
   } else {
-    const deltas = formatDeltas(rows.map((r) => ({ label: r.label, avg: r.avg })))
+    const deltas = formatDeltas(finalRows.map((r) => ({ label: r.label, avg: r.avg })))
     if (deltas) console.log(`\n${deltas}`)
+  }
+}
+
+// --md-file: also persist the table (typically into a writable mount so a CI
+// driver can read it back out of the sandbox).
+if (mdFile !== undefined) {
+  writeFileSync(mdFile, `${formatMarkdown(finalRows)}\n`)
+}
+
+// --baseline-case/--min-ratio: the ratio gate. A breach prints which cases
+// fell below the target and fails the run (→ docker run → host CLI exit code).
+if (baselineCase !== undefined && minRatio !== undefined) {
+  const failure = formatRatioFailure(
+    checkRatio(finalRows, baselineCase, Number(minRatio)),
+    Number(minRatio)
+  )
+  if (failure) {
+    console.error(`\n${failure}`)
+    process.exitCode = 1
   }
 }

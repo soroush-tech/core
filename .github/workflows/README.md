@@ -62,6 +62,7 @@ flowchart TD
     prepare["prepare<br/>• node version (.nvmrc)<br/>• package manager<br/>• playwright version<br/>• changed entities → changes.json<br/>• upload changes.json"]
     lint["lint<br/>lint + typecheck (recursive)"]
     packages["packages (matrix)<br/>if has_packages == true"]
+    bench["bench<br/>if styled-system / bench changed<br/>(runs soroush-tech/bench-action)"]
     worker["worker<br/>if worker == true"]
     web["web (ubuntu)<br/>if web == true"]
     e2e["e2e (matrix)<br/>if web == true"]
@@ -69,10 +70,12 @@ flowchart TD
 
     prepare --> lint
     lint --> packages
+    lint --> bench
     lint --> worker
     lint --> web
     web --> e2e
     packages --> ciok
+    bench --> ciok
     worker --> ciok
     web --> ciok
     e2e --> ciok

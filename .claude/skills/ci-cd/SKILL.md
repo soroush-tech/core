@@ -24,8 +24,8 @@ One CI workflow for the whole monorepo; CD is separate and **gated on CI success
 
 Pin every `uses:` by the action's **origin**. Getting this wrong fails review: CodeRabbit flags SHA-pinned first-party actions; SonarQube flags version-tagged third-party ones.
 
-- **First-party `actions/*`** (checkout, setup-node, cache, upload-artifact, github-script) → **version tag**: `actions/checkout@v5`.
-- **Third-party** (anything not under `actions/` — `pnpm/action-setup`, `codecov/codecov-action`, `cloudflare/wrangler-action`, `chromaui/action`, `dorny/paths-filter`) → **commit SHA** + `# vX` comment.
+- **First-party** — `actions/*` (checkout, setup-node, cache, upload-artifact, github-script) and own-org `soroush-tech/*` (bench-action) → **version tag**: `actions/checkout@v5`, `soroush-tech/bench-action@v1`.
+- **Third-party** (anything else — `pnpm/action-setup`, `codecov/codecov-action`, `cloudflare/wrangler-action`, `chromaui/action`, `dorny/paths-filter`) → **commit SHA** + `# vX` comment.
 
 ## CI job shape
 

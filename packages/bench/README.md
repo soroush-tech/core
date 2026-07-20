@@ -193,16 +193,36 @@ soroush-bench ./examples/bench/styled-system-hardest.bench.ts
 
 ## Options
 
-| Flag         | Default                | Meaning                                                                                                                                                                                                                                   |
-| ------------ | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--cpus`     | `1`                    | CPU quota (`docker run --cpus`).                                                                                                                                                                                                          |
-| `--cpuset`   | `0`                    | Logical CPU(s) to pin to (`--cpuset-cpus`, e.g. `0,2`).                                                                                                                                                                                   |
-| `--memory`   | `512m`                 | Memory cap; swap is pinned to the same.                                                                                                                                                                                                   |
-| `--tag`      | `soroush-bench:latest` | Sandbox image tag.                                                                                                                                                                                                                        |
-| `--mount`    | —                      | Extra `host:container[:ro]` volume, passed through to `docker -v`. Repeatable.                                                                                                                                                            |
-| `--md`       | —                      | **Append** a markdown results table after the normal report — for pasting into reports/PRs. Columns: case · avg · p75 · alloc/iter (with **% vs least**) · [gc/iter] · % vs fastest. The `gc/iter` column appears only with `--gc-inner`. |
-| `--rounds`   | `1`                    | Repeat the whole suite N times and report the **median per case** (as a table) — cancels cross-run noise for a more reliable comparison.                                                                                                  |
-| `--gc-inner` | —                      | Run GC **before each iteration** (mitata `gc('inner')`) so the report includes a per-iteration **GC-timing** row. Default is `gc('once')` after warmup.                                                                                   |
+| Flag              | Default                | Meaning                                                                                                                                                                                                                                   |
+| ----------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--cpus`          | `1`                    | CPU quota (`docker run --cpus`).                                                                                                                                                                                                          |
+| `--cpuset`        | `0`                    | Logical CPU(s) to pin to (`--cpuset-cpus`, e.g. `0,2`).                                                                                                                                                                                   |
+| `--memory`        | `512m`                 | Memory cap; swap is pinned to the same.                                                                                                                                                                                                   |
+| `--tag`           | `soroush-bench:latest` | Sandbox image tag.                                                                                                                                                                                                                        |
+| `--mount`         | —                      | Extra `host:container[:ro]` volume, passed through to `docker -v`. Repeatable.                                                                                                                                                            |
+| `--md`            | —                      | **Append** a markdown results table after the normal report — for pasting into reports/PRs. Columns: case · avg · p75 · alloc/iter (with **% vs least**) · [gc/iter] · % vs fastest. The `gc/iter` column appears only with `--gc-inner`. |
+| `--md-file`       | —                      | Also **write** the markdown results table to this container path. Point it inside a writable `--mount` (`/repo`/`/app` are read-only and `/bench` dies with the container) so a CI driver can read results back out of the sandbox.       |
+| `--rounds`        | `1`                    | Repeat the whole suite N times and report the **median per case** (as a table) — cancels cross-run noise for a more reliable comparison.                                                                                                  |
+| `--gc-inner`      | —                      | Run GC **before each iteration** (mitata `gc('inner')`) so the report includes a per-iteration **GC-timing** row. Default is `gc('once')` after warmup.                                                                                   |
+| `--baseline-case` | —                      | Case key (the part after `name ::`, or a full label) the **ratio gate** treats as the reference. Requires `--min-ratio`.                                                                                                                  |
+| `--min-ratio`     | —                      | Minimum speed vs the baseline, in **percent**: any case whose `baseline.avg / case.avg` falls below it fails the run with a non-zero exit — e.g. `80` fails anything slower than 1.25× the baseline. Requires `--baseline-case`.          |
+
+### Gating CI on a performance target
+
+`--baseline-case` + `--min-ratio` turn a run into a pass/fail check: after the
+report, every other case's mean is compared against the named baseline case,
+and the run exits non-zero (printing which cases fell short and by how much)
+when any drops below the target ratio. A typo'd baseline key is an error, not
+a silent pass. Combine with `--rounds` (median-of-N) to keep the gate stable
+on noisy runners, and `--md-file` to hand the results table to whatever posts
+the CI report:
+
+```sh
+soroush-bench ./styled-system-color.bench.ts \
+  --baseline-case upstream --min-ratio 80 \
+  --rounds 5 \
+  --mount "$PWD/bench-out:/out" --md-file /out/results.md
+```
 
 ## What the report shows
 

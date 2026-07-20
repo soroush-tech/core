@@ -127,6 +127,58 @@ export function formatMarkdown(rows: CaseRow[]): string {
   return [`| ${header.join(' | ')} |`, `| ${align.join(' | ')} |`, ...body].join('\n')
 }
 
+/** One case that fell below the minimum speed ratio vs the baseline. */
+export interface RatioBreach {
+  label: string
+  /** The case's speed as a percentage of the baseline's (`baseline.avg / avg`). */
+  ratioPct: number
+}
+
+/**
+ * Compares every non-baseline case's mean against the baseline case's and
+ * returns the ones whose speed ratio (`baseline.avg / avg`, as a percent)
+ * falls below `minRatioPct` — e.g. a 80% target fails any case slower than
+ * 1.25× the baseline. The baseline is matched by its case key (the part after
+ * the `name :: ` prefix) or by full label. Throws when no row matches — or
+ * when no *other* row survived to compare (a config always has ≥ 2 cases, so
+ * an empty comparison means a case crashed) — so neither a typo'd key nor a
+ * crashed case can silently pass the gate.
+ */
+export function checkRatio(
+  rows: CaseRow[],
+  baselineCase: string,
+  minRatioPct: number
+): RatioBreach[] {
+  const caseKey = (label: string): string =>
+    label.includes('::') ? label.slice(label.lastIndexOf('::') + 2).trim() : label
+  const baseline = rows.find((r) => r.label === baselineCase || caseKey(r.label) === baselineCase)
+  if (baseline === undefined) {
+    const labels = rows.map((r) => r.label).join(', ')
+    throw new Error(`bench: baseline case "${baselineCase}" not found among: ${labels}`)
+  }
+  const others = rows.filter((r) => r !== baseline)
+  if (others.length === 0) {
+    throw new Error(
+      `bench: no case besides the baseline "${baselineCase}" produced results — nothing to gate`
+    )
+  }
+  return others
+    .map((r) => ({ label: r.label, ratioPct: (baseline.avg / r.avg) * 100 }))
+    .filter((r) => r.ratioPct < minRatioPct)
+}
+
+/**
+ * Renders ratio breaches as the failure message printed before a non-zero
+ * exit. Empty string when nothing breached (the run passes).
+ */
+export function formatRatioFailure(breaches: RatioBreach[], minRatioPct: number): string {
+  if (breaches.length === 0) return ''
+  const rows = breaches.map(
+    ({ label, ratioPct }) => `  ${label} — ${ratioPct.toFixed(1)}% of baseline speed`
+  )
+  return [`bench: performance target failed (min ratio ${minRatioPct}%):`, ...rows].join('\n')
+}
+
 /** Median of a non-empty list of numbers (mean of the two middles when even). */
 export function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b)
