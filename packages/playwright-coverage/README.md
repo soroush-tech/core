@@ -1,11 +1,11 @@
 # @soroush.tech/playwright-coverage
 
-[![npm version](https://img.shields.io/npm/v/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
-[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
+[![npm version](https://img.shields.io/npm/v/@soroush.tech/playwright-coverage.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
+[![npm downloads](https://img.shields.io/npm/dm/@soroush.tech/playwright-coverage.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
 [![coverage](https://codecov.io/gh/soroush-tech/core/branch/main/graph/badge.svg?flag=playwright-coverage)](https://app.codecov.io/gh/soroush-tech/core?flags%5B0%5D=playwright-coverage)
-[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
-[![types included](https://img.shields.io/npm/types/@soroush.tech/playwright-coverage.svg)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
-[![license](https://img.shields.io/npm/l/@soroush.tech/playwright-coverage.svg)](./LICENSE)
+[![unpacked size](https://img.shields.io/npm/unpacked-size/@soroush.tech/playwright-coverage.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
+[![types included](https://img.shields.io/npm/types/@soroush.tech/playwright-coverage.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/playwright-coverage)
+[![license](https://img.shields.io/npm/l/@soroush.tech/playwright-coverage.svg?cacheSeconds=86400)](./LICENSE)
 
 Collect **per-test V8 JS coverage** from a [Playwright](https://playwright.dev) e2e run and
 aggregate it into an **lcov** report (source-mapped back to your original sources) via
