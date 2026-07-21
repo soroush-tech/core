@@ -26,6 +26,7 @@ jobs:
       playwright_version: ${{ steps.detect-playwright.outputs.version }}
       web: ${{ steps.assemble.outputs.web }}
       worker: ${{ steps.assemble.outputs.worker }}
+      worker_bench: ${{ steps.assemble.outputs.worker_bench }}
       has_packages: ${{ steps.assemble.outputs.has_packages }}
       changed_packages: ${{ steps.assemble.outputs.changed_packages }}
     steps:
@@ -131,6 +132,7 @@ jobs:
           })
           console.log(`web=${apps.includes('web') || packages.length > 0 || infra}`)
           console.log(`worker=${worker.includes('api') || packages.includes('schema') || infra}`)
+          console.log(`worker_bench=${worker.includes('bench') || infra}`)
           console.log(`has_packages=${pkgsForCI.length ? 'true' : 'false'}`)
           console.log(`changed_packages=${JSON.stringify({ include })}`)
           NODE
@@ -308,13 +310,24 @@ jobs:
       - name: Build styled-system
         run: ${{ needs.prepare.outputs.runner }} --filter @soroush.tech/styled-system build
 
+      # Mint a token from the org's GitHub App so the results comment is posted
+      # under the brand bot identity instead of github-actions[bot]. Skipped (and
+      # the gate falls back to GITHUB_TOKEN) when the app isn't configured.
+      - name: Mint bot token
+        id: bot-token
+        if: vars.BENCH_BOT_APP_ID != ''
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.BENCH_BOT_APP_ID }}
+          private-key: ${{ secrets.BENCH_BOT_PRIVATE_KEY }}
+
       - name: Run benchmark gate
         uses: soroush-tech/bench-action@v1
         with:
           bench-dir: packages/styled-system/bench
           baseline-case: previous
           min-ratio: '80'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.bot-token.outputs.token || secrets.GITHUB_TOKEN }}
 
   # Cloudflare Worker API.
   worker:
@@ -357,6 +370,48 @@ jobs:
           slug: soroush-tech/core
           flags: api
           name: api
+
+  # Cloudflare Worker: the bench-action comment relay.
+  worker-bench:
+    needs: [prepare, lint]
+    if: needs.prepare.outputs.worker_bench == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: CI
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: needs.prepare.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ needs.prepare.outputs.node_version }}
+          cache: ${{ needs.prepare.outputs.manager }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
+
+      - name: Run Tests with Coverage
+        run: ${{ needs.prepare.outputs.runner }} --filter @soroush/bench-api test:coverage
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./workers/bench/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: bench-api
+          name: bench-api
 
   # Web app (ubuntu-only): unit / browser / storybook coverage tiers. The browser engines
   # (E2E) run in the separate `e2e` matrix job below.
@@ -589,7 +644,7 @@ jobs:
   ci-ok:
     name: ci-ok
     if: always()
-    needs: [prepare, lint, packages, bench, worker, web, e2e]
+    needs: [prepare, lint, packages, bench, worker, worker-bench, web, e2e]
     runs-on: ubuntu-latest
     permissions: {}
     timeout-minutes: 5
