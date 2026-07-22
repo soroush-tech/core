@@ -7,7 +7,7 @@ export interface RateLimit {
 export interface Env {
   /** GitHub App id of the bench bot (numeric string), from the wrangler `vars`. */
   BENCH_GH_APP_ID: string
-  /** Bench bot GitHub App private key, PKCS#8 PEM (a Worker secret, `wrangler secret put`). */
+  /** Bench bot GitHub App private key PEM, PKCS#8 or PKCS#1 as GitHub downloads it (a Worker secret). */
   BENCH_GH_APP_PRIVATE_KEY: string
   /** Per-IP rate limiter for the report endpoint (3 requests / 60s). */
   RATE_LIMITER: RateLimit

@@ -34,6 +34,3 @@ deploy creates the `api.bench.soroush.tech` custom domain from the generated con
 | variable | `BENCH_GH_APP_ID`       | GitHub App id of the bench bot            |
 | variable | `CLOUDFLARE_ACCOUNT_ID` | same account as the api worker            |
 | secret   | `CLOUDFLARE_API_TOKEN`  | same token scope as the api worker deploy |
-
-The App private key is **not** a CI value — it's a Worker secret set once out-of-band
-(`wrangler secret put BENCH_GH_APP_PRIVATE_KEY`, PKCS#8; see the worker doc).

@@ -37,12 +37,41 @@ export const decodeJwt = (token: string): DecodedJwt => {
   }
 }
 
-/** Strip a PKCS#8 PEM's armor and decode its base64 body to DER bytes. */
+/** DER length octets for a content length: short form under 0x80, long form above. */
+const encodeDerLength = (length: number): number[] => {
+  if (length < 0x80) return [length]
+  const bytes: number[] = []
+  for (let value = length; value > 0; value >>= 8) bytes.unshift(value & 0xff)
+  return [0x80 | bytes.length, ...bytes]
+}
+
+/** DER `AlgorithmIdentifier` for rsaEncryption (OID 1.2.840.113549.1.1.1, NULL params). */
+const RSA_ALGORITHM_IDENTIFIER = [
+  0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00,
+]
+
+/** Wrap a PKCS#1 `RSAPrivateKey` DER in a PKCS#8 `PrivateKeyInfo` (version 0, rsaEncryption). */
+const wrapPkcs1InPkcs8 = (pkcs1: Uint8Array): Uint8Array => {
+  const content = [
+    ...[0x02, 0x01, 0x00],
+    ...RSA_ALGORITHM_IDENTIFIER,
+    ...[0x04, ...encodeDerLength(pkcs1.length)],
+    ...pkcs1,
+  ]
+  return Uint8Array.from([0x30, ...encodeDerLength(content.length), ...content])
+}
+
+/**
+ * Strip a private-key PEM's armor and decode to PKCS#8 DER for WebCrypto import. Accepts both
+ * PKCS#8 (`BEGIN PRIVATE KEY`) and PKCS#1 (`BEGIN RSA PRIVATE KEY`) — the format GitHub App
+ * key downloads use — wrapping the latter in a PKCS#8 `PrivateKeyInfo`.
+ */
 export const pemToPkcs8Der = (pem: string): Uint8Array => {
+  const isPkcs1 = pem.includes('-----BEGIN RSA PRIVATE KEY-----')
   const body = pem
-    .replace('-----BEGIN PRIVATE KEY-----', '')
-    .replace('-----END PRIVATE KEY-----', '')
+    .replaceAll(/-----(?:BEGIN|END) (?:RSA )?PRIVATE KEY-----/g, '')
     .replaceAll(/\s/g, '')
   if (body === '') throw new Error('jwt: empty private key PEM')
-  return Uint8Array.from(atob(body), (char) => char.charCodeAt(0))
+  const der = Uint8Array.from(atob(body), (char) => char.charCodeAt(0))
+  return isPkcs1 ? wrapPkcs1InPkcs8(der) : der
 }

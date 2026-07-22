@@ -3,7 +3,7 @@
 A Cloudflare Worker at **`api.bench.soroush.tech`** that lets
 [`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action) post its PR results
 comment as the bench GitHub App bot (branded author) instead of `github-actions[bot]` — the
-Codecov model: the App's private key lives only here, never in the public action. Design:
+Codecov model: the App identity lives only in this Worker, never in the public action. Design:
 soroush-tech/core#308 (RFC) / #309 (epic).
 
 Follows `workers/api/worker.md` conventions: `routes/` (thin handlers) vs `services/` (I/O —
@@ -37,17 +37,11 @@ Swagger UI (`/v1/docs`) + OpenAPI (`/v1/openapi.json`, from `src/openapi.ts` —
 request body derives from the route's zod schema) are served only when `DOCS_ENABLED=true`
 (local `.env`; never set in production), same as the api worker.
 
-## Config & secrets
+## Config
 
 `wrangler.json` is generated from `default.wrangler.json` by `pnpm config:gen`
 (`scripts/gen-wrangler.mjs`; required vars `WORKER_NAME`, `BENCH_GH_APP_ID`) — same pattern as
-the api worker. The App private key is a Worker secret, stored **PKCS#8** (GitHub downloads
-PKCS#1 — convert first):
-
-```sh
-openssl pkcs8 -topk8 -nocrypt -in bench-bot.private-key.pem -out bench-bot.pkcs8.pem
-npx wrangler secret put BENCH_GH_APP_PRIVATE_KEY < bench-bot.pkcs8.pem
-```
+the api worker.
 
 Deploys via `.github/workflows/cd-worker-bench.yml` (CI-success-gated, `cd-worker-bench`
 environment), which creates the `api.bench.soroush.tech` custom domain on first deploy.
@@ -58,7 +52,6 @@ First run: `pnpm run setup` (copies `default.env` → `.env` with dev placeholde
 `setup` is a pnpm built-in, so the explicit `run` is required), then `pnpm dev`
 (`predev` regenerates `wrangler.json` from `.env`). The dev server is pinned to
 **port 8788** (the api worker owns wrangler's default 8787): docs live at
-`http://127.0.0.1:8788/v1/docs`. To exercise the GitHub path locally,
-put a real `BENCH_GH_APP_ID` in `.env` and the key in `.dev.vars`
-(`BENCH_GH_APP_PRIVATE_KEY="..."`, PKCS#8); without them, `/v1/health` and all
-validation/OIDC paths still work.
+`http://127.0.0.1:8788/v1/docs`. With just the placeholder vars, `/v1/health` and
+all validation/OIDC paths work; only the real GitHub path needs the production App
+configuration.

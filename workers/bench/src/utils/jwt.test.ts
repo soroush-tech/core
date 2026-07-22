@@ -52,4 +52,38 @@ describe('pemToPkcs8Der', () => {
       'jwt: empty private key PEM'
     )
   })
+
+  it('wraps a small PKCS#1 body in a short-form PKCS#8 PrivateKeyInfo', () => {
+    const pem = `-----BEGIN RSA PRIVATE KEY-----\n${btoa('abc')}\n-----END RSA PRIVATE KEY-----`
+    expect(Array.from(pemToPkcs8Der(pem))).toEqual([
+      ...[0x30, 0x17], // PrivateKeyInfo SEQUENCE, 23 bytes
+      ...[0x02, 0x01, 0x00], // version 0
+      ...[0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00],
+      ...[0x04, 0x03, 0x61, 0x62, 0x63], // OCTET STRING "abc"
+    ])
+  })
+
+  it('wraps a real PKCS#1 key into DER identical to the WebCrypto PKCS#8 export', async () => {
+    const pair = await crypto.subtle.generateKey(
+      {
+        name: 'RSASSA-PKCS1-v1_5',
+        hash: 'SHA-256',
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1]),
+      },
+      true,
+      ['sign', 'verify']
+    )
+    const pkcs8 = new Uint8Array(await crypto.subtle.exportKey('pkcs8', pair.privateKey))
+
+    // PrivateKeyInfo = 30 len · 02 01 00 · alg(15) · 04 len · <PKCS#1> — skip to the key bytes.
+    const lengthOctets = (at: number) => (pkcs8[at] < 0x80 ? 1 : 1 + (pkcs8[at] & 0x7f))
+    let offset = 1 + lengthOctets(1) + 3 + 15
+    offset += 1 + lengthOctets(offset + 1)
+    const pkcs1 = pkcs8.slice(offset)
+
+    const body = btoa(String.fromCharCode(...pkcs1))
+    const pem = `-----BEGIN RSA PRIVATE KEY-----\n${body}\n-----END RSA PRIVATE KEY-----`
+    expect(pemToPkcs8Der(pem)).toEqual(pkcs8)
+  })
 })
