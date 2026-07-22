@@ -23,7 +23,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      include: ['src/**/*.ts', 'scripts/**/*.mjs'],
+      include: ['src/**/*.ts'],
       thresholds: { 100: true },
     },
   },

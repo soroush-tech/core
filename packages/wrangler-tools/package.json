@@ -1,0 +1,29 @@
+{
+  "name": "@soroush.tech/wrangler-tools",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./gen-wrangler": "./src/gen-wrangler.ts",
+    "./setup-env": "./src/setup-env.ts"
+  },
+  "bin": {
+    "gen-wrangler": "bin/gen-wrangler.mjs",
+    "worker-setup-env": "bin/setup-env.mjs"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@soroush.tech/eslint-config": "workspace:*",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
+  }
+}

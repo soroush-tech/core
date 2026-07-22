@@ -42,7 +42,7 @@ jobs:
           else
             node <<'NODE' >> "$GITHUB_OUTPUT"
             const c = require('./changes.json')
-            const worker = (c.worker || []).includes('bench') || c.root
+            const worker = (c.worker || []).includes('bench') || (c.packages || []).includes('wrangler-tools') || c.root
             console.log(`worker=${worker}`)
           NODE
           fi

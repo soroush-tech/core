@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest'
+import { setupEnv } from './setup-env'
 
 const { existsSync, copyFileSync } = vi.hoisted(() => ({
   existsSync: vi.fn(),
@@ -7,54 +8,43 @@ const { existsSync, copyFileSync } = vi.hoisted(() => ({
 
 vi.mock('node:fs', () => ({ existsSync, copyFileSync }))
 
-// The script runs its branch table as a side effect on import, so re-import it per case.
-const run = async () => {
-  vi.resetModules()
-  await import('./setup-env.mjs')
-}
-
-describe('setup-env', () => {
-  let log
-  const originalCI = process.env.CI
+describe('setupEnv', () => {
+  let log: MockInstance
 
   beforeEach(() => {
     existsSync.mockReset()
     copyFileSync.mockReset()
     log = vi.spyOn(console, 'log').mockImplementation(() => {})
-    delete process.env.CI
   })
 
   afterEach(() => {
     log.mockRestore()
-    if (originalCI === undefined) delete process.env.CI
-    else process.env.CI = originalCI
   })
 
-  it('skips in CI without touching the filesystem', async () => {
-    process.env.CI = '1'
-    await run()
+  it('skips in CI without touching the filesystem', () => {
+    setupEnv('/w', { CI: '1' })
     expect(existsSync).not.toHaveBeenCalled()
     expect(copyFileSync).not.toHaveBeenCalled()
     expect(log).toHaveBeenCalledWith(expect.stringContaining('CI detected'))
   })
 
-  it('does nothing when the template is missing', async () => {
+  it('does nothing when the template is missing', () => {
     existsSync.mockReturnValue(false)
-    await run()
+    setupEnv('/w', {})
     expect(copyFileSync).not.toHaveBeenCalled()
     expect(log).toHaveBeenCalledWith(expect.stringContaining('nothing to copy'))
   })
 
-  it('leaves an existing .env untouched', async () => {
+  it('leaves an existing .env untouched', () => {
     existsSync.mockReturnValue(true)
-    await run()
+    setupEnv('/w', {})
     expect(copyFileSync).not.toHaveBeenCalled()
     expect(log).toHaveBeenCalledWith(expect.stringContaining('already exists'))
   })
 
-  it('copies default.env -> .env on first setup', async () => {
-    existsSync.mockImplementation((path) => path.endsWith('default.env'))
-    await run()
+  it('copies default.env -> .env on first setup', () => {
+    existsSync.mockImplementation((path: string) => path.endsWith('default.env'))
+    setupEnv('/w', {})
     expect(copyFileSync).toHaveBeenCalledOnce()
     expect(log).toHaveBeenCalledWith(expect.stringContaining('created'))
   })

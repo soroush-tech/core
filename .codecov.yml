@@ -37,6 +37,7 @@ coverage:
           - vite-plugin-msw-server
           - vite-plugin-sitemap
           - vite-plugin-watch
+          - wrangler-tools
           # gen:codecov-patch-flags end
 
 # Change-gated CI jobs don't upload every flag on every commit. Carry the last
@@ -80,6 +81,9 @@ flag_management:
     - name: vite-plugin-watch
       paths:
         - packages/vite-plugin-watch/
+    - name: wrangler-tools
+      paths:
+        - packages/wrangler-tools/
     # gen:codecov-flags end
     - name: api
       paths:
@@ -150,6 +154,10 @@ component_management:
       name: vite-plugin-watch
       paths:
         - packages/vite-plugin-watch/**
+    - component_id: wrangler-tools
+      name: wrangler-tools
+      paths:
+        - packages/wrangler-tools/**
     # gen:codecov-components end
     - component_id: api
       name: api

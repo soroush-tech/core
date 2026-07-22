@@ -39,9 +39,9 @@ request body derives from the route's zod schema) are served only when `DOCS_ENA
 
 ## Config
 
-`wrangler.json` is generated from `default.wrangler.json` by `pnpm config:gen`
-(`scripts/gen-wrangler.mjs`; required vars `WORKER_NAME`, `BENCH_GH_APP_ID`) — same pattern as
-the api worker.
+`wrangler.json` is generated from `default.wrangler.json` by `pnpm config:gen` (the shared
+`@soroush.tech/wrangler-tools` bin; required vars `WORKER_NAME`, `BENCH_GH_APP_ID`) — same
+pattern as the api worker.
 
 Deploys via `.github/workflows/cd-worker-bench.yml` (CI-success-gated, `cd-worker-bench`
 environment), which creates the `api.bench.soroush.tech` custom domain on first deploy.

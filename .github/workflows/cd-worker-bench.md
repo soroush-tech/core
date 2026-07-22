@@ -14,10 +14,12 @@ Same shape as the api worker's: manual dispatch or a missing `changes.json` arti
 otherwise deploy when
 
 ```js
-const worker = (c.worker || []).includes('bench') || c.root
+const worker =
+  (c.worker || []).includes('bench') || (c.packages || []).includes('wrangler-tools') || c.root
 ```
 
-(No package dependency edges yet — the relay consumes no workspace packages.)
+(The `wrangler-tools` edge exists because the deploy renders `wrangler.json` with the shared
+`@soroush.tech/wrangler-tools` bin.)
 
 ## Job: `deploy`
 

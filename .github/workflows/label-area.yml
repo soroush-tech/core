@@ -32,6 +32,7 @@ jobs:
             vite-plugin-msw-server
             vite-plugin-sitemap
             vite-plugin-watch
+            wrangler-tools
             # gen:issue-areas end
         with:
           script: |

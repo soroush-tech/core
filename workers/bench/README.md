@@ -66,9 +66,9 @@ Unlike `@soroush/api` there is no CORS/origin guard — the callers are CI runne
 
 ## Bindings & config
 
-`wrangler.json` is **generated from env** (see the `default.wrangler.json` template and
-`scripts/gen-wrangler.mjs`) so no IDs land in the repo; `setup` (also run on `predev`/
-`predeploy`) regenerates it. Bindings and vars:
+`wrangler.json` is **generated from env** (see the `default.wrangler.json` template and the
+shared `@soroush.tech/wrangler-tools` bin) so no IDs land in the repo; `setup` (also run on
+`predev`/`predeploy`) regenerates it. Bindings and vars:
 
 - `RATE_LIMITER` — Workers rate-limit binding, 3 requests / 60s per IP (all routes except
   `/v1/health` and the docs routes).

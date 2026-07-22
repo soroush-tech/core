@@ -131,8 +131,8 @@ jobs:
             return { dir, filter: pkg.name, flag: dir, browsers }
           })
           console.log(`web=${apps.includes('web') || packages.length > 0 || infra}`)
-          console.log(`worker=${worker.includes('api') || packages.includes('schema') || infra}`)
-          console.log(`worker_bench=${worker.includes('bench') || infra}`)
+          console.log(`worker=${worker.includes('api') || packages.includes('schema') || packages.includes('wrangler-tools') || infra}`)
+          console.log(`worker_bench=${worker.includes('bench') || packages.includes('wrangler-tools') || infra}`)
           console.log(`has_packages=${pkgsForCI.length ? 'true' : 'false'}`)
           console.log(`changed_packages=${JSON.stringify({ include })}`)
           NODE
