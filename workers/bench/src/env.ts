@@ -9,7 +9,7 @@ export interface Env {
   BENCH_GH_APP_ID: string
   /** Bench bot GitHub App private key PEM, PKCS#8 or PKCS#1 as GitHub downloads it (a Worker secret). */
   BENCH_GH_APP_PRIVATE_KEY: string
-  /** Per-IP rate limiter for the report endpoint (3 requests / 60s). */
+  /** Per-IP rate limiter for the report endpoint (10 requests / 60s). */
   RATE_LIMITER: RateLimit
   /** When `'true'`, serve Swagger UI + OpenAPI (local/preview only; never set in production). */
   DOCS_ENABLED?: string

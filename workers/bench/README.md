@@ -18,7 +18,7 @@ sequenceDiagram
     CI->>GH_OIDC: getIDToken("soroush-bench-action")
     GH_OIDC-->>CI: OIDC JWT (repository claim)
     CI->>Relay: POST /v1/report (Bearer JWT, {repository, prNumber, body})
-    Relay->>Relay: rate limit (3 req / 60s per IP), size + zod checks
+    Relay->>Relay: rate limit (10 req / 60s per IP), size + zod checks
     Relay->>GH_OIDC: fetch JWKS (edge-cached 1h)
     Relay->>Relay: verify signature, issuer, audience, expiry
     Relay->>Relay: repository claim must match payload
@@ -70,7 +70,7 @@ Unlike `@soroush/api` there is no CORS/origin guard — the callers are CI runne
 shared `@soroush.tech/wrangler-tools` bin) so no IDs land in the repo; `setup` (also run on
 `predev`/`predeploy`) regenerates it. Bindings and vars:
 
-- `RATE_LIMITER` — Workers rate-limit binding, 3 requests / 60s per IP (all routes except
+- `RATE_LIMITER` — Workers rate-limit binding, 10 requests / 60s per IP (all routes except
   `/v1/health` and the docs routes).
 - `BENCH_GH_APP_ID` — the bench GitHub App id (wrangler var; dev placeholder `0` in
   `default.env`, real id in the `cd-worker-bench` deploy environment).

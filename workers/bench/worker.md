@@ -10,7 +10,8 @@ Follows `workers/api/worker.md` conventions: `routes/` (thin handlers) vs `servi
 the mockable seams) vs `utils/` (pure), `src/*` alias, co-located `*.test.ts`, **100% coverage**
 (`thresholds: { 100: true }`). No D1/R2/cron; no CORS/origin guard — callers are CI runners,
 not browsers, and every report request authenticates with a GitHub Actions OIDC JWT. The per-IP
-rate limit (3/60s, `/v1/health` exempt) mirrors the api worker.
+rate limit (10/60s, `/v1/health` exempt) follows the api worker's pattern — sized up for
+self-hosted runners sharing one egress IP.
 
 ## Endpoint
 
