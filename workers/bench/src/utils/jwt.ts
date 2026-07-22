@@ -2,14 +2,16 @@
 export const base64UrlEncode = (data: Uint8Array | string): string => {
   const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data
   let binary = ''
-  for (const byte of bytes) binary += String.fromCharCode(byte)
-  return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
+  for (const byte of bytes) binary += String.fromCodePoint(byte)
+  // btoa only emits '=' as trailing padding, so stripping all of them is safe and linear.
+  return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
 /** Decode a base64url string (with or without padding) to bytes. */
 export const base64UrlDecode = (encoded: string): Uint8Array => {
   const binary = atob(encoded.replaceAll('-', '+').replaceAll('_', '/'))
-  return Uint8Array.from(binary, (char) => char.charCodeAt(0))
+  // atob output is latin1, so every char is a single BMP code point — never undefined.
+  return Uint8Array.from(binary, (char) => char.codePointAt(0) as number)
 }
 
 export interface DecodedJwt {
@@ -53,9 +55,12 @@ const RSA_ALGORITHM_IDENTIFIER = [
 /** Wrap a PKCS#1 `RSAPrivateKey` DER in a PKCS#8 `PrivateKeyInfo` (version 0, rsaEncryption). */
 const wrapPkcs1InPkcs8 = (pkcs1: Uint8Array): Uint8Array => {
   const content = [
-    ...[0x02, 0x01, 0x00],
+    0x02,
+    0x01,
+    0x00,
     ...RSA_ALGORITHM_IDENTIFIER,
-    ...[0x04, ...encodeDerLength(pkcs1.length)],
+    0x04,
+    ...encodeDerLength(pkcs1.length),
     ...pkcs1,
   ]
   return Uint8Array.from([0x30, ...encodeDerLength(content.length), ...content])
@@ -72,6 +77,6 @@ export const pemToPkcs8Der = (pem: string): Uint8Array => {
     .replaceAll(/-----(?:BEGIN|END) (?:RSA )?PRIVATE KEY-----/g, '')
     .replaceAll(/\s/g, '')
   if (body === '') throw new Error('jwt: empty private key PEM')
-  const der = Uint8Array.from(atob(body), (char) => char.charCodeAt(0))
+  const der = Uint8Array.from(atob(body), (char) => char.codePointAt(0) as number)
   return isPkcs1 ? wrapPkcs1InPkcs8(der) : der
 }

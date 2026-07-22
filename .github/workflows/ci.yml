@@ -320,6 +320,9 @@ jobs:
         with:
           app-id: ${{ vars.BENCH_BOT_APP_ID }}
           private-key: ${{ secrets.BENCH_BOT_PRIVATE_KEY }}
+          # Scope the minted token to commenting only, instead of inheriting every
+          # permission the app installation has.
+          permission-pull-requests: write
 
       - name: Run benchmark gate
         uses: soroush-tech/bench-action@v1

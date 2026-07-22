@@ -21,7 +21,9 @@ const worker = (c.worker || []).includes('bench') || c.root
 
 ## Job: `deploy`
 
-`environment: cd-worker-bench` · checkout → `.nvmrc` node → pnpm install →
+`environment: cd-worker-bench` · `permissions: contents: read` · checkout
+(`persist-credentials: false`) → node via `node-version-file: .nvmrc` →
+`pnpm install --frozen-lockfile --ignore-scripts` →
 `pnpm --filter @soroush/bench-api config:gen` (env: `WORKER_NAME`, `BENCH_GH_APP_ID`) →
 `cloudflare/wrangler-action` (SHA-pinned) `command: deploy` in `workers/bench`. The first
 deploy creates the `api.bench.soroush.tech` custom domain from the generated config.

@@ -4,7 +4,7 @@
   "compatibility_date": "2026-06-18",
   "observability": { "enabled": true },
   "ratelimits": [
-    { "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } }
+    { "name": "RATE_LIMITER", "namespace_id": "1002", "simple": { "limit": 3, "period": 60 } }
   ],
   "routes": [{ "pattern": "api.bench.soroush.tech", "custom_domain": true }],
   "vars": {

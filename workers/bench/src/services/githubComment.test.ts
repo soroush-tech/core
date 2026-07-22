@@ -14,10 +14,10 @@ afterEach(() => {
 })
 
 describe('upsertBenchComment', () => {
-  it('updates the existing marker-matched comment in place', async () => {
+  it('updates the existing bot-authored marker comment in place', async () => {
     const listed = [
-      { id: 1, body: 'unrelated' },
-      { id: 2, body: `${BENCH_MARKER}\nold report` },
+      { id: 1, body: 'unrelated', user: { type: 'User' } },
+      { id: 2, body: `${BENCH_MARKER}\nold report`, user: { type: 'Bot' } },
     ]
     const fetch = stubFetchSequence(
       new Response(JSON.stringify(listed)),
@@ -39,6 +39,20 @@ describe('upsertBenchComment', () => {
   it('creates a new comment when none matches, ignoring body-less comments', async () => {
     const fetch = stubFetchSequence(
       new Response(JSON.stringify([{ id: 1 }])),
+      new Response(JSON.stringify({ id: 9 }))
+    )
+
+    expect(await upsertBenchComment('tok', 'o', 'r', 5, `${BENCH_MARKER}\nnew`)).toBe(9)
+
+    const [writeUrl, writeInit] = fetch.mock.calls[1] as [string, RequestInit]
+    expect(writeUrl).toBe(`${GITHUB_API}/repos/o/r/issues/5/comments`)
+    expect(writeInit.method).toBe('POST')
+  })
+
+  it('ignores a marker planted in a human comment and posts a fresh bot comment', async () => {
+    const listed = [{ id: 3, body: `${BENCH_MARKER}\nspoof attempt`, user: { type: 'User' } }]
+    const fetch = stubFetchSequence(
+      new Response(JSON.stringify(listed)),
       new Response(JSON.stringify({ id: 9 }))
     )
 

@@ -8,7 +8,10 @@ export const BENCH_MARKER = '<!-- soroush-bench-action -->'
 
 /**
  * Creates or updates the marker-matched report comment on the PR using an installation token,
- * so the comment is authored by the bench bot. Returns the comment id; throws on any non-2xx.
+ * so the comment is authored by the bench bot. Only bot-authored comments are matched — a PR
+ * participant pasting the marker into their own comment must not capture the report — while
+ * still converging with the action's own `github-actions[bot]` fallback comment. Returns the
+ * comment id; throws on any non-2xx.
  */
 export const upsertBenchComment = async (
   installationToken: string,
@@ -26,8 +29,14 @@ export const upsertBenchComment = async (
 
   const listed = await fetch(`${issues}/${prNumber}/comments?per_page=100`, { headers })
   if (!listed.ok) throw new Error(`GitHub comment list failed (${listed.status})`)
-  const comments = (await listed.json()) as { id: number; body?: string }[]
-  const existing = comments.find((comment) => comment.body?.includes(BENCH_MARKER) === true)
+  const comments = (await listed.json()) as {
+    id: number
+    body?: string
+    user?: { type?: string }
+  }[]
+  const existing = comments.find(
+    (comment) => comment.user?.type === 'Bot' && comment.body?.includes(BENCH_MARKER) === true
+  )
 
   const written = existing
     ? await fetch(`${issues}/comments/${existing.id}`, {

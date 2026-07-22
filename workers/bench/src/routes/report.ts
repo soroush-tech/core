@@ -5,7 +5,7 @@ import { OIDC_AUDIENCE, OidcError, verifyActionsOidc } from 'src/services/github
 import { AppNotInstalledError, mintInstallationToken } from 'src/services/githubApp'
 import { BENCH_MARKER, upsertBenchComment } from 'src/services/githubComment'
 
-/** Reject bodies larger than this many bytes before parsing — a cheap abuse guard. */
+/** Reject bodies larger than this many bytes before parsing — measured on the received bytes, not the client-supplied `content-length`. */
 const MAX_BODY_BYTES = 64 * 1024
 
 export const reportSchema = z.object({
@@ -18,17 +18,18 @@ export const reportSchema = z.object({
 export const reportRoute = new Hono<{ Bindings: Env }>()
 
 reportRoute.post('/report', async (c) => {
-  if (Number(c.req.header('content-length') ?? '0') > MAX_BODY_BYTES) {
-    return c.json({ ok: false, error: 'Payload too large' }, 413)
-  }
   const auth = c.req.header('authorization') ?? ''
   if (!auth.startsWith('Bearer ')) {
     return c.json({ ok: false, error: 'Missing bearer token' }, 401)
   }
 
+  const rawBody = await c.req.text()
+  if (new TextEncoder().encode(rawBody).length > MAX_BODY_BYTES) {
+    return c.json({ ok: false, error: 'Payload too large' }, 413)
+  }
   let body: unknown
   try {
-    body = await c.req.json()
+    body = JSON.parse(rawBody)
   } catch {
     return c.json({ ok: false, error: 'Invalid JSON' }, 400)
   }

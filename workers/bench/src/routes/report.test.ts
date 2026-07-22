@@ -41,9 +41,15 @@ beforeEach(() => {
 })
 
 describe('POST /v1/report', () => {
-  it('rejects oversized payloads before parsing', async () => {
-    const res = await post(validBody(), { 'content-length': String(1024 * 1024) })
+  it('rejects oversized payloads before parsing, regardless of the content-length header', async () => {
+    const oversized = JSON.stringify({
+      repository: 'o/r',
+      prNumber: 5,
+      body: `${BENCH_MARKER}${'x'.repeat(64 * 1024)}`,
+    })
+    const res = await post(oversized, { 'content-length': '1' })
     expect(res.status).toBe(413)
+    expect(await res.json()).toEqual({ ok: false, error: 'Payload too large' })
   })
 
   it('rejects a missing bearer token', async () => {

@@ -33,6 +33,7 @@ describe('setup-env', () => {
   it('skips in CI without touching the filesystem', async () => {
     process.env.CI = '1'
     await run()
+    expect(existsSync).not.toHaveBeenCalled()
     expect(copyFileSync).not.toHaveBeenCalled()
     expect(log).toHaveBeenCalledWith(expect.stringContaining('CI detected'))
   })

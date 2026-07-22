@@ -52,12 +52,13 @@ jobs:
     if: needs.changes.outputs.worker == 'true'
     runs-on: ubuntu-latest
     environment: cd-worker-bench
+    permissions:
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
-
-      - name: Read Node.js version from .nvmrc
-        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
+        with:
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
@@ -65,11 +66,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
 
+      # --ignore-scripts skips the root husky/setup hooks this job doesn't need; the next
+      # step generates the worker config explicitly.
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Generate wrangler.json from env
         run: pnpm --filter @soroush/bench-api config:gen
