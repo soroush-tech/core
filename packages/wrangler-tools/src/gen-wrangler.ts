@@ -30,8 +30,10 @@ export const renderConfig = (template: string, env: Env): string =>
 export const generate = (dir: string, required: string[], env: Env): void => {
   try {
     process.loadEnvFile(resolve(dir, '.env'))
-  } catch {
-    // no local .env (CI) — rely on the ambient environment
+  } catch (error) {
+    // Only an absent .env (CI) falls back to the ambient environment — a malformed or
+    // unreadable one must fail loudly instead of silently generating stale config.
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
   }
   if (shouldGenerate(env, required)) {
     const template = readFileSync(resolve(dir, 'default.wrangler.json'), 'utf8')

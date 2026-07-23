@@ -62,12 +62,20 @@ describe('generate', () => {
 
   it('leaves wrangler.json untouched when ID vars are absent, even without a .env', () => {
     loadEnvFile.mockImplementation(() => {
-      throw new Error('ENOENT')
+      throw Object.assign(new Error('no .env'), { code: 'ENOENT' })
     })
     generate('/w', ['WORKER_NAME'], {})
 
     expect(readFileSync).not.toHaveBeenCalled()
     expect(writeFileSync).not.toHaveBeenCalled()
     expect(log).toHaveBeenCalledWith(expect.stringContaining('leaving any local wrangler.json'))
+  })
+
+  it('propagates .env load failures other than an absent file', () => {
+    loadEnvFile.mockImplementation(() => {
+      throw Object.assign(new Error('permission denied'), { code: 'EACCES' })
+    })
+    expect(() => generate('/w', ['WORKER_NAME'], {})).toThrow('permission denied')
+    expect(writeFileSync).not.toHaveBeenCalled()
   })
 })
