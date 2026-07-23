@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest'
+import { resolve } from 'node:path'
 import { setupEnv } from './setup-env'
 
 const { existsSync, copyFileSync } = vi.hoisted(() => ({
@@ -46,6 +47,7 @@ describe('setupEnv', () => {
     existsSync.mockImplementation((path: string) => path.endsWith('default.env'))
     setupEnv('/w', {})
     expect(copyFileSync).toHaveBeenCalledOnce()
+    expect(copyFileSync).toHaveBeenCalledWith(resolve('/w', 'default.env'), resolve('/w', '.env'))
     expect(log).toHaveBeenCalledWith(expect.stringContaining('created'))
   })
 })
