@@ -9,7 +9,7 @@ Backend deployables (Cloudflare Workers, APIs).
 
 Each worker configures itself through the shared `@soroush.tech/wrangler-tools` bins: `setup`
 (run by the root `postprepare`) bootstraps the local `.env` once, and `config:gen` (run
-automatically on `predev`/`predeploy`) generates `wrangler.json` from `default.wrangler.json`
-
-- env — `wrangler.json` is generated, never committed. Each worker's `config:gen` script lists
-  its own required ID vars. See [api/worker.md](./api/worker.md) for conventions and config.
+automatically on `predev`/`predeploy`) renders `wrangler.json` from the
+`default.wrangler.json` template plus env — `wrangler.json` is generated, never committed.
+Each worker's `config:gen` script lists its own required ID vars. See
+[api/worker.md](./api/worker.md) for conventions and config.
