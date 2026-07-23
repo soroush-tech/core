@@ -282,6 +282,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write # bench-action posts/updates the results comment
+      id-token: write # OIDC token for the branded comment relay (api.bench.soroush.tech)
     environment: CI
     timeout-minutes: 20
     steps:
