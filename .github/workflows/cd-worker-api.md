@@ -45,13 +45,14 @@ if: ${{ github.event_name == 'workflow_dispatch'
   || github.event.workflow_run.conclusion == 'success' }}
 ```
 
-| #   | Step                     | Detail                                                                                                                                                                   |
-| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | Download changes from CI | `actions/download-artifact@v8`, only `if event == workflow_run`, `continue-on-error: true`, `run-id: ${{ github.event.workflow_run.id }}`. Pulls the `changes` artifact. |
-| 2   | Decide whether to deploy | shell: if `workflow_dispatch` **or** `changes.json` is missing → `worker=true`; else `node` reads it: `worker = worker∋'api' \|\| packages∋'schema' \|\| root`.          |
+| #   | Step                     | Detail                                                                                                                                                                                         |
+| --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Download changes from CI | `actions/download-artifact@v8`, only `if event == workflow_run`, `continue-on-error: true`, `run-id: ${{ github.event.workflow_run.id }}`. Pulls the `changes` artifact.                       |
+| 2   | Decide whether to deploy | shell: if `workflow_dispatch` **or** `changes.json` is missing → `worker=true`; else `node` reads it: `worker = worker∋'api' \|\| packages∋'schema' \|\| packages∋'wrangler-tools' \|\| root`. |
 
-Output: `worker` (`'true'`/`'false'`). The worker consumes `@soroush.tech/schema`, so
-a `schema` package change also flips this to `true`.
+Output: `worker` (`'true'`/`'false'`). The worker consumes `@soroush.tech/schema` and renders
+its config with `@soroush.tech/wrangler-tools`, so a change to either package also flips this
+to `true`.
 
 ---
 

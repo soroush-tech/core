@@ -252,6 +252,18 @@ importers:
         specifier: ^4.110.0
         version: 4.110.0(@cloudflare/workers-types@5.20260714.1)
 
+  labs/bench:
+    dependencies:
+      '@soroush.tech/bench':
+        specifier: workspace:*
+        version: link:../../packages/bench
+      '@soroush.tech/styled-system':
+        specifier: 5.2.0
+        version: 5.2.0(@emotion/is-prop-valid@1.4.0)
+      styled-system:
+        specifier: 5.1.5
+        version: 5.1.5
+
   packages/bench:
     devDependencies:
       '@soroush.tech/eslint-config':
@@ -711,6 +723,30 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@29.1.1)(msw@2.15.0(@types/node@26.1.1)(typescript@6.0.3))(vite@8.1.4(@types/node@26.1.1)(esbuild@0.28.1))
 
+  packages/wrangler-tools:
+    devDependencies:
+      '@soroush.tech/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      '@vitest/coverage-v8':
+        specifier: ^4.1.10
+        version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
+      eslint:
+        specifier: ^10.7.0
+        version: 10.7.0
+      globals:
+        specifier: ^17.7.0
+        version: 17.7.0
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@29.1.1)(msw@2.15.0(@types/node@26.1.1)(typescript@6.0.3))(vite@8.1.4(@types/node@26.1.1)(esbuild@0.28.1))
+
   workers/api:
     dependencies:
       '@hono/swagger-ui':
@@ -732,6 +768,49 @@ importers:
       '@soroush.tech/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@soroush.tech/wrangler-tools':
+        specifier: workspace:*
+        version: link:../../packages/wrangler-tools
+      '@vitest/coverage-v8':
+        specifier: ^4.1.10
+        version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
+      eslint:
+        specifier: ^10.7.0
+        version: 10.7.0
+      globals:
+        specifier: ^17.7.0
+        version: 17.7.0
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@29.1.1)(msw@2.15.0(@types/node@26.1.1)(typescript@6.0.3))(vite@8.1.4(@types/node@26.1.1)(esbuild@0.28.1))
+      wrangler:
+        specifier: ^4.110.0
+        version: 4.110.0(@cloudflare/workers-types@5.20260714.1)
+
+  workers/bench:
+    dependencies:
+      '@hono/swagger-ui':
+        specifier: ^0.6.1
+        version: 0.6.1(hono@4.12.30)
+      hono:
+        specifier: ^4.12.30
+        version: 4.12.30
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260714.1
+        version: 5.20260714.1
+      '@soroush.tech/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@soroush.tech/wrangler-tools':
+        specifier: workspace:*
+        version: link:../../packages/wrangler-tools
       '@vitest/coverage-v8':
         specifier: ^4.1.10
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
@@ -3589,6 +3668,15 @@ packages:
         integrity: sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA==,
       }
 
+  '@soroush.tech/styled-system@5.2.0':
+    resolution:
+      {
+        integrity: sha512-NlUhl1B8/cj19xtP1JWYBFluq4EW+gotr0jBt2679jzrsRzCOUYQr7hHUvDCw4exZUE/C63oIKEFPXHkSqBKfw==,
+      }
+    deprecated: Superseded by 5.6.0 (drop-in type parity with @types/styled-system). Upgrade to >=5.6.0.
+    peerDependencies:
+      '@emotion/is-prop-valid': ^1.4.0
+
   '@speed-highlight/core@1.2.17':
     resolution:
       {
@@ -3753,6 +3841,84 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  '@styled-system/background@5.1.2':
+    resolution:
+      {
+        integrity: sha512-jtwH2C/U6ssuGSvwTN3ri/IyjdHb8W9X/g8Y0JLcrH02G+BW3OS8kZdHphF1/YyRklnrKrBT2ngwGUK6aqqV3A==,
+      }
+
+  '@styled-system/border@5.1.5':
+    resolution:
+      {
+        integrity: sha512-JvddhNrnhGigtzWRCVuAHepniyVi6hBlimxWDVAdcTuk7aRn9BYJUwfHslURtwYFsF5FoEs8Zmr1oZq2M1AP0A==,
+      }
+
+  '@styled-system/color@5.1.2':
+    resolution:
+      {
+        integrity: sha512-1kCkeKDZkt4GYkuFNKc7vJQMcOmTl3bJY3YBUs7fCNM6mMYJeT1pViQ2LwBSBJytj3AB0o4IdLBoepgSgGl5MA==,
+      }
+
+  '@styled-system/core@5.1.2':
+    resolution:
+      {
+        integrity: sha512-XclBDdNIy7OPOsN4HBsawG2eiWfCcuFt6gxKn1x4QfMIgeO6TOlA2pZZ5GWZtIhCUqEPTgIBta6JXsGyCkLBYw==,
+      }
+
+  '@styled-system/css@5.1.5':
+    resolution:
+      {
+        integrity: sha512-XkORZdS5kypzcBotAMPBoeckDs9aSZVkvrAlq5K3xP8IMAUek+x2O4NtwoSgkYkWWzVBu6DGdFZLR790QWGG+A==,
+      }
+
+  '@styled-system/flexbox@5.1.2':
+    resolution:
+      {
+        integrity: sha512-6hHV52+eUk654Y1J2v77B8iLeBNtc+SA3R4necsu2VVinSD7+XY5PCCEzBFaWs42dtOEDIa2lMrgL0YBC01mDQ==,
+      }
+
+  '@styled-system/grid@5.1.2':
+    resolution:
+      {
+        integrity: sha512-K3YiV1KyHHzgdNuNlaw8oW2ktMuGga99o1e/NAfTEi5Zsa7JXxzwEnVSDSBdJC+z6R8WYTCYRQC6bkVFcvdTeg==,
+      }
+
+  '@styled-system/layout@5.1.2':
+    resolution:
+      {
+        integrity: sha512-wUhkMBqSeacPFhoE9S6UF3fsMEKFv91gF4AdDWp0Aym1yeMPpqz9l9qS/6vjSsDPF7zOb5cOKC3tcKKOMuDCPw==,
+      }
+
+  '@styled-system/position@5.1.2':
+    resolution:
+      {
+        integrity: sha512-60IZfMXEOOZe3l1mCu6sj/2NAyUmES2kR9Kzp7s2D3P4qKsZWxD1Se1+wJvevb+1TP+ZMkGPEYYXRyU8M1aF5A==,
+      }
+
+  '@styled-system/shadow@5.1.2':
+    resolution:
+      {
+        integrity: sha512-wqniqYb7XuZM7K7C0d1Euxc4eGtqEe/lvM0WjuAFsQVImiq6KGT7s7is+0bNI8O4Dwg27jyu4Lfqo/oIQXNzAg==,
+      }
+
+  '@styled-system/space@5.1.2':
+    resolution:
+      {
+        integrity: sha512-+zzYpR8uvfhcAbaPXhH8QgDAV//flxqxSjHiS9cDFQQUSznXMQmxJegbhcdEF7/eNnJgHeIXv1jmny78kipgBA==,
+      }
+
+  '@styled-system/typography@5.1.2':
+    resolution:
+      {
+        integrity: sha512-BxbVUnN8N7hJ4aaPOd7wEsudeT7CxarR+2hns8XCX1zp0DFfbWw4xYa/olA0oQaqx7F1hzDg+eRaGzAJbF+jOg==,
+      }
+
+  '@styled-system/variant@5.1.5':
+    resolution:
+      {
+        integrity: sha512-Yn8hXAFoWIro8+Q5J8YJd/mP85Teiut3fsGVR9CAxwgNfIAiqlYxsk5iHU7VHJks/0KjL4ATSjmbtCDC/4l1qw==,
+      }
 
   '@svgr/babel-plugin-add-jsx-attribute@8.0.0':
     resolution:
@@ -11855,6 +12021,12 @@ packages:
         integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==,
       }
 
+  styled-system@5.1.5:
+    resolution:
+      {
+        integrity: sha512-7VoD0o2R3RKzOzPK0jYrVnS8iJdfkKsQJNiLRDjikOpQVqQHns/DXWaPZOH4tIKkhAT7I6wIsy9FWTWh2X3q+A==,
+      }
+
   stylis@4.2.0:
     resolution:
       {
@@ -14607,6 +14779,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
+  '@soroush.tech/styled-system@5.2.0(@emotion/is-prop-valid@1.4.0)':
+    dependencies:
+      '@emotion/is-prop-valid': 1.4.0
+      csstype: 3.2.3
+
   '@speed-highlight/core@1.2.17': {}
 
   '@standard-schema/spec@1.1.0': {}
@@ -14780,6 +14957,57 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
+
+  '@styled-system/background@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/border@5.1.5':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/color@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/core@5.1.2':
+    dependencies:
+      object-assign: 4.1.1
+
+  '@styled-system/css@5.1.5': {}
+
+  '@styled-system/flexbox@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/grid@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/layout@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/position@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/shadow@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/space@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/typography@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/variant@5.1.5':
+    dependencies:
+      '@styled-system/core': 5.1.2
+      '@styled-system/css': 5.1.5
 
   '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@7.29.7)':
     dependencies:
@@ -20660,6 +20888,22 @@ snapshots:
   style-to-object@1.0.14:
     dependencies:
       inline-style-parser: 0.2.7
+
+  styled-system@5.1.5:
+    dependencies:
+      '@styled-system/background': 5.1.2
+      '@styled-system/border': 5.1.5
+      '@styled-system/color': 5.1.2
+      '@styled-system/core': 5.1.2
+      '@styled-system/flexbox': 5.1.2
+      '@styled-system/grid': 5.1.2
+      '@styled-system/layout': 5.1.2
+      '@styled-system/position': 5.1.2
+      '@styled-system/shadow': 5.1.2
+      '@styled-system/space': 5.1.2
+      '@styled-system/typography': 5.1.2
+      '@styled-system/variant': 5.1.5
+      object-assign: 4.1.1
 
   stylis@4.2.0: {}
 

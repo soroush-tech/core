@@ -1,5 +1,5 @@
 {
-  "name": "@soroush/api",
+  "name": "@soroush/bench-api",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,16 +9,15 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "config:gen": "gen-wrangler WORKER_NAME D1_DATABASE_NAME D1_DATABASE_ID R2_BUCKET",
+    "config:gen": "gen-wrangler WORKER_NAME BENCH_GH_APP_ID",
     "setup": "worker-setup-env",
     "predev": "pnpm config:gen",
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --port 8788",
     "predeploy": "pnpm config:gen",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.6.1",
-    "@soroush.tech/schema": "workspace:*",
     "hono": "^4.12.30",
     "zod": "^4.4.3"
   },

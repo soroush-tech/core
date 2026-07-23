@@ -1,4 +1,4 @@
-name: Deploy Worker (@soroush/api)
+name: Deploy Worker (@soroush/bench-api)
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       - main
 
 concurrency:
-  group: deploy-worker-api
+  group: deploy-worker-bench
   cancel-in-progress: false
 
 jobs:
@@ -36,13 +36,13 @@ jobs:
         id: read
         run: |
           # Manual dispatch or a missing artifact → deploy. Otherwise deploy when the
-          # worker, the schema package it consumes, or a root config changed.
+          # bench worker or a root config changed.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ ! -f changes.json ]; then
             echo "worker=true" >> "$GITHUB_OUTPUT"
           else
             node <<'NODE' >> "$GITHUB_OUTPUT"
             const c = require('./changes.json')
-            const worker = (c.worker || []).includes('api') || (c.packages || []).includes('schema') || (c.packages || []).includes('wrangler-tools') || c.root
+            const worker = (c.worker || []).includes('bench') || (c.packages || []).includes('wrangler-tools') || c.root
             console.log(`worker=${worker}`)
           NODE
           fi
@@ -51,13 +51,14 @@ jobs:
     needs: changes
     if: needs.changes.outputs.worker == 'true'
     runs-on: ubuntu-latest
-    environment: cd-worker
+    environment: cd-worker-bench
+    permissions:
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
-
-      - name: Read Node.js version from .nvmrc
-        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
+        with:
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
@@ -65,29 +66,28 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
 
+      # --ignore-scripts skips the root husky/setup hooks this job doesn't need; the next
+      # step generates the worker config explicitly.
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Generate wrangler.json from env
-        run: pnpm --filter @soroush/api config:gen
+        run: pnpm --filter @soroush/bench-api config:gen
         env:
           WORKER_NAME: ${{ vars.WORKER_NAME }}
-          D1_DATABASE_NAME: ${{ vars.D1_DATABASE_NAME }}
-          D1_DATABASE_ID: ${{ vars.D1_DATABASE_ID }}
-          R2_BUCKET: ${{ vars.R2_BUCKET }}
-          VITE_CONTACT_HONEYPOT: ${{ vars.VITE_CONTACT_HONEYPOT }}
+          BENCH_GH_APP_ID: ${{ vars.BENCH_GH_APP_ID }}
 
-      # Deploy via the official Cloudflare action (same as the Storybook Pages deploy in
-      # cd-web.yml) rather than the wrangler CLI. `config:gen` above must run first — the action
-      # runs `wrangler deploy` directly and does not fire the package's `predeploy` hook.
+      # Deploy via the official Cloudflare action (same as cd-worker-api.yml) rather than the
+      # wrangler CLI. `config:gen` above must run first — the action runs `wrangler deploy`
+      # directly and does not fire the package's `predeploy` hook.
       - name: Deploy
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: '4.110.0'
-          workingDirectory: workers/api
+          workingDirectory: workers/bench
           command: deploy

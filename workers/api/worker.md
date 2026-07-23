@@ -101,8 +101,9 @@ the `sqlAsText` loader plugin in `vitest.config.ts` under test.
 ## Config
 
 `wrangler.json` is **generated, never edited by hand**. The template `default.wrangler.json` holds
-`${VAR}` placeholders that `scripts/gen-wrangler.mjs` substitutes from the environment (or local
-`.env`):
+`${VAR}` placeholders that the shared `gen-wrangler` bin (`@soroush.tech/wrangler-tools`)
+substitutes from the environment (or local `.env`); the required ID vars are listed on the
+`config:gen` script in `package.json`:
 
 ```
 pnpm config:gen     # render wrangler.json from the template

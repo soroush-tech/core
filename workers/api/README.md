@@ -38,7 +38,7 @@ CORS is locked to `https://soroush.tech` and `https://www.soroush.tech`.
 ## Bindings & config
 
 `wrangler.json` is **generated from env** (see the `default.wrangler.json` template and
-`scripts/gen-wrangler.mjs`) so no IDs land in the repo. Bindings: `DB` (D1), `BACKUPS` (R2).
+the shared `@soroush.tech/wrangler-tools` bin) so no IDs land in the repo. Bindings: `DB` (D1), `BACKUPS` (R2).
 Secrets: `RESEND_API_KEY` (Resend send), `TURNSTILE_SECRET` (captcha). Vars:
 `VITE_CONTACT_HONEYPOT` (hidden field name, shared key with the web), `RETENTION_MONTHS`
 (default `6`), `TURNSTILE_HOSTNAME` (comma-separated hostnames a Turnstile token may be solved on;

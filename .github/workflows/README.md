@@ -1,27 +1,28 @@
 # GitHub Actions workflows
 
 This directory holds the CI/CD pipeline for the `soroush.tech` monorepo. There is
-**one** CI workflow for the whole workspace, **three** deployment workflows, a main-only
-Chromatic visual-review workflow, and an issue-labeling automation. The two deploys
-(`cd-web`, `cd-worker-api`) are gated on CI success and never run off a raw `push`; package
-publishing (`cd-packages`) is **manual `workflow_dispatch` only**.
+**one** CI workflow for the whole workspace, **four** deployment workflows, a main-only
+Chromatic visual-review workflow, and an issue-labeling automation. The three deploys
+(`cd-web`, `cd-worker-api`, `cd-worker-bench`) are gated on CI success and never run off a
+raw `push`; package publishing (`cd-packages`) is **manual `workflow_dispatch` only**.
 
-| File                                       | Name                     | Trigger                                                      |
-| ------------------------------------------ | ------------------------ | ------------------------------------------------------------ |
-| [`ci.yml`](./ci.yml)                       | `Continuous Integration` | `push` to `main`, every `pull_request`                       |
-| [`cd-web.yml`](./cd-web.yml)               | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
-| [`cd-worker-api.yml`](./cd-worker-api.yml) | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
-| [`cd-packages.yml`](./cd-packages.yml)     | Publish Packages (npm)   | manual `workflow_dispatch` only                              |
-| [`chromatic.yml`](./chromatic.yml)         | Chromatic                | `push` to `main` (paths) + `workflow_dispatch`               |
-| [`label-area.yml`](./label-area.yml)       | Label Affected Area      | `issues` `opened`                                            |
+| File                                           | Name                      | Trigger                                                      |
+| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------ |
+| [`ci.yml`](./ci.yml)                           | `Continuous Integration`  | `push` to `main`, every `pull_request`                       |
+| [`cd-web.yml`](./cd-web.yml)                   | Pages + Storybook deploy  | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
+| [`cd-worker-api.yml`](./cd-worker-api.yml)     | Cloudflare Worker deploy  | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
+| [`cd-worker-bench.yml`](./cd-worker-bench.yml) | Bench relay Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
+| [`cd-packages.yml`](./cd-packages.yml)         | Publish Packages (npm)    | manual `workflow_dispatch` only                              |
+| [`chromatic.yml`](./chromatic.yml)             | Chromatic                 | `push` to `main` (paths) + `workflow_dispatch`               |
+| [`label-area.yml`](./label-area.yml)           | Label Affected Area       | `issues` `opened`                                            |
 
 **Per-workflow deep dives** (every step + caching):
-[`ci.md`](./ci.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-packages.md`](./cd-packages.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
+[`ci.md`](./ci.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-worker-bench.md`](./cd-worker-bench.md) · [`cd-packages.md`](./cd-packages.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
 
 ## How the pieces fit together
 
 CI runs on every push/PR. On a successful `main` run it uploads a single
-[`changes.json`](./ci.md#changesjson) artifact; the **two deploy** workflows then start via
+[`changes.json`](./ci.md#changesjson) artifact; the **deploy** workflows then start via
 `workflow_run`, download it, and each applies its **own condition** to decide whether to
 deploy. `cd-packages` is separate — it's triggered by hand, not by CI, so it reads no
 artifact.
@@ -33,10 +34,13 @@ flowchart LR
     ci -->|"uploads artifact"| art[("changes.json<br/>apps · worker · packages<br/>workflows · root")]
     ci -->|"workflow_run: completed + success on main"| cdweb["CD — Pages"]
     ci -->|"workflow_run: completed + success on main"| cdworker["CD — Worker API"]
+    ci -->|"workflow_run: completed + success on main"| cdbench["CD — Bench relay Worker"]
     art -.->|"download-artifact"| cdweb
     art -.->|"download-artifact"| cdworker
+    art -.->|"download-artifact"| cdbench
     cdweb --> pages["GitHub Pages"]
     cdworker --> cf["Cloudflare Worker"]
+    cdbench --> cfbench["Cloudflare Worker (bench relay)"]
     disp["workflow_dispatch (manual)"] --> cdpkg["CD — Packages"]
     cdpkg --> npm["npm registry"]
 ```
@@ -64,6 +68,7 @@ flowchart TD
     packages["packages (matrix)<br/>if has_packages == true"]
     bench["bench<br/>if styled-system / bench changed<br/>(runs soroush-tech/bench-action)"]
     worker["worker<br/>if worker == true"]
+    workerbench["worker-bench<br/>if worker_bench == true"]
     web["web (ubuntu)<br/>if web == true"]
     e2e["e2e (matrix)<br/>if web == true"]
     ciok["ci-ok<br/>branch-protection gate<br/>(if: always)"]
@@ -72,11 +77,13 @@ flowchart TD
     lint --> packages
     lint --> bench
     lint --> worker
+    lint --> workerbench
     lint --> web
     web --> e2e
     packages --> ciok
     bench --> ciok
     worker --> ciok
+    workerbench --> ciok
     web --> ciok
     e2e --> ciok
     lint --> ciok
@@ -93,7 +100,7 @@ Detect once, reuse via `needs.prepare.outputs.*` — node version is always read
 | `node_version`                      | `.nvmrc`                                                                                        |
 | `manager` / `command` / `runner`    | presence of `pnpm-lock.yaml` / `yarn.lock` / etc.                                               |
 | `playwright_version`                | `@playwright/test` version in `apps/web/package.json` (used in the Playwright binary cache key) |
-| `web` / `worker`                    | derived booleans for the CI jobs (own area, a bundled dep, or infra changed)                    |
+| `web` / `worker` / `worker_bench`   | derived booleans for the CI jobs (own area, a bundled dep, or infra changed)                    |
 | `has_packages` / `changed_packages` | the CI `packages` matrix (changed packages, or all on an infra change)                          |
 
 CI also writes the [`changes.json`](./ci.md#changesjson) artifact the CD side reads.
@@ -151,6 +158,7 @@ Codecov merges uploads by commit SHA. 100% coverage is enforced inside each
 | -------------------- | ----------------------------------- |
 | `<pkg>` (per matrix) | `packages/<pkg>/coverage/lcov.info` |
 | `api`                | `workers/api/coverage/lcov.info`    |
+| `bench-api`          | `workers/bench/coverage/lcov.info`  |
 | `unit`               | web unit (jsdom)                    |
 | `browser`            | web browser-mode unit               |
 | `storybook`          | Storybook test runner               |
@@ -185,6 +193,12 @@ flowchart TD
 
 `config:gen` renders `wrangler.json` from repo `vars` (worker name, D1, R2, honeypot);
 `wrangler deploy` authenticates with `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
+
+## `cd-worker-bench.yml` — Bench relay Worker deploy
+
+Structural mirror of `cd-worker-api.yml` for `workers/bench` (the bench-action comment
+relay at `api.bench.soroush.tech`): deploys when `worker∋bench ∥ root`, in its own
+`cd-worker-bench` environment — see [`cd-worker-bench.md`](./cd-worker-bench.md).
 
 ## `cd-packages.yml` — npm publish
 

@@ -32,11 +32,13 @@ flowchart TD
     lint --> packages
     lint --> bench
     lint --> worker
+    lint --> workerbench["worker-bench"]
     lint --> web
     web --> e2e
     prepare --> packages
     prepare --> bench
     prepare --> worker
+    prepare --> workerbench
     prepare --> web
     prepare --> e2e
     prepare --> ciok["ci-ok"]
@@ -44,11 +46,12 @@ flowchart TD
     packages --> ciok
     bench --> ciok
     worker --> ciok
+    workerbench --> ciok
     web --> ciok
     e2e --> ciok
 ```
 
-`packages`, `bench`, `worker`, `web`, and `e2e` only run when their area changed
+`packages`, `bench`, `worker`, `worker-bench`, `web`, and `e2e` only run when their area changed
 (see [`prepare`](#job-prepare)). `ci-ok` runs `if: always()` so it can turn skips
 into a pass and real failures into a fail.
 
@@ -59,27 +62,27 @@ into a pass and real failures into a fail.
 `runs-on: ubuntu-latest` · `timeout-minutes: 15`. Produces every output the other
 jobs consume via `needs.prepare.outputs.*`.
 
-| #   | Step                        | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                               |
-| --- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | Checkout Repository         | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                          |
-| 2   | Read Node.js version        | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                             |
-| 3   | Detect package manager      | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile`), `runner`. Fails if none found.                                                                                                                        |
-| 4   | Read Playwright version     | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).           |
-| 5   | Discover workspace entities | inline `node` script over `apps/*`, `workers/*`, `packages/*`, `.github/workflows/*`                                   | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), and workflow file (`wf__<name>`), plus `root` (`['*', '.*']`, top-level files only).                       |
-| 6   | Detect changed entities     | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                               |
-| 7   | Assemble `changes.json`     | inline `node` script                                                                                                   | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `worker` / `has_packages` / `changed_packages`. A `root` or workflow change counts as infra → validates the whole workspace. |
-| 8   | Upload `changes.json`       | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                 |
+| #   | Step                        | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                          |
+| --- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout Repository         | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                     |
+| 2   | Read Node.js version        | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                        |
+| 3   | Detect package manager      | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile`), `runner`. Fails if none found.                                                                                                                                                                                                   |
+| 4   | Read Playwright version     | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                      |
+| 5   | Discover workspace entities | inline `node` script over `apps/*`, `workers/*`, `packages/*`, `.github/workflows/*`                                   | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), and workflow file (`wf__<name>`), plus `root` (a whitelist of build/deploy-affecting root files: `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package.json`, `.nvmrc`, `tsconfig.json`). |
+| 6   | Detect changed entities     | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                          |
+| 7   | Assemble `changes.json`     | inline `node` script                                                                                                   | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `worker` / `worker_bench` / `has_packages` / `changed_packages`. A `root` or workflow change counts as infra → validates the whole workspace.                                                           |
+| 8   | Upload `changes.json`       | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                            |
 
 ### Outputs
 
-| Output                           | Meaning                                                                                    |
-| -------------------------------- | ------------------------------------------------------------------------------------------ |
-| `node_version`                   | from `.nvmrc`                                                                              |
-| `manager` / `command` / `runner` | package-manager triple                                                                     |
-| `playwright_version`             | `@playwright/test` semver (cache key input)                                                |
-| `web` / `worker`                 | `'true'` when that area, a dep it bundles, or infra changed                                |
-| `has_packages`                   | `'true'` when ≥1 package (or infra) changed                                                |
-| `changed_packages`               | `fromJSON`-ready matrix `{include:[{dir,filter,flag,browsers}]}` for the CI `packages` job |
+| Output                            | Meaning                                                                                    |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| `node_version`                    | from `.nvmrc`                                                                              |
+| `manager` / `command` / `runner`  | package-manager triple                                                                     |
+| `playwright_version`              | `@playwright/test` semver (cache key input)                                                |
+| `web` / `worker` / `worker_bench` | `'true'` when that area, a dep it bundles, or infra changed                                |
+| `has_packages`                    | `'true'` when ≥1 package (or infra) changed                                                |
+| `changed_packages`                | `fromJSON`-ready matrix `{include:[{dir,filter,flag,browsers}]}` for the CI `packages` job |
 
 ### `changes.json`
 
@@ -163,14 +166,19 @@ if: >-
   contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'bench')
 ```
 
-| #   | Step                                                      | Detail                                                                                                 |
-| --- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                   |
-| 5   | Build styled-system                                       | the bench file imports the built dist, so the comparison against npm's prebuilt dist is fair           |
-| 6   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@v1` with `baseline-case: previous`, `min-ratio: '80'`, `GITHUB_TOKEN` |
+| #   | Step                                                      | Detail                                                                                               |
+| --- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                 |
+| 5   | Build styled-system                                       | the bench file imports the built dist, so the comparison against npm's prebuilt dist is fair         |
+| 6   | Mint bot token                                            | `actions/create-github-app-token@v2`; skipped unless `vars.BENCH_BOT_APP_ID` is set                  |
+| 7   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@v1` with `baseline-case: previous`, `min-ratio: '80'` and the token |
 
-The job needs `pull-requests: write` for the results comment; on a read-only
-token the comment is skipped with a warning and only the gate decides the job.
+The results comment is posted with the org GitHub App's token (step 6, from
+`vars.BENCH_BOT_APP_ID` + `secrets.BENCH_BOT_PRIVATE_KEY`) so it appears under
+the brand bot identity; without the app config the gate falls back to
+`GITHUB_TOKEN` (`pull-requests: write`, comment author `github-actions[bot]`).
+On a read-only token the comment is skipped with a warning and only the gate
+decides the job.
 
 ---
 
@@ -183,6 +191,16 @@ token the comment is skipped with a warning and only the gate decides the job.
 | 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                 |
 | 5   | Tests with coverage                                       | `${runner} --filter @soroush/api test:coverage`                      |
 | 6   | Upload to Codecov                                         | `files: ./workers/api/coverage/lcov.info`, `flags: api`, `name: api` |
+
+---
+
+## Job: `worker-bench`
+
+`needs: [prepare, lint]` · `if: worker_bench == 'true'` · `environment: CI` · ubuntu · 15 min.
+Same shape as `worker`, for the bench-action comment relay
+([`workers/bench/worker.md`](../../workers/bench/worker.md)): tests with coverage via
+`${runner} --filter @soroush/bench-api test:coverage`, Codecov upload from
+`./workers/bench/coverage/lcov.info` under `flags: bench-api`.
 
 ---
 
