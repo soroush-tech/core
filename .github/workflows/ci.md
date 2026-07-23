@@ -173,12 +173,13 @@ if: >-
 | 6   | Mint bot token                                            | `actions/create-github-app-token@v2`; skipped unless `vars.BENCH_BOT_APP_ID` is set                  |
 | 7   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@v1` with `baseline-case: previous`, `min-ratio: '80'` and the token |
 
-The results comment is posted with the org GitHub App's token (step 6, from
-`vars.BENCH_BOT_APP_ID` + `secrets.BENCH_BOT_PRIVATE_KEY`) so it appears under
-the brand bot identity; without the app config the gate falls back to
-`GITHUB_TOKEN` (`pull-requests: write`, comment author `github-actions[bot]`).
-On a read-only token the comment is skipped with a warning and only the gate
-decides the job.
+Since bench-action 1.1.0 the results comment is posted **via the OIDC-verified relay**
+(`api.bench.soroush.tech`) as the bench bot — that's what the job's `id-token: write`
+permission is for. On any relay failure the action falls back to direct token
+commenting: first the org GitHub App's token (step 6, from `vars.BENCH_BOT_APP_ID` +
+`secrets.BENCH_BOT_PRIVATE_KEY`), else `GITHUB_TOKEN` (`pull-requests: write`, comment
+author `github-actions[bot]`). On a read-only token the comment is skipped with a
+warning and only the gate decides the job.
 
 ---
 
