@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.6.1",
-    "hono": "^4.12.30",
+    "hono": "^4.12.32",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260714.1",
+    "@cloudflare/workers-types": "^5.20260724.1",
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/wrangler-tools": "workspace:*",
     "@vitest/coverage-v8": "^4.1.10",
@@ -30,6 +30,6 @@
     "globals": "^17.7.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10",
-    "wrangler": "^4.110.0"
+    "wrangler": "^4.114.0"
   }
 }

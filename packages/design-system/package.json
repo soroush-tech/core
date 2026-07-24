@@ -529,14 +529,14 @@
     "@soroush.tech/styled-system": "workspace:^"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@emotion/css": "^11.13.5",
     "@soroush.tech/eslint-config": "workspace:*",
-    "@storybook/react-vite": "^10.5.0",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@storybook/react-vite": "^10.5.4",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
@@ -547,14 +547,14 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "eslint-plugin-storybook": "^10.5.0",
+    "eslint-plugin-storybook": "^10.5.4",
     "globals": "^17.7.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.61.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "storybook": "^10.5.0",
-    "tsdown": "^0.22.7",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "storybook": "^10.5.4",
+    "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10",
     "zod": "^4.4.3"
