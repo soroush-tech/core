@@ -45,7 +45,7 @@ its own shared tooling packages and backend workers.
 
 ### Prerequisites
 
-- **Node 25** — pinned in [`.nvmrc`](./.nvmrc) (`nvm use`).
+- **Node 26** — pinned in [`.nvmrc`](./.nvmrc) (`nvm use`).
 - **pnpm 10.13.1** — pinned via the `packageManager` field.
 
 ### Install & run
@@ -81,6 +81,7 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
 | `web:storybook`                  | [![storybook](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=storybook&label=storybook)](https://codecov.io/github/soroush-tech/core?flag=storybook)                                                     | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `web:e2e`                        | [![e2e](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=e2e&label=e2e)](https://codecov.io/github/soroush-tech/core?flag=e2e)                                                                             | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `worker:api`                     | [![api](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=api&label=api)](https://codecov.io/github/soroush-tech/core?flag=api)                                                                             | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
+| `worker:bench-api`               | [![bench-api](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=bench-api&label=bench-api)](https://codecov.io/github/soroush-tech/core?flag=bench-api)                                                     | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `package:bench`                  | [![bench](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=bench&label=bench)](https://codecov.io/github/soroush-tech/core?flag=bench)                                                                     | [![npm](https://img.shields.io/npm/v/%40soroush.tech%2Fbench?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/bench)                                   | [![downloads](https://img.shields.io/npm/dm/%40soroush.tech%2Fbench?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/bench)                                   | [![unpacked size](https://img.shields.io/npm/unpacked-size/%40soroush.tech%2Fbench?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/bench)                                   |
 | `package:vite-plugin-msw-server` | [![vite-plugin-msw-server](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=vite-plugin-msw-server&label=vite-plugin-msw-server)](https://codecov.io/github/soroush-tech/core?flag=vite-plugin-msw-server) | [![npm](https://img.shields.io/npm/v/%40soroush.tech%2Fvite-plugin-msw-server?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server) | [![downloads](https://img.shields.io/npm/dm/%40soroush.tech%2Fvite-plugin-msw-server?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server) | [![unpacked size](https://img.shields.io/npm/unpacked-size/%40soroush.tech%2Fvite-plugin-msw-server?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/vite-plugin-msw-server) |
 | `package:vite-plugin-sitemap`    | [![vite-plugin-sitemap](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=vite-plugin-sitemap&label=vite-plugin-sitemap)](https://codecov.io/github/soroush-tech/core?flag=vite-plugin-sitemap)             | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
@@ -103,6 +104,11 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
   runs against Chromium · Firefox · WebKit (3 × 3).
 - **Visual regression** — Storybook publishes to **Chromatic** on every PR
   ([live demo](https://main--6a17c33fc4e9466680e34e97.chromatic.com/)).
+- **Performance gate** — PRs touching `styled-system` run its bench suite in a
+  CPU-pinned Docker sandbox via
+  [`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action);
+  regressions below the speed threshold fail CI, and results land as one sticky
+  PR comment.
 - **Deploy** — CI success on `main` triggers the CD workflow, which builds with
   production env and deploys to **GitHub Pages**.
 
@@ -118,19 +124,21 @@ Full pipeline detail — with Mermaid diagrams of every workflow — lives in
 soroush.tech/
 ├── apps/
 │   └── web/        # The website itself — React 19 + Vike (SSG/SSR)
-├── packages/       # Shared, framework-agnostic tooling (@soroush.tech/*)
-│   ├── eslint-config
-│   ├── vite-plugin-watch
-│   ├── vite-plugin-sitemap
-│   └── vite-plugin-msw-server
-└── workers/        # Backend deployables (Cloudflare Workers) — WIP
+├── packages/       # Shared @soroush.tech/* packages (12 and counting)
+│   ├── styled-system / design-system / markdown     # the UI stack
+│   ├── bench / playwright-coverage                  # testing & benchmarking
+│   ├── vite-plugin-{watch,sitemap,msw-server}       # Vite plugins
+│   └── eslint-config / schema / hooks / wrangler-tools
+└── workers/        # Backend deployables (Cloudflare Workers)
+    ├── api/        # api.soroush.tech — contact-form intake + cron
+    └── bench/      # api.bench.soroush.tech — bench-action comment relay
 ```
 
-| Workspace        | What it is                                                                                                                                                          | Details                                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **`apps/web`**   | The production website — pages, design system, sections, hooks, tests.                                                                                              | [apps/web/README.md](./apps/web/README.md) |
-| **`packages/*`** | Internal `@soroush.tech/*` tooling extracted from the app — Vite plugins and the shared ESLint base. Nice-to-have, consumed as TypeScript source via `workspace:*`. | [packages/README.md](./packages/README.md) |
-| **`workers/*`**  | Backend deployables (APIs, edge functions). Empty for now.                                                                                                          | [workers/README.md](./workers/README.md)   |
+| Workspace        | What it is                                                                                                                                                                           | Details                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| **`apps/web`**   | The production website — pages, sections, hooks, tests.                                                                                                                              | [apps/web/README.md](./apps/web/README.md) |
+| **`packages/*`** | `@soroush.tech/*` packages — the published UI stack (styled-system, design-system, markdown), testing tools (bench, playwright-coverage), Vite plugins, and internal shared tooling. | [packages/README.md](./packages/README.md) |
+| **`workers/*`**  | Backend deployables — the contact-form API and the bench comment relay, both Hono on Cloudflare Workers.                                                                             | [workers/README.md](./workers/README.md)   |
 
 Globs live in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) (`apps/*`,
 `packages/*`, `workers/*`).
@@ -139,20 +147,20 @@ Globs live in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) (`apps/*`,
 
 ## 🧰 Tech stack — and why
 
-| Area              | Choice                                | Why                                                                                                    |
-| ----------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Quality**       | **SonarQube** + **CodeRabbit**        | Static analysis for bugs, smells, and security, plus AI-assisted code review on every PR.              |
-| **Framework**     | React 19 (Isomorphic, SSG, SSR)       | Pre-render every route to static HTML for speed and SEO, while keeping React's component model.        |
-| **Build**         | **Vite** 8                            | Fast dev server and an extensible plugin pipeline — the same pipeline our own plugins plug into.       |
-| **UI docs**       | **Storybook** + **Chromatic**         | Component catalogue with visual-regression review on every PR.                                         |
-| **Monorepo**      | **pnpm** workspaces                   | Cheap internal packages with `workspace:*` links and no publish step for internal use.                 |
-| **Packaging**     | **tsdown**                            | Builds publishable packages (ESM/CJS + types) without the deprecated config that breaks under TS 6.    |
-| **Lint & format** | **ESLint** 10 + **Prettier** + husky  | `--max-warnings 0` and a pre-commit gate keep the tree always-green.                                   |
-| **Styling**       | `@emotion/styled`                     | Token-driven, prop-based styling with a typed design system rather than ad-hoc CSS.                    |
-| **Data**          | **TanStack Query**                    | Declarative server-state with caching.                                                                 |
-| **Forms**         | **TanStack Form** + **zod**           | Headless, type-safe form state and schema-validated (used by the contact form).                        |
-| **Backend**       | **Hono** on **Cloudflare Workers**    | Type-safe edge API with OpenAPI docs (`@hono/swagger-ui`), backed by **D1** and deployed via Wrangler. |
-| **Testing**       | **Vitest** + **Playwright** + **MSW** | Unit/component in Vitest, cross-browser e2e in Playwright, network mocked deterministically with MSW.  |
+| Area              | Choice                                | Why                                                                                                     |
+| ----------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Quality**       | **SonarQube** + **CodeRabbit**        | Static analysis for bugs, smells, and security, plus AI-assisted code review on every PR.               |
+| **Framework**     | React 19 (Isomorphic, SSG, SSR)       | Pre-render every route to static HTML for speed and SEO, while keeping React's component model.         |
+| **Build**         | **Vite** 8                            | Fast dev server and an extensible plugin pipeline — the same pipeline our own plugins plug into.        |
+| **UI docs**       | **Storybook** + **Chromatic**         | Component catalogue with visual-regression review on every PR.                                          |
+| **Monorepo**      | **pnpm** workspaces                   | Cheap internal packages with `workspace:*` links and no publish step for internal use.                  |
+| **Packaging**     | **tsdown**                            | Builds publishable packages (ESM/CJS + types) without the deprecated config that breaks under TS 6.     |
+| **Lint & format** | **ESLint** 10 + **Prettier** + husky  | `--max-warnings 0` and a pre-commit gate keep the tree always-green.                                    |
+| **Styling**       | `@soroush.tech/design-system`         | Token-driven, prop-based styling with a typed design system and its own styling engine — no ad-hoc CSS. |
+| **Data**          | **TanStack Query**                    | Declarative server-state with caching.                                                                  |
+| **Forms**         | **TanStack Form** + **zod**           | Headless, type-safe form state and schema-validated (used by the contact form).                         |
+| **Backend**       | **Hono** on **Cloudflare Workers**    | Type-safe edge API with OpenAPI docs (`@hono/swagger-ui`), backed by **D1** and deployed via Wrangler.  |
+| **Testing**       | **Vitest** + **Playwright** + **MSW** | Unit/component in Vitest, cross-browser e2e in Playwright, network mocked deterministically with MSW.   |
 
 ---
 
