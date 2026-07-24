@@ -78,22 +78,22 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "mermaid": "^11.4.0",
+    "mermaid": "^11.16.0",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1"
   },
   "peerDependencies": {
     "@soroush.tech/design-system": "workspace:^",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@soroush.tech/design-system": "workspace:*",
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/hooks": "workspace:*",
-    "@storybook/react-vite": "^10.5.0",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@storybook/react-vite": "^10.5.4",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
@@ -103,13 +103,13 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "eslint-plugin-storybook": "^10.5.0",
+    "eslint-plugin-storybook": "^10.5.4",
     "globals": "^17.7.0",
     "jsdom": "^29.1.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "storybook": "^10.5.0",
-    "tsdown": "^0.22.7",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "storybook": "^10.5.4",
+    "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }

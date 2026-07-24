@@ -74,7 +74,7 @@
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
     "monocart-coverage-reports": "^2.12.12",
-    "tsdown": "^0.22.7",
+    "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }
