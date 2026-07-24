@@ -1,14 +1,16 @@
-import { CLAUDE_CHANNELS, FILE_CHANNELS } from '../shared/ipc'
+import { CLAUDE_CHANNELS, FILE_CHANNELS, MENU_CHANNELS } from '../shared/ipc'
 import type { EditorAPI } from './index'
 
-const { exposeInMainWorld, invoke } = vi.hoisted(() => ({
+const { exposeInMainWorld, invoke, on, removeListener } = vi.hoisted(() => ({
   exposeInMainWorld: vi.fn(),
   invoke: vi.fn().mockResolvedValue({ success: true, data: null }),
+  on: vi.fn(),
+  removeListener: vi.fn(),
 }))
 
 vi.mock('electron', () => ({
   contextBridge: { exposeInMainWorld },
-  ipcRenderer: { invoke },
+  ipcRenderer: { invoke, on, removeListener },
 }))
 
 await import('./index')
@@ -36,5 +38,22 @@ describe('preload editorAPI', () => {
 
     await api.claude.editSelection('old', 'improve')
     expect(invoke).toHaveBeenLastCalledWith(CLAUDE_CHANNELS.editSelection, 'old', 'improve')
+  })
+
+  it('relays menu actions to the subscriber until unsubscribed', () => {
+    const callback = vi.fn()
+    const unsubscribe = api.menu.onAction(callback)
+
+    const [channel, handler] = on.mock.calls[0] as [
+      string,
+      (event: unknown, action: string) => void,
+    ]
+    expect(channel).toBe(MENU_CHANNELS.action)
+
+    handler({}, 'save')
+    expect(callback).toHaveBeenCalledWith('save')
+
+    unsubscribe()
+    expect(removeListener).toHaveBeenCalledWith(MENU_CHANNELS.action, handler)
   })
 })

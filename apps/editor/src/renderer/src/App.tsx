@@ -2,7 +2,6 @@ import { Flex } from '@soroush.tech/design-system/Flex'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { useEffect, useState } from 'react'
-import { AppToolbar } from './common/AppToolbar'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
 import { useDocument } from './hooks/useDocument'
@@ -12,11 +11,28 @@ import { GlobalStyles } from './theme/GlobalStyles'
 
 export function App() {
   const { content, filePath, isDirty, error, change, newDocument, open, save } = useDocument()
-  const { undo, redo, reset, canUndo, canRedo } = useUndoRedo(content, change)
+  const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
 
   // A different file on disk means a different document — its history starts fresh.
   useEffect(() => reset(), [filePath, reset])
+
+  // File and undo/redo commands live in the application menu (see main/menu.ts).
+  useEffect(
+    () =>
+      window.editorAPI.menu.onAction((action) => {
+        const actions = {
+          new: () => void newDocument(),
+          open: () => void open(),
+          save: () => void save(),
+          'save-as': () => void save(true),
+          undo,
+          redo,
+        }
+        actions[action]()
+      }),
+    [newDocument, open, save, undo, redo]
+  )
 
   // Clamp against stale ranges after external content changes (open/undo/…).
   const start = Math.min(selection.start, content.length)
@@ -32,18 +48,10 @@ export function App() {
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
       <Flex flexDirection="column" gap={2} p={3} height="100vh">
-        <AppToolbar
-          filePath={filePath}
-          isDirty={isDirty}
-          canUndo={canUndo}
-          canRedo={canRedo}
-          onNew={() => void newDocument()}
-          onOpen={() => void open()}
-          onSave={() => void save()}
-          onSaveAs={() => void save(true)}
-          onUndo={undo}
-          onRedo={redo}
-        />
+        <Typography variant="body2" color="secondary" m={0}>
+          {filePath ?? 'Untitled'}
+          {isDirty ? ' •' : ''}
+        </Typography>
         {error && (
           <Typography role="alert" color="error" m={0}>
             {error}

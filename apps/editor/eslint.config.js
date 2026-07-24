@@ -29,7 +29,13 @@ export default [
     },
   },
   {
-    files: ['src/main/**/*.ts', '*.config.ts', 'vitest.setup.ts'],
+    files: [
+      'src/main/**/*.ts',
+      'src/test/**/*.ts',
+      '**/*.e2e.ts',
+      '*.config.ts',
+      'vitest.setup.ts',
+    ],
     languageOptions: {
       globals: globals.node,
     },

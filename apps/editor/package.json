@@ -16,7 +16,10 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "electron-vite build && playwright test",
+    "test:coverage:e2e": "cross-env E2E_COVERAGE=true pnpm test:e2e",
+    "coverage:check:e2e": "node ../web/scripts/coverage-check.ts --file=coverage/e2e/lcov.info"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
@@ -27,7 +30,9 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@soroush.tech/eslint-config": "workspace:*",
+    "@soroush.tech/playwright-coverage": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -36,6 +41,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/coverage-v8": "^4.1.10",
+    "cross-env": "^10.1.0",
     "electron": "^43.1.1",
     "electron-vite": "^5.0.0",
     "eslint": "^10.7.0",
@@ -44,6 +50,8 @@
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "jsdom": "^29.1.1",
+    "monocart-coverage-reports": "^2.12.12",
+    "playwright": "^1.61.1",
     "typescript": "~6.0.3",
     "vite": "^7.3.6",
     "vitest": "^4.1.10"

@@ -9,10 +9,17 @@ describe('buildCspResponseHeaders', () => {
     expect(policy).not.toContain('ws:')
   })
 
-  it('allows the Vite HMR websocket in dev', () => {
+  it('keeps inline scripts blocked in production', () => {
+    const { responseHeaders } = buildCspResponseHeaders(undefined, false)
+    const [policy] = responseHeaders['Content-Security-Policy']
+    expect(policy).not.toContain("script-src 'self' 'unsafe-inline'")
+  })
+
+  it('allows the Vite HMR websocket and inline refresh preamble in dev', () => {
     const { responseHeaders } = buildCspResponseHeaders(undefined, true)
     const [policy] = responseHeaders['Content-Security-Policy']
     expect(policy).toContain("connect-src 'self' ws:")
+    expect(policy).toContain("script-src 'self' 'unsafe-inline'")
   })
 
   it('preserves the existing response headers', () => {

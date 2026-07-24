@@ -1,7 +1,9 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 import {
   CLAUDE_CHANNELS,
   FILE_CHANNELS,
+  MENU_CHANNELS,
+  type MenuAction,
   type OpenedFile,
   type Result,
   type SavedFile,
@@ -21,6 +23,16 @@ const editorAPI = {
       ipcRenderer.invoke(FILE_CHANNELS.setDirty, isDirty),
     confirmDiscard: (): Promise<Result<boolean>> =>
       ipcRenderer.invoke(FILE_CHANNELS.confirmDiscard),
+  },
+  menu: {
+    /** Subscribes to application-menu actions; returns an unsubscribe. */
+    onAction: (callback: (action: MenuAction) => void): (() => void) => {
+      const handler = (_event: IpcRendererEvent, action: MenuAction) => callback(action)
+      ipcRenderer.on(MENU_CHANNELS.action, handler)
+      return () => {
+        ipcRenderer.removeListener(MENU_CHANNELS.action, handler)
+      }
+    },
   },
 }
 

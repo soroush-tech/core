@@ -1,5 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { MenuAction } from '../../shared/ipc'
 import { App } from './App'
 
 const fileApi = {
@@ -10,7 +11,18 @@ const fileApi = {
 }
 const claudeApi = { editSelection: vi.fn() }
 
-vi.stubGlobal('editorAPI', { file: fileApi, claude: claudeApi })
+let menuListener: ((action: MenuAction) => void) | undefined
+const menuApi = {
+  onAction: vi.fn((callback: (action: MenuAction) => void) => {
+    menuListener = callback
+    return vi.fn()
+  }),
+}
+
+vi.stubGlobal('editorAPI', { file: fileApi, claude: claudeApi, menu: menuApi })
+
+/** Fires an application-menu action the way the preload bridge would. */
+const dispatchMenu = (action: MenuAction) => act(async () => menuListener!(action))
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -30,7 +42,7 @@ describe('App', () => {
     expect(screen.getByText(/Untitled\s*•/)).toBeInTheDocument()
   })
 
-  it('drives New/Open/Save/Save As through the file API', async () => {
+  it('drives New/Open/Save/Save As through the menu actions', async () => {
     fileApi.open.mockResolvedValue({
       success: true,
       data: { filePath: 'C:\\notes.md', content: '# notes' },
@@ -38,32 +50,29 @@ describe('App', () => {
     fileApi.save.mockResolvedValue({ success: true, data: { filePath: 'C:\\notes.md' } })
     render(<App />)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }))
+    await dispatchMenu('open')
     expect(screen.getByLabelText('Markdown source')).toHaveValue('# notes')
     expect(screen.getByText('C:\\notes.md')).toBeInTheDocument()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await dispatchMenu('save')
     expect(fileApi.save).toHaveBeenLastCalledWith('C:\\notes.md', '# notes')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Save As' }))
+    await dispatchMenu('save-as')
     expect(fileApi.save).toHaveBeenLastCalledWith(null, '# notes')
 
-    await userEvent.click(screen.getByRole('button', { name: 'New' }))
+    await dispatchMenu('new')
     expect(screen.getByLabelText('Markdown source')).toHaveValue('')
   })
 
-  it('undoes and redoes typed edits from the toolbar', async () => {
+  it('undoes and redoes typed edits from the menu actions', async () => {
     render(<App />)
     const source = screen.getByLabelText('Markdown source')
     await userEvent.type(source, 'hi')
 
-    const undoButton = screen.getByRole('button', { name: 'Undo' })
-    await waitFor(() => expect(undoButton).toBeEnabled(), { timeout: 2000 })
-
-    await userEvent.click(undoButton)
+    await dispatchMenu('undo')
     expect(source).toHaveValue('')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Redo' }))
+    await dispatchMenu('redo')
     expect(source).toHaveValue('hi')
   })
 
@@ -87,7 +96,7 @@ describe('App', () => {
   it('shows IPC failures as an alert', async () => {
     fileApi.open.mockResolvedValue({ success: false, error: 'EACCES' })
     render(<App />)
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }))
+    await dispatchMenu('open')
     expect(screen.getByRole('alert')).toHaveTextContent('EACCES')
   })
 })

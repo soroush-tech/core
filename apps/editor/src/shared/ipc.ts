@@ -27,3 +27,10 @@ export const FILE_CHANNELS = {
 export const CLAUDE_CHANNELS = {
   editSelection: 'claude:edit-selection',
 } as const
+
+/** An application-menu item the renderer must act on (it owns the document state). */
+export type MenuAction = 'new' | 'open' | 'save' | 'save-as' | 'undo' | 'redo'
+
+export const MENU_CHANNELS = {
+  action: 'menu:action',
+} as const
