@@ -37,9 +37,12 @@ export function App() {
   // Clamp against stale ranges after external content changes (open/undo/…).
   const start = Math.min(selection.start, content.length)
   const end = Math.min(selection.end, content.length)
-  const selectedText = content.slice(start, end)
+  const hasSelection = start !== end
 
+  // With a selection, the rewrite splices over it; without one, Claude works
+  // on the whole document (which may be empty — pure generation).
   const applyEdit = (rewritten: string) => {
+    if (!hasSelection) return change(rewritten)
     change(content.slice(0, start) + rewritten + content.slice(end))
     setSelection({ start, end: start + rewritten.length })
   }
@@ -57,10 +60,17 @@ export function App() {
             {error}
           </Typography>
         )}
-        <Flex flexDirection="row" gap={3} flex={1} minHeight={0}>
+        {/* The document scrolls inside this row so the chat bar below stays pinned.
+            The 4px padding leaves room for TextInput's focus ring (2px outline +
+            2px offset outside the box), which the scroll container would clip. */}
+        <Flex flexDirection="row" gap={3} flex={1} minHeight={0} overflow="auto" p={0.5}>
           <DocumentEditor value={content} onChange={change} onSelectionChange={setSelection} />
-          <ClaudePanel selectedText={selectedText} onApply={applyEdit} />
         </Flex>
+        <ClaudePanel
+          targetText={hasSelection ? content.slice(start, end) : content}
+          isSelection={hasSelection}
+          onApply={applyEdit}
+        />
       </Flex>
     </ThemeProvider>
   )

@@ -72,6 +72,28 @@ test('recovers typed markdown through the Edit menu and keyboard undo', async ({
   await expect(editor).toHaveValue('one')
 })
 
+test('switches between edit, preview, and live edit modes', async ({ page }) => {
+  const editor = getEditor(page)
+  await editor.fill('# Modes')
+
+  await page.getByRole('button', { name: 'Preview', exact: true }).click()
+  await expect(editor).toBeHidden()
+  await expect(page.getByRole('heading', { level: 1, name: 'Modes' })).toBeVisible()
+
+  // Live edit: type directly on the rendered heading — no textarea anywhere.
+  await page.getByRole('button', { name: 'Live edit' }).click()
+  const block = page.getByLabel('Edit block')
+  await expect(block).toHaveAttribute('contenteditable', 'true')
+  await block.click()
+  await page.keyboard.press('End')
+  await page.keyboard.type(' now')
+  await expect(page.getByRole('heading', { level: 1, name: 'Modes now' })).toBeVisible()
+  await page.keyboard.press('Escape')
+
+  await page.getByRole('button', { name: 'Edit', exact: true }).click()
+  await expect(getEditor(page)).toHaveValue('# Modes now')
+})
+
 test('prompts before closing a window with unsaved changes', async ({ page, electronApp }) => {
   await getEditor(page).fill('unsaved')
   await expect(page.getByText('Untitled •')).toBeVisible()

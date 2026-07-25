@@ -12,9 +12,10 @@ export function registerClaudeHandlers(
   ipcMain.handle(
     CLAUDE_CHANNELS.editSelection,
     async (_event, selectedText: unknown, instruction: unknown): Promise<Result<string>> => {
+      // An empty selectedText is valid: it means "write new content" (the
+      // renderer sends the whole document, which may be empty).
       if (
         typeof selectedText !== 'string' ||
-        selectedText === '' ||
         typeof instruction !== 'string' ||
         instruction.trim() === ''
       ) {

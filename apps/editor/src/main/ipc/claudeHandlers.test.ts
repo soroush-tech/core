@@ -23,7 +23,6 @@ beforeEach(() => vi.clearAllMocks())
 describe('registerClaudeHandlers', () => {
   it.each([
     ['non-string selection', 42, 'fix it'],
-    ['empty selection', '', 'fix it'],
     ['non-string instruction', 'text', 42],
     ['blank instruction', 'text', '   '],
   ])('rejects %s without invoking the CLI', async (_name, selectedText, instruction) => {
@@ -38,5 +37,14 @@ describe('registerClaudeHandlers', () => {
     runEdit.mockResolvedValue({ success: true, data: 'rewritten' })
     await expect(invoke('old', 'improve')).resolves.toEqual({ success: true, data: 'rewritten' })
     expect(runEdit).toHaveBeenCalledWith({ selectedText: 'old', instruction: 'improve' })
+  })
+
+  it('accepts an empty selection — writing new content into an empty document', async () => {
+    runEdit.mockResolvedValue({ success: true, data: 'an article' })
+    await expect(invoke('', 'write an article')).resolves.toEqual({
+      success: true,
+      data: 'an article',
+    })
+    expect(runEdit).toHaveBeenCalledWith({ selectedText: '', instruction: 'write an article' })
   })
 })

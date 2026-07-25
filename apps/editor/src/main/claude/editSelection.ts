@@ -9,6 +9,7 @@ export interface EditSelectionRequest {
 
 const EDIT_TASK_PROMPT =
   'Rewrite the TEXT block according to the INSTRUCTION block, both provided on stdin. ' +
+  'If the TEXT block is empty, write new content that satisfies the INSTRUCTION block. ' +
   'Output only the rewritten text - no explanations, no commentary, no code fences around the result.'
 
 /**

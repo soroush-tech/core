@@ -93,6 +93,33 @@ describe('App', () => {
     await waitFor(() => expect(source).toHaveValue('HELLO world'))
   })
 
+  it('writes a whole document from an instruction when nothing is selected', async () => {
+    claudeApi.editSelection.mockResolvedValue({ success: true, data: '# An article' })
+    render(<App />)
+    expect(screen.getByText('No selection — Claude edits the whole document.')).toBeInTheDocument()
+
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'write an article')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    expect(claudeApi.editSelection).toHaveBeenCalledWith('', 'write an article')
+    await waitFor(() =>
+      expect(screen.getByLabelText('Markdown source')).toHaveValue('# An article')
+    )
+  })
+
+  it('rewrites the whole document when the caret is placed without a selection', async () => {
+    claudeApi.editSelection.mockResolvedValue({ success: true, data: 'rewritten doc' })
+    render(<App />)
+    const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
+    await userEvent.type(source, 'hello world')
+
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'rewrite it')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    expect(claudeApi.editSelection).toHaveBeenCalledWith('hello world', 'rewrite it')
+    await waitFor(() => expect(source).toHaveValue('rewritten doc'))
+  })
+
   it('shows IPC failures as an alert', async () => {
     fileApi.open.mockResolvedValue({ success: false, error: 'EACCES' })
     render(<App />)
