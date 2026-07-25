@@ -45,6 +45,11 @@ export interface EditorProps {
   placeholder?: string
   /** Minimum visible rows of the source textarea. Default: `16`. */
   minRows?: number
+  /**
+   * Maximum rows before the auto-grow textarea stops growing and scrolls
+   * internally — keeps its border box visible inside height-bound panes.
+   */
+  maxRows?: number
   /** Visual style of the source input — forwarded to `TextInput`. Default: `'default'`. */
   variant?: TextInputVariant
   /** Focus/active border colour — forwarded to `TextInput`. */
@@ -77,6 +82,7 @@ export function Editor({
   onChange: onChangeProp,
   placeholder = 'Write your article in Markdown…',
   minRows = 16,
+  maxRows,
   variant,
   color,
   textColor: textColorProp,
@@ -177,6 +183,7 @@ export function Editor({
         required={required}
         disabled={disabled}
         minRows={minRows}
+        maxRows={maxRows}
         value={value}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}

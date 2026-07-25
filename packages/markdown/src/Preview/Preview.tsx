@@ -188,6 +188,9 @@ const components: Components = {
     return (
       <Typography
         as="code"
+        // Keep the `language-*` class on the DOM so LiveEdit's serializer can
+        // preserve the fence language when a code block is edited in place.
+        className={className}
         color="initial"
         variant="inherit"
         fontFamily="mono"

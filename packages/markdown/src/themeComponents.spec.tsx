@@ -7,6 +7,7 @@ import { CodeBlock } from './CodeBlock'
 import { syntaxDark } from './CodeBlock/CodeBlock.data'
 import { Control } from './Control'
 import { Editor } from './Editor'
+import { LiveEdit } from './LiveEdit'
 import { Preview } from './Preview'
 import { Toolbar } from './Toolbar'
 
@@ -52,6 +53,18 @@ const cases: Case[] = [
     ),
   },
   { name: 'MarkdownPreview', slot: 'root', label: 'MarkdownPreview', ui: <Preview>t</Preview> },
+  {
+    name: 'MarkdownLiveEdit',
+    slot: 'root',
+    label: 'MarkdownLiveEdit',
+    ui: <LiveEdit value="t" onChange={() => {}} />,
+  },
+  {
+    name: 'MarkdownLiveEdit',
+    slot: 'block',
+    label: 'MarkdownLiveEditBlock',
+    ui: <LiveEdit value="t" onChange={() => {}} />,
+  },
   { name: 'CodeBlock', slot: 'root', label: 'CodeBlock', ui: <CodeBlock>code</CodeBlock> },
   { name: 'CodeBlock', slot: 'surface', label: 'CodeSurface', ui: <CodeBlock>c</CodeBlock> },
   {

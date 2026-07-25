@@ -42,6 +42,18 @@ describe('Editor', () => {
     expect(screen.queryByText(/Tab inserts a tab/)).toBeNull()
   })
 
+  it('caps the auto-grow height at maxRows so the textarea scrolls internally', () => {
+    renderWithTheme(
+      <Control value="" onChange={() => {}}>
+        <Editor maxRows={4} />
+      </Control>
+    )
+    const textarea = source()
+    Object.defineProperty(textarea, 'scrollHeight', { value: 10_000, configurable: true })
+    fireEvent.change(textarea, { target: { value: 'grow' } })
+    expect(textarea.style.overflow).toBe('auto')
+  })
+
   it('forwards appearance and form-field props to the source input', () => {
     renderWithTheme(
       <Control value="" onChange={() => {}}>

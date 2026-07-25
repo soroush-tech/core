@@ -3,6 +3,7 @@ import type { ThemeSyntax } from './CodeBlock/CodeBlock.data'
 export * from './Control'
 export * from './Toolbar'
 export * from './Editor'
+export * from './LiveEdit'
 export * from './Preview'
 export * from './CodeBlock'
 export * from './Mermaid'
@@ -42,6 +43,10 @@ export interface MermaidThemeVariables {
 declare module '@soroush.tech/design-system/theme' {
   interface ThemeComponents {
     MarkdownEditor?: import('@soroush.tech/design-system/theme').ComponentConfig
+    MarkdownLiveEdit?: import('@soroush.tech/design-system/theme').ComponentConfig<
+      Record<string, unknown>,
+      'root' | 'block'
+    >
     MarkdownPreview?: import('@soroush.tech/design-system/theme').ComponentConfig
     MarkdownToolbar?: import('@soroush.tech/design-system/theme').ComponentConfig<
       Record<string, unknown>,
