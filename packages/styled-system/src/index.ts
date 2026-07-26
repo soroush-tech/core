@@ -28,7 +28,7 @@ export {
 } from '@soroush.tech/styled-system/core'
 // Note: the public `Theme` type is re-exported from ./types (below), not ./core.
 
-export { margin, padding, space } from '@soroush.tech/styled-system/space'
+export { margin, padding, gap, space } from '@soroush.tech/styled-system/space'
 export { color } from '@soroush.tech/styled-system/color'
 export { layout } from '@soroush.tech/styled-system/layout'
 export { typography } from '@soroush.tech/styled-system/typography'

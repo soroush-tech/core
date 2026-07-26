@@ -9,6 +9,9 @@
 // (`LayoutProps`) or a single property (`WidthProps`), from the main entry or the
 // matching subpath. Three intentional widenings over upstream are preserved:
 // `boxShadow`/`textShadow` and `fontWeight` additionally accept `string` theme keys.
+// Two props are additions rather than widenings — upstream has neither: `gap`/`rowGap`/
+// `columnGap` on `SpaceProps` (upstream only grid-prefixed them) and `aspectRatio` on
+// `LayoutProps` (upstream's last release predates the CSS property).
 import type * as CSS from 'csstype'
 
 export type ObjectOrArray<T, K extends keyof any = keyof any> =
@@ -101,11 +104,40 @@ export interface PaddingProps<
   paddingY?: ResponsiveValue<TVal, ThemeType>
 }
 
+/** Not in upstream styled-system — it only ever scaled the grid-prefixed gaps. */
+export interface GapProps<
+  ThemeType extends Theme = RequiredTheme,
+  TVal = ThemeValue<'space', ThemeType>,
+> {
+  gap?: ResponsiveValue<TVal, ThemeType>
+}
+
+/** Not in upstream styled-system — it only ever scaled the grid-prefixed gaps. */
+export interface RowGapProps<
+  ThemeType extends Theme = RequiredTheme,
+  TVal = ThemeValue<'space', ThemeType>,
+> {
+  rowGap?: ResponsiveValue<TVal, ThemeType>
+}
+
+/** Not in upstream styled-system — it only ever scaled the grid-prefixed gaps. */
+export interface ColumnGapProps<
+  ThemeType extends Theme = RequiredTheme,
+  TVal = ThemeValue<'space', ThemeType>,
+> {
+  columnGap?: ResponsiveValue<TVal, ThemeType>
+}
+
 export interface SpaceProps<
   ThemeType extends Theme = RequiredTheme,
   TVal = ThemeValue<'space', ThemeType>,
 >
-  extends MarginProps<ThemeType, TVal>, PaddingProps<ThemeType, TVal> {}
+  extends
+    MarginProps<ThemeType, TVal>,
+    PaddingProps<ThemeType, TVal>,
+    GapProps<ThemeType, TVal>,
+    RowGapProps<ThemeType, TVal>,
+    ColumnGapProps<ThemeType, TVal> {}
 
 // ---------------------------------------------------------------------------
 // layout
@@ -177,6 +209,11 @@ export interface VerticalAlignProps<
   verticalAlign?: ResponsiveValue<TVal, ThemeType>
 }
 
+/** Not in upstream styled-system — its last release predates CSS `aspect-ratio`. */
+export interface AspectRatioProps<ThemeType extends Theme = RequiredTheme> {
+  aspectRatio?: ResponsiveValue<CSS.Property.AspectRatio, ThemeType>
+}
+
 export interface LayoutProps<ThemeType extends Theme = RequiredTheme>
   extends
     WidthProps<ThemeType>,
@@ -187,6 +224,7 @@ export interface LayoutProps<ThemeType extends Theme = RequiredTheme>
     MaxHeightProps<ThemeType>,
     DisplayProps<ThemeType>,
     VerticalAlignProps<ThemeType>,
+    AspectRatioProps<ThemeType>,
     SizeProps<ThemeType>,
     OverflowProps<ThemeType> {}
 

@@ -6,7 +6,7 @@
 import { space } from '@soroush.tech/styled-system'
 ```
 
-The space utility converts shorthand margin and padding props to margin and padding CSS declarations.
+The space utility converts shorthand margin, padding and gap props to margin, padding and gap CSS declarations.
 
 - Numbers from 0 to the length of `theme.space` are converted to values on the [space scale](#defaults).
 - Negative values can be used for negative margins.
@@ -32,6 +32,9 @@ Margin and padding props follow a shorthand syntax for specifying direction.
 | `paddingLeft`, `pl`   | padding-left                   |
 | `paddingX`, `px`      | padding-left and padding-right |
 | `paddingY`, `py`      | padding-top and padding-bottom |
+| `gap`                 | gap                            |
+| `rowGap`              | row-gap                        |
+| `columnGap`           | column-gap                     |
 
 ```jsx
 // examples (margin prop)
@@ -164,6 +167,7 @@ The layout utility includes the following style props.
 | `size`          | width and height |
 | `display`       | display          |
 | `verticalAlign` | vertical-align   |
+| `aspectRatio`   | aspect-ratio     |
 | `overflow`      | overflow         |
 | `overflowX`     | overflow-x       |
 | `overflowY`     | overflow-y       |

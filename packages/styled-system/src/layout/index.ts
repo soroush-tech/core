@@ -11,5 +11,6 @@ export type {
   DisplayProps,
   OverflowProps,
   VerticalAlignProps,
+  AspectRatioProps,
   LayoutProps,
 } from '../types'

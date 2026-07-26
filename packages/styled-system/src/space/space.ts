@@ -95,8 +95,17 @@ paddingConfig.pl = paddingConfig.paddingLeft
 paddingConfig.px = paddingConfig.paddingX
 paddingConfig.py = paddingConfig.paddingY
 
+// Not in upstream styled-system — flex/grid gaps resolve against the same
+// space scale as margins and paddings.
+const gapConfig: SystemConfig = {
+  gap: { property: 'gap', scale: 'space', defaultScale: spaceScale },
+  rowGap: { property: 'rowGap', scale: 'space', defaultScale: spaceScale },
+  columnGap: { property: 'columnGap', scale: 'space', defaultScale: spaceScale },
+}
+
 export const margin = system(marginConfig)
 export const padding = system(paddingConfig)
-export const space = compose(margin, padding)
+export const gap = system(gapConfig)
+export const space = compose(margin, padding, gap)
 
 export default space

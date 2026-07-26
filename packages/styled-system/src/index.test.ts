@@ -6,6 +6,7 @@ describe('aggregator', () => {
     expect(typeof ss.system).toBe('function')
     expect(typeof ss.compose).toBe('function')
     expect(typeof ss.space).toBe('function')
+    expect(typeof ss.gap).toBe('function')
     expect(typeof ss.width).toBe('function')
     expect(typeof ss.opacity).toBe('function')
     expect(typeof ss.fontSize).toBe('function')
