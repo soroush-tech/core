@@ -34,8 +34,6 @@ export type PaperElevation =
 export interface PaperProps extends FlexProps {
   /** Shadow depth — 0 (flat) to 24 (highest). Resolves to theme.shadows[n]. Default: 1. */
   elevation?: PaperElevation
-  /** CSS aspect-ratio for fixed-ratio surfaces (e.g. 16/9, 1). */
-  aspectRatio?: CSSProperties['aspectRatio']
   /** CSS transition for surface animations (e.g. hover elevation change). */
   transition?: CSSProperties['transition']
   /** Resolves against theme.border — light · primary · dark */
@@ -48,9 +46,10 @@ export interface PaperProps extends FlexProps {
   as?: ElementType
 }
 
+// aspectRatio needs no manual wiring since @soroush.tech/styled-system 5.8.0 — it
+// arrives through View's `layout` parser and `LayoutProps`.
 const shouldForwardProp = createShouldForwardProp([
   'elevation',
-  'aspectRatio',
   'transition',
   'borderColor',
   'borderWidth',
@@ -59,7 +58,6 @@ const shouldForwardProp = createShouldForwardProp([
 
 const paperSystem = system({
   elevation: { property: 'boxShadow', scale: 'shadows' },
-  aspectRatio: { property: 'aspectRatio' },
   transition: { property: 'transition' },
   borderColor: { property: 'borderColor', scale: 'border' },
   borderWidth: { property: 'borderWidth', scale: 'borderWidths' },

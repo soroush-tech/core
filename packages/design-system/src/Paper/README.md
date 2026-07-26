@@ -24,7 +24,7 @@ Default: `1`.
 
 ### `aspectRatio`
 
-CSS `aspect-ratio` for fixed-ratio surfaces. Accepts any valid CSS value (e.g. `"1"`, `"4/3"`, `"16/9"`). No theme scale — raw CSS.
+Inherited from `View`. CSS `aspect-ratio` for fixed-ratio surfaces. Accepts any valid CSS value (e.g. `"1"`, `"4/3"`, `"16/9"`). No theme scale — raw CSS.
 
 ---
 

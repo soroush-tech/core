@@ -11,7 +11,6 @@ import {
   layout,
   border,
   typography,
-  system,
   type SpaceProps,
   type LayoutProps,
   type BorderProps,
@@ -72,10 +71,8 @@ export interface ButtonProps
   rel?: string
 }
 
-// 'gap' is not in styled-system's default props list — must be added explicitly
 const shouldForwardProp = createShouldForwardProp([
   ...props,
-  'gap',
   'variant',
   'size',
   'shape',
@@ -142,11 +139,6 @@ const baseStyles = {
     opacity: 0.5,
   },
 }
-
-// gap → theme.space  (same pattern as Flex's gapSystem)
-const buttonBaseSystem = system({
-  gap: { property: 'gap', scale: 'space' },
-})
 
 const sizeVariants = ({ theme, size }: ButtonRootProps & { theme: Theme }) => {
   const s = theme.sizes[size]
@@ -224,7 +216,7 @@ const ButtonRoot = styled('button', {
   shouldForwardProp,
   // Styled-system parsers run after theme styleOverrides/variants, so
   // per-instance props (m, width, fontWeight, …) always beat the theme.
-  systemProps: [space, safeLayout, buttonBaseSystem, typography, border],
+  systemProps: [space, safeLayout, typography, border],
 })<ButtonRootProps>(
   baseStyles,
   sizeVariants,
