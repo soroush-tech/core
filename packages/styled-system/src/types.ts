@@ -312,6 +312,14 @@ export interface TextDecorationColorProps<
   textDecorationColor?: ResponsiveValue<TVal, ThemeType>
 }
 
+export interface WhiteSpaceProps<ThemeType extends Theme = RequiredTheme> {
+  whiteSpace?: ResponsiveValue<CSS.Property.WhiteSpace, ThemeType>
+}
+
+export interface TextOverflowProps<ThemeType extends Theme = RequiredTheme> {
+  textOverflow?: ResponsiveValue<CSS.Property.TextOverflow, ThemeType>
+}
+
 export interface TypographyProps<ThemeType extends Theme = RequiredTheme>
   extends
     FontFamilyProps<ThemeType>,
@@ -327,7 +335,9 @@ export interface TypographyProps<ThemeType extends Theme = RequiredTheme>
     TextDecorationLineProps<ThemeType>,
     TextDecorationStyleProps<ThemeType>,
     TextDecorationThicknessProps<ThemeType>,
-    TextDecorationColorProps<ThemeType> {}
+    TextDecorationColorProps<ThemeType>,
+    WhiteSpaceProps<ThemeType>,
+    TextOverflowProps<ThemeType> {}
 
 // ---------------------------------------------------------------------------
 // flexbox

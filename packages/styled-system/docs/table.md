@@ -76,6 +76,8 @@ import { typography } from '@soroush.tech/styled-system'
 | `textDecorationStyle`     | `text-decoration-style`     | none             |
 | `textDecorationThickness` | `text-decoration-thickness` | none             |
 | `textDecorationColor`     | `text-decoration-color`     | `colors`         |
+| `whiteSpace`              | `white-space`               | none             |
+| `textOverflow`            | `text-overflow`             | none             |
 
 ## Layout
 

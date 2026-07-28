@@ -116,6 +116,8 @@ The typography utility includes the following style props.
 | `textDecorationStyle`     | text-decoration-style     |
 | `textDecorationThickness` | text-decoration-thickness |
 | `textDecorationColor`     | text-decoration-color     |
+| `whiteSpace`              | white-space               |
+| `textOverflow`            | text-overflow             |
 
 ```jsx
 // examples

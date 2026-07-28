@@ -17,6 +17,8 @@ const config: SystemConfig = {
   textDecorationThickness: true,
   textDecorationColor: { property: 'textDecorationColor', scale: 'colors' },
   textAlignLast: true,
+  whiteSpace: true,
+  textOverflow: true,
 }
 
 export const typography = system(config)

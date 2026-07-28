@@ -10,6 +10,8 @@ describe('aggregator', () => {
     expect(typeof ss.width).toBe('function')
     expect(typeof ss.opacity).toBe('function')
     expect(typeof ss.fontSize).toBe('function')
+    expect(typeof ss.whiteSpace).toBe('function')
+    expect(typeof ss.textOverflow).toBe('function')
     expect(typeof ss.alignItems).toBe('function')
     expect(typeof ss.gridGap).toBe('function')
     expect(typeof ss.borderColor).toBe('function')

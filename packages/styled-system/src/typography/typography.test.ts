@@ -32,3 +32,23 @@ it('passes text-decoration props through and resolves textDecorationColor from t
     textDecorationColor: '#0af',
   })
 })
+
+it('passes the text-flow props through and supports responsive values', () => {
+  expect(
+    typography({
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      theme: {},
+    })
+  ).toEqual({ whiteSpace: 'nowrap', textOverflow: 'ellipsis' })
+
+  expect(
+    typography({
+      whiteSpace: ['normal', 'nowrap'],
+      theme: { breakpoints: ['40em'] },
+    })
+  ).toEqual({
+    whiteSpace: 'normal',
+    '@media screen and (min-width: 40em)': { whiteSpace: 'nowrap' },
+  })
+})

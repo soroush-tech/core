@@ -86,6 +86,8 @@ export const textDecorationStyle = typographyFns.textDecorationStyle
 export const textDecorationThickness = typographyFns.textDecorationThickness
 export const textDecorationColor = typographyFns.textDecorationColor
 export const letterSpacing = typographyFns.letterSpacing
+export const whiteSpace = typographyFns.whiteSpace
+export const textOverflow = typographyFns.textOverflow
 
 const flexboxFns = flexbox as unknown as Record<string, Parser>
 export const alignItems = flexboxFns.alignItems
