@@ -336,6 +336,15 @@ export interface CardOwnerState {
   iconProps?: CardSlotIconProps
 }
 
+/** Pressable's resolved props / theme-settable defaults. */
+export interface PressableOwnerState {
+  feedback?: 'none' | 'opacity' | 'highlight'
+  color?: keyof ThemePalette
+  /** Opacity held content fades to under `feedback: 'opacity'`. */
+  activeOpacity?: number
+  disabled?: boolean
+}
+
 /**
  * Per-component theme customization, keyed by component name. Augment this
  * interface to register additional components (including your own, when their
@@ -372,6 +381,7 @@ export interface ThemeComponents {
   PaginationItem?: ComponentConfig<Record<string, unknown>, 'root' | 'ellipsis'>
   Paper?: ComponentConfig
   Popover?: ComponentConfig<Record<string, unknown>, 'root' | 'positioner'>
+  Pressable?: ComponentConfig<PressableOwnerState>
   Quote?: ComponentConfig
   Radio?: ComponentConfig<Record<string, unknown>, 'root' | 'input' | 'icon'>
   Select?: ComponentConfig<

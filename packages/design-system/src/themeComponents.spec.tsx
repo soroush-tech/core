@@ -27,6 +27,7 @@ import { NativeSelect } from './NativeSelect'
 import { Pagination } from './Pagination'
 import { Paper } from './Paper'
 import { Popover } from './Popover'
+import { Pressable } from './Pressable'
 import { Quote } from './Quote'
 import { Radio } from './Radio'
 import { Select } from './Select'
@@ -190,6 +191,7 @@ const cases: Case[] = [
       </Popover>
     ),
   },
+  { name: 'Pressable', slot: 'root', label: 'Pressable', ui: <Pressable>p</Pressable> },
   { name: 'Quote', slot: 'root', label: 'Quote', ui: <Quote>q</Quote> },
   { name: 'Radio', slot: 'root', label: 'Radio', ui: <Radio /> },
   {

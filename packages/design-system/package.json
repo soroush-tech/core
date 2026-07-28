@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/design-system",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Emotion + @soroush.tech/styled-system React component library — token-driven light/dark themes, layout primitives, forms, and overlays.",
   "keywords": [
     "design-system",
@@ -56,6 +56,7 @@
     "./Paper": "./src/Paper/index.ts",
     "./Popover": "./src/Popover/index.ts",
     "./Portal": "./src/Portal/index.ts",
+    "./Pressable": "./src/Pressable/index.ts",
     "./Quote": "./src/Quote/index.ts",
     "./Radio": "./src/Radio/index.ts",
     "./Select": "./src/Select/index.ts",
@@ -357,6 +358,16 @@
         "require": {
           "types": "./dist/Portal.d.cts",
           "default": "./dist/Portal.cjs"
+        }
+      },
+      "./Pressable": {
+        "import": {
+          "types": "./dist/Pressable.d.mts",
+          "default": "./dist/Pressable.mjs"
+        },
+        "require": {
+          "types": "./dist/Pressable.d.cts",
+          "default": "./dist/Pressable.cjs"
         }
       },
       "./Quote": {

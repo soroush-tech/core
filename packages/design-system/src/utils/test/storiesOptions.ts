@@ -35,6 +35,7 @@ import type { SkeletonVariant, SkeletonAnimation } from '@soroush.tech/design-sy
 import type { FormControlProps } from '@soroush.tech/design-system/FormControl'
 import type { AppBarSize } from '@soroush.tech/design-system/AppBar'
 import type { LinkUnderline } from '@soroush.tech/design-system/Link'
+import type { PressableFeedback } from '@soroush.tech/design-system/Pressable'
 import type { CardVariant } from '@soroush.tech/design-system/Card'
 import type {
   TableSize,
@@ -155,6 +156,11 @@ export const tableCellAlignTokens = [
   'center',
   'justify',
 ] satisfies TableCellAlign[]
+export const pressableFeedbackTokens = [
+  'none',
+  'opacity',
+  'highlight',
+] satisfies PressableFeedback[]
 export const linkUnderlineTokens = ['always', 'hover', 'none'] satisfies LinkUnderline[]
 export const cardVariantTokens = ['paper', 'bracketBox', 'interactive'] satisfies CardVariant[]
 export const linkTargetTokens = ['_self', '_blank', '_parent', '_top', '_unfencedTop'] as const
