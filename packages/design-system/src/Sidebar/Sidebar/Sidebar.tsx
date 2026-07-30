@@ -1,4 +1,4 @@
-import { useId, useMemo, useState, type ReactNode } from 'react'
+import { useId, useMemo, useState, type ElementType, type ReactNode } from 'react'
 import { styled } from '@soroush.tech/design-system'
 import { Flex, type FlexProps } from '@soroush.tech/design-system/Flex'
 import { SidebarContext, type SidebarAnchor, type SidebarItemVariant } from '../SidebarContext'
@@ -36,7 +36,7 @@ export interface SidebarProps extends FlexProps {
    * ref stay owned by the rail, which needs them as the port target and the
    * `aria-controls` anchor.
    */
-  panelProps?: Omit<FlexProps, 'children' | 'id'>
+  panelProps?: Omit<FlexProps, 'children' | 'id'> & { as?: ElementType }
   /** Accessible name of the navigation landmark — required so multiple navs stay distinguishable. */
   'aria-label': string
 }

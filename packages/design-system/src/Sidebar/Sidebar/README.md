@@ -81,18 +81,18 @@ as the port target and the `aria-controls` anchor.
 
 Also accepts every `Flex` prop (`bg`, spacing, layout, …).
 
-| Prop             | Type                                | Default    | Description                                                    |
-| ---------------- | ----------------------------------- | ---------- | -------------------------------------------------------------- |
-| `children`       | `ReactNode`                         | —          | Rail contents — items and any other nodes.                     |
-| `isOpen`         | `boolean`                           | —          | Whether item labels are shown. Controlled.                     |
-| `anchor`         | `'left' \| 'right'`                 | `'left'`   | Screen edge the rail hugs — labels render away from it.        |
-| `variant`        | `'text' \| 'outlined' \| 'plain'`   | `'text'`   | Default variant for every item — an item's own `variant` wins. |
-| `expandedWidth`  | `string`                            | `'14rem'`  | Rail width while open.                                         |
-| `collapsedWidth` | `string`                            | `'3.5rem'` | Rail width while collapsed (icons only).                       |
-| `hasPanel`       | `boolean`                           | `false`    | Render the selected item's `children` in a second column.      |
-| `panelWidth`     | `string`                            | `'18rem'`  | Width of the panel column. Only meaningful with `hasPanel`.    |
-| `panelProps`     | `Omit<FlexProps, 'children'\|'id'>` | —          | Props for the panel column — any `Flex` prop, plus `as`.       |
-| `aria-label`     | `string`                            | —          | Required accessible name of the `<nav>` landmark.              |
+| Prop             | Type                                                       | Default    | Description                                                    |
+| ---------------- | ---------------------------------------------------------- | ---------- | -------------------------------------------------------------- |
+| `children`       | `ReactNode`                                                | —          | Rail contents — items and any other nodes.                     |
+| `isOpen`         | `boolean`                                                  | —          | Whether item labels are shown. Controlled.                     |
+| `anchor`         | `'left' \| 'right'`                                        | `'left'`   | Screen edge the rail hugs — labels render away from it.        |
+| `variant`        | `'text' \| 'outlined' \| 'plain'`                          | `'text'`   | Default variant for every item — an item's own `variant` wins. |
+| `expandedWidth`  | `string`                                                   | `'14rem'`  | Rail width while open.                                         |
+| `collapsedWidth` | `string`                                                   | `'3.5rem'` | Rail width while collapsed (icons only).                       |
+| `hasPanel`       | `boolean`                                                  | `false`    | Render the selected item's `children` in a second column.      |
+| `panelWidth`     | `string`                                                   | `'18rem'`  | Width of the panel column. Only meaningful with `hasPanel`.    |
+| `panelProps`     | `Omit<FlexProps, 'children'\|'id'> & { as?: ElementType }` | —          | Props for the panel column — any `Flex` prop, plus `as`.       |
+| `aria-label`     | `string`                                                   | —          | Required accessible name of the `<nav>` landmark.              |
 
 ## Theming
 
