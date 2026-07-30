@@ -31,6 +31,7 @@ import { Pressable } from './Pressable'
 import { Quote } from './Quote'
 import { Radio } from './Radio'
 import { Select } from './Select'
+import { Sidebar, SidebarItem } from './Sidebar'
 import { Skeleton } from './Skeleton'
 import { Switch } from './Switch'
 import { Table } from './Table/Table'
@@ -202,6 +203,26 @@ const cases: Case[] = [
       <Select defaultValue={1}>
         <MenuItem value={1}>One</MenuItem>
       </Select>
+    ),
+  },
+  {
+    name: 'Sidebar',
+    slot: 'root',
+    label: 'Sidebar',
+    ui: (
+      <Sidebar aria-label="Panels" isOpen>
+        <SidebarItem icon="folder" label="Directory" />
+      </Sidebar>
+    ),
+  },
+  {
+    name: 'SidebarItem',
+    slot: 'root',
+    label: 'SidebarItem',
+    ui: (
+      <Sidebar aria-label="Panels" isOpen>
+        <SidebarItem icon="folder" label="Directory" />
+      </Sidebar>
     ),
   },
   { name: 'Skeleton', slot: 'root', label: 'skeleton', ui: <Skeleton /> },

@@ -388,6 +388,8 @@ export interface ThemeComponents {
     Record<string, unknown>,
     'root' | 'value' | 'valueArea' | 'valueGhost' | 'listbox'
   >
+  Sidebar?: ComponentConfig<Record<string, unknown>, 'root' | 'rail' | 'panel'>
+  SidebarItem?: ComponentConfig
   Skeleton?: ComponentConfig<Record<string, unknown>, 'root' | 'content'>
   Switch?: ComponentConfig<Record<string, unknown>, 'root' | 'input' | 'track' | 'thumb'>
   Table?: ComponentConfig

@@ -17,16 +17,19 @@ import CookieIcon from './icons/Cookie'
 import DatabaseIcon from './icons/Database'
 import DesktopWindowsIcon from './icons/DesktopWindows'
 import DnsIcon from './icons/Dns'
+import EditNoteIcon from './icons/EditNote'
 import ExpandLessIcon from './icons/ExpandLess'
 import ExpandMoreIcon from './icons/ExpandMore'
 import ExternalLinkIcon from './icons/ExternalLink'
 import FirstPageIcon from './icons/FirstPage'
+import FolderIcon from './icons/Folder'
 import FormatListBulletedIcon from './icons/FormatListBulleted'
 import FormatListNumberedIcon from './icons/FormatListNumbered'
 import FormatQuoteIcon from './icons/FormatQuote'
 import FullscreenIcon from './icons/Fullscreen'
 import GridViewIcon from './icons/GridView'
 import GroupsIcon from './icons/Groups'
+import HistoryIcon from './icons/History'
 import HubIcon from './icons/Hub'
 import ImageIcon from './icons/Image'
 import LanguageIcon from './icons/Language'
@@ -74,16 +77,19 @@ export const icons = {
   database: DatabaseIcon,
   desktop_windows: DesktopWindowsIcon,
   dns: DnsIcon,
+  edit_note: EditNoteIcon,
   expand_less: ExpandLessIcon,
   expand_more: ExpandMoreIcon,
   external_link: ExternalLinkIcon,
   first_page: FirstPageIcon,
+  folder: FolderIcon,
   format_list_bulleted: FormatListBulletedIcon,
   format_list_numbered: FormatListNumberedIcon,
   format_quote: FormatQuoteIcon,
   fullscreen: FullscreenIcon,
   grid_view: GridViewIcon,
   groups: GroupsIcon,
+  history: HistoryIcon,
   hub: HubIcon,
   image: ImageIcon,
   language: LanguageIcon,

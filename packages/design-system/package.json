@@ -60,6 +60,7 @@
     "./Quote": "./src/Quote/index.ts",
     "./Radio": "./src/Radio/index.ts",
     "./Select": "./src/Select/index.ts",
+    "./Sidebar": "./src/Sidebar/index.ts",
     "./Skeleton": "./src/Skeleton/index.ts",
     "./Switch": "./src/Switch/index.ts",
     "./Table": "./src/Table/index.ts",
@@ -398,6 +399,16 @@
         "require": {
           "types": "./dist/Select.d.cts",
           "default": "./dist/Select.cjs"
+        }
+      },
+      "./Sidebar": {
+        "import": {
+          "types": "./dist/Sidebar.d.mts",
+          "default": "./dist/Sidebar.mjs"
+        },
+        "require": {
+          "types": "./dist/Sidebar.d.cts",
+          "default": "./dist/Sidebar.cjs"
         }
       },
       "./Skeleton": {
