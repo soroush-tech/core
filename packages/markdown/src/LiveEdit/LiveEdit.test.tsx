@@ -164,7 +164,12 @@ describe('LiveEdit', () => {
         <LiveEdit />
       </ThemeProvider>
     )
-    editBlock(screen.getByLabelText('Edit block'), 'typed')
-    fireEvent.blur(screen.getByLabelText('Edit block'))
+    const block = screen.getByLabelText('Edit block')
+    // Without a Control there is no value or onChange to reach, so editing and
+    // blurring must be inert rather than calling into undefined.
+    expect(() => {
+      editBlock(block, 'typed')
+      fireEvent.blur(block)
+    }).not.toThrow()
   })
 })

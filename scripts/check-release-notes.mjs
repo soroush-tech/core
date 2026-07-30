@@ -40,8 +40,10 @@ const stagedPackageDirs = () => {
   })
   const dirs = new Set()
   for (const file of output.split('\n')) {
+    // Truthiness, not `!== undefined`: the capture group is `[^/]+`, so a match
+    // is always a non-empty string and a miss is always undefined.
     const [, dir] = /^packages\/([^/]+)\//.exec(file) ?? []
-    if (dir !== undefined) dirs.add(dir)
+    if (dir) dirs.add(dir)
   }
   return dirs
 }

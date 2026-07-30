@@ -336,13 +336,17 @@ export interface CardOwnerState {
   iconProps?: CardSlotIconProps
 }
 
-/** Pressable's resolved props / theme-settable defaults. */
+/**
+ * Pressable's resolved props / theme-settable defaults. Only the three keys it
+ * actually resolves through `useDefaultProps` — the disabled state reaches the
+ * styled root as `isDisabled` and is never read from here, so exposing it would
+ * promise theme authors an override that does nothing.
+ */
 export interface PressableOwnerState {
   feedback?: 'none' | 'opacity' | 'highlight'
   color?: keyof ThemePalette
   /** Opacity held content fades to under `feedback: 'opacity'`. */
   activeOpacity?: number
-  disabled?: boolean
 }
 
 /**

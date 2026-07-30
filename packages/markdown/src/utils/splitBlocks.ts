@@ -7,7 +7,25 @@ export interface MarkdownBlock {
   end: number
 }
 
-const FENCE = /^\s{0,3}(`{3,}|~{3,})/
+const FENCE = /^\s{0,3}(`{3,}|~{3,})(.*)$/
+
+/**
+ * The fence state after `line`: unchanged when the line carries no marker, the
+ * marker itself when one opens a block, and `null` when one closes it.
+ *
+ * A closing marker must use the same character, be at least as long, and carry
+ * nothing after it. The info string is what separates the two roles — a
+ * ```` ```ts ```` line inside an open ```` ``` ```` block opens nothing and closes
+ * nothing, it is content. Without that check the block would end early and its
+ * remaining blank lines would split it into further blocks.
+ */
+const nextFence = (line: string, fence: string | null): string | null => {
+  const [, marker, info] = FENCE.exec(line) ?? []
+  if (!marker) return fence
+  if (fence === null) return marker
+  const closes = info.trim() === '' && marker.startsWith(fence[0]) && marker.length >= fence.length
+  return closes ? null : fence
+}
 
 /**
  * Splits markdown into top-level blocks separated by blank lines, keeping
@@ -30,12 +48,7 @@ export function splitBlocks(value: string): MarkdownBlock[] {
     } else if (!isBlank || fence !== null) {
       if (blockStart < 0) blockStart = offset
       blockEnd = offset + line.length
-      const fenceMatch = FENCE.exec(line)
-      if (fenceMatch) {
-        // A fence closes only on a marker of the same character, at least as long.
-        if (fence === null) fence = fenceMatch[1]
-        else if (fenceMatch[1][0] === fence[0] && fenceMatch[1].length >= fence.length) fence = null
-      }
+      fence = nextFence(line, fence)
     }
     offset += line.length + 1
   }

@@ -65,7 +65,7 @@ const meta: Meta<typeof Pressable> = {
     },
     href: {
       control: 'text',
-      description: 'Renders an `a` element instead of a `button` when set.',
+      description: 'Renders an `a` element instead of the default `div` when set.',
       table: { category: 'Behavior' },
     },
     p: {

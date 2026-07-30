@@ -166,6 +166,9 @@ describe('SidebarItem', () => {
 
   it('tolerates activation without an onSelect handler', () => {
     renderItem(<SidebarItem icon="account_tree" label="GitHub" />)
-    fireEvent.click(screen.getByRole('button', { name: 'GitHub' }))
+    const item = screen.getByRole('button', { name: 'GitHub' })
+    // Both handlers are optional, so activating a purely decorative item must
+    // not reach an undefined call.
+    expect(() => fireEvent.click(item)).not.toThrow()
   })
 })

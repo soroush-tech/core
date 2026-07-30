@@ -177,7 +177,9 @@ export function SidebarItem({
     return () => setPanelLabel(null)
   }, [isPorting, label, setPanelLabel])
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+  // HTMLElement, not HTMLButtonElement: Pressable renders a div by default, and
+  // `as` can make it any tag — matching the handler type Pressable itself uses.
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     onClick?.(event)
     onSelect?.()
   }

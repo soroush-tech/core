@@ -48,6 +48,13 @@ describe('splitBlocks', () => {
     expect(splitBlocks(value)).toEqual([{ source: value, start: 0, end: value.length }])
   })
 
+  it('does not close a fence on a marker carrying an info string', () => {
+    // ```ts is an opening-style marker, so inside an open fence it is content —
+    // closing there would let the blank line below split the block in two.
+    const value = '```\ncode\n```ts\n\nstill inside\n```'
+    expect(splitBlocks(value)).toEqual([{ source: value, start: 0, end: value.length }])
+  })
+
   it('treats an unclosed fence as running to the end', () => {
     const value = 'Before\n\n```\nno closing\n\nstill code'
     expect(splitBlocks(value).map((block) => block.source)).toEqual([
