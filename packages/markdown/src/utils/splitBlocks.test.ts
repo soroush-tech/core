@@ -16,8 +16,21 @@ describe('splitBlocks', () => {
     ])
   })
 
-  it('keeps consecutive non-blank lines as one block', () => {
-    const value = '- one\n- two\n- three'
+  // Each of these must come back as exactly one block spanning the whole
+  // document. The reasons differ, so each case carries its own name.
+  it.each([
+    ['consecutive non-blank lines stay together', '- one\n- two\n- three'],
+    [
+      'a marker of the other character does not close a fence',
+      '```\ntilde block\n~~~\n\nstill inside\n```',
+    ],
+    [
+      // ```ts is an opening-style marker, so inside an open fence it is content —
+      // closing there would let the blank line below split the block in two.
+      'a marker carrying an info string does not close a fence',
+      '```\ncode\n```ts\n\nstill inside\n```',
+    ],
+  ])('keeps the document as a single block when %s', (_reason, value) => {
     expect(splitBlocks(value)).toEqual([{ source: value, start: 0, end: value.length }])
   })
 
@@ -41,18 +54,6 @@ describe('splitBlocks', () => {
       '~~~\ntext\n\nmore\n~~~~',
       'After',
     ])
-  })
-
-  it('does not close a fence on a marker of the other character', () => {
-    const value = '```\ntilde block\n~~~\n\nstill inside\n```'
-    expect(splitBlocks(value)).toEqual([{ source: value, start: 0, end: value.length }])
-  })
-
-  it('does not close a fence on a marker carrying an info string', () => {
-    // ```ts is an opening-style marker, so inside an open fence it is content —
-    // closing there would let the blank line below split the block in two.
-    const value = '```\ncode\n```ts\n\nstill inside\n```'
-    expect(splitBlocks(value)).toEqual([{ source: value, start: 0, end: value.length }])
   })
 
   it('treats an unclosed fence as running to the end', () => {

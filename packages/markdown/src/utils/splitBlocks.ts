@@ -7,7 +7,12 @@ export interface MarkdownBlock {
   end: number
 }
 
-const FENCE = /^\s{0,3}(`{3,}|~{3,})(.*)$/
+// Up to three characters of indentation, then a run of at least three backticks
+// or tildes. Deliberately narrow: `[ \t]` rather than `\s`, which would also
+// admit the newline that cannot occur mid-line, and nothing trailing the run —
+// an unbounded `(.*)` after an unbounded marker gives the engine an ambiguous
+// split to backtrack through. What follows the marker is sliced off instead.
+const FENCE = /^[ \t]{0,3}(`{3,}|~{3,})/
 
 /**
  * The fence state after `line`: unchanged when the line carries no marker, the
@@ -20,9 +25,11 @@ const FENCE = /^\s{0,3}(`{3,}|~{3,})(.*)$/
  * remaining blank lines would split it into further blocks.
  */
 const nextFence = (line: string, fence: string | null): string | null => {
-  const [, marker, info] = FENCE.exec(line) ?? []
-  if (!marker) return fence
+  const match = FENCE.exec(line)
+  if (!match) return fence
+  const [matched, marker] = match
   if (fence === null) return marker
+  const info = line.slice(matched.length)
   const closes = info.trim() === '' && marker.startsWith(fence[0]) && marker.length >= fence.length
   return closes ? null : fence
 }
