@@ -1,5 +1,5 @@
 ---
-description: How to write and cut a GitHub Release for an @soroush.tech/* package published by cd-packages.yml — notes live in an in-repo file `packages/<pkg>/release-notes/<version>.md`, the semver bump rule, a PR/issue reference (required for feature/fix releases, waived for dependency-bump-only ones which instead list every bump), and the breaking-change, new-API-doc-link, and packaging side-note sections. Use when releasing a package or drafting its release notes.
+description: How to write and cut a GitHub Release for an @soroush.tech/* package published by cd-packages.yml — notes live in an in-repo file `packages/<pkg>/release-notes/<version>.md`, the semver bump rule, a linked PR/issue reference as an absolute URL (required for feature/fix releases, waived for dependency-bump-only ones which instead list every bump), and the breaking-change, new-API-doc-link, and packaging side-note sections. Use when releasing a package or drafting its release notes.
 paths: packages/**
 ---
 
@@ -44,11 +44,20 @@ bump decides which sections the notes need.
 
 Every release body **must** have:
 
-1. **A PR or issue reference** — `#<number>` somewhere in the notes (lead line or a bullet).
-   Ties a **feature or fix** release to its change history. Required for any release that
-   changes behavior or API. **Exception:** a maintenance / dependency-bump-only release (a
-   PATCH that only refreshes dependencies) may have no owning issue — the `#<number>` is
-   **not required** there; instead **list exactly what was bumped** (see rule 4).
+1. **A PR or issue reference, as a full link** — `[#<number>](https://github.com/soroush-tech/core/issues/<number>)`
+   somewhere in the notes (lead line or a bullet). Ties a **feature or fix** release to its
+   change history. Required for any release that changes behavior or API.
+
+   Write the **absolute URL**, never a bare `#<number>`. A bare reference only autolinks in
+   GitHub's issue/PR/Release UI — these files are also browsed in-repo at `blob/main/…`, where
+   it renders as plain text. Same reason the doc links in rule 3 are absolute. (Note this is the
+   opposite of the [`github-issues`](../github-issues/SKILL.md) rule: inside an _issue or PR
+   body_, reference issues bare so GitHub renders the title.)
+
+   **Exception:** a maintenance / dependency-bump-only release (a PATCH that only refreshes
+   dependencies) may have no owning issue — the reference is **not required** there; instead
+   **list exactly what was bumped** (see rule 4).
+
 2. **Breaking changes**, if any — a `### BREAKING CHANGES` section spelling out what broke and
    the migration. Its presence means the bump must be MAJOR.
 3. **New public API**, if any — name each new export **and link its doc**. API docs live under
@@ -68,7 +77,8 @@ Every release body **must** have:
 ```markdown
 ## <name>@<version>
 
-<one-line summary of what changed and why> (#<pr-or-issue>)
+<one-line summary of what changed and why>
+([#<number>](https://github.com/soroush-tech/core/issues/<number>))
 
 ### Added
 
@@ -81,7 +91,7 @@ Every release body **must** have:
 
 ### Fixed
 
-- <bug fix> (#<pr-or-issue>).
+- <bug fix> ([#<number>](https://github.com/soroush-tech/core/issues/<number>)).
 
 ### BREAKING CHANGES
 
@@ -93,14 +103,14 @@ Every release body **must** have:
 - `<peer>` is now an optional peer dependency.
 ```
 
-Include only the sections that apply. Keep a `#<number>` reference for any feature/fix
+Include only the sections that apply. Keep a linked issue reference for any feature/fix
 release; keep the `### Packaging` note whenever packaging changed. Match the tone of the last
 release: read the previous `release-notes/*.md`, or `gh release view "<name>@<latest>"`.
 
 ### Maintenance (dependency-bump-only) release
 
 When a package ships only because its dependencies were refreshed — no code, no API change —
-skip the `#<number>` and let `### Packaging` carry the notes, naming each bump explicitly:
+skip the issue link and let `### Packaging` carry the notes, naming each bump explicitly:
 
 ```markdown
 ## <name>@<version>
@@ -120,7 +130,9 @@ Maintenance release — dependency refresh only. No public API or behavior chang
    `packages/<dir>/release-notes/<version>.md` with the notes. The filename must equal the new
    version — `pnpm check:release-notes` (pre-commit hook + CI lint job) fails the commit/build
    if a publishable package's version has no matching notes file, and the workflow's Validate
-   step fails again before publishing.
+   step fails again before publishing. That same check also fails a commit whose **staged**
+   package isn't ahead of the version already on npm, so an edit can't land without its bump. A
+   package you didn't touch may stay at its published version.
 2. Dispatch — Actions → **Publish Packages (npm)** → pick `package`, **Run**. CLI:
    `gh workflow run cd-packages.yml -f package=<dir>`.
 3. The job publishes to npm (skips if that version already exists) and cuts a GitHub Release
@@ -135,5 +147,5 @@ Maintenance release — dependency refresh only. No public API or behavior chang
 To seed `release-notes/` for versions already published, copy each GitHub Release body into its
 `release-notes/<version>.md` (read them with the `mcp__github__list_releases` tool, or
 `gh release view "<name>@<version>"`). Add the `## <name>@<version>` heading if the body lacks
-one, and normalize any links to `soroush-tech/core`. The guard only checks each package's
+one, and normalize any links to `soroush-tech/core`. The guards only look at each package's
 current version, so backfilling is optional — but it makes the directory a complete history.

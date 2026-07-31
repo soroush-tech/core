@@ -30,8 +30,11 @@ import { space } from '@soroush.tech/styled-system'
 | `pl`, `paddingLeft`   | `padding-left`                     | `space`     |
 | `px`, `paddingX`      | `padding-left` and `padding-right` | `space`     |
 | `py`, `paddingY`      | `padding-top` and `padding-bottom` | `space`     |
+| `gap`                 | `gap`                              | `space`     |
+| `rowGap`              | `row-gap`                          | `space`     |
+| `columnGap`           | `column-gap`                       | `space`     |
 
-Styled System provides subsets of `space` category: `margin` and `padding`.
+Styled System provides subsets of `space` category: `margin`, `padding` and `gap`.
 
 ## Color
 
@@ -73,6 +76,8 @@ import { typography } from '@soroush.tech/styled-system'
 | `textDecorationStyle`     | `text-decoration-style`     | none             |
 | `textDecorationThickness` | `text-decoration-thickness` | none             |
 | `textDecorationColor`     | `text-decoration-color`     | `colors`         |
+| `whiteSpace`              | `white-space`               | none             |
+| `textOverflow`            | `text-overflow`             | none             |
 
 ## Layout
 
@@ -92,6 +97,7 @@ import { layout } from '@soroush.tech/styled-system'
 | `size`          | `width` `height` | `sizes`     |
 | `display`       | `display`        | none        |
 | `verticalAlign` | `vertical-align` | none        |
+| `aspectRatio`   | `aspect-ratio`   | none        |
 | `overflow`      | `overflow`       | none        |
 | `overflowX`     | `overflowX`      | none        |
 | `overflowY`     | `overflowY`      | none        |

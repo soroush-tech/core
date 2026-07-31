@@ -10,8 +10,10 @@ const firstChildOf = (id: string) => childrenByParent.get(id)![0]
 // A leaf renders its label inside a row that has no checkbox input.
 const inputFor = (title: string) =>
   screen.getByText(title).closest('label')?.querySelector('input') ?? null
-// The row (branch or leaf) that owns a given label.
-const rowOf = (title: string) => screen.getByText(title).closest('div')!
+// The clickable row (category or branch) that owns a given label. It is a div
+// carrying button semantics — a native <button> may not contain the Flex divs
+// these rows are built from.
+const rowOf = (title: string) => screen.getByText(title).closest('[role="button"]')!
 
 const baseProps: React.ComponentProps<typeof GraphLegend> = {
   topLevelIds,
@@ -95,6 +97,34 @@ describe('GraphLegend', () => {
     expect(onToggle).toHaveBeenCalledWith(topLevelIds[0])
   })
 
+  it('exposes every expandable row as a keyboard-reachable button', () => {
+    renderLegend({ ...withBranchChild, expandedNodes: new Set(['P']) })
+    // Category and branch rows tab and answer Enter/Space via Pressable, with no
+    // hand-rolled role/tabIndex/onKeyDown of their own.
+    for (const title of ['Parent', 'Child 1']) {
+      expect(rowOf(title)).toHaveAttribute('tabindex', '0')
+    }
+    expect(screen.getAllByRole('button')).toHaveLength(2)
+    // A leaf has nothing to expand, so it stays a plain, non-interactive row.
+    expect(screen.getByText('Grandchild 1').closest('[role="button"]')).toBeNull()
+  })
+
+  it('activates an expandable row from the keyboard', () => {
+    const onToggle = vi.fn()
+    renderLegend({ ...withBranchChild, onToggle })
+    fireEvent.keyDown(rowOf('Parent'), { key: 'Enter' })
+    expect(onToggle).toHaveBeenCalledWith('P')
+  })
+
+  it('announces each expandable row’s state via aria-expanded', () => {
+    const { rerender } = renderLegend({ ...withBranchChild })
+    expect(rowOf('Parent')).toHaveAttribute('aria-expanded', 'false')
+
+    rerender(legend({ ...withBranchChild, expandedNodes: new Set(['P', 'c1']) }))
+    expect(rowOf('Parent')).toHaveAttribute('aria-expanded', 'true')
+    expect(rowOf('Child 1')).toHaveAttribute('aria-expanded', 'true')
+  })
+
   it('shows + when a category is collapsed and − when expanded', () => {
     const { rerender } = renderLegend()
     // both categories collapsed → two "+", no "−"
@@ -121,7 +151,7 @@ describe('GraphLegend', () => {
   it('renders an empty list for an expanded category that has none', () => {
     // topLevelIds[1] (B) is absent from childrenByParent — its opened list has no rows.
     renderLegend({ expandedNodes: new Set([topLevelIds[1]]) })
-    const list = screen.getByText(titleOf(topLevelIds[1])).closest('div')?.nextElementSibling
+    const list = rowOf(titleOf(topLevelIds[1])).nextElementSibling
     expect(list).toHaveAttribute('data-open', 'true')
     expect(list).toHaveTextContent('')
   })
@@ -154,8 +184,7 @@ describe('GraphLegend', () => {
   it('keeps a shared child only under the area it gates to', () => {
     renderLegend({ ...withSharedChild, expandedNodes: new Set(['web', 'mobile', 'react']) })
     // Each category's child list is the row's next sibling.
-    const subtree = (area: string) =>
-      screen.getByText(area).closest('div')!.nextElementSibling as HTMLElement
+    const subtree = (area: string) => rowOf(area).nextElementSibling as HTMLElement
     // React is shared, so it shows under both areas.
     expect(within(subtree('Web')).getByText('React')).toBeInTheDocument()
     expect(within(subtree('Mobile')).getByText('React')).toBeInTheDocument()

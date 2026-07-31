@@ -434,6 +434,20 @@ describe('Button', () => {
     })
   })
 
+  // ─── layout props ─────────────────────────────────────────────────────────────
+
+  describe('layout props', () => {
+    it('applies aspectRatio (via @soroush.tech/styled-system layout)', () => {
+      renderWithTheme(
+        <Button aspectRatio="1/1" data-testid="btn">
+          btn
+        </Button>
+      )
+      expect(screen.getByTestId('btn')).toHaveStyle({ aspectRatio: '1/1' })
+      expect(screen.getByTestId('btn')).not.toHaveAttribute('aspectRatio')
+    })
+  })
+
   // ─── fullWidth ────────────────────────────────────────────────────────────────
 
   describe('fullWidth', () => {

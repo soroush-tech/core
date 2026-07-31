@@ -14,9 +14,9 @@ It is a **drop-in replacement** for the `styled-system` runtime: the root export
 ## Features
 
 - Add style props that hook into your own theme
-- Quickly set responsive `font-size`, `margin`, `padding`, `width`, and more with props
+- Quickly set responsive `font-size`, `margin`, `padding`, `gap`, `width`, and more with props
 - Influenced by constraint-based design-system principles
-- Typographic scale, and a spacing scale for `margin` and `padding`
+- Typographic scale, and a spacing scale for `margin`, `padding` and `gap`
 - Works with any color palette
 - Works with most CSS-in-JS libraries, including [Emotion](https://emotion.sh) and [styled-components](https://styled-components.com)
 - First-class TypeScript types — theme-scale-aware props, replacing `@types/styled-system`

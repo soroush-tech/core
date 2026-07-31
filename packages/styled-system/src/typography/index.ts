@@ -8,5 +8,7 @@ export type {
   LetterSpacingProps,
   FontStyleProps,
   TextAlignProps,
+  WhiteSpaceProps,
+  TextOverflowProps,
   TypographyProps,
 } from '../types'

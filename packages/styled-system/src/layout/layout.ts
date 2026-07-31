@@ -18,6 +18,7 @@ const config: SystemConfig = {
   overflowY: true,
   display: true,
   verticalAlign: true,
+  aspectRatio: true,
 }
 
 export const layout = system(config)

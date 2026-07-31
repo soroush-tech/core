@@ -2,7 +2,7 @@
 
 Extends [`View`](../View/). Renders as a `<div>` with `display: grid`.
 
-All `View` props are inherited. Grid adds a `gap` prop and the full set of CSS Grid layout props via `styled-system`.
+All `View` props are inherited — including `gap`, `rowGap` and `columnGap`. Grid adds the full set of CSS Grid layout props via `styled-system`.
 
 ---
 
@@ -10,7 +10,7 @@ All `View` props are inherited. Grid adds a `gap` prop and the full set of CSS G
 
 ### `gap`
 
-Resolves against `theme.space`. Maps to CSS `gap` (shorthand for row-gap + column-gap).
+Inherited from `View`. Resolves against `theme.space`. Maps to CSS `gap` (shorthand for row-gap + column-gap).
 
 | Key      | CSS value |
 | -------- | --------- |

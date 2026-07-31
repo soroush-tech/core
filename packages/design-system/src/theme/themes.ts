@@ -337,6 +337,19 @@ export interface CardOwnerState {
 }
 
 /**
+ * Pressable's resolved props / theme-settable defaults. Only the three keys it
+ * actually resolves through `useDefaultProps` — the disabled state reaches the
+ * styled root as `isDisabled` and is never read from here, so exposing it would
+ * promise theme authors an override that does nothing.
+ */
+export interface PressableOwnerState {
+  feedback?: 'none' | 'opacity' | 'highlight'
+  color?: keyof ThemePalette
+  /** Opacity held content fades to under `feedback: 'opacity'`. */
+  activeOpacity?: number
+}
+
+/**
  * Per-component theme customization, keyed by component name. Augment this
  * interface to register additional components (including your own, when their
  * styled roots are created with this package's `styled(tag, { name })`).
@@ -372,12 +385,15 @@ export interface ThemeComponents {
   PaginationItem?: ComponentConfig<Record<string, unknown>, 'root' | 'ellipsis'>
   Paper?: ComponentConfig
   Popover?: ComponentConfig<Record<string, unknown>, 'root' | 'positioner'>
+  Pressable?: ComponentConfig<PressableOwnerState>
   Quote?: ComponentConfig
   Radio?: ComponentConfig<Record<string, unknown>, 'root' | 'input' | 'icon'>
   Select?: ComponentConfig<
     Record<string, unknown>,
     'root' | 'value' | 'valueArea' | 'valueGhost' | 'listbox'
   >
+  Sidebar?: ComponentConfig<Record<string, unknown>, 'root' | 'rail' | 'panel'>
+  SidebarItem?: ComponentConfig
   Skeleton?: ComponentConfig<Record<string, unknown>, 'root' | 'content'>
   Switch?: ComponentConfig<Record<string, unknown>, 'root' | 'input' | 'track' | 'thumb'>
   Table?: ComponentConfig

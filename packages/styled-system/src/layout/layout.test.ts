@@ -18,4 +18,9 @@ describe('layout', () => {
   it('supports raw props', () => {
     expect(layout({ display: 'flex' })).toEqual({ display: 'flex' })
   })
+
+  it('passes aspect-ratio through untouched (absent upstream)', () => {
+    expect(layout({ aspectRatio: '1 / 1' })).toEqual({ aspectRatio: '1 / 1' })
+    expect(layout({ aspectRatio: '16 / 9' })).toEqual({ aspectRatio: '16 / 9' })
+  })
 })

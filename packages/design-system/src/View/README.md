@@ -65,6 +65,7 @@ CSS `order` for placing a flex/grid item out of source order. Accepts a single v
 | --------------------------------- | --------------- |
 | `m` `mt` `mr` `mb` `ml` `mx` `my` | margin + sides  |
 | `p` `pt` `pr` `pb` `pl` `px` `py` | padding + sides |
+| `gap` `rowGap` `columnGap`        | gap + axes      |
 
 | Key      | Value |
 | -------- | ----- |
@@ -85,7 +86,7 @@ CSS `order` for placing a flex/grid item out of source order. Accepts a single v
 
 ### Layout
 
-`width` · `height` · `minWidth` · `minHeight` · `maxWidth` · `maxHeight` · `display` · `overflow` · `overflowX` · `overflowY` · `verticalAlign`
+`width` · `height` · `minWidth` · `minHeight` · `maxWidth` · `maxHeight` · `display` · `overflow` · `overflowX` · `overflowY` · `verticalAlign` · `aspectRatio`
 
 ---
 

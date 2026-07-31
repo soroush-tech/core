@@ -4,31 +4,22 @@ import {
   createShouldForwardProp,
   props,
   flexbox,
-  system,
   type FlexboxProps,
-  type ResponsiveValue,
 } from '../index'
 import { View, type ViewProps } from '../View'
 
 /** Valid values for the gap prop — derived from theme.space keys. */
 export type GapToken = keyof Theme['space']
 
-export interface FlexProps extends ViewProps, FlexboxProps<Theme> {
-  /** Resolves against theme.space — maps to CSS gap. Accepts responsive arrays. */
-  gap?: ResponsiveValue<GapToken>
-}
+// `gap` needs no declaration or wiring here since @soroush.tech/styled-system 5.8.0 —
+// it arrives through View's `space` parser and `SpaceProps`.
+export interface FlexProps extends ViewProps, FlexboxProps<Theme> {}
 
-// 'gap' is not in the default styled-system props list so must be added explicitly
-// to prevent it from reaching the DOM as an HTML attribute.
-const shouldForwardProp = createShouldForwardProp([...props, 'gap'])
-
-const gapSystem = system({
-  gap: { property: 'gap', scale: 'space' },
-})
+const shouldForwardProp = createShouldForwardProp([...props])
 
 export const Flex = styled(View, {
   name: 'Flex',
   label: 'flex',
   shouldForwardProp,
-  systemProps: [flexbox, gapSystem],
+  systemProps: [flexbox],
 })<FlexProps>({ display: 'flex', flexDirection: 'column' })

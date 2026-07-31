@@ -1,8 +1,9 @@
 import { Fragment } from 'react'
-import { styled } from '@soroush.tech/design-system'
+import { styled, css } from '@soroush.tech/design-system'
 import { useTheme } from '@soroush.tech/design-system/theme'
 import type { GraphChildProps } from 'src/common/NetworkGraph'
 import { Flex } from '@soroush.tech/design-system/Flex'
+import { Pressable } from '@soroush.tech/design-system/Pressable'
 import { Switch } from '@soroush.tech/design-system/Switch'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { View } from '@soroush.tech/design-system/View'
@@ -46,9 +47,12 @@ const Pulse = styled.span`
 `
 /** Stagger between consecutive child rows as they cascade in (ms). */
 const STAGGER_MS = 40
-// cursor and :hover color can't be expressed as props.
-const CategoryRow = styled(Flex)`
-  cursor: pointer;
+// A Pressable so the row is a real button — keyboard-reachable and announced as
+// the disclosure it is. It brings no layout, so the flex row is set here.
+const CategoryRow = styled(Pressable)`
+  display: flex;
+  width: 100%;
+  align-items: center;
   color: ${({ theme }) => theme.text.initial};
 
   &:hover {
@@ -94,7 +98,9 @@ const ChildListInner = styled.div`
   margin-left: ${({ theme }) => theme.space[0.5]};
 `
 
-const ChildRow = styled(Flex)`
+// Shared by both row kinds: a branch row is a Pressable, so it can't extend the
+// Flex-based leaf row and needs the cascade as a standalone block.
+const cascadeIn = css`
   opacity: 0;
 
   /* Re-runs the stagger each time the list opens (ChildList carries data-open). */
@@ -122,10 +128,18 @@ const ChildRow = styled(Flex)`
   }
 `
 
-// A branch child reuses ChildRow's cascade-in animation but, like a category, is
-// clickable to expand/collapse its own children.
-const BranchRow = styled(ChildRow)`
-  cursor: pointer;
+const ChildRow = styled(Flex)`
+  ${cascadeIn}
+`
+
+// A branch child reuses the cascade-in animation but, like a category, is a real
+// button that expands/collapses its own children.
+const BranchRow = styled(Pressable)`
+  ${cascadeIn}
+  display: flex;
+  width: 100%;
+  align-items: center;
+  color: ${({ theme }) => theme.text.secondary};
 
   &:hover {
     color: ${({ theme }) => theme.border.primary};
@@ -178,12 +192,11 @@ function LegendChild({
   return (
     <>
       <BranchRow
-        flexDirection="row"
-        alignItems="center"
+        feedback="highlight"
         fontSize={0}
         mb={1.5}
-        color="secondary"
         style={{ animationDelay }}
+        aria-expanded={isExpanded}
         onClick={() => onToggle(id)}
       >
         <span>{titleById.get(id)}</span>
@@ -276,10 +289,10 @@ export function GraphLegend({
             return (
               <Fragment key={category}>
                 <CategoryRow
-                  flexDirection="row"
-                  alignItems="center"
+                  feedback="highlight"
                   fontSize={0}
                   mb={1.5}
+                  aria-expanded={isExpanded}
                   onClick={() => onToggle(category)}
                 >
                   <CategoryGlyph

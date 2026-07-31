@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/design-system",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Emotion + @soroush.tech/styled-system React component library — token-driven light/dark themes, layout primitives, forms, and overlays.",
   "keywords": [
     "design-system",
@@ -56,9 +56,11 @@
     "./Paper": "./src/Paper/index.ts",
     "./Popover": "./src/Popover/index.ts",
     "./Portal": "./src/Portal/index.ts",
+    "./Pressable": "./src/Pressable/index.ts",
     "./Quote": "./src/Quote/index.ts",
     "./Radio": "./src/Radio/index.ts",
     "./Select": "./src/Select/index.ts",
+    "./Sidebar": "./src/Sidebar/index.ts",
     "./Skeleton": "./src/Skeleton/index.ts",
     "./Switch": "./src/Switch/index.ts",
     "./Table": "./src/Table/index.ts",
@@ -359,6 +361,16 @@
           "default": "./dist/Portal.cjs"
         }
       },
+      "./Pressable": {
+        "import": {
+          "types": "./dist/Pressable.d.mts",
+          "default": "./dist/Pressable.mjs"
+        },
+        "require": {
+          "types": "./dist/Pressable.d.cts",
+          "default": "./dist/Pressable.cjs"
+        }
+      },
       "./Quote": {
         "import": {
           "types": "./dist/Quote.d.mts",
@@ -387,6 +399,16 @@
         "require": {
           "types": "./dist/Select.d.cts",
           "default": "./dist/Select.cjs"
+        }
+      },
+      "./Sidebar": {
+        "import": {
+          "types": "./dist/Sidebar.d.mts",
+          "default": "./dist/Sidebar.mjs"
+        },
+        "require": {
+          "types": "./dist/Sidebar.d.cts",
+          "default": "./dist/Sidebar.cjs"
         }
       },
       "./Skeleton": {

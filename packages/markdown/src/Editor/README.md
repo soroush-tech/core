@@ -20,20 +20,21 @@ The source `<textarea>` of the `Markdown` compound.
 
 ## Props
 
-| Prop                              | Type                      | Default     | Description                                                   |
-| --------------------------------- | ------------------------- | ----------- | ------------------------------------------------------------- |
-| `value`                           | `string`                  | —           | Standalone source (ignored inside a `Control`).               |
-| `onChange`                        | `(value: string) => void` | —           | Standalone change handler (ignored inside a `Control`).       |
-| `name`                            | `string`                  | —           | Native textarea `name` for `<form>` / FormData submission.    |
-| `error` / `required` / `disabled` | `boolean`                 | —           | Form-field state — falls back to the enclosing `FormControl`. |
-| `id`                              | `string`                  | —           | Label association — falls back to `FormControl`.              |
-| `placeholder`                     | `string`                  | —           | Shown while the source is empty.                              |
-| `minRows`                         | `number`                  | `16`        | Minimum visible rows of the auto-growing textarea.            |
-| `showShortcutHint`                | `boolean`                 | `true`      | Shows the one-line Tab / focus-release shortcut hint.         |
-| `variant`                         | `TextInputVariant`        | `'default'` | Forwarded to `TextInput`.                                     |
-| `color`                           | `TextInputColor`          | `'primary'` | Focus/active border colour — forwarded.                       |
-| `textColor`                       | `TextInputTextColor`      | `'initial'` | Text colour of the typed source — forwarded.                  |
-| `size`                            | `TextInputSize`           | `'md'`      | Padding/font-size density — forwarded.                        |
+| Prop                              | Type                      | Default     | Description                                                        |
+| --------------------------------- | ------------------------- | ----------- | ------------------------------------------------------------------ |
+| `value`                           | `string`                  | —           | Standalone source (ignored inside a `Control`).                    |
+| `onChange`                        | `(value: string) => void` | —           | Standalone change handler (ignored inside a `Control`).            |
+| `name`                            | `string`                  | —           | Native textarea `name` for `<form>` / FormData submission.         |
+| `error` / `required` / `disabled` | `boolean`                 | —           | Form-field state — falls back to the enclosing `FormControl`.      |
+| `id`                              | `string`                  | —           | Label association — falls back to `FormControl`.                   |
+| `placeholder`                     | `string`                  | —           | Shown while the source is empty.                                   |
+| `minRows`                         | `number`                  | `16`        | Minimum visible rows of the auto-growing textarea.                 |
+| `maxRows`                         | `number`                  | —           | Rows at which auto-grow stops and the textarea scrolls internally. |
+| `showShortcutHint`                | `boolean`                 | `true`      | Shows the one-line Tab / focus-release shortcut hint.              |
+| `variant`                         | `TextInputVariant`        | `'default'` | Forwarded to `TextInput`.                                          |
+| `color`                           | `TextInputColor`          | `'primary'` | Focus/active border colour — forwarded.                            |
+| `textColor`                       | `TextInputTextColor`      | `'initial'` | Text colour of the typed source — forwarded.                       |
+| `size`                            | `TextInputSize`           | `'md'`      | Padding/font-size density — forwarded.                             |
 
 ```tsx
 <Control value={value} onChange={setValue}>

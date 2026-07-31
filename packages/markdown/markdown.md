@@ -24,6 +24,9 @@ sub-component adds `SubName.README.md` + `SubName.stories.tsx` next to its sibli
 
 - **`Control`, `Toolbar` (+ `TablePicker`), `Editor`, `Preview`** — the headless markdown
   editor/renderer.
+- **`LiveEdit`** — a preview you write on directly: `Preview`-rendered blocks are
+  `contentEditable`, and each input serializes the edited block's DOM back to markdown
+  (rehype-remark) and splices it into the source. Untouched blocks keep their exact source.
 - **`CodeBlock`** — the fenced-code surface (moved here from the design system; `Preview`/`Mermaid`
   are its only consumers).
 - **`Mermaid` (+ `DiagramViewer`)** — renders ` ```mermaid ` blocks as themed, zoomable diagrams.
