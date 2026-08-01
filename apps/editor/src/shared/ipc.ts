@@ -28,6 +28,20 @@ export const CLAUDE_CHANNELS = {
   editSelection: 'claude:edit-selection',
 } as const
 
+/** The signed-in GitHub account. Never carries the token — that stays in main. */
+export interface GitHubStatus {
+  login: string | null
+  /** The avatar as a `data:` URI, so the renderer's CSP needs no remote image host. */
+  avatar: string | null
+}
+
+export const GITHUB_CHANNELS = {
+  status: 'github:status',
+  signIn: 'github:sign-in',
+  signOut: 'github:sign-out',
+  openTokenSettings: 'github:open-token-settings',
+} as const
+
 /** An application-menu item the renderer must act on (it owns the document state). */
 export type MenuAction = 'new' | 'open' | 'save' | 'save-as' | 'undo' | 'redo'
 

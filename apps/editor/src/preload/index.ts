@@ -2,7 +2,9 @@ import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 import {
   CLAUDE_CHANNELS,
   FILE_CHANNELS,
+  GITHUB_CHANNELS,
   MENU_CHANNELS,
+  type GitHubStatus,
   type MenuAction,
   type OpenedFile,
   type Result,
@@ -13,6 +15,16 @@ const editorAPI = {
   claude: {
     editSelection: (selectedText: string, instruction: string): Promise<Result<string>> =>
       ipcRenderer.invoke(CLAUDE_CHANNELS.editSelection, selectedText, instruction),
+  },
+  github: {
+    status: (): Promise<Result<GitHubStatus>> => ipcRenderer.invoke(GITHUB_CHANNELS.status),
+    /** Checks the token against GitHub and stores it when it holds up. */
+    signIn: (token: string): Promise<Result<GitHubStatus>> =>
+      ipcRenderer.invoke(GITHUB_CHANNELS.signIn, token),
+    signOut: (): Promise<Result<null>> => ipcRenderer.invoke(GITHUB_CHANNELS.signOut),
+    /** Opens GitHub's token page in the user's browser. Takes no URL by design. */
+    openTokenSettings: (): Promise<Result<null>> =>
+      ipcRenderer.invoke(GITHUB_CHANNELS.openTokenSettings),
   },
   file: {
     open: (): Promise<Result<OpenedFile | null>> => ipcRenderer.invoke(FILE_CHANNELS.open),

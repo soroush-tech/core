@@ -1,4 +1,4 @@
-import { CLAUDE_CHANNELS, FILE_CHANNELS, MENU_CHANNELS } from '../shared/ipc'
+import { CLAUDE_CHANNELS, FILE_CHANNELS, GITHUB_CHANNELS, MENU_CHANNELS } from '../shared/ipc'
 import type { EditorAPI } from './index'
 
 const { exposeInMainWorld, invoke, on, removeListener } = vi.hoisted(() => ({
@@ -38,6 +38,21 @@ describe('preload editorAPI', () => {
 
     await api.claude.editSelection('old', 'improve')
     expect(invoke).toHaveBeenLastCalledWith(CLAUDE_CHANNELS.editSelection, 'old', 'improve')
+  })
+
+  it('maps each GitHub method to its channel', async () => {
+    await api.github.status()
+    expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.status)
+
+    await api.github.signIn('github_pat_123')
+    expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.signIn, 'github_pat_123')
+
+    await api.github.signOut()
+    expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.signOut)
+
+    // No URL argument — the browser target is main's constant, not the renderer's.
+    await api.github.openTokenSettings()
+    expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.openTokenSettings)
   })
 
   it('relays menu actions to the subscriber until unsubscribed', () => {

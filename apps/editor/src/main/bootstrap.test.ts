@@ -1,8 +1,11 @@
 import type { spawn } from 'node:child_process'
 import { MENU_CHANNELS } from '../shared/ipc'
 import { editSelection } from './claude/editSelection'
+import { CREDENTIALS_FILE } from './github/const'
+import { createCredentialStore } from './github/credentialStore'
 import { registerClaudeHandlers } from './ipc/claudeHandlers'
 import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
+import { registerGitHubHandlers } from './ipc/githubHandlers'
 import { installApplicationMenu } from './menu'
 
 const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.hoisted(() => {
@@ -35,6 +38,7 @@ vi.mock('electron', () => ({
   app: {
     whenReady,
     quit,
+    getPath: vi.fn(() => 'C:\\userData'),
     on: (event: string, handler: (...args: never[]) => void) => {
       appEvents.set(event, handler)
     },
@@ -44,6 +48,9 @@ vi.mock('electron', () => ({
 }))
 
 vi.mock('./claude/editSelection', () => ({ editSelection: vi.fn() }))
+vi.mock('./github/authService', () => ({ createAuthService: vi.fn() }))
+vi.mock('./github/credentialStore', () => ({ createCredentialStore: vi.fn() }))
+vi.mock('./ipc/githubHandlers', () => ({ registerGitHubHandlers: vi.fn() }))
 vi.mock('./menu', () => ({ installApplicationMenu: vi.fn() }))
 vi.mock('./ipc/claudeHandlers', () => ({ registerClaudeHandlers: vi.fn() }))
 vi.mock('./ipc/fileHandlers', () => ({
@@ -168,6 +175,14 @@ describe('bootstrap', () => {
     const request = { selectedText: 'text', instruction: 'shorten' }
     void runEdit(request)
     expect(editSelection).toHaveBeenCalledWith(request, spawnFn)
+  })
+
+  it('stores GitHub credentials under the app userData directory', async () => {
+    await start()
+    const [filePath] = vi.mocked(createCredentialStore).mock.calls[0]
+    expect(filePath).toContain(CREDENTIALS_FILE)
+    expect(filePath).toContain('userData')
+    expect(registerGitHubHandlers).toHaveBeenCalled()
   })
 
   it('lets a clean window close through', async () => {

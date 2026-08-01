@@ -19,7 +19,14 @@ const menuApi = {
   }),
 }
 
-vi.stubGlobal('editorAPI', { file: fileApi, claude: claudeApi, menu: menuApi })
+const githubApi = {
+  status: vi.fn().mockResolvedValue({ success: true, data: { login: null, avatar: null } }),
+  signIn: vi.fn(),
+  signOut: vi.fn(),
+  openTokenSettings: vi.fn(),
+}
+
+vi.stubGlobal('editorAPI', { file: fileApi, claude: claudeApi, menu: menuApi, github: githubApi })
 
 /** Fires an application-menu action the way the preload bridge would. */
 const dispatchMenu = (action: MenuAction) => act(async () => menuListener!(action))
@@ -27,6 +34,7 @@ const dispatchMenu = (action: MenuAction) => act(async () => menuListener!(actio
 beforeEach(() => {
   vi.clearAllMocks()
   fileApi.setDirty.mockResolvedValue({ success: true, data: null })
+  githubApi.status.mockResolvedValue({ success: true, data: { login: null, avatar: null } })
 })
 
 describe('App', () => {

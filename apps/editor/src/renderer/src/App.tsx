@@ -1,9 +1,11 @@
 import { Flex } from '@soroush.tech/design-system/Flex'
+import { Sidebar } from '@soroush.tech/design-system/Sidebar'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { useEffect, useState } from 'react'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
+import { GitHubAuth } from './common/GitHubAuth'
 import { useDocument } from './hooks/useDocument'
 import { useUndoRedo } from './hooks/useUndoRedo'
 import { editorTheme } from './theme/editorTheme'
@@ -50,27 +52,34 @@ export function App() {
   return (
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
-      <Flex flexDirection="column" gap={2} p={3} height="100vh">
-        <Typography variant="body2" color="secondary" m={0}>
-          {filePath ?? 'Untitled'}
-          {isDirty ? ' •' : ''}
-        </Typography>
-        {error && (
-          <Typography role="alert" color="error" m={0}>
-            {error}
+      <Flex flexDirection="row" height="100vh">
+        {/* Icons-only rail: the panel column opens independently of `isOpen`,
+            so there is no label state to carry for a single-item rail. */}
+        <Sidebar aria-label="Editor panels" isOpen={false} hasPanel panelWidth="20rem">
+          <GitHubAuth />
+        </Sidebar>
+        <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
+          <Typography variant="body2" color="secondary" m={0}>
+            {filePath ?? 'Untitled'}
+            {isDirty ? ' •' : ''}
           </Typography>
-        )}
-        {/* The document scrolls inside this row so the chat bar below stays pinned.
+          {error && (
+            <Typography role="alert" color="error" m={0}>
+              {error}
+            </Typography>
+          )}
+          {/* The document scrolls inside this row so the chat bar below stays pinned.
             The 4px padding leaves room for TextInput's focus ring (2px outline +
             2px offset outside the box), which the scroll container would clip. */}
-        <Flex flexDirection="row" gap={3} flex={1} minHeight={0} overflow="auto" p={0.5}>
-          <DocumentEditor value={content} onChange={change} onSelectionChange={setSelection} />
+          <Flex flexDirection="row" gap={3} flex={1} minHeight={0} overflow="auto" p={0.5}>
+            <DocumentEditor value={content} onChange={change} onSelectionChange={setSelection} />
+          </Flex>
+          <ClaudePanel
+            targetText={hasSelection ? content.slice(start, end) : content}
+            isSelection={hasSelection}
+            onApply={applyEdit}
+          />
         </Flex>
-        <ClaudePanel
-          targetText={hasSelection ? content.slice(start, end) : content}
-          isSelection={hasSelection}
-          onApply={applyEdit}
-        />
       </Flex>
     </ThemeProvider>
   )

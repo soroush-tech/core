@@ -1,10 +1,15 @@
 import type { spawn } from 'node:child_process'
+import { readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { app, BrowserWindow, session } from 'electron'
 import { editSelection } from './claude/editSelection'
 import { buildCspResponseHeaders } from './csp'
+import { createAuthService } from './github/authService'
+import { CREDENTIALS_FILE } from './github/const'
+import { createCredentialStore } from './github/credentialStore'
 import { registerClaudeHandlers } from './ipc/claudeHandlers'
 import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
+import { registerGitHubHandlers } from './ipc/githubHandlers'
 import { installApplicationMenu } from './menu'
 import { MENU_CHANNELS } from '../shared/ipc'
 
@@ -44,6 +49,17 @@ export function bootstrap(spawnFn: typeof spawn): void {
 
     const fileState = registerFileHandlers(() => mainWindow!)
     registerClaudeHandlers((request) => editSelection(request, spawnFn))
+
+    registerGitHubHandlers(
+      createAuthService({
+        fetchFn: fetch,
+        store: createCredentialStore(join(app.getPath('userData'), CREDENTIALS_FILE), {
+          readFile,
+          writeFile,
+          rm,
+        }),
+      })
+    )
 
     // Closing with unsaved changes prompts before the window is destroyed.
     app.on('browser-window-created', (_event, window) => {
