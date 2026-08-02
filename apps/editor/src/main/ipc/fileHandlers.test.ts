@@ -66,6 +66,24 @@ describe('registerFileHandlers', () => {
         success: false,
         error: 'Invalid save arguments',
       })
+      await expect(invoke(FILE_CHANNELS.save, null, 'text', 7)).resolves.toEqual({
+        success: false,
+        error: 'Invalid save arguments',
+      })
+    })
+
+    it.each([
+      ['the name the document already goes by', 'en.md', 'en.md'],
+      ['a generic one when it has none', undefined, 'untitled.md'],
+    ])('opens the dialog on %s', async (_name, suggested, defaultPath) => {
+      showSaveDialog.mockResolvedValue({ canceled: true, filePath: undefined })
+
+      await invoke(FILE_CHANNELS.save, null, 'body', suggested)
+
+      expect(showSaveDialog).toHaveBeenLastCalledWith(
+        window,
+        expect.objectContaining({ defaultPath })
+      )
     })
 
     it('writes straight back to a path the user opened', async () => {

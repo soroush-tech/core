@@ -70,8 +70,12 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
 
         if (entry === null) {
           delete files[filename]
-        } else if (entry.status === 'modified' && files[filename]?.status === 'added') {
-          // A file that exists only locally stays "added" however often it is edited.
+        } else if (
+          entry.status === 'modified' &&
+          (isNewGist(id) || files[filename]?.status === 'added')
+        ) {
+          // Nothing is published in a gist that does not exist yet, and a file
+          // that exists only locally stays "added" however often it is edited.
           files[filename] = { status: 'added', content: entry.content }
         } else {
           files[filename] = entry

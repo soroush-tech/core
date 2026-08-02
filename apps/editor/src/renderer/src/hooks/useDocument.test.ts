@@ -64,7 +64,7 @@ describe('useDocument', () => {
 
     await act(() => result.current.newDocument())
 
-    expect(fileApi.save).toHaveBeenCalledWith(null, 'draft')
+    expect(fileApi.save).toHaveBeenCalledWith(null, 'draft', null)
     expect(result.current).toMatchObject({ content: '', isDirty: false })
   })
 
@@ -180,7 +180,8 @@ describe('useDocument', () => {
 
     await act(() => result.current.save(true))
 
-    expect(fileApi.save).toHaveBeenCalledWith(null, '# notes')
+    // Save As on a gist file opens the dialog on that file's name.
+    expect(fileApi.save).toHaveBeenCalledWith(null, '# notes', 'notes.md')
     expect(gistsApi.stage).not.toHaveBeenCalled()
     // It now belongs to that file, not to the gist.
     expect(result.current).toMatchObject({ filePath: 'C:\\notes.md', origin: null })
@@ -298,7 +299,7 @@ describe('useDocument', () => {
     await act(() => result.current.open())
     act(() => result.current.change('# edited'))
     await act(() => result.current.save())
-    expect(fileApi.save).toHaveBeenCalledWith('C:\\notes.md', '# edited')
+    expect(fileApi.save).toHaveBeenCalledWith('C:\\notes.md', '# edited', 'C:\\notes.md')
     expect(result.current.isDirty).toBe(false)
   })
 
@@ -307,7 +308,8 @@ describe('useDocument', () => {
     const { result } = renderHook(() => useDocument())
     act(() => result.current.change('body'))
     await act(() => result.current.save(true))
-    expect(fileApi.save).toHaveBeenCalledWith(null, 'body')
+    // Nothing to propose for a document that has never been named.
+    expect(fileApi.save).toHaveBeenCalledWith(null, 'body', null)
     expect(result.current.filePath).toBe('C:\\new.md')
   })
 

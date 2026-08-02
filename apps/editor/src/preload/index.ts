@@ -73,9 +73,17 @@ const editorAPI = {
   },
   file: {
     open: (): Promise<Result<OpenedFile | null>> => ipcRenderer.invoke(FILE_CHANNELS.open),
-    /** Pass `filePath: null` to force a Save As dialog. Cancelled dialog resolves `data: null`. */
-    save: (filePath: string | null, content: string): Promise<Result<SavedFile | null>> =>
-      ipcRenderer.invoke(FILE_CHANNELS.save, filePath, content),
+    /**
+     * Pass `filePath: null` to force a Save As dialog. Cancelled dialog resolves
+     * `data: null`. `suggested` is what that dialog opens on — the name the
+     * document already goes by, so it need not be typed again.
+     */
+    save: (
+      filePath: string | null,
+      content: string,
+      suggested: string | null = null
+    ): Promise<Result<SavedFile | null>> =>
+      ipcRenderer.invoke(FILE_CHANNELS.save, filePath, content, suggested),
     /** `isDraft` lets the close prompt offer "Save as draft" for a gist file. */
     setDirty: (isDirty: boolean, isDraft: boolean): Promise<Result<null>> =>
       ipcRenderer.invoke(FILE_CHANNELS.setDirty, isDirty, isDraft),

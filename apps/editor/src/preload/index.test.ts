@@ -34,7 +34,10 @@ describe('preload editorAPI', () => {
     expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.open)
 
     await api.file.save('C:\\notes.md', 'body')
-    expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.save, 'C:\\notes.md', 'body')
+    expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.save, 'C:\\notes.md', 'body', null)
+
+    await api.file.save(null, 'body', 'en.md')
+    expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.save, null, 'body', 'en.md')
 
     await api.file.setDirty(true, false)
     expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.setDirty, true, false)

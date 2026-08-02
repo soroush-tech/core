@@ -81,7 +81,13 @@ export function useDocument() {
       return true
     }
 
-    const result = await window.editorAPI.file.save(forceDialog ? null : filePath, content)
+    // Save As opens on the name the document already goes by: its path on disk,
+    // or the gist file it came from.
+    const result = await window.editorAPI.file.save(
+      forceDialog ? null : filePath,
+      content,
+      filePath ?? origin?.filename ?? null
+    )
     if (revision.current !== saved) return false
     if (!result.success) {
       setError(result.error)

@@ -2,7 +2,8 @@ import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { GistOrigin } from '../../shared/ipc'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
 import { EditorSidebar } from './common/EditorSidebar'
@@ -36,6 +37,16 @@ export function App() {
 
   // A different file on disk means a different document — its history starts fresh.
   useEffect(() => reset(), [filePath, reset])
+
+  // A gist file is a new document, so its history starts fresh — the
+  // filePath-keyed reset above cannot see it (filePath stays null). Stable, so
+  // the rail can open its startup sandbox exactly once.
+  const openGistFile = useCallback(
+    (fileContent: string, fileOrigin: GistOrigin) => {
+      void load(fileContent, fileOrigin).then((loaded) => loaded && reset())
+    },
+    [load, reset]
+  )
 
   // File and undo/redo commands live in the application menu (see main/menu.ts).
   useEffect(
@@ -113,14 +124,7 @@ export function App() {
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
       <Flex flexDirection="row" height="100vh">
-        {/* A gist file is a new document, so its history starts fresh — the
-            filePath-keyed reset above cannot see it (filePath stays null). */}
-        <EditorSidebar
-          onOpenFile={(fileContent, fileOrigin) =>
-            void load(fileContent, fileOrigin).then((loaded) => loaded && reset())
-          }
-          onRenameFile={renameOrigin}
-        />
+        <EditorSidebar onOpenFile={openGistFile} onRenameFile={renameOrigin} />
         <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
           <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>
             <Typography variant="body2" color="secondary" m={0}>

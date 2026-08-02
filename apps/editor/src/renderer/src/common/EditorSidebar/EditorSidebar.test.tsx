@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { editorTheme } from '../../theme/editorTheme'
-import { NEW_GIST_PREFIX } from '../../../../shared/ipc'
+import { NEW_GIST_PREFIX, type GistOrigin } from '../../../../shared/ipc'
 import { EditorSidebar } from './EditorSidebar'
 
 const AVATAR = 'data:image/png;base64,AQID'
@@ -163,6 +163,33 @@ describe('EditorSidebar', () => {
       expect(gistsApi.list).not.toHaveBeenCalled()
     })
 
+    it('points the document at a file in it, so what is written can be saved', async () => {
+      renderSidebar()
+
+      // Once on the sandbox the app opened with, again on the one ＋ makes.
+      expect(onOpenFile).toHaveBeenCalledWith('', {
+        gistId: expect.stringContaining(NEW_GIST_PREFIX),
+        filename: 'en.md',
+      })
+
+      await userEvent.click(row('New gist'))
+
+      const [[, first], [, second]] = onOpenFile.mock.calls as [string, GistOrigin][]
+      expect(second.filename).toBe('en.md')
+      expect(second.gistId).not.toBe(first.gistId)
+    })
+
+    it('leaves a gist picked from the list to name its own file', async () => {
+      renderSidebar()
+      onOpenFile.mockClear()
+
+      await userEvent.click(row('Gists'))
+      await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
+
+      // There are files to choose from, so nothing is opened until one is picked.
+      expect(onOpenFile).not.toHaveBeenCalled()
+    })
+
     it('starts a fresh gist each time, rather than reopening the last one', async () => {
       gistsApi.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
       renderSidebar()
@@ -224,7 +251,7 @@ describe('EditorSidebar', () => {
       expect(await screen.findByRole('button', { name: 'notes.md' })).toBeInTheDocument()
     })
 
-    it('leaves the sandbox behind once the gist exists', async () => {
+    it('leaves the published sandbox behind and starts another', async () => {
       gistsApi.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
       gistsApi.draft.mockResolvedValue({
         success: true,
@@ -232,9 +259,17 @@ describe('EditorSidebar', () => {
       })
       renderSidebar()
       await userEvent.click(row('New gist'))
+      const [published] = gistsApi.files.mock.lastCall as [string]
+      onOpenFile.mockClear()
+
       await userEvent.click(await screen.findByRole('button', { name: 'Create gist' }))
 
-      expect(await screen.findByText('Select a gist to see its files.')).toBeInTheDocument()
+      // The gist it created is on GitHub now, so the panel moves on to an empty
+      // sandbox with an empty document, rather than sitting on a dead one.
+      expect(await screen.findByText('New gist')).toBeInTheDocument()
+      const [replacement] = gistsApi.files.mock.lastCall as [string]
+      expect(replacement).not.toBe(published)
+      expect(onOpenFile).toHaveBeenCalledWith('', { gistId: replacement, filename: 'en.md' })
     })
   })
 

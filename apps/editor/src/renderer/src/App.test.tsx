@@ -64,10 +64,19 @@ describe('App', () => {
     expect(screen.getByLabelText('Markdown source')).toHaveValue('')
   })
 
+  it('settles on the sandbox, so what is written can be published', async () => {
+    render(<App />)
+
+    // The rail opens on a gist that does not exist yet; the document belongs to
+    // a file in it, rather than to nothing.
+    expect(await screen.findByText('en.md')).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Save to sandbox' })).toBeInTheDocument()
+  })
+
   it('marks the title dirty while typing', async () => {
     render(<App />)
     await userEvent.type(screen.getByLabelText('Markdown source'), 'hi')
-    expect(screen.getByText(/Untitled\s*•/)).toBeInTheDocument()
+    expect(screen.getByText(/en\.md\s*•/)).toBeInTheDocument()
   })
 
   it('drives New/Open/Save/Save As through the menu actions', async () => {
@@ -83,10 +92,11 @@ describe('App', () => {
     expect(screen.getByText('C:\\notes.md')).toBeInTheDocument()
 
     await dispatchMenu('save')
-    expect(fileApi.save).toHaveBeenLastCalledWith('C:\\notes.md', '# notes')
+    expect(fileApi.save).toHaveBeenLastCalledWith('C:\\notes.md', '# notes', 'C:\\notes.md')
 
+    // Save As proposes the name it already has rather than an empty dialog.
     await dispatchMenu('save-as')
-    expect(fileApi.save).toHaveBeenLastCalledWith(null, '# notes')
+    expect(fileApi.save).toHaveBeenLastCalledWith(null, '# notes', 'C:\\notes.md')
 
     await dispatchMenu('new')
     expect(screen.getByLabelText('Markdown source')).toHaveValue('')
@@ -371,14 +381,22 @@ describe('App', () => {
   })
 
   it('offers a plain Save for a document that is not from a gist', async () => {
+    fileApi.open.mockResolvedValue({
+      success: true,
+      data: { filePath: 'C:\\notes.md', content: '# notes' },
+    })
     fileApi.save.mockResolvedValue({ success: true, data: { filePath: 'C:\\notes.md' } })
     render(<App />)
 
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
-    await userEvent.type(screen.getByLabelText('Markdown source'), 'hi')
+    // Opening from disk takes the document out of the sandbox it started in.
+    await dispatchMenu('open')
+    expect(await screen.findByRole('button', { name: 'Save' })).toBeDisabled()
 
+    await userEvent.type(screen.getByLabelText('Markdown source'), '!')
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-    expect(fileApi.save).toHaveBeenCalledWith(null, 'hi')
+
+    expect(fileApi.save).toHaveBeenCalledWith('C:\\notes.md', '# notes!', 'C:\\notes.md')
+    expect(gistsApi.stage).not.toHaveBeenCalled()
   })
 
   it('reopens a saved gist file with the staged content, not the published one', async () => {
@@ -462,7 +480,8 @@ describe('App', () => {
 
     await dispatchMenu('save-as')
 
-    expect(fileApi.save).toHaveBeenLastCalledWith(null, '# from a gist')
+    // The dialog opens on the gist's own filename, not on a blank one.
+    expect(fileApi.save).toHaveBeenLastCalledWith(null, '# from a gist', 'notes.md')
     expect(gistsApi.stage).not.toHaveBeenCalled()
   })
 

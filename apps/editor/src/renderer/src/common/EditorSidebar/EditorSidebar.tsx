@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Avatar } from '@soroush.tech/design-system/Avatar'
 import { Icon } from '@soroush.tech/design-system/Icon'
 import { Pressable } from '@soroush.tech/design-system/Pressable'
@@ -9,6 +9,7 @@ import { PlusMark } from '../../assets/PlusMark'
 import { useGitHubAuth } from '../../hooks/useGitHubAuth'
 import { DraftList } from '../DraftList'
 import { GistFiles } from '../GistFiles'
+import { DEFAULT_FILE } from '../GistFiles/const'
 import { GistList } from '../GistList'
 import { GitHubAuth } from '../GitHubAuth'
 import { SidebarPanelItem } from './SidebarPanelItem'
@@ -38,7 +39,8 @@ export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSideb
   // written straight away. An untouched one is never persisted, so starting
   // here leaves no draft behind unless something is actually put in it.
   const [selected, setSelected] = useState<PanelKey | null>('files')
-  const [gistId, setGistId] = useState<string | null>(newGistId)
+  const [startupSandbox] = useState(newGistId)
+  const [gistId, setGistId] = useState<string | null>(startupSandbox)
 
   const toggle = (key: PanelKey) => setSelected(selected === key ? null : key)
 
@@ -47,6 +49,23 @@ export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSideb
     setGistId(id)
     setSelected('files')
   }
+
+  /**
+   * A sandbox has no file to pick, so the document is pointed at one: saving
+   * then stages into the sandbox rather than writing to disk, and the file can
+   * be renamed once it is there.
+   */
+  const openSandbox = (id: string) => {
+    openGist(id)
+    onOpenFile('', { gistId: id, filename: DEFAULT_FILE })
+  }
+
+  // The sandbox the app opened on needs the same treatment — otherwise the
+  // document it starts with belongs to nothing and cannot be published. Both
+  // dependencies are stable, so this happens once.
+  useEffect(() => {
+    onOpenFile('', { gistId: startupSandbox, filename: DEFAULT_FILE })
+  }, [onOpenFile, startupSandbox])
 
   return (
     <Sidebar aria-label="Editor panels" isOpen={false} hasPanel panelWidth="20rem">
@@ -59,7 +78,7 @@ export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSideb
         p={2}
         aria-label="New gist"
         // A fresh id every time: pressing it never reopens the last one.
-        onClick={() => openGist(newGistId())}
+        onClick={() => openSandbox(newGistId())}
       >
         <PlusMark />
       </Pressable>
@@ -73,9 +92,11 @@ export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSideb
           gistId={gistId}
           onOpenFile={onOpenFile}
           onRenamed={onRenameFile}
-          // Once created, the sandbox is gone: the real gist is in the list now.
+          // Once created, the sandbox is gone — its draft with it, and the real
+          // gist is in the list now. A fresh one takes its place rather than an
+          // empty panel, so the next thing can be written straight away.
           onPublished={(published) => {
-            if (isNewGist(published)) setGistId(null)
+            if (isNewGist(published)) openSandbox(newGistId())
           }}
         />
       </SidebarPanelItem>

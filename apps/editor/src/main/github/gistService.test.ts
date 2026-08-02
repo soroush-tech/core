@@ -124,6 +124,17 @@ describe('gistService.stage', () => {
     })
   })
 
+  it('marks a file of a gist that does not exist yet as added, not modified', async () => {
+    // Nothing is published there, so calling the first save a modification
+    // would claim GitHub has a version of the file that it does not.
+    await expect(
+      service.stage('new:1', 'en.md', { status: 'modified', content: 'typed' })
+    ).resolves.toEqual({
+      success: true,
+      data: { files: { 'en.md': { status: 'added', content: 'typed' } } },
+    })
+  })
+
   it('clears a staged change when the entry is null', async () => {
     drafts.read.mockResolvedValue({ files: { 'notes.md': { status: 'deleted' } } })
 

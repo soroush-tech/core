@@ -12,6 +12,9 @@ const MARKDOWN_FILTERS = [{ name: 'Markdown', extensions: ['md', 'markdown'] }]
 /** The real filesystem, as one object rather than a default built per call. */
 const NODE_IO: FileIo = { readFile, writeFile }
 
+/** Last resort for a document that goes by no name at all. */
+const UNTITLED_FILE = 'untitled.md'
+
 function toErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
@@ -85,8 +88,17 @@ export function registerFileHandlers(
 
   ipcMain.handle(
     FILE_CHANNELS.save,
-    async (_event, filePath: unknown, content: unknown): Promise<Result<SavedFile | null>> => {
-      if (typeof content !== 'string' || (filePath !== null && typeof filePath !== 'string')) {
+    async (
+      _event,
+      filePath: unknown,
+      content: unknown,
+      suggested: unknown
+    ): Promise<Result<SavedFile | null>> => {
+      if (
+        typeof content !== 'string' ||
+        (filePath !== null && typeof filePath !== 'string') ||
+        (suggested != null && typeof suggested !== 'string')
+      ) {
         return { success: false, error: 'Invalid save arguments' }
       }
       // Writing anywhere else would mean the renderer, not the user, chose
@@ -100,7 +112,9 @@ export function registerFileHandlers(
         if (target === null) {
           const { canceled, filePath: chosen } = await dialog.showSaveDialog(getWindow(), {
             filters: MARKDOWN_FILTERS,
-            defaultPath: 'untitled.md',
+            // The document's own name, so Save As proposes it rather than
+            // making it be typed again.
+            defaultPath: suggested ?? UNTITLED_FILE,
           })
           if (canceled || !chosen) return { success: true, data: null }
           chosenPaths.add(chosen)
