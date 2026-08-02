@@ -1,4 +1,10 @@
-import { CLAUDE_CHANNELS, FILE_CHANNELS, GITHUB_CHANNELS, MENU_CHANNELS } from '../shared/ipc'
+import {
+  CLAUDE_CHANNELS,
+  FILE_CHANNELS,
+  GIST_CHANNELS,
+  GITHUB_CHANNELS,
+  MENU_CHANNELS,
+} from '../shared/ipc'
 import type { EditorAPI } from './index'
 
 const { exposeInMainWorld, invoke, on, removeListener } = vi.hoisted(() => ({
@@ -30,8 +36,8 @@ describe('preload editorAPI', () => {
     await api.file.save('C:\\notes.md', 'body')
     expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.save, 'C:\\notes.md', 'body')
 
-    await api.file.setDirty(true)
-    expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.setDirty, true)
+    await api.file.setDirty(true, false)
+    expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.setDirty, true, false)
 
     await api.file.confirmDiscard()
     expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.confirmDiscard)
@@ -53,6 +59,33 @@ describe('preload editorAPI', () => {
     // No URL argument — the browser target is main's constant, not the renderer's.
     await api.github.openTokenSettings()
     expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.openTokenSettings)
+
+    // No token argument either — main reads the stored one.
+    await api.gists.list()
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.list)
+
+    await api.gists.files('abc123')
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.files, 'abc123')
+
+    await api.gists.draft('abc123')
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.draft, 'abc123')
+
+    const entry = { status: 'modified', content: 'edited' } as const
+    await api.gists.stage('abc123', 'notes.md', entry)
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.stage, 'abc123', 'notes.md', entry)
+
+    await api.gists.stageDescription('abc123', 'A better one')
+    expect(invoke).toHaveBeenLastCalledWith(
+      GIST_CHANNELS.stageDescription,
+      'abc123',
+      'A better one'
+    )
+
+    await api.gists.reset('abc123')
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.reset, 'abc123')
+
+    await api.gists.publish('abc123')
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.publish, 'abc123')
   })
 
   it('relays menu actions to the subscriber until unsubscribed', () => {
@@ -70,5 +103,23 @@ describe('preload editorAPI', () => {
 
     unsubscribe()
     expect(removeListener).toHaveBeenCalledWith(MENU_CHANNELS.action, handler)
+  })
+
+  it('relays gist draft changes to the subscriber until unsubscribed', () => {
+    const callback = vi.fn()
+    const unsubscribe = api.gists.onDraftChanged(callback)
+
+    const [channel, handler] = on.mock.lastCall as [
+      string,
+      (event: unknown, change: unknown) => void,
+    ]
+    expect(channel).toBe(GIST_CHANNELS.draftChanged)
+
+    const change = { gistId: 'abc123', draft: {} }
+    handler({}, change)
+    expect(callback).toHaveBeenCalledWith(change)
+
+    unsubscribe()
+    expect(removeListener).toHaveBeenCalledWith(GIST_CHANNELS.draftChanged, handler)
   })
 })

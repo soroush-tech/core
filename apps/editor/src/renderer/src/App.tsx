@@ -1,20 +1,26 @@
+import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
-import { Sidebar } from '@soroush.tech/design-system/Sidebar'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { useEffect, useState } from 'react'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
-import { GitHubAuth } from './common/GitHubAuth'
+import { EditorSidebar } from './common/EditorSidebar'
 import { useDocument } from './hooks/useDocument'
 import { useUndoRedo } from './hooks/useUndoRedo'
+import { useWindowTitle } from './hooks/useWindowTitle'
 import { editorTheme } from './theme/editorTheme'
 import { GlobalStyles } from './theme/GlobalStyles'
 
 export function App() {
-  const { content, filePath, isDirty, error, change, newDocument, open, save } = useDocument()
+  const { content, filePath, origin, isDirty, error, change, newDocument, open, load, save } =
+    useDocument()
   const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
+
+  // A gist file has no path on disk, so it is named by its filename instead.
+  const documentName = origin?.filename ?? filePath ?? 'Untitled'
+  useWindowTitle(documentName, isDirty)
 
   // A different file on disk means a different document — its history starts fresh.
   useEffect(() => reset(), [filePath, reset])
@@ -27,6 +33,7 @@ export function App() {
           new: () => void newDocument(),
           open: () => void open(),
           save: () => void save(),
+          // Save As always means a file on disk, gist origin or not.
           'save-as': () => void save(true),
           undo,
           redo,
@@ -53,16 +60,31 @@ export function App() {
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
       <Flex flexDirection="row" height="100vh">
-        {/* Icons-only rail: the panel column opens independently of `isOpen`,
-            so there is no label state to carry for a single-item rail. */}
-        <Sidebar aria-label="Editor panels" isOpen={false} hasPanel panelWidth="20rem">
-          <GitHubAuth />
-        </Sidebar>
+        {/* A gist file is a new document, so its history starts fresh — the
+            filePath-keyed reset above cannot see it (filePath stays null). */}
+        <EditorSidebar
+          onOpenFile={(fileContent, fileOrigin) =>
+            void load(fileContent, fileOrigin).then((loaded) => loaded && reset())
+          }
+        />
         <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
-          <Typography variant="body2" color="secondary" m={0}>
-            {filePath ?? 'Untitled'}
-            {isDirty ? ' •' : ''}
-          </Typography>
+          <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Typography variant="body2" color="secondary" m={0}>
+              {documentName}
+              {isDirty ? ' •' : ''}
+            </Typography>
+            {/* Ctrl+S does this too, but a gist file has to be saved before it
+                can be published, so the step needs to be visible. */}
+            <Button
+              type="button"
+              variant="outlined"
+              size="sm"
+              disabled={!isDirty}
+              onClick={() => void save()}
+            >
+              {origin ? 'Save to sandbox' : 'Save'}
+            </Button>
+          </Flex>
           {error && (
             <Typography role="alert" color="error" m={0}>
               {error}

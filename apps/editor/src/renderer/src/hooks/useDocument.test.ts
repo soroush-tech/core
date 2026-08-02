@@ -8,25 +8,28 @@ const fileApi = {
   confirmDiscard: vi.fn(),
 }
 
-vi.stubGlobal('editorAPI', { file: fileApi })
+const gistsApi = { stage: vi.fn() }
+
+vi.stubGlobal('editorAPI', { file: fileApi, gists: gistsApi })
 
 beforeEach(() => {
   vi.clearAllMocks()
   fileApi.setDirty.mockResolvedValue({ success: true, data: null })
+  gistsApi.stage.mockResolvedValue({ success: true, data: {} })
 })
 
 describe('useDocument', () => {
   it('starts with an empty, clean document and mirrors dirty state to main', async () => {
     const { result } = renderHook(() => useDocument())
     expect(result.current).toMatchObject({ content: '', filePath: null, isDirty: false })
-    await waitFor(() => expect(fileApi.setDirty).toHaveBeenCalledWith(false))
+    await waitFor(() => expect(fileApi.setDirty).toHaveBeenCalledWith(false, false))
   })
 
   it('marks the document dirty on change', async () => {
     const { result } = renderHook(() => useDocument())
     act(() => result.current.change('# hello'))
     expect(result.current).toMatchObject({ content: '# hello', isDirty: true })
-    await waitFor(() => expect(fileApi.setDirty).toHaveBeenCalledWith(true))
+    await waitFor(() => expect(fileApi.setDirty).toHaveBeenCalledWith(true, false))
   })
 
   it('resets on newDocument without prompting when clean', async () => {
@@ -36,8 +39,9 @@ describe('useDocument', () => {
     expect(result.current.content).toBe('')
   })
 
-  it('keeps the document when a dirty newDocument is not confirmed', async () => {
-    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: false })
+  it('keeps the document when the offered save cannot be completed', async () => {
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'save' })
+    fileApi.save.mockResolvedValue({ success: true, data: null })
     const { result } = renderHook(() => useDocument())
     act(() => result.current.change('draft'))
     await act(() => result.current.newDocument())
@@ -45,11 +49,84 @@ describe('useDocument', () => {
   })
 
   it('discards a dirty document when confirmed', async () => {
-    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: true })
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'discard' })
     const { result } = renderHook(() => useDocument())
     act(() => result.current.change('draft'))
     await act(() => result.current.newDocument())
     expect(result.current).toMatchObject({ content: '', isDirty: false })
+  })
+
+  it('saves first when the prompt offers it, then replaces the document', async () => {
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'save' })
+    fileApi.save.mockResolvedValue({ success: true, data: { filePath: 'C:\\draft.md' } })
+    const { result } = renderHook(() => useDocument())
+    act(() => result.current.change('draft'))
+
+    await act(() => result.current.newDocument())
+
+    expect(fileApi.save).toHaveBeenCalledWith(null, 'draft')
+    expect(result.current).toMatchObject({ content: '', isDirty: false })
+  })
+
+  it('keeps the document when the offered save does not happen', async () => {
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'save' })
+    // A cancelled Save As dialog: nothing was written, so nothing may be lost.
+    fileApi.save.mockResolvedValue({ success: true, data: null })
+    const { result } = renderHook(() => useDocument())
+    act(() => result.current.change('draft'))
+
+    await act(() => result.current.newDocument())
+
+    expect(result.current).toMatchObject({ content: 'draft', isDirty: true })
+  })
+
+  it('keeps the document when the prompt itself fails', async () => {
+    fileApi.confirmDiscard.mockResolvedValue({ success: false, error: 'no window' })
+    const { result } = renderHook(() => useDocument())
+    act(() => result.current.change('draft'))
+
+    await act(() => result.current.newDocument())
+    expect(result.current.content).toBe('draft')
+  })
+
+  it('stages a gist-backed document instead of writing it to disk', async () => {
+    gistsApi.stage.mockResolvedValue({ success: true, data: {} })
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    await act(() => result.current.save())
+
+    expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'notes.md', {
+      status: 'modified',
+      content: '# edited',
+    })
+    expect(fileApi.save).not.toHaveBeenCalled()
+    expect(result.current.isDirty).toBe(false)
+  })
+
+  it('keeps a gist-backed document dirty when staging fails', async () => {
+    gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    await act(() => result.current.save())
+
+    expect(result.current).toMatchObject({ isDirty: true, error: 'EACCES' })
+  })
+
+  it('writes a gist-backed document to disk on Save As', async () => {
+    fileApi.save.mockResolvedValue({ success: true, data: { filePath: 'C:\\notes.md' } })
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    await act(() => result.current.save(true))
+
+    expect(fileApi.save).toHaveBeenCalledWith(null, '# notes')
+    expect(gistsApi.stage).not.toHaveBeenCalled()
+    // It now belongs to that file, not to the gist.
+    expect(result.current).toMatchObject({ filePath: 'C:\\notes.md', origin: null })
   })
 
   it('opens a file and replaces the document', async () => {
@@ -82,8 +159,8 @@ describe('useDocument', () => {
     expect(result.current.error).toBeNull()
   })
 
-  it('does not open over unsaved changes when the prompt is declined', async () => {
-    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: false })
+  it('does not open over unsaved changes the user could not keep', async () => {
+    fileApi.confirmDiscard.mockResolvedValue({ success: false, error: 'no window' })
     const { result } = renderHook(() => useDocument())
     act(() => result.current.change('draft'))
     await act(() => result.current.open())

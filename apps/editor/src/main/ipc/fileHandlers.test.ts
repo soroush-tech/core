@@ -116,20 +116,27 @@ describe('registerFileHandlers', () => {
   })
 
   describe(FILE_CHANNELS.confirmDiscard, () => {
-    it('resolves true when the user discards', async () => {
-      showMessageBox.mockResolvedValue({ response: 0 })
+    it.each([
+      [0, 'save'],
+      [1, 'discard'],
+    ])('resolves the choice behind button %i', async (response, choice) => {
+      showMessageBox.mockResolvedValue({ response })
       await expect(invoke(FILE_CHANNELS.confirmDiscard)).resolves.toEqual({
         success: true,
-        data: true,
+        data: choice,
       })
     })
 
-    it('resolves false when the user cancels', async () => {
+    it('labels the prompt from the dirty state the renderer last mirrored', async () => {
       showMessageBox.mockResolvedValue({ response: 1 })
-      await expect(invoke(FILE_CHANNELS.confirmDiscard)).resolves.toEqual({
-        success: true,
-        data: false,
-      })
+
+      await invoke(FILE_CHANNELS.setDirty, true, true)
+      await invoke(FILE_CHANNELS.confirmDiscard)
+
+      expect(showMessageBox).toHaveBeenCalledWith(
+        window,
+        expect.objectContaining({ buttons: ['Save as draft', 'Discard changes'] })
+      )
     })
 
     it('wraps dialog failures as an error string', async () => {
@@ -143,19 +150,49 @@ describe('registerFileHandlers', () => {
 })
 
 describe('confirmDiscard', () => {
-  it('passes the owning window to the message box', async () => {
+  it.each([
+    [0, 'save'],
+    [1, 'discard'],
+  ])('maps button %i to %s', async (response, choice) => {
+    showMessageBox.mockResolvedValue({ response })
+    await expect(confirmDiscard(window, false)).resolves.toBe(choice)
+  })
+
+  it('names keeping a gist file what it is — a draft', async () => {
     showMessageBox.mockResolvedValue({ response: 0 })
-    await expect(confirmDiscard(window)).resolves.toBe(true)
+    await confirmDiscard(window, true)
+
     expect(showMessageBox).toHaveBeenCalledWith(
       window,
-      expect.objectContaining({ type: 'warning' })
+      expect.objectContaining({
+        type: 'warning',
+        buttons: ['Save as draft', 'Discard changes'],
+        defaultId: 0,
+        // Escape keeps the work: dismissing the prompt must never lose it.
+        cancelId: 0,
+      })
     )
+  })
+
+  it('offers a plain Save for a document that is not from a gist', async () => {
+    showMessageBox.mockResolvedValue({ response: 0 })
+    await confirmDiscard(window, false)
+
+    expect(showMessageBox).toHaveBeenCalledWith(
+      window,
+      expect.objectContaining({ buttons: ['Save', 'Discard changes'] })
+    )
+  })
+
+  it.each([[-1], [99]])('keeps the work for an unrecognised reply (%i)', async (response) => {
+    showMessageBox.mockResolvedValue({ response })
+    await expect(confirmDiscard(window, true)).resolves.toBe('save')
   })
 })
 
 // Last in the file: re-registers the channels with the real-fs default io.
 describe('registerFileHandlers with default io', () => {
   it('falls back to the real fs bindings', () => {
-    expect(registerFileHandlers(() => window)).toEqual({ isDirty: false })
+    expect(registerFileHandlers(() => window)).toEqual({ isDirty: false, isDraft: false })
   })
 })

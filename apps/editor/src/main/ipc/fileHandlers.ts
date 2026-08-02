@@ -1,6 +1,12 @@
 import { dialog, ipcMain, type BrowserWindow } from 'electron'
 import { readFile, writeFile } from 'node:fs/promises'
-import { FILE_CHANNELS, type OpenedFile, type Result, type SavedFile } from '../../shared/ipc'
+import {
+  FILE_CHANNELS,
+  type OpenedFile,
+  type Result,
+  type SavedFile,
+  type UnsavedChoice,
+} from '../../shared/ipc'
 
 const MARKDOWN_FILTERS = [{ name: 'Markdown', extensions: ['md', 'markdown'] }]
 
@@ -8,21 +14,34 @@ function toErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
 
-/** Asks the user whether to discard unsaved changes. Also used by the window close intercept. */
-export async function confirmDiscard(window: BrowserWindow): Promise<boolean> {
+/**
+ * Asks what to do about unsaved changes. Also used by the window close
+ * intercept.
+ *
+ * Keeping the work is the default *and* the Escape action, so no accidental
+ * dismissal loses anything. `isDraft` names it honestly: a gist file is kept
+ * by staging it in the sandbox, where it waits with the other changes until
+ * they are published together.
+ */
+export async function confirmDiscard(
+  window: BrowserWindow,
+  isDraft: boolean
+): Promise<UnsavedChoice> {
   const { response } = await dialog.showMessageBox(window, {
     type: 'warning',
-    buttons: ['Discard changes', 'Cancel'],
-    defaultId: 1,
-    cancelId: 1,
-    message: 'You have unsaved changes. Discard them?',
+    buttons: [isDraft ? 'Save as draft' : 'Save', 'Discard changes'],
+    defaultId: 0,
+    cancelId: 0,
+    message: 'This document has unsaved changes.',
   })
-  return response === 0
+  return response === 1 ? 'discard' : 'save'
 }
 
 export interface FileHandlerState {
   /** Mirrors the renderer's dirty flag so the close intercept can prompt. */
   isDirty: boolean
+  /** Whether the open document belongs to a gist, so the prompt can name the draft. */
+  isDraft: boolean
 }
 
 /** Disk access used by the handlers — injectable so they stay unit-testable. */
@@ -39,7 +58,7 @@ export function registerFileHandlers(
   getWindow: () => BrowserWindow,
   io: FileIo = { readFile, writeFile }
 ): FileHandlerState {
-  const state: FileHandlerState = { isDirty: false }
+  const state: FileHandlerState = { isDirty: false, isDraft: false }
 
   ipcMain.handle(FILE_CHANNELS.open, async (): Promise<Result<OpenedFile | null>> => {
     try {
@@ -80,14 +99,18 @@ export function registerFileHandlers(
     }
   )
 
-  ipcMain.handle(FILE_CHANNELS.setDirty, (_event, isDirty: unknown): Result<null> => {
-    state.isDirty = isDirty === true
-    return { success: true, data: null }
-  })
+  ipcMain.handle(
+    FILE_CHANNELS.setDirty,
+    (_event, isDirty: unknown, isDraft: unknown): Result<null> => {
+      state.isDirty = isDirty === true
+      state.isDraft = isDraft === true
+      return { success: true, data: null }
+    }
+  )
 
-  ipcMain.handle(FILE_CHANNELS.confirmDiscard, async (): Promise<Result<boolean>> => {
+  ipcMain.handle(FILE_CHANNELS.confirmDiscard, async (): Promise<Result<UnsavedChoice>> => {
     try {
-      return { success: true, data: await confirmDiscard(getWindow()) }
+      return { success: true, data: await confirmDiscard(getWindow(), state.isDraft) }
     } catch (error) {
       return { success: false, error: toErrorMessage(error) }
     }

@@ -5,10 +5,13 @@ import { app, BrowserWindow, session } from 'electron'
 import { editSelection } from './claude/editSelection'
 import { buildCspResponseHeaders } from './csp'
 import { createAuthService } from './github/authService'
-import { CREDENTIALS_FILE } from './github/const'
+import { CREDENTIALS_FILE, DRAFTS_FILE } from './github/const'
 import { createCredentialStore } from './github/credentialStore'
+import { createDraftStore } from './github/draftStore'
+import { createGistService } from './github/gistService'
 import { registerClaudeHandlers } from './ipc/claudeHandlers'
 import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
+import { registerGistHandlers } from './ipc/gistHandlers'
 import { registerGitHubHandlers } from './ipc/githubHandlers'
 import { installApplicationMenu } from './menu'
 import { MENU_CHANNELS } from '../shared/ipc'
@@ -50,15 +53,23 @@ export function bootstrap(spawnFn: typeof spawn): void {
     const fileState = registerFileHandlers(() => mainWindow!)
     registerClaudeHandlers((request) => editSelection(request, spawnFn))
 
-    registerGitHubHandlers(
-      createAuthService({
+    // One store for both services, so signing out immediately empties the gists.
+    const credentialStore = createCredentialStore(join(app.getPath('userData'), CREDENTIALS_FILE), {
+      readFile,
+      writeFile,
+      rm,
+    })
+    registerGitHubHandlers(createAuthService({ fetchFn: fetch, store: credentialStore }))
+    registerGistHandlers(
+      createGistService({
         fetchFn: fetch,
-        store: createCredentialStore(join(app.getPath('userData'), CREDENTIALS_FILE), {
+        store: credentialStore,
+        drafts: createDraftStore(join(app.getPath('userData'), DRAFTS_FILE), {
           readFile,
           writeFile,
-          rm,
         }),
-      })
+      }),
+      () => mainWindow!
     )
 
     // Closing with unsaved changes prompts before the window is destroyed.
@@ -66,8 +77,12 @@ export function bootstrap(spawnFn: typeof spawn): void {
       window.on('close', (event) => {
         if (!fileState.isDirty) return
         event.preventDefault()
-        void confirmDiscard(window).then((discard) => {
-          if (discard) window.destroy()
+        void confirmDiscard(window, fileState.isDraft).then((choice) => {
+          if (choice === 'discard') return window.destroy()
+          // Only the renderer can save — it owns the content and knows where the
+          // document belongs. Saving leaves the window open; closing again then
+          // goes straight through, with nothing unsaved.
+          window.webContents.send(MENU_CHANNELS.action, 'save')
         })
       })
     })

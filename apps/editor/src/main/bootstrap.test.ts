@@ -1,10 +1,13 @@
 import type { spawn } from 'node:child_process'
 import { MENU_CHANNELS } from '../shared/ipc'
 import { editSelection } from './claude/editSelection'
+import { createAuthService } from './github/authService'
 import { CREDENTIALS_FILE } from './github/const'
 import { createCredentialStore } from './github/credentialStore'
+import { createGistService } from './github/gistService'
 import { registerClaudeHandlers } from './ipc/claudeHandlers'
 import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
+import { registerGistHandlers } from './ipc/gistHandlers'
 import { registerGitHubHandlers } from './ipc/githubHandlers'
 import { installApplicationMenu } from './menu'
 
@@ -50,7 +53,9 @@ vi.mock('electron', () => ({
 vi.mock('./claude/editSelection', () => ({ editSelection: vi.fn() }))
 vi.mock('./github/authService', () => ({ createAuthService: vi.fn() }))
 vi.mock('./github/credentialStore', () => ({ createCredentialStore: vi.fn() }))
+vi.mock('./github/gistService', () => ({ createGistService: vi.fn() }))
 vi.mock('./ipc/githubHandlers', () => ({ registerGitHubHandlers: vi.fn() }))
+vi.mock('./ipc/gistHandlers', () => ({ registerGistHandlers: vi.fn() }))
 vi.mock('./menu', () => ({ installApplicationMenu: vi.fn() }))
 vi.mock('./ipc/claudeHandlers', () => ({ registerClaudeHandlers: vi.fn() }))
 vi.mock('./ipc/fileHandlers', () => ({
@@ -80,6 +85,7 @@ const interceptWindow = () => {
       closeHandler = handler
     },
     destroy: vi.fn(),
+    webContents: { send: vi.fn() },
   }
   appEvents.get('browser-window-created')!(...([{}, window] as never[]))
   const closeEvent = { preventDefault: vi.fn() }
@@ -97,7 +103,7 @@ describe('bootstrap', () => {
     appEvents.clear()
     FakeBrowserWindow.created.length = 0
     FakeBrowserWindow.getAllWindows.mockReturnValue([])
-    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: false })
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: false, isDraft: false })
   })
 
   afterAll(() => {
@@ -185,6 +191,22 @@ describe('bootstrap', () => {
     expect(registerGitHubHandlers).toHaveBeenCalled()
   })
 
+  it('hands the current window to the gist handlers, for the delete prompt', async () => {
+    await start()
+    const [, getWindow] = vi.mocked(registerGistHandlers).mock.calls[0]
+    expect(getWindow()).toBe(FakeBrowserWindow.created[0])
+  })
+
+  it('gives the auth and gist services the same credential store', async () => {
+    vi.mocked(createCredentialStore).mockReturnValue('store' as never)
+    await start()
+
+    expect(createCredentialStore).toHaveBeenCalledTimes(1)
+    expect(vi.mocked(createAuthService).mock.calls[0][0].store).toBe('store')
+    expect(vi.mocked(createGistService).mock.calls[0][0].store).toBe('store')
+    expect(registerGistHandlers).toHaveBeenCalled()
+  })
+
   it('lets a clean window close through', async () => {
     await start()
     const { close, closeEvent, window } = interceptWindow()
@@ -194,8 +216,8 @@ describe('bootstrap', () => {
   })
 
   it('destroys a dirty window once the user discards', async () => {
-    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true })
-    vi.mocked(confirmDiscard).mockResolvedValue(true)
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockResolvedValue('discard')
     await start()
     const { close, closeEvent, window } = interceptWindow()
     close()
@@ -204,13 +226,27 @@ describe('bootstrap', () => {
     expect(window.destroy).toHaveBeenCalled()
   })
 
-  it('keeps a dirty window open when the user cancels', async () => {
-    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true })
-    vi.mocked(confirmDiscard).mockResolvedValue(false)
+  it('labels the close prompt as a draft when the document belongs to a gist', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: true })
+    vi.mocked(confirmDiscard).mockResolvedValue('discard')
+    await start()
+    const { close } = interceptWindow()
+    close()
+    await flushWhenReady()
+
+    expect(confirmDiscard).toHaveBeenCalledWith(expect.anything(), true)
+  })
+
+  it('asks the renderer to save, and keeps the window, when the work is kept', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockResolvedValue('save')
     await start()
     const { close, window } = interceptWindow()
     close()
     await flushWhenReady()
+
+    // Only the renderer can save; closing again then goes straight through.
+    expect(window.webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
     expect(window.destroy).not.toHaveBeenCalled()
   })
 
