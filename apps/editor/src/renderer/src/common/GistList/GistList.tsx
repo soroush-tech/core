@@ -6,6 +6,7 @@ import { Pressable } from '@soroush.tech/design-system/Pressable'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import type { GistSummary } from '../../../../shared/ipc'
 import { useGists } from '../../hooks/useGists'
+import { startGistDrag } from '../../utils/gistDrag'
 import { GISTS_PER_PAGE } from './const'
 
 export interface GistListProps {
@@ -52,6 +53,9 @@ export function GistList({ selectedId, onSelect }: Readonly<GistListProps>) {
           p={1}
           aria-pressed={gist.id === selectedId}
           onClick={() => onSelect(gist)}
+          // Draggable onto the Claude panel, to write from what is in it.
+          draggable
+          onDragStart={(event) => startGistDrag(event.dataTransfer, gist.id)}
         >
           <Flex flexDirection="column">
             {gist.description && (

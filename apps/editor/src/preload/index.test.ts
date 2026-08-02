@@ -45,8 +45,19 @@ describe('preload editorAPI', () => {
     await api.file.confirmDiscard()
     expect(invoke).toHaveBeenLastCalledWith(FILE_CHANNELS.confirmDiscard)
 
-    await api.claude.editSelection('old', 'improve')
-    expect(invoke).toHaveBeenLastCalledWith(CLAUDE_CHANNELS.editSelection, 'old', 'improve')
+    await api.claude.startEdit('old', 'improve')
+    expect(invoke).toHaveBeenLastCalledWith(CLAUDE_CHANNELS.startEdit, 'old', 'improve', null)
+
+    await api.claude.startEdit('old', 'improve', '# Rehydration')
+    expect(invoke).toHaveBeenLastCalledWith(
+      CLAUDE_CHANNELS.startEdit,
+      'old',
+      'improve',
+      '# Rehydration'
+    )
+
+    await api.claude.cancel('run-1')
+    expect(invoke).toHaveBeenLastCalledWith(CLAUDE_CHANNELS.cancel, 'run-1')
   })
 
   it('maps each GitHub method to its channel', async () => {
@@ -127,5 +138,23 @@ describe('preload editorAPI', () => {
 
     unsubscribe()
     expect(removeListener).toHaveBeenCalledWith(GIST_CHANNELS.draftChanged, handler)
+  })
+
+  it('relays Claude run events to the subscriber until unsubscribed', () => {
+    const callback = vi.fn()
+    const unsubscribe = api.claude.onEvent(callback)
+
+    const [channel, handler] = on.mock.lastCall as [
+      string,
+      (event: unknown, claudeEvent: unknown) => void,
+    ]
+    expect(channel).toBe(CLAUDE_CHANNELS.event)
+
+    const claudeEvent = { type: 'RUN_STARTED', runId: 'run-1' }
+    handler({}, claudeEvent)
+    expect(callback).toHaveBeenCalledWith(claudeEvent)
+
+    unsubscribe()
+    expect(removeListener).toHaveBeenCalledWith(CLAUDE_CHANNELS.event, handler)
   })
 })

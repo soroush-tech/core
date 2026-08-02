@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { MenuAction } from '../../shared/ipc'
+import type { ClaudeEvent, MenuAction } from '../../shared/ipc'
 import { App } from './App'
 
 const fileApi = {
@@ -9,7 +9,23 @@ const fileApi = {
   setDirty: vi.fn().mockResolvedValue({ success: true, data: null }),
   confirmDiscard: vi.fn(),
 }
-const claudeApi = { editSelection: vi.fn() }
+let claudeListener: ((event: ClaudeEvent) => void) | undefined
+const claudeApi = {
+  startEdit: vi.fn(),
+  cancel: vi.fn(),
+  onEvent: vi.fn((callback: (event: ClaudeEvent) => void) => {
+    claudeListener = callback
+    return vi.fn()
+  }),
+}
+
+/** Ends the run in flight the way main would, with its answer. */
+const finishRun = (text: string) =>
+  act(() => claudeListener!({ type: 'RUN_FINISHED', runId: 'run-1', text }))
+
+/** Sends part of an answer, as the CLI does while it writes. */
+const streamDelta = (delta: string) =>
+  act(() => claudeListener!({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta }))
 
 let menuListener: ((action: MenuAction) => void) | undefined
 const menuApi = {
@@ -51,6 +67,8 @@ const dispatchMenu = (action: MenuAction) => act(async () => menuListener!(actio
 
 beforeEach(() => {
   vi.clearAllMocks()
+  claudeApi.startEdit.mockResolvedValue({ success: true, data: 'run-1' })
+  claudeApi.cancel.mockResolvedValue({ success: true, data: null })
   fileApi.setDirty.mockResolvedValue({ success: true, data: null })
   githubApi.status.mockResolvedValue({ success: true, data: { login: null, avatar: null } })
   gistsApi.draft.mockResolvedValue({ success: true, data: { files: {} } })
@@ -115,7 +133,6 @@ describe('App', () => {
   })
 
   it('replaces the selection with a Claude rewrite', async () => {
-    claudeApi.editSelection.mockResolvedValue({ success: true, data: 'HELLO' })
     render(<App />)
     const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
     await userEvent.type(source, 'hello world')
@@ -126,37 +143,34 @@ describe('App', () => {
 
     await userEvent.type(screen.getByLabelText('Edit instruction'), 'shout it')
     await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+    expect(claudeApi.startEdit).toHaveBeenCalledWith('hello', 'shout it', null)
 
-    expect(claudeApi.editSelection).toHaveBeenCalledWith('hello', 'shout it')
+    // The document itself shows the answer being written, over the selection.
+    await streamDelta('HEL')
+    expect(source).toHaveValue('HEL world')
+    await streamDelta('LO')
+    expect(source).toHaveValue('HELLO world')
+
+    await finishRun('HELLO')
     await waitFor(() => expect(source).toHaveValue('HELLO world'))
   })
 
-  it('rewrites only what was selected, even if the selection went away meanwhile', async () => {
-    let answer!: (value: unknown) => void
-    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
+  it('puts the document back when a run is cancelled mid-write', async () => {
     render(<App />)
     const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
     await userEvent.type(source, 'hello world')
 
-    source.setSelectionRange(0, 5)
-    fireEvent.select(source)
-    await userEvent.type(screen.getByLabelText('Edit instruction'), 'shout it')
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'rewrite it')
     await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+    await streamDelta('half an ans')
+    expect(source).toHaveValue('half an ans')
 
-    // Clicking into the document while Claude works collapses the selection.
-    source.setSelectionRange(11, 11)
-    fireEvent.select(source)
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    await act(async () => answer({ success: true, data: 'HELLO' }))
-
-    // The answer was about those five characters, so it replaces those — not
-    // the whole document.
-    await waitFor(() => expect(source).toHaveValue('HELLO world'))
+    await waitFor(() => expect(source).toHaveValue('hello world'))
   })
 
   it('drops the answer when the selected text is no longer where it was', async () => {
-    let answer!: (value: unknown) => void
-    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
     render(<App />)
     const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
     await userEvent.type(source, 'hello world')
@@ -169,9 +183,9 @@ describe('App', () => {
     // The document moves on while Claude works, so those five characters are
     // not the ones it was asked about any more.
     fireEvent.change(source, { target: { value: 'a different document' } })
-    await act(async () => answer({ success: true, data: 'HELLO' }))
+    await finishRun('HELLO')
 
-    // Splicing the answer in at that range would have mangled what is there now.
+    // Writing the answer in at that range would have mangled what is there now.
     expect(source).toHaveValue('a different document')
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'The document changed while Claude was working — the edit was not applied.'
@@ -179,8 +193,6 @@ describe('App', () => {
   })
 
   it('drops a whole-document answer when the document changed meanwhile', async () => {
-    let answer!: (value: unknown) => void
-    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
     render(<App />)
     const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
     await userEvent.type(source, 'hello')
@@ -189,7 +201,7 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
 
     fireEvent.change(source, { target: { value: 'hello, and more since' } })
-    await act(async () => answer({ success: true, data: 'rewritten doc' }))
+    await finishRun('rewritten doc')
 
     // Claude was given the document as it was; replacing the newer one with
     // that answer would throw the difference away.
@@ -200,8 +212,6 @@ describe('App', () => {
   })
 
   it('drops the answer when another document holding the same text took over', async () => {
-    let answer!: (value: unknown) => void
-    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
     fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'discard' })
     fileApi.open.mockResolvedValue({
       success: true,
@@ -217,7 +227,7 @@ describe('App', () => {
     // Another file is opened while Claude works, and it happens to hold the
     // same text — which is not the same as being the document it was asked about.
     await dispatchMenu('open')
-    await act(async () => answer({ success: true, data: 'HELLO' }))
+    await finishRun('HELLO')
 
     expect(source).toHaveValue('hello')
     expect(await screen.findByRole('alert')).toHaveTextContent(
@@ -226,29 +236,30 @@ describe('App', () => {
   })
 
   it('writes a whole document from an instruction when nothing is selected', async () => {
-    claudeApi.editSelection.mockResolvedValue({ success: true, data: '# An article' })
     render(<App />)
-    expect(screen.getByText('No selection — Claude edits the whole document.')).toBeInTheDocument()
+    // The whole document is the target, and the panel names which one.
+    expect(screen.getByText('Untitled · empty')).toBeInTheDocument()
 
     await userEvent.type(screen.getByLabelText('Edit instruction'), 'write an article')
     await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+    expect(claudeApi.startEdit).toHaveBeenCalledWith('', 'write an article', null)
 
-    expect(claudeApi.editSelection).toHaveBeenCalledWith('', 'write an article')
+    await finishRun('# An article')
     await waitFor(() =>
       expect(screen.getByLabelText('Markdown source')).toHaveValue('# An article')
     )
   })
 
   it('rewrites the whole document when the caret is placed without a selection', async () => {
-    claudeApi.editSelection.mockResolvedValue({ success: true, data: 'rewritten doc' })
     render(<App />)
     const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
     await userEvent.type(source, 'hello world')
 
     await userEvent.type(screen.getByLabelText('Edit instruction'), 'rewrite it')
     await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+    expect(claudeApi.startEdit).toHaveBeenCalledWith('hello world', 'rewrite it', null)
 
-    expect(claudeApi.editSelection).toHaveBeenCalledWith('hello world', 'rewrite it')
+    await finishRun('rewritten doc')
     await waitFor(() => expect(source).toHaveValue('rewritten doc'))
   })
 

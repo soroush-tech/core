@@ -1,6 +1,14 @@
 import { randomUUID } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
+import { delimiter, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { test as base } from '@playwright/test'
 import { _electron as electron, type ElectronApplication } from 'playwright'
@@ -38,6 +46,39 @@ const harvestMainCoverage = (coverageDir: string): void => {
   if (entries.length) writeRawDump(entries)
 }
 
+/** What the stubbed CLI writes before its answer, and what it answers with. */
+export const CLAUDE_STUB_DELTA = 'writing... '
+export const CLAUDE_STUB_ANSWER = 'STUBBED ANSWER'
+
+const line = (payload: unknown) => JSON.stringify(payload)
+
+const DELTA_LINE = line({
+  type: 'stream_event',
+  event: { type: 'content_block_delta', delta: { type: 'text_delta', text: CLAUDE_STUB_DELTA } },
+})
+const RESULT_LINE = line({ type: 'result', subtype: 'success', result: CLAUDE_STUB_ANSWER })
+
+/**
+ * Puts a fake `claude` on PATH: streams one delta, waits, then answers. Every
+ * launch gets it, so no test can reach the real CLI — that would spend the
+ * developer's own tokens and need them signed in.
+ *
+ * The pause is what makes both halves testable: the delta is on screen while
+ * the run is still going, which is also the only moment Cancel exists.
+ */
+function writeClaudeStub(): string {
+  const dir = mkdtempSync(join(tmpdir(), 'claude-stub-'))
+  if (process.platform === 'win32') {
+    // `timeout` refuses to run with stdin redirected, which it is here.
+    const script = `@echo off\r\necho ${DELTA_LINE}\r\nping -n 3 127.0.0.1 >nul\r\necho ${RESULT_LINE}\r\n`
+    writeFileSync(join(dir, 'claude.cmd'), script)
+  } else {
+    const script = `#!/bin/sh\nprintf '%s\\n' '${DELTA_LINE}'\nsleep 2\nprintf '%s\\n' '${RESULT_LINE}'\n`
+    writeFileSync(join(dir, 'claude'), script, { mode: 0o755 })
+  }
+  return dir
+}
+
 export interface ElectronFixtures {
   /** The Electron app under test, one fresh instance per test. */
   electronApp: ElectronApplication
@@ -57,6 +98,7 @@ export const test = base.extend<ElectronFixtures>({
       args: ['.'],
       env: {
         ...(process.env as Record<string, string>),
+        PATH: `${writeClaudeStub()}${delimiter}${process.env.PATH ?? ''}`,
         ...(isCoverageEnabled ? { NODE_V8_COVERAGE: mainCoverageDir } : {}),
       },
     })

@@ -5,6 +5,7 @@ import {
   GIST_CHANNELS,
   GITHUB_CHANNELS,
   MENU_CHANNELS,
+  type ClaudeEvent,
   type GistDraft,
   type GistDraftChange,
   type GistDraftEntry,
@@ -21,8 +22,27 @@ import {
 
 const editorAPI = {
   claude: {
-    editSelection: (selectedText: string, instruction: string): Promise<Result<string>> =>
-      ipcRenderer.invoke(CLAUDE_CHANNELS.editSelection, selectedText, instruction),
+    /**
+     * Starts a run and resolves its id; the text arrives through `onEvent`.
+     * `context` is background material — an existing gist to build on.
+     */
+    startEdit: (
+      selectedText: string,
+      instruction: string,
+      context: string | null = null
+    ): Promise<Result<string>> =>
+      ipcRenderer.invoke(CLAUDE_CHANNELS.startEdit, selectedText, instruction, context),
+    /** Stops a run in flight. Nothing is applied to the document. */
+    cancel: (runId: string): Promise<Result<null>> =>
+      ipcRenderer.invoke(CLAUDE_CHANNELS.cancel, runId),
+    /** Subscribes to run events; returns an unsubscribe. */
+    onEvent: (callback: (event: ClaudeEvent) => void): (() => void) => {
+      const handler = (_event: IpcRendererEvent, claudeEvent: ClaudeEvent) => callback(claudeEvent)
+      ipcRenderer.on(CLAUDE_CHANNELS.event, handler)
+      return () => {
+        ipcRenderer.removeListener(CLAUDE_CHANNELS.event, handler)
+      }
+    },
   },
   gists: {
     /** The signed-in account's gists, newest first. */

@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { editorTheme } from '../../theme/editorTheme'
+import { GIST_DRAG_TYPE } from '../../utils/gistDrag'
 import { GISTS_PER_PAGE } from './const'
 import { GistList } from './GistList'
 
@@ -134,6 +135,17 @@ describe('GistList', () => {
       'aria-pressed',
       'true'
     )
+  })
+
+  it('lets a gist be dragged onto the Claude panel to write from', async () => {
+    renderList()
+    const row = await screen.findByRole('button', { name: /A useful snippet/ })
+    expect(row).toHaveAttribute('draggable', 'true')
+
+    const dataTransfer = { setData: vi.fn(), effectAllowed: 'none' }
+    fireEvent.dragStart(row, { dataTransfer })
+
+    expect(dataTransfer.setData).toHaveBeenCalledWith(GIST_DRAG_TYPE, 'abc123')
   })
 
   it('surfaces a failure as an alert instead of an empty list', async () => {

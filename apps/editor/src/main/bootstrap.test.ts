@@ -1,6 +1,6 @@
 import type { spawn } from 'node:child_process'
 import { MENU_CHANNELS } from '../shared/ipc'
-import { editSelection } from './claude/editSelection'
+import { createClaudeRunner } from './claude/runEdit'
 import { createAuthService } from './github/authService'
 import { CREDENTIALS_FILE } from './github/const'
 import { createCredentialStore } from './github/credentialStore'
@@ -59,7 +59,7 @@ vi.mock('electron', () => ({
   BrowserWindow: FakeBrowserWindow,
 }))
 
-vi.mock('./claude/editSelection', () => ({ editSelection: vi.fn() }))
+vi.mock('./claude/runEdit', () => ({ createClaudeRunner: vi.fn() }))
 vi.mock('./github/authService', () => ({ createAuthService: vi.fn() }))
 vi.mock('./github/credentialStore', () => ({ createCredentialStore: vi.fn() }))
 vi.mock('./github/gistService', () => ({ createGistService: vi.fn() }))
@@ -196,12 +196,14 @@ describe('bootstrap', () => {
     expect(window.webContents.send).not.toHaveBeenCalled()
   })
 
-  it('wires claude edits to the injected spawn', async () => {
+  it('wires claude runs to the injected spawn', async () => {
     await start()
-    const [runEdit] = vi.mocked(registerClaudeHandlers).mock.calls[0]
-    const request = { selectedText: 'text', instruction: 'shorten' }
-    void runEdit(request)
-    expect(editSelection).toHaveBeenCalledWith(request, spawnFn)
+    const [createRunner] = vi.mocked(registerClaudeHandlers).mock.calls[0]
+    const emit = vi.fn()
+
+    createRunner(emit)
+
+    expect(createClaudeRunner).toHaveBeenCalledWith(spawnFn, emit)
   })
 
   it('stores GitHub credentials under the app userData directory', async () => {

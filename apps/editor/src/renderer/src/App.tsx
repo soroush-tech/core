@@ -92,12 +92,17 @@ export function App() {
   }
 
   /**
-   * Splices the rewrite over what Claude was given — but only if it is still
-   * the same document, and that text is still exactly where it was. Typing,
-   * undo/redo, or opening another file while the request runs would otherwise
-   * land the answer at shifted offsets, or in a document Claude never saw.
-   * Returns false when it was dropped, so the panel can say so rather than
-   * losing it silently.
+   * Splices the answer over what Claude was given — but only if it is still the
+   * same document, and what the last one wrote is still exactly where it was
+   * put. Typing, undo/redo, or opening another file while the request runs
+   * would otherwise land the answer at shifted offsets, or in a document Claude
+   * never saw. Returns false when it was dropped, so the panel can say so
+   * rather than losing it silently.
+   *
+   * The answer streams in, so this runs once per delta, each carrying the whole
+   * answer so far. What was written last is remembered as the text to find next
+   * time, which is what makes a delta replace the one before it rather than
+   * being refused as a stranger.
    */
   const applyEdit = (rewritten: string) => {
     const current = live.current
@@ -111,12 +116,14 @@ export function App() {
     if (from === to) {
       if (current !== text) return false
       change(rewritten)
+      asked.current = { ...asked.current, text: rewritten }
       return true
     }
 
     if (current.slice(from, to) !== text) return false
     change(current.slice(0, from) + rewritten + current.slice(to))
     setSelection({ start: from, end: from + rewritten.length })
+    asked.current = { ...asked.current, end: from + rewritten.length, text: rewritten }
     return true
   }
 
@@ -157,6 +164,7 @@ export function App() {
           <ClaudePanel
             targetText={targetText}
             isSelection={hasSelection}
+            documentName={documentName}
             onStart={beginEdit}
             onApply={applyEdit}
           />

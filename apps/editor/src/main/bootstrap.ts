@@ -2,7 +2,7 @@ import type { spawn } from 'node:child_process'
 import { readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { app, BrowserWindow, session } from 'electron'
-import { editSelection } from './claude/editSelection'
+import { createClaudeRunner } from './claude/runEdit'
 import { buildCspResponseHeaders } from './csp'
 import { createAuthService } from './github/authService'
 import { CREDENTIALS_FILE, DRAFTS_FILE } from './github/const'
@@ -59,7 +59,7 @@ export function bootstrap(spawnFn: typeof spawn): void {
       })
 
       const fileState = registerFileHandlers(() => mainWindow!)
-      registerClaudeHandlers((request) => editSelection(request, spawnFn))
+      registerClaudeHandlers((emit) => createClaudeRunner(spawnFn, emit))
 
       // One store for both services, so signing out immediately empties the gists.
       const credentialStore = createCredentialStore(

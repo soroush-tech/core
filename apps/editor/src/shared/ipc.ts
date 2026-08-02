@@ -33,8 +33,28 @@ export const FILE_CHANNELS = {
 } as const
 
 export const CLAUDE_CHANNELS = {
-  editSelection: 'claude:edit-selection',
+  startEdit: 'claude:start-edit',
+  cancel: 'claude:cancel',
+  /** Main → renderer: one `ClaudeEvent` per message of a run. */
+  event: 'claude:event',
 } as const
+
+/**
+ * What a run tells the renderer as it happens. The names are the AG-UI
+ * (Agent–User Interaction) protocol's, so the vocabulary is a known quantity
+ * rather than invented here — without taking the dependency. Tool-call and
+ * state events are deliberately absent: the CLI runs with `--allowedTools ""`,
+ * so they would be dead weight.
+ *
+ * `RUN_FINISHED` carries the whole text rather than leaving the renderer to
+ * reassemble the deltas: the CLI's own final result is authoritative, and a
+ * dropped delta must not quietly corrupt what lands in the document.
+ */
+export type ClaudeEvent =
+  | { type: 'RUN_STARTED'; runId: string }
+  | { type: 'TEXT_MESSAGE_CONTENT'; runId: string; delta: string }
+  | { type: 'RUN_FINISHED'; runId: string; text: string }
+  | { type: 'RUN_ERROR'; runId: string; error: string }
 
 /** The signed-in GitHub account. Never carries the token — that stays in main. */
 export interface GitHubStatus {
