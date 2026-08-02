@@ -106,10 +106,10 @@ export function useGistDraft(gistId: string | null) {
   )
 
   const publish = useCallback(
-    async (id: string) => {
+    async (id: string, isPublic = false) => {
       setError(null)
       const ticket = claim()
-      const result = await window.editorAPI.gists.publish(id)
+      const result = await window.editorAPI.gists.publish(id, isPublic)
       if (!result.success) {
         setError(result.error)
         return false

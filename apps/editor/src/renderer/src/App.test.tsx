@@ -28,8 +28,9 @@ const githubApi = {
 
 const gistsApi = {
   list: vi.fn().mockResolvedValue({ success: true, data: [] }),
-  files: vi.fn().mockResolvedValue({ success: true, data: [] }),
-  draft: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
+  files: vi.fn().mockResolvedValue({ success: true, data: { description: null, files: [] } }),
+  draft: vi.fn(),
+  drafts: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
   stage: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
   stageDescription: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
   reset: vi.fn(),
@@ -256,7 +257,7 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [{ filename: 'notes.md', content: '# from a gist' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
     render(<App />)
 
@@ -284,7 +285,7 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [{ filename: 'notes.md', content: '# from a gist' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
     render(<App />)
 
@@ -319,7 +320,7 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [{ filename: 'notes.md', content: '# from a gist' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
     gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
     render(<App />)
@@ -349,7 +350,7 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [{ filename: 'notes.md', content: '# from a gist' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
     render(<App />)
 
@@ -395,10 +396,13 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [
-        { filename: 'notes.md', content: '# notes' },
-        { filename: 'todo.md', content: '# todo' },
-      ],
+      data: {
+        description: null,
+        files: [
+          { filename: 'notes.md', content: '# notes' },
+          { filename: 'todo.md', content: '# todo' },
+        ],
+      },
     })
     // A sandbox that remembers and announces, the way main's does.
     let draft: { files: Record<string, unknown> } = { files: {} }
@@ -447,7 +451,7 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [{ filename: 'notes.md', content: '# from a gist' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
     fileApi.save.mockResolvedValue({ success: true, data: { filePath: 'C:\\notes.md' } })
     render(<App />)
@@ -478,7 +482,7 @@ describe('App', () => {
     })
     gistsApi.files.mockResolvedValue({
       success: true,
-      data: [{ filename: 'notes.md', content: '# from a gist' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
     render(<App />)
     await userEvent.type(screen.getByLabelText('Markdown source'), 'mine')

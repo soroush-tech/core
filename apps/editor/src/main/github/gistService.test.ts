@@ -1,4 +1,5 @@
-import type { GistDraft } from '../../shared/ipc'
+import { newGistId, type GistDraft } from '../../shared/ipc'
+import { createGist } from './createGist'
 import { fetchGistFiles } from './fetchGistFiles'
 import { fetchGists } from './fetchGists'
 import { createGistService, type GistService } from './gistService'
@@ -7,16 +8,17 @@ import { patchGist } from './patchGist'
 vi.mock('./fetchGists', () => ({ fetchGists: vi.fn() }))
 vi.mock('./fetchGistFiles', () => ({ fetchGistFiles: vi.fn() }))
 vi.mock('./patchGist', () => ({ patchGist: vi.fn() }))
+vi.mock('./createGist', () => ({ createGist: vi.fn() }))
 
 const store = { read: vi.fn(), write: vi.fn(), clear: vi.fn() }
-const drafts = { read: vi.fn(), update: vi.fn(), clear: vi.fn() }
+const drafts = { read: vi.fn(), list: vi.fn(), update: vi.fn(), clear: vi.fn() }
 const fetchFn = vi.fn() as unknown as typeof fetch
 
 const CREDENTIALS = { login: 'soroushm', token: 'github_pat_123', avatar: null }
 const GISTS = [
   { id: 'abc123', description: null, filename: 'notes.md', fileCount: 1, isPublic: false },
 ]
-const FILES = [{ filename: 'notes.md', content: '# notes' }]
+const CONTENTS = { description: 'A snippet', files: [{ filename: 'notes.md', content: '# notes' }] }
 const SIGNED_OUT = 'Connect a GitHub account to see your gists'
 
 let service: GistService
@@ -24,7 +26,7 @@ let service: GistService
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(fetchGists).mockResolvedValue({ success: true, data: GISTS })
-  vi.mocked(fetchGistFiles).mockResolvedValue({ success: true, data: FILES })
+  vi.mocked(fetchGistFiles).mockResolvedValue({ success: true, data: CONTENTS })
   vi.mocked(patchGist).mockResolvedValue({ success: true, data: null })
   store.read.mockResolvedValue(CREDENTIALS)
   drafts.read.mockResolvedValue({ files: {} })
@@ -37,6 +39,7 @@ beforeEach(() => {
     })
   )
   drafts.clear.mockResolvedValue({ success: true, data: null })
+  drafts.list.mockResolvedValue({})
   service = createGistService({ fetchFn, store, drafts })
 })
 
@@ -64,7 +67,7 @@ describe('gistService.list', () => {
 
 describe('gistService.files', () => {
   it('fetches the files of one gist with the stored token', async () => {
-    await expect(service.files('abc123')).resolves.toEqual({ success: true, data: FILES })
+    await expect(service.files('abc123')).resolves.toEqual({ success: true, data: CONTENTS })
     expect(fetchGistFiles).toHaveBeenCalledWith('abc123', 'github_pat_123', fetchFn)
   })
 
@@ -82,6 +85,15 @@ describe('gistService.draft', () => {
     drafts.read.mockResolvedValue(draft)
 
     await expect(service.draft('abc123')).resolves.toEqual(draft)
+  })
+})
+
+describe('gistService.drafts', () => {
+  it('lists every gist with unpublished changes', async () => {
+    const all = { abc123: { files: { 'notes.md': { status: 'deleted' as const } } } }
+    drafts.list.mockResolvedValue(all)
+
+    await expect(service.drafts()).resolves.toEqual(all)
   })
 })
 
@@ -204,7 +216,7 @@ describe('gistService.publish', () => {
   it('sends the whole draft in one request, then clears it', async () => {
     drafts.read.mockResolvedValue(DRAFT)
 
-    await expect(service.publish('abc123')).resolves.toEqual({ success: true, data: null })
+    await expect(service.publish('abc123', false)).resolves.toEqual({ success: true, data: null })
     expect(patchGist).toHaveBeenCalledWith('abc123', DRAFT, 'github_pat_123', fetchFn)
     expect(drafts.clear).toHaveBeenCalledWith('abc123')
   })
@@ -212,7 +224,7 @@ describe('gistService.publish', () => {
   it('publishes a description-only draft', async () => {
     drafts.read.mockResolvedValue({ files: {}, description: 'A better one' })
 
-    await expect(service.publish('abc123')).resolves.toEqual({ success: true, data: null })
+    await expect(service.publish('abc123', false)).resolves.toEqual({ success: true, data: null })
     expect(patchGist).toHaveBeenCalled()
   })
 
@@ -220,7 +232,7 @@ describe('gistService.publish', () => {
     drafts.read.mockResolvedValue(DRAFT)
     vi.mocked(patchGist).mockResolvedValue({ success: false, error: 'GitHub responded 422' })
 
-    await expect(service.publish('abc123')).resolves.toEqual({
+    await expect(service.publish('abc123', false)).resolves.toEqual({
       success: false,
       error: 'GitHub responded 422',
     })
@@ -230,7 +242,7 @@ describe('gistService.publish', () => {
   it('refuses an empty draft rather than sending a no-op request', async () => {
     drafts.read.mockResolvedValue({ files: {} })
 
-    await expect(service.publish('abc123')).resolves.toEqual({
+    await expect(service.publish('abc123', false)).resolves.toEqual({
       success: false,
       error: 'Nothing to publish',
     })
@@ -240,7 +252,70 @@ describe('gistService.publish', () => {
   it('asks for an account before calling GitHub when signed out', async () => {
     store.read.mockResolvedValue(null)
 
-    await expect(service.publish('abc123')).resolves.toEqual({ success: false, error: SIGNED_OUT })
+    await expect(service.publish('abc123', false)).resolves.toEqual({
+      success: false,
+      error: SIGNED_OUT,
+    })
     expect(patchGist).not.toHaveBeenCalled()
+  })
+})
+
+describe('the new-gist sandbox', () => {
+  const NEW_ID = newGistId()
+
+  const NEW_DRAFT: GistDraft = { files: { 'notes.md': { status: 'added', content: '# notes' } } }
+
+  beforeEach(() => {
+    vi.mocked(createGist).mockResolvedValue({ success: true, data: 'created123' })
+  })
+
+  it('has no published files, so listing them never calls GitHub', async () => {
+    await expect(service.files(NEW_ID)).resolves.toEqual({
+      success: true,
+      data: { description: null, files: [] },
+    })
+    expect(fetchGistFiles).not.toHaveBeenCalled()
+    // Not even the credentials are needed for a gist that does not exist.
+    expect(store.read).not.toHaveBeenCalled()
+  })
+
+  it('creates the gist on publish rather than patching one', async () => {
+    drafts.read.mockResolvedValue(NEW_DRAFT)
+
+    await expect(service.publish(NEW_ID, false)).resolves.toEqual({
+      success: true,
+      data: null,
+    })
+    expect(createGist).toHaveBeenCalledWith(NEW_DRAFT, false, 'github_pat_123', fetchFn)
+    expect(patchGist).not.toHaveBeenCalled()
+    expect(drafts.clear).toHaveBeenCalledWith(NEW_ID)
+  })
+
+  it('carries the visibility through to creation', async () => {
+    drafts.read.mockResolvedValue(NEW_DRAFT)
+
+    await service.publish(NEW_ID, true)
+    expect(createGist).toHaveBeenCalledWith(NEW_DRAFT, true, 'github_pat_123', fetchFn)
+  })
+
+  it('keeps the sandbox when creation fails', async () => {
+    drafts.read.mockResolvedValue(NEW_DRAFT)
+    vi.mocked(createGist).mockResolvedValue({ success: false, error: 'GitHub responded 422' })
+
+    await expect(service.publish(NEW_ID, false)).resolves.toEqual({
+      success: false,
+      error: 'GitHub responded 422',
+    })
+    expect(drafts.clear).not.toHaveBeenCalled()
+  })
+
+  it('refuses to create from an empty sandbox', async () => {
+    drafts.read.mockResolvedValue({ files: {} })
+
+    await expect(service.publish(NEW_ID, false)).resolves.toEqual({
+      success: false,
+      error: 'Nothing to publish',
+    })
+    expect(createGist).not.toHaveBeenCalled()
   })
 })

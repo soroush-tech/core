@@ -67,6 +67,9 @@ describe('preload editorAPI', () => {
     await api.gists.files('abc123')
     expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.files, 'abc123')
 
+    await api.gists.drafts()
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.drafts)
+
     await api.gists.draft('abc123')
     expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.draft, 'abc123')
 
@@ -84,8 +87,8 @@ describe('preload editorAPI', () => {
     await api.gists.reset('abc123')
     expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.reset, 'abc123')
 
-    await api.gists.publish('abc123')
-    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.publish, 'abc123')
+    await api.gists.publish('abc123', false)
+    expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.publish, 'abc123', false)
   })
 
   it('relays menu actions to the subscriber until unsubscribed', () => {

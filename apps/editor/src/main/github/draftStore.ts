@@ -1,4 +1,4 @@
-import type { GistDraft, GistDraftFiles, Result } from '../../shared/ipc'
+import type { GistDraft, GistDraftFiles, GistDrafts, Result } from '../../shared/ipc'
 
 /** Disk access for the drafts file — injectable, like the other stores. */
 export interface DraftFileIo {
@@ -9,6 +9,8 @@ export interface DraftFileIo {
 
 export interface DraftStore {
   read: (gistId: string) => Promise<GistDraft>
+  /** Every gist with something staged — how the rail finds work left unfinished. */
+  list: () => Promise<GistDrafts>
   /**
    * Reads a draft, changes it and writes it back as one step — nothing else
    * touches the file in between, so two panels staging at once cannot drop each
@@ -86,6 +88,17 @@ export function createDraftStore(filePath: string, io: DraftFileIo): DraftStore 
 
   return {
     read: (gistId) => serially(async () => toDraft((await readAll())[gistId])),
+
+    list: () =>
+      serially(async () => {
+        const drafts: GistDrafts = {}
+        for (const [gistId, stored] of Object.entries(await readAll())) {
+          const draft = toDraft(stored)
+          // A husk left by an interrupted write is not something to offer.
+          if (!isEmptyDraft(draft)) drafts[gistId] = draft
+        }
+        return drafts
+      }),
 
     update: (gistId, change) =>
       serially(async () => {

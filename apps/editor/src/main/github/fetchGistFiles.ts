@@ -1,4 +1,4 @@
-import type { GistFile, Result } from '../../shared/ipc'
+import type { GistContents, GistFile, Result } from '../../shared/ipc'
 import { API_HEADERS, GISTS_URL } from './const'
 import { NOT_A_GIST_ID, toGistId } from './toGistId'
 
@@ -61,12 +61,16 @@ async function toFile(raw: RawGistFile, fetchFn: typeof fetch): Promise<GistFile
   return { filename: raw.filename, content: await response.text() }
 }
 
-/** Every file in one gist, with content, so picking one in the panel is instant. */
+/**
+ * One gist's description and every file in it, with content, so picking a file
+ * in the panel is instant. The description comes from here rather than from a
+ * list row, so a gist opened by id alone still knows its own.
+ */
 export async function fetchGistFiles(
   id: string,
   token: string,
   fetchFn: typeof fetch
-): Promise<Result<GistFile[]>> {
+): Promise<Result<GistContents>> {
   const gistId = toGistId(id)
   if (gistId === null) return { success: false, error: NOT_A_GIST_ID }
 
@@ -84,13 +88,20 @@ export async function fetchGistFiles(
       return { success: false, error: `GitHub responded ${String(response.status)}` }
     }
 
-    const { files } = (await response.json()) as { files?: Record<string, RawGistFile> }
+    const { files, description } = (await response.json()) as {
+      files?: Record<string, RawGistFile>
+      description?: unknown
+    }
     if (!files) {
       return { success: false, error: 'Unexpected gist response from GitHub' }
     }
     return {
       success: true,
-      data: await Promise.all(Object.values(files).map((f) => toFile(f, fetchFn))),
+      data: {
+        // GitHub stores "no description" as an empty string as well as null.
+        description: typeof description === 'string' && description.trim() ? description : null,
+        files: await Promise.all(Object.values(files).map((f) => toFile(f, fetchFn))),
+      },
     }
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }

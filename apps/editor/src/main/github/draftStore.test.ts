@@ -69,6 +69,29 @@ describe('draftStore.read', () => {
   })
 })
 
+describe('draftStore.list', () => {
+  it('returns every gist with something staged', async () => {
+    onDisk({ abc123: DRAFT, def456: OTHER })
+    await expect(store.list()).resolves.toEqual({ abc123: DRAFT, def456: OTHER })
+  })
+
+  it('reads drafts written before descriptions could be staged', async () => {
+    onDisk({ abc123: { 'notes.md': { status: 'modified', content: 'edited' } } })
+    await expect(store.list()).resolves.toEqual({ abc123: DRAFT })
+  })
+
+  it('leaves out a husk with nothing in it', async () => {
+    // An interrupted write can leave an emptied entry; it is not work to return to.
+    onDisk({ abc123: DRAFT, husk: { files: {} } })
+    await expect(store.list()).resolves.toEqual({ abc123: DRAFT })
+  })
+
+  it('is empty when there is no file yet', async () => {
+    io.readFile.mockRejectedValue(new Error('ENOENT'))
+    await expect(store.list()).resolves.toEqual({})
+  })
+})
+
 describe('draftStore.update', () => {
   it('hands the change the draft as it is on disk, and stores what it returns', async () => {
     onDisk({ def456: OTHER })

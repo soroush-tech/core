@@ -25,6 +25,7 @@ export function App() {
     open,
     load,
     save,
+    renameOrigin,
   } = useDocument()
   const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
@@ -118,6 +119,7 @@ export function App() {
           onOpenFile={(fileContent, fileOrigin) =>
             void load(fileContent, fileOrigin).then((loaded) => loaded && reset())
           }
+          onRenameFile={renameOrigin}
         />
         <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
           <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>

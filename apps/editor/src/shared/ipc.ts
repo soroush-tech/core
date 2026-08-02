@@ -60,6 +60,13 @@ export interface GistFile {
   content: string
 }
 
+/** What one gist holds on GitHub, from the single-gist endpoint. */
+export interface GistContents {
+  /** The published description, or null when it has none. */
+  description: string | null
+  files: GistFile[]
+}
+
 /**
  * One staged change to a gist file. `added` and `modified` carry the local
  * content; `deleted` needs none.
@@ -77,6 +84,31 @@ export interface GistDraft {
   description?: string
 }
 
+/** Every gist that has unpublished changes, by gist id. */
+export type GistDrafts = Record<string, GistDraft>
+
+/**
+ * Marks the sandbox for a gist that does not exist on GitHub yet. Not a real
+ * gist id — GitHub's are hex — so it cannot collide with one, and publishing
+ * such an id creates the gist rather than patching it.
+ *
+ * Each new gist gets its own id after the prefix, so starting one never
+ * disturbs another still waiting to be published.
+ */
+export const NEW_GIST_PREFIX = 'new:'
+
+/** A fresh sandbox id. Every call starts a gist of its own. */
+export function newGistId(): string {
+  return `${NEW_GIST_PREFIX}${crypto.randomUUID()}`
+}
+
+/** True for a gist that has never been published — see `NEW_GIST_PREFIX`. */
+export function isNewGist(gistId: string): boolean {
+  // 'new' was the single shared sandbox before each got its own id; a draft
+  // left under it is still a gist that does not exist yet.
+  return gistId === 'new' || gistId.startsWith(NEW_GIST_PREFIX)
+}
+
 /** Where a document came from, when it came from a gist rather than disk. */
 export interface GistOrigin {
   gistId: string
@@ -87,6 +119,7 @@ export const GIST_CHANNELS = {
   list: 'github:gists',
   files: 'github:gist-files',
   draft: 'github:gist-draft',
+  drafts: 'github:gist-drafts',
   stage: 'github:gist-stage',
   stageDescription: 'github:gist-stage-description',
   reset: 'github:gist-reset',

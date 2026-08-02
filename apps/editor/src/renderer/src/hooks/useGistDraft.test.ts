@@ -6,6 +6,7 @@ const unsubscribe = vi.fn()
 
 const gistsApi = {
   draft: vi.fn(),
+  drafts: vi.fn(),
   stage: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),

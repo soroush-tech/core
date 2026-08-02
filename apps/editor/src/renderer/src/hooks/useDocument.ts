@@ -115,6 +115,18 @@ export function useDocument() {
     return save()
   }, [save])
 
+  /**
+   * Follows a gist file renamed under the editor, so a later save stages the
+   * content under the name the file now has rather than resurrecting the old one.
+   */
+  const renameOrigin = useCallback((gistId: string, from: string, to: string) => {
+    setDocument((prev) =>
+      prev.origin?.gistId === gistId && prev.origin.filename === from
+        ? { ...prev, origin: { gistId, filename: to } }
+        : prev
+    )
+  }, [])
+
   const newDocument = useCallback(async () => {
     if (!(await confirmDiscardIfDirty())) return
     setError(null)
@@ -148,5 +160,5 @@ export function useDocument() {
     [confirmDiscardIfDirty]
   )
 
-  return { ...document, revision, error, change, newDocument, open, load, save }
+  return { ...document, revision, error, change, newDocument, open, load, save, renameOrigin }
 }

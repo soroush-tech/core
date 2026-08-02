@@ -8,7 +8,8 @@ import {
   type GistDraft,
   type GistDraftChange,
   type GistDraftEntry,
-  type GistFile,
+  type GistContents,
+  type GistDrafts,
   type GistSummary,
   type GitHubStatus,
   type MenuAction,
@@ -27,7 +28,10 @@ const editorAPI = {
     /** The signed-in account's gists, newest first. */
     list: (): Promise<Result<GistSummary[]>> => ipcRenderer.invoke(GIST_CHANNELS.list),
     /** Every file in one gist, with content. */
-    files: (id: string): Promise<Result<GistFile[]>> => ipcRenderer.invoke(GIST_CHANNELS.files, id),
+    files: (id: string): Promise<Result<GistContents>> =>
+      ipcRenderer.invoke(GIST_CHANNELS.files, id),
+    /** Every gist with unpublished changes, by id. */
+    drafts: (): Promise<Result<GistDrafts>> => ipcRenderer.invoke(GIST_CHANNELS.drafts),
     /** Everything staged locally for this gist, by filename. */
     draft: (id: string): Promise<Result<GistDraft>> => ipcRenderer.invoke(GIST_CHANNELS.draft, id),
     /** Stages one change locally, or clears it with `entry: null`. Nothing is sent to GitHub. */
@@ -41,8 +45,13 @@ const editorAPI = {
       ipcRenderer.invoke(GIST_CHANNELS.stageDescription, id, description),
     /** Discards the draft after a confirmation prompt. Resolves `false` if cancelled. */
     reset: (id: string): Promise<Result<boolean>> => ipcRenderer.invoke(GIST_CHANNELS.reset, id),
-    /** Sends the whole draft to GitHub in one request, then clears it. */
-    publish: (id: string): Promise<Result<null>> => ipcRenderer.invoke(GIST_CHANNELS.publish, id),
+    /**
+     * Sends the whole draft to GitHub in one request, then clears it. For the
+     * new-gist sandbox this creates the gist — `isPublic` decides its
+     * visibility and is ignored for one that already exists.
+     */
+    publish: (id: string, isPublic: boolean): Promise<Result<null>> =>
+      ipcRenderer.invoke(GIST_CHANNELS.publish, id, isPublic),
     /** Subscribes to draft changes made anywhere in the app; returns an unsubscribe. */
     onDraftChanged: (callback: (change: GistDraftChange) => void): (() => void) => {
       const handler = (_event: IpcRendererEvent, change: GistDraftChange) => callback(change)

@@ -20,6 +20,7 @@ const service = {
   list: vi.fn(),
   files: vi.fn(),
   draft: vi.fn(),
+  drafts: vi.fn(),
   stage: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),
@@ -74,6 +75,24 @@ describe('registerGistHandlers', () => {
     expect(service.files).toHaveBeenCalledWith('abc123')
   })
 
+  it('delegates the sandbox id of a gist that does not exist yet', async () => {
+    const sandbox = 'new:3f2504e0-4f89-41d3-9a0c-0305e82c3301'
+    service.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
+
+    // Starting a gist is the one case with no id from GitHub to check against;
+    // rejecting it would leave the new-gist panel unable to ask for anything.
+    await invoke(GIST_CHANNELS.files, sandbox)
+    expect(service.files).toHaveBeenCalledWith(sandbox)
+  })
+
+  it('refuses an id that only wears the sandbox prefix', async () => {
+    await expect(invoke(GIST_CHANNELS.files, 'new:../../evil')).resolves.toEqual({
+      success: false,
+      error: 'Invalid gist id',
+    })
+    expect(service.files).not.toHaveBeenCalled()
+  })
+
   it('wraps the draft in a Result', async () => {
     service.draft.mockResolvedValue(DRAFT)
 
@@ -83,6 +102,17 @@ describe('registerGistHandlers', () => {
     })
   })
 
+  it('wraps every draft in a Result, taking no arguments', async () => {
+    const all = { abc123: DRAFT }
+    service.drafts.mockResolvedValue(all)
+
+    await expect(invoke(GIST_CHANNELS.drafts, 'ignored')).resolves.toEqual({
+      success: true,
+      data: all,
+    })
+    expect(service.drafts).toHaveBeenCalledWith()
+  })
+
   it('publishes a valid gist id', async () => {
     service.publish.mockResolvedValue({ success: true, data: null })
 
@@ -90,7 +120,20 @@ describe('registerGistHandlers', () => {
       success: true,
       data: null,
     })
-    expect(service.publish).toHaveBeenCalledWith('abc123')
+    expect(service.publish).toHaveBeenCalledWith('abc123', false)
+  })
+
+  it.each([
+    ['nothing', undefined, false],
+    ['false', false, false],
+    ['a non-boolean', 'yes', false],
+    ['true', true, true],
+  ])('publishes with visibility %s', async (_name, isPublic, expected) => {
+    service.publish.mockResolvedValue({ success: true, data: null })
+
+    await invoke(GIST_CHANNELS.publish, 'abc123', isPublic)
+    // Anything but an explicit true keeps a new gist secret.
+    expect(service.publish).toHaveBeenCalledWith('abc123', expected)
   })
 
   it.each([

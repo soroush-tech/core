@@ -136,6 +136,32 @@ describe('useDocument', () => {
     expect(result.current.isDirty).toBe(true)
   })
 
+  it('saves under the new name after the open file is renamed', async () => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    act(() => result.current.renameOrigin('abc123', 'notes.md', 'renamed.md'))
+    act(() => result.current.change('# edited'))
+    await act(() => result.current.save())
+
+    expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'renamed.md', {
+      status: 'modified',
+      content: '# edited',
+    })
+  })
+
+  it.each([
+    ['another file of the same gist', 'abc123', 'other.md'],
+    ['the same filename in another gist', 'def456', 'notes.md'],
+  ])('ignores a rename of %s', async (_name, gistId, filename) => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    act(() => result.current.renameOrigin(gistId, filename, 'renamed.md'))
+
+    expect(result.current.origin).toEqual({ gistId: 'abc123', filename: 'notes.md' })
+  })
+
   it('keeps a gist-backed document dirty when staging fails', async () => {
     gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
     const { result } = renderHook(() => useDocument())

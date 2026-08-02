@@ -26,7 +26,7 @@ describe('fetchGistFiles', () => {
 
     await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toEqual({
       success: true,
-      data: [{ filename: 'notes.md', content: '# notes' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# notes' }] },
     })
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
@@ -49,6 +49,28 @@ describe('fetchGistFiles', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
+  it('carries the description, so a gist opened by id knows its own', async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse({ description: 'A snippet', files: { 'notes.md': rawFile() } })
+    )
+
+    await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toMatchObject({
+      data: { description: 'A snippet' },
+    })
+  })
+
+  it.each([
+    ['an empty description', ''],
+    ['a blank one', '   '],
+    ['a missing one', undefined],
+  ])('reports %s as absent', async (_name, description) => {
+    fetchMock.mockResolvedValue(jsonResponse({ description, files: { 'notes.md': rawFile() } }))
+
+    await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toMatchObject({
+      data: { description: null },
+    })
+  })
+
   it('fetches the whole file when GitHub truncated the inline content', async () => {
     fetchMock
       .mockResolvedValueOnce(
@@ -58,7 +80,7 @@ describe('fetchGistFiles', () => {
 
     await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toEqual({
       success: true,
-      data: [{ filename: 'notes.md', content: '# partial no more' }],
+      data: { description: null, files: [{ filename: 'notes.md', content: '# partial no more' }] },
     })
     // Checked against GitHub's own host and pinned there: following a redirect
     // is the one way it could leave GitHub.
@@ -131,7 +153,7 @@ describe('fetchGistFiles', () => {
     fetchMock.mockResolvedValue(jsonResponse({ files: {} }))
     await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toEqual({
       success: true,
-      data: [],
+      data: { description: null, files: [] },
     })
   })
 
