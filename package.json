@@ -52,5 +52,11 @@
     "prettier": "^3.9.6",
     "pretty-quick": "^4.2.2"
   },
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.13.1",
+  "pnpm": {
+    "overrides": {
+      "webpack": ">=5",
+      "eslint-plugin-import": ">=2.32.0"
+    }
+  }
 }
