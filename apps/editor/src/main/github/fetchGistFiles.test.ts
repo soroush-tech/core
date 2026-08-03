@@ -60,10 +60,10 @@ describe('fetchGistFiles', () => {
       success: true,
       data: [{ filename: 'notes.md', content: '# partial no more' }],
     })
-    // Rebuilt from the checked host and the path it asked for, and pinned
-    // there: following a redirect is the one way it could leave GitHub.
-    const [url, init] = fetchMock.mock.calls[1] as [string, RequestInit]
-    expect(url).toBe('https://gist.githubusercontent.com/raw/notes.md')
+    // Checked against GitHub's own host and pinned there: following a redirect
+    // is the one way it could leave GitHub.
+    const [url, init] = fetchMock.mock.calls[1] as [URL, RequestInit]
+    expect(String(url)).toBe('https://gist.githubusercontent.com/raw/notes.md')
     expect(init.redirect).toBe('error')
   })
 
@@ -85,7 +85,9 @@ describe('fetchGistFiles', () => {
 
     await fetchGistFiles('abc123', 'github_pat_123', fetchFn)
 
-    expect(fetchMock.mock.calls[1][0]).toBe('https://gist.githubusercontent.com/raw/notes.md')
+    expect(String(fetchMock.mock.calls[1][0])).toBe(
+      'https://gist.githubusercontent.com/raw/notes.md'
+    )
   })
 
   it('fails rather than handing back the partial content', async () => {

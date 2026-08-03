@@ -2,21 +2,15 @@ import type { GistFile, Result } from '../../shared/ipc'
 import { API_HEADERS, GISTS_URL } from './const'
 import { NOT_A_GIST_ID, toGistId } from './toGistId'
 
-/** Where GitHub serves gist file content that was too big to inline. */
-const RAW_HOST = 'gist.githubusercontent.com'
+const RAW_PROTOCOLS = ['https:']
 
-/**
- * Where to fetch the rest of a truncated file from, or null when the `raw_url`
- * points anywhere but GitHub. It arrives in a response rather than being
- * written here, so the address is rebuilt from a checked host and the path it
- * asked for — what is requested is then a string this file assembled, not the
- * one the response carried.
- */
-function toGistRawUrl(url: string): string | null {
+/** Where GitHub serves gist file content that was too big to inline. */
+const RAW_HOSTS = ['gist.githubusercontent.com']
+
+/** `new URL` throws on a string that is not one, and a gist can carry anything. */
+function toUrl(url: string): URL | null {
   try {
-    const { protocol, hostname, pathname } = new URL(url)
-    if (protocol !== 'https:' || hostname !== RAW_HOST) return null
-    return `https://${RAW_HOST}${pathname}`
+    return new URL(url)
   } catch {
     return null
   }
@@ -38,13 +32,22 @@ interface RawGistFile {
 async function toFile(raw: RawGistFile, fetchFn: typeof fetch): Promise<GistFile> {
   if (!raw.truncated) return { filename: raw.filename, content: raw.content }
 
-  // Handing back the truncated content would look like a whole file, and
+  // The address arrives in a response rather than being written here, so it is
+  // checked against GitHub's own before anything is requested from it. Handing
+  // back the truncated content instead would look like a whole file, and
   // publishing what came back would cut the gist down to it. Failing the read
   // is the only safe answer.
-  const rawUrl = toGistRawUrl(raw.raw_url)
-  if (rawUrl === null) {
+  const rawUrl = toUrl(raw.raw_url)
+  if (
+    rawUrl === null ||
+    !RAW_PROTOCOLS.includes(rawUrl.protocol) ||
+    !RAW_HOSTS.includes(rawUrl.hostname)
+  ) {
     throw new Error(`GitHub gave no usable address for the rest of ${raw.filename}`)
   }
+  // Only the path it asked for is kept; anything else the address carried goes.
+  rawUrl.search = ''
+  rawUrl.hash = ''
 
   const response = await fetchFn(rawUrl, {
     headers: { 'user-agent': API_HEADERS['user-agent'] },
