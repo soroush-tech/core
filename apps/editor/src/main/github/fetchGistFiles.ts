@@ -6,16 +6,19 @@ import { NOT_A_GIST_ID, toGistId } from './toGistId'
 const RAW_HOST = 'gist.githubusercontent.com'
 
 /**
- * Whether a `raw_url` is one of GitHub's own, and so safe to follow. It arrives
- * in a response rather than being built here, and a request must not be sent
- * wherever that response happens to point.
+ * Where to fetch the rest of a truncated file from, or null when the `raw_url`
+ * points anywhere but GitHub. It arrives in a response rather than being
+ * written here, so the address is rebuilt from a checked host and the path it
+ * asked for — what is requested is then a string this file assembled, not the
+ * one the response carried.
  */
-function isGistRawUrl(url: string): boolean {
+function toGistRawUrl(url: string): string | null {
   try {
-    const { protocol, hostname } = new URL(url)
-    return protocol === 'https:' && hostname === RAW_HOST
+    const { protocol, hostname, pathname } = new URL(url)
+    if (protocol !== 'https:' || hostname !== RAW_HOST) return null
+    return `https://${RAW_HOST}${pathname}`
   } catch {
-    return false
+    return null
   }
 }
 
@@ -38,12 +41,16 @@ async function toFile(raw: RawGistFile, fetchFn: typeof fetch): Promise<GistFile
   // Handing back the truncated content would look like a whole file, and
   // publishing what came back would cut the gist down to it. Failing the read
   // is the only safe answer.
-  if (!isGistRawUrl(raw.raw_url)) {
+  const rawUrl = toGistRawUrl(raw.raw_url)
+  if (rawUrl === null) {
     throw new Error(`GitHub gave no usable address for the rest of ${raw.filename}`)
   }
 
-  const response = await fetchFn(raw.raw_url, {
+  const response = await fetchFn(rawUrl, {
     headers: { 'user-agent': API_HEADERS['user-agent'] },
+    // The host is pinned, so a redirect is the only way this request could
+    // leave GitHub. Refusing to follow one keeps that shut.
+    redirect: 'error',
   })
   if (!response.ok) {
     throw new Error(`Could not read all of ${raw.filename} — GitHub responded ${response.status}`)

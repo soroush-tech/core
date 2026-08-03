@@ -225,10 +225,7 @@ describe('useGistDraft', () => {
       const { result } = renderHook(() => useGistDraft('abc123'))
       await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
 
-      let pending!: Promise<boolean>
-      act(() => {
-        pending = act_(result.current)
-      })
+      const pending = act_(result.current)
       await act(() =>
         result.current.stage('abc123', 'notes.md', { status: 'added', content: 'typed' })
       )

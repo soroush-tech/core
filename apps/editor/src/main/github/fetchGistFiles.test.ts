@@ -60,6 +60,31 @@ describe('fetchGistFiles', () => {
       success: true,
       data: [{ filename: 'notes.md', content: '# partial no more' }],
     })
+    // Rebuilt from the checked host and the path it asked for, and pinned
+    // there: following a redirect is the one way it could leave GitHub.
+    const [url, init] = fetchMock.mock.calls[1] as [string, RequestInit]
+    expect(url).toBe('https://gist.githubusercontent.com/raw/notes.md')
+    expect(init.redirect).toBe('error')
+  })
+
+  it('keeps only the path of the raw_url, dropping anything else it carried', async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        jsonResponse({
+          files: {
+            'big.md': rawFile({
+              truncated: true,
+              content: '# par',
+              raw_url:
+                'https://gist.githubusercontent.com/raw/notes.md?redirect=evil.example.com#x',
+            }),
+          },
+        })
+      )
+      .mockResolvedValueOnce(textResponse('# partial no more'))
+
+    await fetchGistFiles('abc123', 'github_pat_123', fetchFn)
+
     expect(fetchMock.mock.calls[1][0]).toBe('https://gist.githubusercontent.com/raw/notes.md')
   })
 
@@ -82,6 +107,10 @@ describe('fetchGistFiles', () => {
     ['somewhere that is not GitHub', 'https://evil.example.com/raw/notes.md'],
     ['plain http', 'http://gist.githubusercontent.com/raw/notes.md'],
     ['something that is not a URL at all', 'not a url'],
+    [
+      'GitHub with a host smuggled into the credentials',
+      'https://gist.githubusercontent.com@evil.example.com/raw/notes.md',
+    ],
   ])('will not follow a raw_url pointing at %s', async (_name, raw_url) => {
     fetchMock.mockResolvedValueOnce(
       jsonResponse({ files: { 'big.md': rawFile({ truncated: true, content: '# par', raw_url }) } })
