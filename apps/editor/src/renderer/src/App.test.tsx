@@ -143,6 +143,51 @@ describe('App', () => {
     await waitFor(() => expect(source).toHaveValue('HELLO world'))
   })
 
+  it('drops the answer when the selected text is no longer where it was', async () => {
+    let answer!: (value: unknown) => void
+    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
+    render(<App />)
+    const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
+    await userEvent.type(source, 'hello world')
+
+    source.setSelectionRange(0, 5)
+    fireEvent.select(source)
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'shout it')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    // The document moves on while Claude works, so those five characters are
+    // not the ones it was asked about any more.
+    fireEvent.change(source, { target: { value: 'a different document' } })
+    await act(async () => answer({ success: true, data: 'HELLO' }))
+
+    // Splicing the answer in at that range would have mangled what is there now.
+    expect(source).toHaveValue('a different document')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The document changed while Claude was working — the edit was not applied.'
+    )
+  })
+
+  it('drops a whole-document answer when the document changed meanwhile', async () => {
+    let answer!: (value: unknown) => void
+    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
+    render(<App />)
+    const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
+    await userEvent.type(source, 'hello')
+
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'rewrite it')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    fireEvent.change(source, { target: { value: 'hello, and more since' } })
+    await act(async () => answer({ success: true, data: 'rewritten doc' }))
+
+    // Claude was given the document as it was; replacing the newer one with
+    // that answer would throw the difference away.
+    expect(source).toHaveValue('hello, and more since')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The document changed while Claude was working — the edit was not applied.'
+    )
+  })
+
   it('writes a whole document from an instruction when nothing is selected', async () => {
     claudeApi.editSelection.mockResolvedValue({ success: true, data: '# An article' })
     render(<App />)

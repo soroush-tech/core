@@ -48,6 +48,10 @@ export function App() {
   const end = Math.min(selection.end, content.length)
   const hasSelection = start !== end
 
+  // With a selection, Claude works on it; without one, on the whole document
+  // (which may be empty — pure generation).
+  const targetText = hasSelection ? content.slice(start, end) : content
+
   // The document may move on while Claude is working: the rewrite is spliced
   // into what is there when the answer arrives, not into the copy captured
   // when it was asked for.
@@ -56,27 +60,37 @@ export function App() {
     live.current = { content, start, end }
   }, [content, start, end])
 
-  // What Claude was actually asked about. Held from the moment the request
-  // starts, because the selection can move — or collapse — while it runs, and
-  // an answer about a selection must never be applied as a whole document.
-  const asked = useRef<EditorSelection>({ start, end })
+  // What Claude was actually asked about, and the text that was in it. Held
+  // from the moment the request starts, because the selection can move — or
+  // collapse — while it runs, and an answer about a selection must never be
+  // applied as a whole document.
+  const asked = useRef({ start, end, text: targetText })
   const beginEdit = () => {
-    asked.current = { start, end }
+    asked.current = { start, end, text: targetText }
   }
 
-  // With a selection, the rewrite splices over it; without one, Claude works
-  // on the whole document (which may be empty — pure generation).
+  /**
+   * Splices the rewrite over what Claude was given — but only if that text is
+   * still exactly where it was. Typing, undo/redo, or opening another file
+   * while the request runs would otherwise land the answer at shifted offsets,
+   * or in a document Claude never saw. Returns false when it was dropped, so
+   * the panel can say so rather than losing it silently.
+   */
   const applyEdit = (rewritten: string) => {
     const { content: current } = live.current
-    const range = asked.current
+    const { start: from, end: to, text } = asked.current
 
-    // The document may have shrunk since, so the range is clamped to it.
-    const from = Math.min(range.start, current.length)
-    const to = Math.min(range.end, current.length)
+    // Nothing was selected, so Claude was given the whole document.
+    if (from === to) {
+      if (current !== text) return false
+      change(rewritten)
+      return true
+    }
 
-    if (from === to) return change(rewritten)
+    if (current.slice(from, to) !== text) return false
     change(current.slice(0, from) + rewritten + current.slice(to))
     setSelection({ start: from, end: from + rewritten.length })
+    return true
   }
 
   return (
@@ -120,7 +134,7 @@ export function App() {
             <DocumentEditor value={content} onChange={change} onSelectionChange={setSelection} />
           </Flex>
           <ClaudePanel
-            targetText={hasSelection ? content.slice(start, end) : content}
+            targetText={targetText}
             isSelection={hasSelection}
             onStart={beginEdit}
             onApply={applyEdit}

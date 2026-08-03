@@ -8,6 +8,9 @@ import { useClaudeEdit } from '../../hooks/useClaudeEdit'
 
 const PREVIEW_LIMIT = 120
 
+/** Said when the answer came back to a document that had moved on without it. */
+const STALE_MESSAGE = 'The document changed while Claude was working — the edit was not applied.'
+
 export interface ClaudePanelProps {
   /** The text Claude rewrites — the selection, or the whole document when nothing is selected. */
   targetText: string
@@ -18,8 +21,11 @@ export interface ClaudePanelProps {
    * about — the selection may move before the answer arrives.
    */
   onStart?: () => void
-  /** Receives the rewritten text to apply over the target. */
-  onApply: (rewritten: string) => void
+  /**
+   * Receives the rewritten text to apply over the target. Returns false when
+   * the document moved on while Claude worked and it could not be applied.
+   */
+  onApply: (rewritten: string) => boolean
 }
 
 /** Side panel: shows what Claude will edit, takes an instruction, asks Claude. */
@@ -30,17 +36,22 @@ export function ClaudePanel({
   onApply,
 }: Readonly<ClaudePanelProps>) {
   const [instruction, setInstruction] = useState('')
+  const [isStale, setIsStale] = useState(false)
   const { editSelection, isLoading, error } = useClaudeEdit()
   const canSubmit = instruction.trim() !== '' && !isLoading
+  const message = error ?? (isStale ? STALE_MESSAGE : null)
 
   const preview =
     targetText.length > PREVIEW_LIMIT ? `${targetText.slice(0, PREVIEW_LIMIT)}…` : targetText
 
   const submit = async () => {
     onStart?.()
+    setIsStale(false)
     const rewritten = await editSelection(targetText, instruction)
     if (rewritten === null) return
-    onApply(rewritten)
+    // The instruction is kept when the answer could not be applied, so asking
+    // again is one click rather than typing it out a second time.
+    if (!onApply(rewritten)) return setIsStale(true)
     setInstruction('')
   }
 
@@ -68,9 +79,9 @@ export function ClaudePanel({
         )}
       </Flex>
       <Flex flexDirection="row" alignItems="flex-start" gap={2}>
-        {error && (
+        {message && (
           <Typography role="alert" color="error" m={0}>
-            {error}
+            {message}
           </Typography>
         )}
         {isLoading && <LinearProgress />}

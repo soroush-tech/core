@@ -8,7 +8,7 @@ const claudeApi = { editSelection: vi.fn() }
 
 vi.stubGlobal('editorAPI', { claude: claudeApi })
 
-const onApply = vi.fn()
+const onApply = vi.fn(() => true)
 
 const renderPanel = (targetText = '', isSelection = false) =>
   render(
@@ -70,6 +70,20 @@ describe('ClaudePanel', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('not signed in')
     expect(onApply).not.toHaveBeenCalled()
     // The failed instruction stays for a retry.
+    expect(screen.getByLabelText('Edit instruction')).toHaveValue('improve')
+  })
+
+  it('says so when the answer could not be applied', async () => {
+    claudeApi.editSelection.mockResolvedValue({ success: true, data: 'better text' })
+    onApply.mockReturnValueOnce(false)
+    renderPanel('old text', true)
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'improve')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The document changed while Claude was working — the edit was not applied.'
+    )
+    // Asking again should not mean typing the instruction out a second time.
     expect(screen.getByLabelText('Edit instruction')).toHaveValue('improve')
   })
 })
