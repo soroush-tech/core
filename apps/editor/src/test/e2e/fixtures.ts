@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { test as base, expect } from '@playwright/test'
+import { test as base } from '@playwright/test'
 import { _electron as electron, type ElectronApplication } from 'playwright'
 import { isCoverageEnabled, rawCoverageDir } from './coverage'
 
@@ -92,5 +92,3 @@ export const test = base.extend<ElectronFixtures>({
     }
   },
 })
-
-export { expect }

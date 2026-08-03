@@ -91,12 +91,12 @@ describe('patchGist', () => {
     expect(sentBody().description).toBe('')
   })
 
-  it('escapes the gist id into the path', async () => {
-    fetchMock.mockResolvedValue(response())
-    await patchGist('../../evil', DRAFT, 'github_pat_123', fetchFn)
-
-    const [url] = fetchMock.mock.calls[0] as [string]
-    expect(url).toBe(`${GISTS_URL}/..%2F..%2Fevil`)
+  it('refuses an id that is not a gist id, without asking GitHub', async () => {
+    await expect(patchGist('../../evil', DRAFT, 'github_pat_123', fetchFn)).resolves.toEqual({
+      success: false,
+      error: 'That is not a gist id',
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('asks the user to reconnect when the stored token is rejected', async () => {

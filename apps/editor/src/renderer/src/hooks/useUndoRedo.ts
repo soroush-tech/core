@@ -1,6 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const COMMIT_DELAY_MS = 500
+
+/** The document's own textarea, which this history is the undo stack for. */
+const SOURCE_LABEL = 'Markdown source'
+
+/**
+ * Whether the key was pressed in some other editable thing — the Claude
+ * instruction, a filename, a description — rather than in the document.
+ */
+function isOtherField(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+  if (target.getAttribute('aria-label') === SOURCE_LABEL) return false
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target.isContentEditable
+  )
+}
 
 export interface UndoRedo {
   undo: () => void
@@ -27,7 +44,9 @@ export function useUndoRedo(value: string, onChange: (value: string) => void): U
   const onChangeRef = useRef(onChange)
   const [flags, setFlags] = useState({ canUndo: false, canRedo: false })
 
-  useEffect(() => {
+  // Assigned in a layout effect rather than after paint: a keystroke landing in
+  // between would flush a snapshot of the value as it was a render ago.
+  useLayoutEffect(() => {
     valueRef.current = value
     onChangeRef.current = onChange
   }, [value, onChange])
@@ -90,6 +109,9 @@ export function useUndoRedo(value: string, onChange: (value: string) => void): U
       if (!(event.ctrlKey || event.metaKey)) return
       const key = event.key.toLowerCase()
       if (key !== 'z' && key !== 'y') return
+      // Another field's own undo stack is its business: taking the key there
+      // would wipe what was typed into it and step the document back instead.
+      if (isOtherField(event.target)) return
       event.preventDefault()
       if (key === 'y' || event.shiftKey) redo()
       else undo()

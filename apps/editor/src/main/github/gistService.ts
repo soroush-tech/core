@@ -30,12 +30,6 @@ const SIGNED_OUT = 'Connect a GitHub account to see your gists'
  * `publish`, which sends the whole draft as one request; `reset` throws it away.
  */
 export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): GistService {
-  const save = async (id: string, draft: GistDraft): Promise<Result<GistDraft>> => {
-    const saved = await drafts.write(id, draft)
-    if (!saved.success) return saved
-    return { success: true, data: draft }
-  }
-
   return {
     async list() {
       const credentials = await store.read()
@@ -51,30 +45,30 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
 
     draft: (id) => drafts.read(id),
 
-    async stage(id, filename, entry) {
-      const draft = await drafts.read(id)
-      const files = { ...draft.files }
+    // Both stage calls go through `update`, so the draft they change is the one
+    // on disk at that moment rather than a snapshot read earlier.
+    stage: (id, filename, entry) =>
+      drafts.update(id, (draft) => {
+        const files = { ...draft.files }
 
-      if (entry === null) {
-        delete files[filename]
-      } else if (entry.status === 'modified' && files[filename]?.status === 'added') {
-        // A file that exists only locally stays "added" however often it is edited.
-        files[filename] = { status: 'added', content: entry.content }
-      } else {
-        files[filename] = entry
-      }
+        if (entry === null) {
+          delete files[filename]
+        } else if (entry.status === 'modified' && files[filename]?.status === 'added') {
+          // A file that exists only locally stays "added" however often it is edited.
+          files[filename] = { status: 'added', content: entry.content }
+        } else {
+          files[filename] = entry
+        }
 
-      return save(id, { ...draft, files })
-    },
+        return { ...draft, files }
+      }),
 
-    async stageDescription(id, description) {
-      const draft = await drafts.read(id)
-      if (description === null) {
+    stageDescription: (id, description) =>
+      drafts.update(id, (draft) => {
+        if (description !== null) return { ...draft, description }
         const { description: _staged, ...rest } = draft
-        return save(id, rest)
-      }
-      return save(id, { ...draft, description })
-    },
+        return rest
+      }),
 
     reset: (id) => drafts.clear(id),
 

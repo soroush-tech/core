@@ -8,15 +8,18 @@ import {
   type Result,
 } from '../../shared/ipc'
 import type { GistService } from '../github/gistService'
+import { isGistId } from '../github/isGistId'
 
 /** Gists are flat, so a path separator is never a valid gist filename. */
 const PATH_SEPARATOR = /[/\\]/
 
 function validateId(id: unknown): Result<string> {
-  if (typeof id !== 'string' || id.trim() === '') {
+  // The id reaches a request URL and a key in the draft file, so only the shape
+  // GitHub actually issues is let through — not merely "some non-blank string".
+  if (typeof id !== 'string' || !isGistId(id.trim())) {
     return { success: false, error: 'Invalid gist id' }
   }
-  return { success: true, data: id }
+  return { success: true, data: id.trim() }
 }
 
 function validateFilename(filename: unknown): Result<string> {

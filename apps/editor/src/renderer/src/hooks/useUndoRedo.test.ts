@@ -123,4 +123,67 @@ describe('useUndoRedo', () => {
     press('y')
     expect(onChange).toHaveBeenLastCalledWith('a')
   })
+
+  describe('where the key was pressed', () => {
+    /** Dispatches Ctrl+Z as though it came from `target`. */
+    const pressOn = (target: EventTarget) =>
+      act(() =>
+        target.dispatchEvent(
+          new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true })
+        )
+      )
+
+    const mount = (element: HTMLElement) => {
+      document.body.append(element)
+      return element
+    }
+
+    beforeEach(() => {
+      document.body.replaceChildren()
+    })
+
+    it.each([
+      ['another textarea', () => mount(document.createElement('textarea'))],
+      ['an input', () => mount(document.createElement('input'))],
+      [
+        'a contenteditable block',
+        () => {
+          const block = mount(document.createElement('div'))
+          block.contentEditable = 'true'
+          // jsdom does not derive isContentEditable from the attribute.
+          Object.defineProperty(block, 'isContentEditable', { value: true })
+          return block
+        },
+      ],
+    ])('leaves the document alone for a press in %s', (_name, create) => {
+      const { rerender } = renderUndoRedo()
+      rerender({ value: 'a' })
+      act(() => vi.advanceTimersByTime(COMMIT_DELAY_MS))
+
+      pressOn(create())
+
+      // That field's own undo stack is its business.
+      expect(onChange).not.toHaveBeenCalled()
+    })
+
+    it.each([
+      [
+        'the document source itself',
+        () => {
+          const source = mount(document.createElement('textarea'))
+          source.setAttribute('aria-label', 'Markdown source')
+          return source
+        },
+      ],
+      ['something that is not a field at all', () => mount(document.createElement('button'))],
+    ])('undoes the document for a press in %s', (_name, create) => {
+      const { rerender } = renderUndoRedo()
+      rerender({ value: 'a' })
+      act(() => vi.advanceTimersByTime(COMMIT_DELAY_MS))
+
+      pressOn(create())
+
+      expect(onChange).toHaveBeenLastCalledWith('')
+    })
+  })
 })

@@ -257,7 +257,7 @@ describe('GistFiles', () => {
     it('clears the staged edit when the published description is typed back', async () => {
       gistsApi.draft.mockResolvedValue(staged({ description: 'A better one' }))
       renderFiles()
-      await waitFor(() => expect(screen.getByText('A better one')).toBeInTheDocument())
+      expect(await screen.findByText('A better one')).toBeInTheDocument()
 
       await userEvent.click(editDescription())
       await userEvent.clear(descriptionField())

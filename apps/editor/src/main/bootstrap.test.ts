@@ -21,10 +21,19 @@ const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.
     loadURL = vi.fn()
     loadFile = vi.fn()
     webContents = { send: vi.fn() }
+    listeners = new Map<string, (...args: unknown[]) => void>()
+    on = vi.fn((event: string, handler: (...args: unknown[]) => void) => {
+      this.listeners.set(event, handler)
+    })
 
     constructor(options: { webPreferences: Record<string, unknown> }) {
       this.options = options
       FakeBrowserWindow.created.push(this)
+    }
+
+    /** Fires one of the window's own events, the way Electron would. */
+    emit(event: string, ...args: unknown[]) {
+      this.listeners.get(event)?.(...args)
     }
   }
 
@@ -175,6 +184,18 @@ describe('bootstrap', () => {
     )
   })
 
+  it('drops a menu action once the window it would go to has closed', async () => {
+    await start()
+    const [send] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+
+    // On macOS the app outlives its window, and the menu stays installed.
+    window.emit('closed')
+    send('save')
+
+    expect(window.webContents.send).not.toHaveBeenCalled()
+  })
+
   it('wires claude edits to the injected spawn', async () => {
     await start()
     const [runEdit] = vi.mocked(registerClaudeHandlers).mock.calls[0]
@@ -248,6 +269,45 @@ describe('bootstrap', () => {
     // Only the renderer can save; closing again then goes straight through.
     expect(window.webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
     expect(window.destroy).not.toHaveBeenCalled()
+  })
+
+  it('keeps the window open when the prompt itself fails', async () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockRejectedValue(new Error('no window to prompt on'))
+    await start()
+    const { close, window } = interceptWindow()
+
+    close()
+    await flushWhenReady()
+
+    // The close was already prevented; destroying it now would lose the work.
+    expect(window.destroy).not.toHaveBeenCalled()
+    expect(logged).toHaveBeenCalledWith('Unsaved-changes prompt failed', expect.any(Error))
+    logged.mockRestore()
+  })
+
+  it('keeps the current window when an older one reports it closed', async () => {
+    await start()
+    // macOS: the window was closed and reopened through activate.
+    appEvents.get('activate')!()
+    const [first, second] = FakeBrowserWindow.created
+
+    first.emit('closed')
+    const [send] = vi.mocked(installApplicationMenu).mock.calls[0]
+    send('save')
+
+    expect(second.webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
+  })
+
+  it('reports a startup that failed rather than dying of an unhandled rejection', async () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    whenReady.mockRejectedValueOnce(new Error('Electron never became ready'))
+
+    await start()
+
+    expect(logged).toHaveBeenCalledWith('The editor failed to start', expect.any(Error))
+    logged.mockRestore()
   })
 
   it('recreates the window on activate only when none are left', async () => {

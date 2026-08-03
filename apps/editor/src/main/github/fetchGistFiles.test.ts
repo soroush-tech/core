@@ -37,12 +37,16 @@ describe('fetchGistFiles', () => {
     })
   })
 
-  it('escapes the gist id into the path', async () => {
-    fetchMock.mockResolvedValue(jsonResponse({ files: {} }))
-    await fetchGistFiles('../../evil', 'github_pat_123', fetchFn)
-
-    const [url] = fetchMock.mock.calls[0] as [string]
-    expect(url).toBe(`${GISTS_URL}/..%2F..%2Fevil`)
+  it.each([
+    ['a path of its own', '../../evil'],
+    ['a query string', 'abc123?x=1'],
+    ['nothing at all', ''],
+  ])('refuses an id carrying %s, without asking GitHub', async (_name, id) => {
+    await expect(fetchGistFiles(id, 'github_pat_123', fetchFn)).resolves.toEqual({
+      success: false,
+      error: 'That is not a gist id',
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('fetches the whole file when GitHub truncated the inline content', async () => {
@@ -59,16 +63,37 @@ describe('fetchGistFiles', () => {
     expect(fetchMock.mock.calls[1][0]).toBe('https://gist.githubusercontent.com/raw/notes.md')
   })
 
-  it('keeps the partial content when the raw fetch fails', async () => {
+  it('fails rather than handing back the partial content', async () => {
     fetchMock
       .mockResolvedValueOnce(
         jsonResponse({ files: { 'big.md': rawFile({ truncated: true, content: '# par' }) } })
       )
       .mockResolvedValueOnce(textResponse('', false))
 
-    await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toMatchObject({
-      data: [{ content: '# par' }],
+    // Editing and publishing a file that only looked whole would cut the gist
+    // down to what was shown.
+    await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toEqual({
+      success: false,
+      error: 'Could not read all of notes.md — GitHub responded 500',
     })
+  })
+
+  it.each([
+    ['somewhere that is not GitHub', 'https://evil.example.com/raw/notes.md'],
+    ['plain http', 'http://gist.githubusercontent.com/raw/notes.md'],
+    ['something that is not a URL at all', 'not a url'],
+  ])('will not follow a raw_url pointing at %s', async (_name, raw_url) => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({ files: { 'big.md': rawFile({ truncated: true, content: '# par', raw_url }) } })
+    )
+
+    // No request goes where it says, and the partial content is not passed off
+    // as the whole file either.
+    await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toEqual({
+      success: false,
+      error: 'GitHub gave no usable address for the rest of notes.md',
+    })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
   it('returns an empty list for a gist with no files', async () => {

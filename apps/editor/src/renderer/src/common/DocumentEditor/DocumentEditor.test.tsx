@@ -52,7 +52,11 @@ describe('DocumentEditor', () => {
 
   it('ignores select events without a listener', () => {
     renderEditor('hello')
-    fireEvent.select(screen.getByLabelText('Markdown source'))
+    const source = screen.getByLabelText('Markdown source')
+
+    // Selecting without an onSelectionChange must be a no-op, not a crash.
+    expect(() => fireEvent.select(source)).not.toThrow()
+    expect(source).toHaveValue('hello')
   })
 
   it('switches to a read-only preview', async () => {

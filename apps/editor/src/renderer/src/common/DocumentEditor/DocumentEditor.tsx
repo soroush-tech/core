@@ -15,6 +15,9 @@ export interface EditorSelection {
 /** The document surfaces the mode switcher toggles between. */
 export type DocumentViewMode = 'live' | 'edit' | 'split' | 'preview'
 
+/** The modes that keep the source textarea, and so a document-offset selection. */
+const HAS_SOURCE = new Set<DocumentViewMode>(['edit', 'split'])
+
 export interface DocumentEditorProps {
   value: string
   onChange: (value: string) => void
@@ -44,9 +47,12 @@ export function DocumentEditor({
   const handleModeChange = (next: ToggleButtonValue | ToggleButtonValue[] | null) => {
     // Clicking the active mode reports null — the surface always keeps a mode.
     if (next === null) return
-    setMode(next as DocumentViewMode)
-    // Source-textarea offsets are meaningless once that textarea is gone.
-    onSelectionChange?.({ start: 0, end: 0 })
+    const mode = next as DocumentViewMode
+    setMode(mode)
+    // Source-textarea offsets are meaningless once that textarea is gone — but
+    // edit and split both keep it, and clearing there would leave text visibly
+    // highlighted while the panel had already moved on to the whole document.
+    if (!HAS_SOURCE.has(mode)) onSelectionChange?.({ start: 0, end: 0 })
   }
 
   return (

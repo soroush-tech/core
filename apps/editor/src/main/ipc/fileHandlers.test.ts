@@ -68,7 +68,11 @@ describe('registerFileHandlers', () => {
       })
     })
 
-    it('writes straight to a known path', async () => {
+    it('writes straight back to a path the user opened', async () => {
+      showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['C:\\notes.md'] })
+      readFile.mockResolvedValue('# hi')
+      await invoke(FILE_CHANNELS.open)
+
       writeFile.mockResolvedValue(undefined)
       await expect(invoke(FILE_CHANNELS.save, 'C:\\notes.md', 'body')).resolves.toEqual({
         success: true,
@@ -76,6 +80,28 @@ describe('registerFileHandlers', () => {
       })
       expect(writeFile).toHaveBeenCalledWith('C:\\notes.md', 'body', 'utf8')
       expect(showSaveDialog).not.toHaveBeenCalled()
+    })
+
+    it('refuses a path the user never chose, so the renderer cannot name one', async () => {
+      await expect(
+        invoke(FILE_CHANNELS.save, 'C:\\Windows\\System32\\drivers\\etc\\hosts', 'x')
+      ).resolves.toEqual({
+        success: false,
+        error: 'Save that file through the Save As dialog first',
+      })
+      expect(writeFile).not.toHaveBeenCalled()
+    })
+
+    it('writes again to a path the save dialog chose earlier', async () => {
+      showSaveDialog.mockResolvedValue({ canceled: false, filePath: 'C:\\new.md' })
+      writeFile.mockResolvedValue(undefined)
+      await invoke(FILE_CHANNELS.save, null, 'first')
+
+      await expect(invoke(FILE_CHANNELS.save, 'C:\\new.md', 'second')).resolves.toEqual({
+        success: true,
+        data: { filePath: 'C:\\new.md' },
+      })
+      expect(writeFile).toHaveBeenLastCalledWith('C:\\new.md', 'second', 'utf8')
     })
 
     it('prompts for a path when none is given, and honors cancel', async () => {

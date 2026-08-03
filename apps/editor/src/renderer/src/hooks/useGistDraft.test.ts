@@ -20,6 +20,13 @@ vi.stubGlobal('editorAPI', { gists: gistsApi })
 
 const DRAFT = { files: { 'notes.md': { status: 'modified' as const, content: 'edited' } } }
 
+/** A promise the test decides when to settle, for answers that arrive late. */
+const deferred = <T>() => {
+  let settle!: (value: T) => void
+  const promise = new Promise<T>((resolve) => (settle = resolve))
+  return { promise, settle }
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
   gistsApi.draft.mockResolvedValue({ success: true, data: DRAFT })
@@ -183,7 +190,92 @@ describe('useGistDraft', () => {
       announce!({ gistId: 'def456', draft: { files: { 'other.md': { status: 'deleted' } } } })
     )
 
-    expect(result.current.draft).toEqual({ files: {} })
+    // The open gist's staged work stands: another gist's change says nothing
+    // about this one, and adopting it would blank the panel.
+    expect(result.current.draft).toEqual(DRAFT)
+  })
+
+  describe('answers arriving out of order', () => {
+    it('lets a stage land over a first read that was slower', async () => {
+      const first = deferred<unknown>()
+      gistsApi.draft.mockReturnValue(first.promise)
+      const staged = { files: { 'notes.md': { status: 'added' as const, content: 'typed' } } }
+      gistsApi.stage.mockResolvedValue({ success: true, data: staged })
+
+      const { result } = renderHook(() => useGistDraft('abc123'))
+      await act(() =>
+        result.current.stage('abc123', 'notes.md', { status: 'added', content: 'typed' })
+      )
+
+      // The read was dispatched first but answers last; the staged file stands.
+      await act(async () => first.settle({ success: true, data: { files: {} } }))
+      expect(result.current.draft).toEqual(staged)
+    })
+
+    it.each([
+      ['a reset', (draft: ReturnType<typeof useGistDraft>) => draft.reset('abc123')],
+      ['a publish', (draft: ReturnType<typeof useGistDraft>) => draft.publish('abc123')],
+    ])('lets a stage land over %s that was slower', async (_name, act_) => {
+      const slow = deferred<unknown>()
+      gistsApi.reset.mockReturnValue(slow.promise)
+      gistsApi.publish.mockReturnValue(slow.promise)
+      const staged = { files: { 'notes.md': { status: 'added' as const, content: 'typed' } } }
+      gistsApi.stage.mockResolvedValue({ success: true, data: staged })
+
+      const { result } = renderHook(() => useGistDraft('abc123'))
+      await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+      let pending!: Promise<boolean>
+      act(() => {
+        pending = act_(result.current)
+      })
+      await act(() =>
+        result.current.stage('abc123', 'notes.md', { status: 'added', content: 'typed' })
+      )
+      await act(async () => {
+        slow.settle({ success: true, data: true })
+        await pending
+      })
+
+      expect(result.current.draft).toEqual(staged)
+    })
+  })
+
+  it.each([
+    ['stage', 'stage' as const],
+    ['stageDescription', 'stageDescription' as const],
+  ])('drops a slow %s answer once a newer one has landed', async (_name, method) => {
+    const slow = deferred<unknown>()
+    const newest = { files: { 'newest.md': { status: 'added' as const, content: 'newest' } } }
+
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    gistsApi[method].mockReturnValueOnce(slow.promise)
+    let first!: Promise<boolean>
+    act(() => {
+      first =
+        method === 'stage'
+          ? result.current.stage('abc123', 'slow.md', { status: 'added', content: 'slow' })
+          : result.current.stageDescription('abc123', 'slow')
+    })
+
+    gistsApi[method].mockResolvedValue({ success: true, data: newest })
+    await act(() =>
+      method === 'stage'
+        ? result.current.stage('abc123', 'newest.md', { status: 'added', content: 'newest' })
+        : result.current.stageDescription('abc123', 'newest')
+    )
+
+    await act(async () => {
+      slow.settle({
+        success: true,
+        data: { files: { 'slow.md': { status: 'added', content: 'slow' } } },
+      })
+      await first
+    })
+
+    expect(result.current.draft).toEqual(newest)
   })
 
   it('unsubscribes on unmount', () => {

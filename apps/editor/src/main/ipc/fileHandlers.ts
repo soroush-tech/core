@@ -9,6 +9,8 @@ import {
 } from '../../shared/ipc'
 
 const MARKDOWN_FILTERS = [{ name: 'Markdown', extensions: ['md', 'markdown'] }]
+/** The real filesystem, as one object rather than a default built per call. */
+const NODE_IO: FileIo = { readFile, writeFile }
 
 function toErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
@@ -56,9 +58,14 @@ export interface FileIo {
  */
 export function registerFileHandlers(
   getWindow: () => BrowserWindow,
-  io: FileIo = { readFile, writeFile }
+  io: FileIo = NODE_IO
 ): FileHandlerState {
   const state: FileHandlerState = { isDirty: false, isDraft: false }
+
+  // Paths this process handed out through a dialog. The renderer may only ask
+  // to write to one of them: the document's path comes back over IPC, and a
+  // renderer that had been taken over must not be able to name any path on disk.
+  const chosenPaths = new Set<string>()
 
   ipcMain.handle(FILE_CHANNELS.open, async (): Promise<Result<OpenedFile | null>> => {
     try {
@@ -68,6 +75,7 @@ export function registerFileHandlers(
       })
       if (canceled || filePaths.length === 0) return { success: true, data: null }
       const [filePath] = filePaths
+      chosenPaths.add(filePath)
       const content = await io.readFile(filePath, 'utf8')
       return { success: true, data: { filePath, content } }
     } catch (error) {
@@ -81,6 +89,12 @@ export function registerFileHandlers(
       if (typeof content !== 'string' || (filePath !== null && typeof filePath !== 'string')) {
         return { success: false, error: 'Invalid save arguments' }
       }
+      // Writing anywhere else would mean the renderer, not the user, chose
+      // where a document lands.
+      if (filePath !== null && !chosenPaths.has(filePath)) {
+        return { success: false, error: 'Save that file through the Save As dialog first' }
+      }
+
       try {
         let target = filePath
         if (target === null) {
@@ -89,6 +103,7 @@ export function registerFileHandlers(
             defaultPath: 'untitled.md',
           })
           if (canceled || !chosen) return { success: true, data: null }
+          chosenPaths.add(chosen)
           target = chosen
         }
         await io.writeFile(target, content, 'utf8')

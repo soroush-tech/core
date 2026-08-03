@@ -2,7 +2,7 @@ import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
 import { EditorSidebar } from './common/EditorSidebar'
@@ -48,12 +48,21 @@ export function App() {
   const end = Math.min(selection.end, content.length)
   const hasSelection = start !== end
 
+  // Claude answers after a wait, and the document may have moved on in the
+  // meantime. The rewrite is spliced into what is there when the answer
+  // arrives, rather than into the copy captured when it was asked for.
+  const target = useRef({ content, start, end })
+  useLayoutEffect(() => {
+    target.current = { content, start, end }
+  }, [content, start, end])
+
   // With a selection, the rewrite splices over it; without one, Claude works
   // on the whole document (which may be empty — pure generation).
   const applyEdit = (rewritten: string) => {
-    if (!hasSelection) return change(rewritten)
-    change(content.slice(0, start) + rewritten + content.slice(end))
-    setSelection({ start, end: start + rewritten.length })
+    const { content: current, start: from, end: to } = target.current
+    if (from === to) return change(rewritten)
+    change(current.slice(0, from) + rewritten + current.slice(to))
+    setSelection({ start: from, end: from + rewritten.length })
   }
 
   return (

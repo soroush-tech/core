@@ -11,11 +11,18 @@ export function useGists() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    void window.editorAPI.gists.list().then((result) => {
-      if (result.success) setGists(result.data)
-      else setError(result.error)
-      setIsLoading(false)
-    })
+    window.editorAPI.gists
+      .list()
+      .then((result) => {
+        if (result.success) setGists(result.data)
+        else setError(result.error)
+      })
+      // An IPC call that rejects outright would otherwise leave the panel
+      // spinning for ever with nothing said.
+      .catch((reason: unknown) =>
+        setError(reason instanceof Error ? reason.message : String(reason))
+      )
+      .finally(() => setIsLoading(false))
   }, [])
 
   return { gists, error, isLoading }

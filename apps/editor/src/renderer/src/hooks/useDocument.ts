@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { GistOrigin } from '../../../shared/ipc'
 
 export interface DocumentState {
@@ -25,9 +25,11 @@ export function useDocument() {
   const [document, setDocument] = useState<DocumentState>(EMPTY_DOCUMENT)
   const [error, setError] = useState<string | null>(null)
 
-  // Actions read the latest state through a ref so they stay stable across renders.
+  // Actions read the latest state through a ref so they stay stable across
+  // renders. Assigned in a layout effect: a passive one runs after paint, and a
+  // save fired in between would write the content as it was a render ago.
   const documentRef = useRef(document)
-  useEffect(() => {
+  useLayoutEffect(() => {
     documentRef.current = document
   }, [document])
 
@@ -58,7 +60,9 @@ export function useDocument() {
         return false
       }
       setError(null)
-      setDocument((prev) => ({ ...prev, isDirty: false }))
+      // Typing during the save leaves newer content than was written, and
+      // calling that clean would hide it from the Save button and the close prompt.
+      setDocument((prev) => (prev.content === content ? { ...prev, isDirty: false } : prev))
       return true
     }
 
@@ -71,7 +75,13 @@ export function useDocument() {
     if (result.data === null) return false
     const savedPath = result.data.filePath
     setError(null)
-    setDocument((prev) => ({ ...prev, origin: null, filePath: savedPath, isDirty: false }))
+    setDocument((prev) => ({
+      ...prev,
+      origin: null,
+      filePath: savedPath,
+      // Same as above: what reached disk is what `content` held when the save began.
+      isDirty: prev.content !== content,
+    }))
     return true
   }, [])
 

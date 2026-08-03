@@ -105,6 +105,37 @@ describe('useDocument', () => {
     expect(result.current.isDirty).toBe(false)
   })
 
+  it.each([
+    ['staged into the sandbox', { gistId: 'abc123', filename: 'notes.md' }, () => gistsApi.stage],
+    ['written to disk', null, () => fileApi.save],
+  ])('stays dirty when more was typed while it was being %s', async (_name, origin, api) => {
+    let release!: (value: unknown) => void
+    api().mockReturnValue(new Promise((resolve) => (release = resolve)))
+    fileApi.save.mockReturnValue(new Promise((resolve) => (release = resolve)))
+    if (origin) gistsApi.stage.mockReturnValue(new Promise((resolve) => (release = resolve)))
+
+    const { result } = renderHook(() => useDocument())
+    if (origin) await act(() => result.current.load('# notes', origin))
+    act(() => result.current.change('# first'))
+
+    let pending!: Promise<boolean>
+    act(() => {
+      pending = result.current.save()
+    })
+    // Typed after the save took its copy of the content.
+    act(() => result.current.change('# second'))
+
+    await act(async () => {
+      release(
+        origin ? { success: true, data: {} } : { success: true, data: { filePath: 'C:\\notes.md' } }
+      )
+      await pending
+    })
+
+    // What reached disk is not what is in the editor, so there is still work to save.
+    expect(result.current.isDirty).toBe(true)
+  })
+
   it('keeps a gist-backed document dirty when staging fails', async () => {
     gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
     const { result } = renderHook(() => useDocument())

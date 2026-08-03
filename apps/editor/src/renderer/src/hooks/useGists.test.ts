@@ -15,6 +15,20 @@ beforeEach(() => {
 })
 
 describe('useGists', () => {
+  it.each([
+    ['an error', new Error('IPC channel closed'), 'IPC channel closed'],
+    ['something that is not an error', 'channel closed', 'channel closed'],
+  ])(
+    'reports an IPC call that rejects with %s, rather than spinning for ever',
+    async (_name, reason, error) => {
+      gistsApi.list.mockRejectedValue(reason)
+      const { result } = renderHook(() => useGists())
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false))
+      expect(result.current).toMatchObject({ error, gists: [] })
+    }
+  )
+
   it('loads the gists on mount', async () => {
     const { result } = renderHook(() => useGists())
     expect(result.current.isLoading).toBe(true)

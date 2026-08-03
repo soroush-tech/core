@@ -1,5 +1,23 @@
 import type { GistFile, Result } from '../../shared/ipc'
 import { API_HEADERS, GISTS_URL } from './const'
+import { isGistId, NOT_A_GIST_ID } from './isGistId'
+
+/** Where GitHub serves gist file content that was too big to inline. */
+const RAW_HOST = 'gist.githubusercontent.com'
+
+/**
+ * Whether a `raw_url` is one of GitHub's own, and so safe to follow. It arrives
+ * in a response rather than being built here, and a request must not be sent
+ * wherever that response happens to point.
+ */
+function isGistRawUrl(url: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(url)
+    return protocol === 'https:' && hostname === RAW_HOST
+  } catch {
+    return false
+  }
+}
 
 /** The fields the editor needs from a gist file entry. */
 interface RawGistFile {
@@ -17,10 +35,20 @@ interface RawGistFile {
 async function toFile(raw: RawGistFile, fetchFn: typeof fetch): Promise<GistFile> {
   if (!raw.truncated) return { filename: raw.filename, content: raw.content }
 
+  // Handing back the truncated content would look like a whole file, and
+  // publishing what came back would cut the gist down to it. Failing the read
+  // is the only safe answer.
+  if (!isGistRawUrl(raw.raw_url)) {
+    throw new Error(`GitHub gave no usable address for the rest of ${raw.filename}`)
+  }
+
   const response = await fetchFn(raw.raw_url, {
     headers: { 'user-agent': API_HEADERS['user-agent'] },
   })
-  return { filename: raw.filename, content: response.ok ? await response.text() : raw.content }
+  if (!response.ok) {
+    throw new Error(`Could not read all of ${raw.filename} — GitHub responded ${response.status}`)
+  }
+  return { filename: raw.filename, content: await response.text() }
 }
 
 /** Every file in one gist, with content, so picking one in the panel is instant. */
@@ -29,8 +57,10 @@ export async function fetchGistFiles(
   token: string,
   fetchFn: typeof fetch
 ): Promise<Result<GistFile[]>> {
+  if (!isGistId(id)) return { success: false, error: NOT_A_GIST_ID }
+
   try {
-    const response = await fetchFn(`${GISTS_URL}/${encodeURIComponent(id)}`, {
+    const response = await fetchFn(`${GISTS_URL}/${id}`, {
       headers: { ...API_HEADERS, authorization: `Bearer ${token}` },
     })
     if (response.status === 401) {

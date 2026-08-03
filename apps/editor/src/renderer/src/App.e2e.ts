@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
-import type { Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 import type { ElectronApplication } from 'playwright'
-import { expect, test } from 'src/test/e2e/fixtures'
+import { test } from 'src/test/e2e/fixtures'
 
 const getEditor = (page: Page) => page.getByPlaceholder('Write your article in Markdown…')
 
@@ -56,8 +56,14 @@ test('recovers typed markdown through the Edit menu and keyboard undo', async ({
 }) => {
   const editor = getEditor(page)
   await editor.fill('one')
-  // Let the first snapshot commit so two undo steps exist.
-  await page.waitForTimeout(700)
+
+  // Undo commits whatever is pending before stepping back, so this pair leaves
+  // 'one' as a committed step — no waiting out the coalescing window for it.
+  await clickMenuItem(electronApp, 'edit-undo')
+  await expect(editor).toHaveValue('')
+  await clickMenuItem(electronApp, 'edit-redo')
+  await expect(editor).toHaveValue('one')
+
   await editor.fill('one two')
 
   // A single Ctrl+Z must undo exactly one step — guards against the menu
@@ -97,18 +103,34 @@ test('switches between edit, preview, and live edit modes', async ({ page }) => 
 test('prompts before closing a window with unsaved changes', async ({ page, electronApp }) => {
   await getEditor(page).fill('unsaved')
   await expect(page.getByText('Untitled •')).toBeVisible()
-  // The dirty flag reaches the main process over IPC; give it a beat to land.
-  await page.waitForTimeout(250)
+  // Main only prompts once it knows the document is dirty. Awaiting the same
+  // call the renderer makes settles that, rather than guessing at how long the
+  // IPC takes.
+  await page.evaluate(() => window.editorAPI.file.setDirty(true, false))
 
+  // Button 0 keeps the work: main asks the renderer to save, which opens the
+  // save dialog — the dialog opening is what proves the window survived to act.
   await electronApp.evaluate(({ dialog }) => {
-    dialog.showMessageBox = async () => ({ response: 1, checkboxChecked: false })
+    const counts = globalThis as unknown as { saveDialogs: number }
+    counts.saveDialogs = 0
+    dialog.showSaveDialog = async () => {
+      counts.saveDialogs += 1
+      return { canceled: true, filePath: '' }
+    }
+    dialog.showMessageBox = async () => ({ response: 0, checkboxChecked: false })
   })
   await electronApp.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].close())
-  await page.waitForTimeout(250)
+
+  await expect
+    .poll(() =>
+      electronApp.evaluate(() => (globalThis as { saveDialogs?: number }).saveDialogs ?? 0)
+    )
+    .toBeGreaterThan(0)
   expect(page.isClosed()).toBe(false)
 
+  // Button 1 discards, and that does close it.
   await electronApp.evaluate(({ dialog }) => {
-    dialog.showMessageBox = async () => ({ response: 0, checkboxChecked: false })
+    dialog.showMessageBox = async () => ({ response: 1, checkboxChecked: false })
   })
   const closed = page.waitForEvent('close')
   await electronApp.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].close())

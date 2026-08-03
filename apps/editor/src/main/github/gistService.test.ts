@@ -9,7 +9,7 @@ vi.mock('./fetchGistFiles', () => ({ fetchGistFiles: vi.fn() }))
 vi.mock('./patchGist', () => ({ patchGist: vi.fn() }))
 
 const store = { read: vi.fn(), write: vi.fn(), clear: vi.fn() }
-const drafts = { read: vi.fn(), write: vi.fn(), clear: vi.fn() }
+const drafts = { read: vi.fn(), update: vi.fn(), clear: vi.fn() }
 const fetchFn = vi.fn() as unknown as typeof fetch
 
 const CREDENTIALS = { login: 'soroushm', token: 'github_pat_123', avatar: null }
@@ -28,7 +28,14 @@ beforeEach(() => {
   vi.mocked(patchGist).mockResolvedValue({ success: true, data: null })
   store.read.mockResolvedValue(CREDENTIALS)
   drafts.read.mockResolvedValue({ files: {} })
-  drafts.write.mockResolvedValue({ success: true, data: null })
+  // Stands in for the real store: hands the change whatever is "on disk" and
+  // reports back what it made of it, as one step.
+  drafts.update.mockImplementation(
+    async (_id: string, change: (draft: GistDraft) => GistDraft) => ({
+      success: true,
+      data: change((await drafts.read()) as GistDraft),
+    })
+  )
   drafts.clear.mockResolvedValue({ success: true, data: null })
   service = createGistService({ fetchFn, store, drafts })
 })
@@ -89,9 +96,8 @@ describe('gistService.stage', () => {
       data: { files: { 'notes.md': { status: 'modified', content: 'edited' } } },
     })
 
-    expect(drafts.write).toHaveBeenCalledWith('abc123', {
-      files: { 'notes.md': { status: 'modified', content: 'edited' } },
-    })
+    // Read and write as one step, so a change made at the same time is not lost.
+    expect(drafts.update).toHaveBeenCalledWith('abc123', expect.any(Function))
     expect(patchGist).not.toHaveBeenCalled()
   })
 
@@ -126,7 +132,7 @@ describe('gistService.stage', () => {
   })
 
   it('reports a draft that cannot be persisted', async () => {
-    drafts.write.mockResolvedValue({ success: false, error: 'EACCES' })
+    drafts.update.mockResolvedValue({ success: false, error: 'EACCES' })
 
     await expect(service.stage('abc123', 'notes.md', { status: 'deleted' })).resolves.toEqual({
       success: false,
@@ -170,7 +176,7 @@ describe('gistService.stageDescription', () => {
   })
 
   it('reports a draft that cannot be persisted', async () => {
-    drafts.write.mockResolvedValue({ success: false, error: 'EACCES' })
+    drafts.update.mockResolvedValue({ success: false, error: 'EACCES' })
 
     await expect(service.stageDescription('abc123', 'A better one')).resolves.toEqual({
       success: false,

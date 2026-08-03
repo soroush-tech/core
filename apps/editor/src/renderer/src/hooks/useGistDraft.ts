@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { GistDraft, GistDraftEntry } from '../../../shared/ipc'
 
 const EMPTY: GistDraft = { files: {} }
@@ -25,60 +25,100 @@ export function useGistDraft(gistId: string | null) {
   const [loaded, setLoaded] = useState<LoadedDraft | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  // IPC answers in whatever order it likes: a slow first read landing after a
+  // quick stage would put the staged file back the way it was. Every request
+  // takes a ticket, and only the newest one is allowed to set the draft.
+  const issued = useRef(0)
+  const claim = useCallback(() => {
+    issued.current += 1
+    return issued.current
+  }, [])
+  const isNewest = useCallback((ticket: number) => ticket === issued.current, [])
+
   useEffect(() => {
     if (gistId === null) return
 
-    let isCurrent = true
+    const ticket = claim()
     void window.editorAPI.gists.draft(gistId).then((result) => {
-      if (!isCurrent) return
+      if (!isNewest(ticket)) return
       setLoaded({ gistId, draft: result.success ? result.data : EMPTY })
     })
-
-    return () => {
-      isCurrent = false
-    }
-  }, [gistId])
+  }, [gistId, claim, isNewest])
 
   // Saving in the editor stages through main, not through this hook — without
   // this the panel would keep showing a stale change count.
   useEffect(
     () =>
       window.editorAPI.gists.onDraftChanged((change) => {
+        // Another gist's draft changing says nothing about this one; adopting it
+        // would leave the panel showing that gist's staged work under this id.
+        if (change.gistId !== gistId) return
         setLoaded({ gistId: change.gistId, draft: change.draft })
       }),
-    []
+    [gistId]
   )
 
-  const stage = useCallback(async (id: string, filename: string, entry: GistDraftEntry | null) => {
-    setError(null)
-    const result = await window.editorAPI.gists.stage(id, filename, entry)
-    if (result.success) setLoaded({ gistId: id, draft: result.data })
-    else setError(result.error)
-    return result.success
-  }, [])
+  const stage = useCallback(
+    async (id: string, filename: string, entry: GistDraftEntry | null) => {
+      setError(null)
+      const ticket = claim()
+      const result = await window.editorAPI.gists.stage(id, filename, entry)
+      if (!result.success) {
+        setError(result.error)
+        return false
+      }
+      if (isNewest(ticket)) setLoaded({ gistId: id, draft: result.data })
+      return true
+    },
+    [claim, isNewest]
+  )
 
-  const stageDescription = useCallback(async (id: string, description: string | null) => {
-    setError(null)
-    const result = await window.editorAPI.gists.stageDescription(id, description)
-    if (result.success) setLoaded({ gistId: id, draft: result.data })
-    else setError(result.error)
-    return result.success
-  }, [])
+  const stageDescription = useCallback(
+    async (id: string, description: string | null) => {
+      setError(null)
+      const ticket = claim()
+      const result = await window.editorAPI.gists.stageDescription(id, description)
+      if (!result.success) {
+        setError(result.error)
+        return false
+      }
+      if (isNewest(ticket)) setLoaded({ gistId: id, draft: result.data })
+      return true
+    },
+    [claim, isNewest]
+  )
 
-  const reset = useCallback(async (id: string) => {
-    setError(null)
-    const result = await window.editorAPI.gists.reset(id)
-    if (!result.success) return setError(result.error)
-    // `false` means the confirmation was cancelled — the draft stands.
-    if (result.data) setLoaded({ gistId: id, draft: EMPTY })
-  }, [])
+  /** Resolves false when the draft still stands — a failure, or a cancelled prompt. */
+  const reset = useCallback(
+    async (id: string) => {
+      setError(null)
+      const ticket = claim()
+      const result = await window.editorAPI.gists.reset(id)
+      if (!result.success) {
+        setError(result.error)
+        return false
+      }
+      // `false` means the confirmation was cancelled — the draft stands.
+      if (result.data && isNewest(ticket)) setLoaded({ gistId: id, draft: EMPTY })
+      return result.data
+    },
+    [claim, isNewest]
+  )
 
-  const publish = useCallback(async (id: string) => {
-    setError(null)
-    const result = await window.editorAPI.gists.publish(id)
-    if (!result.success) return setError(result.error)
-    setLoaded({ gistId: id, draft: EMPTY })
-  }, [])
+  const publish = useCallback(
+    async (id: string) => {
+      setError(null)
+      const ticket = claim()
+      const result = await window.editorAPI.gists.publish(id)
+      if (!result.success) {
+        setError(result.error)
+        return false
+      }
+      if (isNewest(ticket)) setLoaded({ gistId: id, draft: EMPTY })
+      return true
+    },
+    [claim, isNewest]
+  )
 
   const draft = loaded !== null && loaded.gistId === gistId ? loaded.draft : EMPTY
   return { draft, error, stage, stageDescription, reset, publish }

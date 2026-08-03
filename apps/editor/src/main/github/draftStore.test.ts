@@ -5,7 +5,7 @@ const FILE = 'C:\\userData\\gist-drafts.json'
 const DRAFT: GistDraft = { files: { 'notes.md': { status: 'modified', content: 'edited' } } }
 const OTHER: GistDraft = { files: { 'other.md': { status: 'deleted' } } }
 
-const io = { readFile: vi.fn(), writeFile: vi.fn() }
+const io = { readFile: vi.fn(), writeFile: vi.fn(), rename: vi.fn() }
 
 let store: DraftStore
 
@@ -19,6 +19,7 @@ const written = () => JSON.parse(String(io.writeFile.mock.calls[0][1])) as Recor
 beforeEach(() => {
   vi.clearAllMocks()
   io.writeFile.mockResolvedValue(undefined)
+  io.rename.mockResolvedValue(undefined)
   store = createDraftStore(FILE, io)
 })
 
@@ -68,37 +69,102 @@ describe('draftStore.read', () => {
   })
 })
 
-describe('draftStore.write', () => {
-  it('stores the draft alongside other gists', async () => {
+describe('draftStore.update', () => {
+  it('hands the change the draft as it is on disk, and stores what it returns', async () => {
     onDisk({ def456: OTHER })
 
-    await expect(store.write('abc123', DRAFT)).resolves.toEqual({ success: true, data: null })
+    await expect(store.update('abc123', () => DRAFT)).resolves.toEqual({
+      success: true,
+      data: DRAFT,
+    })
     expect(written()).toEqual({ def456: OTHER, abc123: DRAFT })
-    expect(io.writeFile).toHaveBeenCalledWith(FILE, expect.any(String), 'utf8')
+  })
+
+  it('changes the draft that is already staged, rather than replacing it blind', async () => {
+    onDisk({ abc123: DRAFT })
+
+    await store.update('abc123', (draft) => ({ ...draft, description: 'A better one' }))
+
+    expect(written()).toEqual({ abc123: { ...DRAFT, description: 'A better one' } })
+  })
+
+  it('writes beside the file and renames over it, so a half-write loses nothing', async () => {
+    onDisk({})
+
+    await store.update('abc123', () => DRAFT)
+
+    expect(io.writeFile).toHaveBeenCalledWith(`${FILE}.tmp`, expect.any(String), 'utf8')
+    expect(io.rename).toHaveBeenCalledWith(`${FILE}.tmp`, FILE)
   })
 
   it('drops the gist entirely when its draft is emptied', async () => {
     onDisk({ abc123: DRAFT, def456: OTHER })
 
-    await store.write('abc123', { files: {} })
+    await store.update('abc123', () => ({ files: {} }))
     expect(written()).toEqual({ def456: OTHER })
   })
 
   it('keeps a gist whose only change is its description', async () => {
     onDisk({})
 
-    await store.write('abc123', { files: {}, description: 'A better one' })
+    await store.update('abc123', () => ({ files: {}, description: 'A better one' }))
     expect(written()).toEqual({ abc123: { files: {}, description: 'A better one' } })
   })
 
-  it('reports a failed write', async () => {
+  it.each([
+    ['the write fails', () => io.writeFile.mockRejectedValue(new Error('EACCES'))],
+    ['the rename fails', () => io.rename.mockRejectedValue(new Error('EACCES'))],
+  ])('reports a draft that could not be stored when %s', async (_name, arrange) => {
     onDisk({})
-    io.writeFile.mockRejectedValue(new Error('EACCES'))
+    arrange()
 
-    await expect(store.write('abc123', DRAFT)).resolves.toEqual({
+    await expect(store.update('abc123', () => DRAFT)).resolves.toEqual({
       success: false,
       error: 'EACCES',
     })
+  })
+
+  it('takes turns, so two changes at once cannot drop each other', async () => {
+    // Both start from the same file, but the second only reads once the first
+    // has written — otherwise its write would carry none of the first's work.
+    let stored: Record<string, unknown> = {}
+    io.readFile.mockImplementation(() => Promise.resolve(JSON.stringify(stored)))
+    io.writeFile.mockImplementation((_path: string, content: string) => {
+      stored = JSON.parse(content) as Record<string, unknown>
+      return Promise.resolve()
+    })
+
+    await Promise.all([store.update('abc123', () => DRAFT), store.update('def456', () => OTHER)])
+
+    expect(stored).toEqual({ abc123: DRAFT, def456: OTHER })
+  })
+
+  it('keeps its turn-taking when a change itself throws', async () => {
+    onDisk({})
+
+    await expect(
+      store.update('abc123', () => {
+        throw new Error('boom')
+      })
+    ).rejects.toThrow('boom')
+
+    await expect(store.update('def456', () => OTHER)).resolves.toEqual({
+      success: true,
+      data: OTHER,
+    })
+  })
+
+  it('keeps serving the ones behind a failure', async () => {
+    onDisk({})
+    io.writeFile.mockRejectedValueOnce(new Error('EACCES'))
+
+    const [failed, next] = await Promise.all([
+      store.update('abc123', () => DRAFT),
+      store.update('def456', () => OTHER),
+    ])
+
+    expect(failed).toEqual({ success: false, error: 'EACCES' })
+    expect(next).toEqual({ success: true, data: OTHER })
   })
 })
 
