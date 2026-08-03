@@ -252,13 +252,10 @@ describe('useGistDraft', () => {
     await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
 
     gistsApi[method].mockReturnValueOnce(slow.promise)
-    let first!: Promise<boolean>
-    act(() => {
-      first =
-        method === 'stage'
-          ? result.current.stage('abc123', 'slow.md', { status: 'added', content: 'slow' })
-          : result.current.stageDescription('abc123', 'slow')
-    })
+    const first =
+      method === 'stage'
+        ? result.current.stage('abc123', 'slow.md', { status: 'added', content: 'slow' })
+        : result.current.stageDescription('abc123', 'slow')
 
     gistsApi[method].mockResolvedValue({ success: true, data: newest })
     await act(() =>

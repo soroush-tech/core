@@ -1,6 +1,6 @@
 import type { GistFile, Result } from '../../shared/ipc'
 import { API_HEADERS, GISTS_URL } from './const'
-import { isGistId, NOT_A_GIST_ID } from './isGistId'
+import { NOT_A_GIST_ID, toGistId } from './toGistId'
 
 /** Where GitHub serves gist file content that was too big to inline. */
 const RAW_HOST = 'gist.githubusercontent.com'
@@ -57,10 +57,11 @@ export async function fetchGistFiles(
   token: string,
   fetchFn: typeof fetch
 ): Promise<Result<GistFile[]>> {
-  if (!isGistId(id)) return { success: false, error: NOT_A_GIST_ID }
+  const gistId = toGistId(id)
+  if (gistId === null) return { success: false, error: NOT_A_GIST_ID }
 
   try {
-    const response = await fetchFn(`${GISTS_URL}/${id}`, {
+    const response = await fetchFn(`${GISTS_URL}/${gistId}`, {
       headers: { ...API_HEADERS, authorization: `Bearer ${token}` },
     })
     if (response.status === 401) {

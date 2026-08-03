@@ -1,11 +1,11 @@
-import { isGistId } from './isGistId'
+import { toGistId } from './toGistId'
 
-describe('isGistId', () => {
+describe('toGistId', () => {
   it.each([
     ['a gist id', 'aa5a315d61ae9438b18d'],
     ['one in capitals', 'AA5A315D61AE9438B18D'],
-  ])('accepts %s', (_name, id) => {
-    expect(isGistId(id)).toBe(true)
+  ])('hands back %s', (_name, id) => {
+    expect(toGistId(id)).toBe(id)
   })
 
   it.each([
@@ -16,7 +16,7 @@ describe('isGistId', () => {
     ['letters that are not hexadecimal', 'zzzzz'],
     ['nothing at all', ''],
     ['something far too long', 'a'.repeat(65)],
-  ])('refuses %s', (_name, id) => {
-    expect(isGistId(id)).toBe(false)
+  ])('has nothing to hand back for %s', (_name, id) => {
+    expect(toGistId(id)).toBeNull()
   })
 })

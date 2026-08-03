@@ -48,18 +48,32 @@ export function App() {
   const end = Math.min(selection.end, content.length)
   const hasSelection = start !== end
 
-  // Claude answers after a wait, and the document may have moved on in the
-  // meantime. The rewrite is spliced into what is there when the answer
-  // arrives, rather than into the copy captured when it was asked for.
-  const target = useRef({ content, start, end })
+  // The document may move on while Claude is working: the rewrite is spliced
+  // into what is there when the answer arrives, not into the copy captured
+  // when it was asked for.
+  const live = useRef({ content, start, end })
   useLayoutEffect(() => {
-    target.current = { content, start, end }
+    live.current = { content, start, end }
   }, [content, start, end])
+
+  // What Claude was actually asked about. Held from the moment the request
+  // starts, because the selection can move — or collapse — while it runs, and
+  // an answer about a selection must never be applied as a whole document.
+  const asked = useRef<EditorSelection>({ start, end })
+  const beginEdit = () => {
+    asked.current = { start, end }
+  }
 
   // With a selection, the rewrite splices over it; without one, Claude works
   // on the whole document (which may be empty — pure generation).
   const applyEdit = (rewritten: string) => {
-    const { content: current, start: from, end: to } = target.current
+    const { content: current } = live.current
+    const range = asked.current
+
+    // The document may have shrunk since, so the range is clamped to it.
+    const from = Math.min(range.start, current.length)
+    const to = Math.min(range.end, current.length)
+
     if (from === to) return change(rewritten)
     change(current.slice(0, from) + rewritten + current.slice(to))
     setSelection({ start: from, end: from + rewritten.length })
@@ -108,6 +122,7 @@ export function App() {
           <ClaudePanel
             targetText={hasSelection ? content.slice(start, end) : content}
             isSelection={hasSelection}
+            onStart={beginEdit}
             onApply={applyEdit}
           />
         </Flex>

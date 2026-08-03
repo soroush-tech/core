@@ -1,6 +1,6 @@
 import type { GistDraft, GistDraftFiles, Result } from '../../shared/ipc'
 import { API_HEADERS, EMPTY_FILE_CONTENT, GISTS_URL } from './const'
-import { isGistId, NOT_A_GIST_ID } from './isGistId'
+import { NOT_A_GIST_ID, toGistId } from './toGistId'
 
 /** GitHub's file map: content to write, or null to delete. */
 type FilePatch = Record<string, { content: string } | null>
@@ -30,10 +30,11 @@ export async function patchGist(
   token: string,
   fetchFn: typeof fetch
 ): Promise<Result<null>> {
-  if (!isGistId(id)) return { success: false, error: NOT_A_GIST_ID }
+  const gistId = toGistId(id)
+  if (gistId === null) return { success: false, error: NOT_A_GIST_ID }
 
   try {
-    const response = await fetchFn(`${GISTS_URL}/${id}`, {
+    const response = await fetchFn(`${GISTS_URL}/${gistId}`, {
       method: 'PATCH',
       headers: {
         ...API_HEADERS,

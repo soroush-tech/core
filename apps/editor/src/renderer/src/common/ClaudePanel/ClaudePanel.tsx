@@ -13,12 +13,22 @@ export interface ClaudePanelProps {
   targetText: string
   /** True when `targetText` is a selection rather than the whole document. */
   isSelection: boolean
+  /**
+   * Called as a request starts, so the caller can remember what was asked
+   * about — the selection may move before the answer arrives.
+   */
+  onStart?: () => void
   /** Receives the rewritten text to apply over the target. */
   onApply: (rewritten: string) => void
 }
 
 /** Side panel: shows what Claude will edit, takes an instruction, asks Claude. */
-export function ClaudePanel({ targetText, isSelection, onApply }: Readonly<ClaudePanelProps>) {
+export function ClaudePanel({
+  targetText,
+  isSelection,
+  onStart,
+  onApply,
+}: Readonly<ClaudePanelProps>) {
   const [instruction, setInstruction] = useState('')
   const { editSelection, isLoading, error } = useClaudeEdit()
   const canSubmit = instruction.trim() !== '' && !isLoading
@@ -27,6 +37,7 @@ export function ClaudePanel({ targetText, isSelection, onApply }: Readonly<Claud
     targetText.length > PREVIEW_LIMIT ? `${targetText.slice(0, PREVIEW_LIMIT)}…` : targetText
 
   const submit = async () => {
+    onStart?.()
     const rewritten = await editSelection(targetText, instruction)
     if (rewritten === null) return
     onApply(rewritten)

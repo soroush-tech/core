@@ -120,6 +120,29 @@ describe('App', () => {
     await waitFor(() => expect(source).toHaveValue('HELLO world'))
   })
 
+  it('rewrites only what was selected, even if the selection went away meanwhile', async () => {
+    let answer!: (value: unknown) => void
+    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
+    render(<App />)
+    const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
+    await userEvent.type(source, 'hello world')
+
+    source.setSelectionRange(0, 5)
+    fireEvent.select(source)
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'shout it')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    // Clicking into the document while Claude works collapses the selection.
+    source.setSelectionRange(11, 11)
+    fireEvent.select(source)
+
+    await act(async () => answer({ success: true, data: 'HELLO' }))
+
+    // The answer was about those five characters, so it replaces those — not
+    // the whole document.
+    await waitFor(() => expect(source).toHaveValue('HELLO world'))
+  })
+
   it('writes a whole document from an instruction when nothing is selected', async () => {
     claudeApi.editSelection.mockResolvedValue({ success: true, data: '# An article' })
     render(<App />)
