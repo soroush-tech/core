@@ -63,20 +63,20 @@ export function App() {
   // (which may be empty — pure generation).
   const targetText = hasSelection ? content.slice(start, end) : content
 
-  // What is in front of the user when an answer arrives — which document, and
-  // what is in it — rather than the copy captured when it was asked for.
-  const live = useRef({ content, revision })
+  // What is in the document when an answer arrives, rather than the copy
+  // captured when it was asked for.
+  const live = useRef(content)
   useLayoutEffect(() => {
-    live.current = { content, revision }
-  }, [content, revision])
+    live.current = content
+  }, [content])
 
   // What Claude was actually asked about, and the text that was in it. Held
   // from the moment the request starts, because the selection can move — or
   // collapse — while it runs, and an answer about a selection must never be
   // applied as a whole document.
-  const asked = useRef({ start, end, text: targetText, revision })
+  const asked = useRef({ start, end, text: targetText, revision: revision.current })
   const beginEdit = () => {
-    asked.current = { start, end, text: targetText, revision }
+    asked.current = { start, end, text: targetText, revision: revision.current }
   }
 
   /**
@@ -88,12 +88,12 @@ export function App() {
    * losing it silently.
    */
   const applyEdit = (rewritten: string) => {
-    const { content: current, revision: now } = live.current
+    const current = live.current
     const { start: from, end: to, text, revision: asWas } = asked.current
 
     // Matching text is not the same document: an empty one and a new one are
     // always alike, and two files can hold the same thing.
-    if (now !== asWas) return false
+    if (revision.current !== asWas) return false
 
     // Nothing was selected, so Claude was given the whole document.
     if (from === to) {

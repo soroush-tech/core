@@ -29,7 +29,11 @@ export function useDocument() {
   // tell that another has taken its place — two documents can hold the same
   // text, which is what an empty one and a new one always do. Editing and
   // saving stay on the same document, so neither moves it on.
-  const [revision, setRevision] = useState(0)
+  //
+  // A ref, advanced as the replacement is made rather than through state: a
+  // replacement schedules its state and returns, so an answer arriving in
+  // between would still read the document it replaced.
+  const revision = useRef(0)
 
   // Actions read the latest state through a ref so they stay stable across
   // renders. Assigned in a layout effect: a passive one runs after paint, and a
@@ -55,12 +59,17 @@ export function useDocument() {
    */
   const save = useCallback(async (forceDialog = false): Promise<boolean> => {
     const { filePath, origin, content } = documentRef.current
+    // The document this save is about. Another can take its place while the
+    // write is in flight, and what comes back says nothing about that one —
+    // marking it clean, or handing it this one's path, would be a lie.
+    const saved = revision.current
 
     if (origin && !forceDialog) {
       const staged = await window.editorAPI.gists.stage(origin.gistId, origin.filename, {
         status: 'modified',
         content,
       })
+      if (revision.current !== saved) return false
       if (!staged.success) {
         setError(staged.error)
         return false
@@ -73,6 +82,7 @@ export function useDocument() {
     }
 
     const result = await window.editorAPI.file.save(forceDialog ? null : filePath, content)
+    if (revision.current !== saved) return false
     if (!result.success) {
       setError(result.error)
       return false
@@ -108,8 +118,8 @@ export function useDocument() {
   const newDocument = useCallback(async () => {
     if (!(await confirmDiscardIfDirty())) return
     setError(null)
+    revision.current += 1
     setDocument(EMPTY_DOCUMENT)
-    setRevision((previous) => previous + 1)
   }, [confirmDiscardIfDirty])
 
   const open = useCallback(async () => {
@@ -118,8 +128,8 @@ export function useDocument() {
     if (!result.success) return setError(result.error)
     if (result.data === null) return
     setError(null)
+    revision.current += 1
     setDocument({ ...result.data, origin: null, isDirty: false })
-    setRevision((previous) => previous + 1)
   }, [confirmDiscardIfDirty])
 
   /**
@@ -131,8 +141,8 @@ export function useDocument() {
     async (content: string, origin: GistOrigin): Promise<boolean> => {
       if (!(await confirmDiscardIfDirty())) return false
       setError(null)
+      revision.current += 1
       setDocument({ content, filePath: null, origin, isDirty: false })
-      setRevision((previous) => previous + 1)
       return true
     },
     [confirmDiscardIfDirty]

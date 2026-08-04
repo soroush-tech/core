@@ -180,18 +180,62 @@ describe('useDocument', () => {
       data: { filePath: 'C:\\notes.md', content: '# notes' },
     })
     const { result } = renderHook(() => useDocument())
-    expect(result.current.revision).toBe(0)
+    expect(result.current.revision.current).toBe(0)
 
     await act(() => result.current.newDocument())
     await act(() => result.current.open())
     await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
-    expect(result.current.revision).toBe(3)
+    expect(result.current.revision.current).toBe(3)
 
     // Editing and saving stay on the same document, so work started against it
     // is still about this one.
     act(() => result.current.change('typed'))
     await act(() => result.current.save())
-    expect(result.current.revision).toBe(3)
+    expect(result.current.revision.current).toBe(3)
+  })
+
+  it('does not hand a finished save to the document that replaced it', async () => {
+    let written!: (result: unknown) => void
+    fileApi.save.mockReturnValue(new Promise((resolve) => (written = resolve)))
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'discard' })
+    const { result } = renderHook(() => useDocument())
+    act(() => result.current.change('draft'))
+
+    const saving = result.current.save()
+    // A gist file takes the document over while the write is still running.
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    await act(async () => written({ success: true, data: { filePath: 'C:\\notes.md' } }))
+
+    // Binding the gist file to that path would send the next save to disk and
+    // leave nothing to publish.
+    await expect(saving).resolves.toBe(false)
+    expect(result.current).toMatchObject({
+      filePath: null,
+      origin: { gistId: 'abc123', filename: 'notes.md' },
+      isDirty: false,
+    })
+  })
+
+  it('does not hand a finished stage to the document that replaced it', async () => {
+    let staged!: (result: unknown) => void
+    gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    const saving = result.current.save()
+    fileApi.open.mockResolvedValue({
+      success: true,
+      data: { filePath: 'C:\\other.md', content: '# other' },
+    })
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'discard' })
+    await act(() => result.current.open())
+    await act(async () => staged({ success: false, error: 'GitHub responded 404' }))
+
+    // The failure belongs to a document that is gone; the opened file is not
+    // the one to report it against.
+    await expect(saving).resolves.toBe(false)
+    expect(result.current).toMatchObject({ filePath: 'C:\\other.md', error: null })
   })
 
   it('leaves the document untouched when the open dialog is cancelled', async () => {
