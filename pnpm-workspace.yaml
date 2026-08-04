@@ -5,7 +5,10 @@ packages:
   - '!examples/*'
   - 'workers/*'
 
-allowBuilds:
+# pnpm 10: only these packages may run install/postinstall scripts
+# (electron needs its binary-download postinstall).
+onlyBuiltDependencies:
+  - electron
   - esbuild
   - sharp
   - unrs-resolver

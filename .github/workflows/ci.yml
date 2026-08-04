@@ -494,11 +494,16 @@ jobs:
       # data — no phantom-uncovered lines from the per-tier `all: true` reports — so `web` is the
       # authoritative report and the per-tier flags below stay informational. Uploaded FIRST so
       # the Codecov PR comment renders from this report.
+      #
+      # `test:coverage:web` is this app alone. The root `test:coverage` is recursive, so it
+      # ran every other workspace here too — each already covered by its own job, and the
+      # editor app starved of the runner it shares with the browser tiers until its tests
+      # timed out.
       - name: Run Web Coverage (merged)
         shell: bash
         run: |
-          echo "### 🧪 Web — \`test:coverage\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} run test:coverage
+          echo "### 🧪 Web — \`test:coverage:web\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
+          ${{ needs.prepare.outputs.runner }} run test:coverage:web
 
       - name: Upload Web Coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7

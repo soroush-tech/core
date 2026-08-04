@@ -16,6 +16,7 @@
     "gen:publish-options": "node scripts/gen-publish-options.mjs",
     "check:release-notes": "node scripts/check-release-notes.mjs",
     "dev": "pnpm --parallel -r dev",
+    "dev:editor": "pnpm --filter @soroush/editor dev",
     "dev:web": "pnpm --filter @soroush/web dev",
     "dev:api": "pnpm --filter @soroush/api dev",
     "build": "pnpm --filter @soroush/web build",
@@ -29,6 +30,8 @@
     "prebuild": "pnpm --filter @soroush/web prebuild",
     "test": "pnpm -r test",
     "test:coverage": "pnpm -r test:coverage",
+    "test:coverage:web": "pnpm --filter @soroush/web test:coverage",
+    "test:coverage:editor": "pnpm --filter @soroush/editor test:coverage",
     "test:coverage:unit": "pnpm --filter @soroush/web test:coverage:unit",
     "test:coverage:browser": "pnpm --filter @soroush/web test:coverage:browser",
     "test:coverage:storybook": "pnpm --filter @soroush/web test:coverage:storybook",
@@ -36,8 +39,11 @@
     "test:e2e": "pnpm --filter @soroush/web test:e2e",
     "test:e2e:firefox": "pnpm --filter @soroush/web test:e2e:firefox",
     "test:e2e:webkit": "pnpm --filter @soroush/web test:e2e:webkit",
+    "test:e2e:editor": "pnpm --filter @soroush/editor test:e2e",
+    "test:coverage:e2e:editor": "pnpm --filter @soroush/editor test:coverage:e2e",
     "coverage:check": "pnpm --filter @soroush/web coverage:check",
     "coverage:check:e2e": "pnpm --filter @soroush/web coverage:check:e2e",
+    "coverage:check:e2e:editor": "pnpm --filter @soroush/editor coverage:check:e2e",
     "deploy": "pnpm --filter @soroush/web deploy"
   },
   "devDependencies": {

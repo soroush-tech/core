@@ -23,14 +23,25 @@ Scope a run with `--project=unit` (etc.) and pass path filters: `vitest run --pr
 
 ## Coverage commands (`package.json`)
 
-| Command                        | Runs                                      |
-| ------------------------------ | ----------------------------------------- |
-| `pnpm test:coverage`           | all vitest projects                       |
-| `pnpm test:coverage:unit`      | `unit` project — **this is what CI runs** |
-| `pnpm test:coverage:browser`   | `unit-browser` project                    |
-| `pnpm test:coverage:storybook` | `storybook` project                       |
-| `pnpm test:coverage:e2e`       | Playwright (`E2E_COVERAGE=true`)          |
-| `pnpm test:coverage:ui`        | unit coverage, then opens the HTML report |
+| Command                        | Runs                                       |
+| ------------------------------ | ------------------------------------------ |
+| `pnpm test:coverage`           | every workspace, recursively               |
+| `pnpm test:coverage:web`       | the web app alone, all its vitest projects |
+| `pnpm test:coverage:unit`      | `unit` project — **this is what CI runs**  |
+| `pnpm test:coverage:browser`   | `unit-browser` project                     |
+| `pnpm test:coverage:storybook` | `storybook` project                        |
+| `pnpm test:coverage:e2e`       | Playwright (`E2E_COVERAGE=true`)           |
+| `pnpm test:coverage:ui`        | unit coverage, then opens the HTML report  |
+
+Unsuffixed commands mean the web app. The editor app has its own, since its suites
+must be addressable without dragging the web app's along:
+
+| Command                          | Runs                                     |
+| -------------------------------- | ---------------------------------------- |
+| `pnpm test:coverage:editor`      | editor unit tier (jsdom vitest)          |
+| `pnpm test:e2e:editor`           | editor e2e tier (Playwright-Electron)    |
+| `pnpm test:coverage:e2e:editor`  | the same, with coverage                  |
+| `pnpm coverage:check:e2e:editor` | per-file gate over the editor's e2e lcov |
 
 ## Where coverage output lands
 
