@@ -59,22 +59,22 @@
     "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.1",
     "monocart-coverage-reports": "^2.12.12"
   },
   "dependencies": {
     "picomatch": "^4.0.5"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.1",
     "@soroush.tech/eslint-config": "workspace:*",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "@types/picomatch": "^4.0.3",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.7.0",
-    "globals": "^17.7.0",
+    "eslint": "^10.8.0",
+    "globals": "^17.9.0",
     "monocart-coverage-reports": "^2.12.12",
-    "tsdown": "^0.22.7",
+    "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }

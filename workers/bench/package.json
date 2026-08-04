@@ -22,14 +22,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260714.1",
+    "@cloudflare/workers-types": "^5.20260804.1",
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/wrangler-tools": "workspace:*",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.7.0",
-    "globals": "^17.7.0",
+    "eslint": "^10.8.0",
+    "globals": "^17.9.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10",
-    "wrangler": "^4.110.0"
+    "wrangler": "^4.118.0"
   }
 }
