@@ -188,6 +188,32 @@ describe('App', () => {
     )
   })
 
+  it('drops the answer when another document holding the same text took over', async () => {
+    let answer!: (value: unknown) => void
+    claudeApi.editSelection.mockReturnValue(new Promise((resolve) => (answer = resolve)))
+    fileApi.confirmDiscard.mockResolvedValue({ success: true, data: 'discard' })
+    fileApi.open.mockResolvedValue({
+      success: true,
+      data: { filePath: 'C:\\other.md', content: 'hello' },
+    })
+    render(<App />)
+    const source = screen.getByLabelText<HTMLTextAreaElement>('Markdown source')
+    await userEvent.type(source, 'hello')
+
+    await userEvent.type(screen.getByLabelText('Edit instruction'), 'shout it')
+    await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
+
+    // Another file is opened while Claude works, and it happens to hold the
+    // same text — which is not the same as being the document it was asked about.
+    await dispatchMenu('open')
+    await act(async () => answer({ success: true, data: 'HELLO' }))
+
+    expect(source).toHaveValue('hello')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The document changed while Claude was working — the edit was not applied.'
+    )
+  })
+
   it('writes a whole document from an instruction when nothing is selected', async () => {
     claudeApi.editSelection.mockResolvedValue({ success: true, data: '# An article' })
     render(<App />)

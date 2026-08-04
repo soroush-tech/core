@@ -174,6 +174,26 @@ describe('useDocument', () => {
     })
   })
 
+  it('counts the documents that replace one another, but not edits or saves', async () => {
+    fileApi.open.mockResolvedValue({
+      success: true,
+      data: { filePath: 'C:\\notes.md', content: '# notes' },
+    })
+    const { result } = renderHook(() => useDocument())
+    expect(result.current.revision).toBe(0)
+
+    await act(() => result.current.newDocument())
+    await act(() => result.current.open())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    expect(result.current.revision).toBe(3)
+
+    // Editing and saving stay on the same document, so work started against it
+    // is still about this one.
+    act(() => result.current.change('typed'))
+    await act(() => result.current.save())
+    expect(result.current.revision).toBe(3)
+  })
+
   it('leaves the document untouched when the open dialog is cancelled', async () => {
     fileApi.open.mockResolvedValue({ success: true, data: null })
     const { result } = renderHook(() => useDocument())

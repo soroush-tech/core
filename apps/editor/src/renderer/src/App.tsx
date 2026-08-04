@@ -13,8 +13,19 @@ import { editorTheme } from './theme/editorTheme'
 import { GlobalStyles } from './theme/GlobalStyles'
 
 export function App() {
-  const { content, filePath, origin, isDirty, error, change, newDocument, open, load, save } =
-    useDocument()
+  const {
+    content,
+    filePath,
+    origin,
+    isDirty,
+    revision,
+    error,
+    change,
+    newDocument,
+    open,
+    load,
+    save,
+  } = useDocument()
   const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
 
@@ -52,33 +63,37 @@ export function App() {
   // (which may be empty — pure generation).
   const targetText = hasSelection ? content.slice(start, end) : content
 
-  // The document may move on while Claude is working: the rewrite is spliced
-  // into what is there when the answer arrives, not into the copy captured
-  // when it was asked for.
-  const live = useRef({ content, start, end })
+  // What is in front of the user when an answer arrives — which document, and
+  // what is in it — rather than the copy captured when it was asked for.
+  const live = useRef({ content, revision })
   useLayoutEffect(() => {
-    live.current = { content, start, end }
-  }, [content, start, end])
+    live.current = { content, revision }
+  }, [content, revision])
 
   // What Claude was actually asked about, and the text that was in it. Held
   // from the moment the request starts, because the selection can move — or
   // collapse — while it runs, and an answer about a selection must never be
   // applied as a whole document.
-  const asked = useRef({ start, end, text: targetText })
+  const asked = useRef({ start, end, text: targetText, revision })
   const beginEdit = () => {
-    asked.current = { start, end, text: targetText }
+    asked.current = { start, end, text: targetText, revision }
   }
 
   /**
-   * Splices the rewrite over what Claude was given — but only if that text is
-   * still exactly where it was. Typing, undo/redo, or opening another file
-   * while the request runs would otherwise land the answer at shifted offsets,
-   * or in a document Claude never saw. Returns false when it was dropped, so
-   * the panel can say so rather than losing it silently.
+   * Splices the rewrite over what Claude was given — but only if it is still
+   * the same document, and that text is still exactly where it was. Typing,
+   * undo/redo, or opening another file while the request runs would otherwise
+   * land the answer at shifted offsets, or in a document Claude never saw.
+   * Returns false when it was dropped, so the panel can say so rather than
+   * losing it silently.
    */
   const applyEdit = (rewritten: string) => {
-    const { content: current } = live.current
-    const { start: from, end: to, text } = asked.current
+    const { content: current, revision: now } = live.current
+    const { start: from, end: to, text, revision: asWas } = asked.current
+
+    // Matching text is not the same document: an empty one and a new one are
+    // always alike, and two files can hold the same thing.
+    if (now !== asWas) return false
 
     // Nothing was selected, so Claude was given the whole document.
     if (from === to) {

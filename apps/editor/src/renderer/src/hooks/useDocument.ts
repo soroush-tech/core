@@ -25,6 +25,12 @@ export function useDocument() {
   const [document, setDocument] = useState<DocumentState>(EMPTY_DOCUMENT)
   const [error, setError] = useState<string | null>(null)
 
+  // Counts wholesale replacements, so work started against one document can
+  // tell that another has taken its place — two documents can hold the same
+  // text, which is what an empty one and a new one always do. Editing and
+  // saving stay on the same document, so neither moves it on.
+  const [revision, setRevision] = useState(0)
+
   // Actions read the latest state through a ref so they stay stable across
   // renders. Assigned in a layout effect: a passive one runs after paint, and a
   // save fired in between would write the content as it was a render ago.
@@ -103,6 +109,7 @@ export function useDocument() {
     if (!(await confirmDiscardIfDirty())) return
     setError(null)
     setDocument(EMPTY_DOCUMENT)
+    setRevision((previous) => previous + 1)
   }, [confirmDiscardIfDirty])
 
   const open = useCallback(async () => {
@@ -112,6 +119,7 @@ export function useDocument() {
     if (result.data === null) return
     setError(null)
     setDocument({ ...result.data, origin: null, isDirty: false })
+    setRevision((previous) => previous + 1)
   }, [confirmDiscardIfDirty])
 
   /**
@@ -124,10 +132,11 @@ export function useDocument() {
       if (!(await confirmDiscardIfDirty())) return false
       setError(null)
       setDocument({ content, filePath: null, origin, isDirty: false })
+      setRevision((previous) => previous + 1)
       return true
     },
     [confirmDiscardIfDirty]
   )
 
-  return { ...document, error, change, newDocument, open, load, save }
+  return { ...document, revision, error, change, newDocument, open, load, save }
 }
