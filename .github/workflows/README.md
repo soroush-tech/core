@@ -1,7 +1,7 @@
 # GitHub Actions workflows
 
-This directory holds the CI/CD pipeline for the `soroush.tech` monorepo. There is
-**one** CI workflow for the whole workspace, **four** deployment workflows, a main-only
+This directory holds the CI/CD pipeline for the `soroush.tech` monorepo. The CI
+entry workflow calls **four** area workflows (packages, workers, web, editor), and there are **four** deployment workflows, a main-only
 Chromatic visual-review workflow, and an issue-labeling automation. The three deploys
 (`cd-web`, `cd-worker-api`, `cd-worker-bench`) are gated on CI success and never run off a
 raw `push`; package publishing (`cd-packages`) is **manual `workflow_dispatch` only**.
@@ -9,6 +9,11 @@ raw `push`; package publishing (`cd-packages`) is **manual `workflow_dispatch` o
 | File                                           | Name                      | Trigger                                                      |
 | ---------------------------------------------- | ------------------------- | ------------------------------------------------------------ |
 | [`ci.yml`](./ci.yml)                           | `Continuous Integration`  | `push` to `main`, every `pull_request`                       |
+| [`ci-packages.yml`](./ci-packages.yml)         | CI · Packages             | `workflow_call` from `ci.yml`                                |
+| [`ci-worker.yml`](./ci-worker.yml)             | CI · Workers              | `workflow_call` from `ci.yml`                                |
+| [`ci-app.yml`](./ci-app.yml)                   | CI · Apps                 | `workflow_call` from `ci.yml`                                |
+| [`ci-web.yml`](./ci-web.yml)                   | CI · Web                  | `workflow_call` from `ci-app.yml`                            |
+| [`ci-editor.yml`](./ci-editor.yml)             | CI · Editor               | `workflow_call` from `ci-app.yml`                            |
 | [`cd-web.yml`](./cd-web.yml)                   | Pages + Storybook deploy  | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-worker-api.yml`](./cd-worker-api.yml)     | Cloudflare Worker deploy  | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-worker-bench.yml`](./cd-worker-bench.yml) | Bench relay Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
@@ -17,7 +22,7 @@ raw `push`; package publishing (`cd-packages`) is **manual `workflow_dispatch` o
 | [`label-area.yml`](./label-area.yml)           | Label Affected Area       | `issues` `opened`                                            |
 
 **Per-workflow deep dives** (every step + caching):
-[`ci.md`](./ci.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-worker-bench.md`](./cd-worker-bench.md) · [`cd-packages.md`](./cd-packages.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
+[`ci.md`](./ci.md) · [`ci-packages.md`](./ci-packages.md) · [`ci-worker.md`](./ci-worker.md) · [`ci-app.md`](./ci-app.md) · [`ci-web.md`](./ci-web.md) · [`ci-editor.md`](./ci-editor.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-worker-bench.md`](./cd-worker-bench.md) · [`cd-packages.md`](./cd-packages.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
 
 ## How the pieces fit together
 
@@ -65,27 +70,18 @@ job actually failed or was cancelled.
 flowchart TD
     prepare["prepare<br/>• node version (.nvmrc)<br/>• package manager<br/>• playwright version<br/>• changed entities → changes.json<br/>• upload changes.json"]
     lint["lint<br/>lint + typecheck (recursive)"]
-    packages["packages (matrix)<br/>if has_packages == true"]
-    bench["bench<br/>if styled-system / bench changed<br/>(runs soroush-tech/bench-action)"]
-    worker["worker<br/>if worker == true"]
-    workerbench["worker-bench<br/>if worker_bench == true"]
-    web["web (ubuntu)<br/>if web == true"]
-    e2e["e2e (matrix)<br/>if web == true"]
+    packages["packages → ci-packages.yml<br/>matrix + bench<br/>if has_packages == true"]
+    worker["worker → ci-worker.yml<br/>matrix<br/>if has_workers == true"]
+    app["app → ci-app.yml<br/>→ ci-web.yml (web + e2e)<br/>→ ci-editor.yml (unit + Electron)<br/>if web or editor"]
     ciok["ci-ok<br/>branch-protection gate<br/>(if: always)"]
 
     prepare --> lint
     lint --> packages
-    lint --> bench
     lint --> worker
-    lint --> workerbench
-    lint --> web
-    web --> e2e
+    lint --> app
     packages --> ciok
-    bench --> ciok
     worker --> ciok
-    workerbench --> ciok
-    web --> ciok
-    e2e --> ciok
+    app --> ciok
     lint --> ciok
     prepare --> ciok
 ```
@@ -100,18 +96,30 @@ Detect once, reuse via `needs.prepare.outputs.*` — node version is always read
 | `node_version`                      | `.nvmrc`                                                                                        |
 | `manager` / `command` / `runner`    | presence of `pnpm-lock.yaml` / `yarn.lock` / etc.                                               |
 | `playwright_version`                | `@playwright/test` version in `apps/web/package.json` (used in the Playwright binary cache key) |
-| `web` / `worker` / `worker_bench`   | derived booleans for the CI jobs (own area, a bundled dep, or infra changed)                    |
-| `has_packages` / `changed_packages` | the CI `packages` matrix (changed packages, or all on an infra change)                          |
+| `web` / `editor`                    | derived booleans: the app, a package it declares, or infra changed                              |
+| `has_packages` / `changed_packages` | the package matrix passed to `ci-packages.yml`                                                  |
+| `has_workers` / `changed_workers`   | the worker matrix passed to `ci-worker.yml`                                                     |
 
 CI also writes the [`changes.json`](./ci.md#changesjson) artifact the CD side reads.
 
 ### Change detection
 
 A per-entity `dorny/paths-filter` config is generated from the workspace: one key per
-app, worker, package, and workflow file, plus `root` (top-level files only). The
-matched keys become the `changes.json` lists. Dependency and infra policy is **not**
+app, worker, package, and workflow file, plus one **per root file** (top-level files only).
+The matched keys become the `changes.json` lists. Dependency and infra policy is **not**
 baked into the filters — it lives in each consumer's condition (CI gating in
 `prepare`, deploy/publish gating in each CD workflow).
+
+Two rules keep a run to what it is about, both in
+[`scripts/assemble-changes.mjs`](../../scripts/assemble-changes.mjs):
+
+- **Who runs is derived from the tree**, not listed. A member runs when it changed or when a
+  package it declares as a `workspace:` dependency changed, so `packages/schema` runs the web app
+  and the API worker that share it — and nothing else.
+- **A workflow file validates what it runs**, declared on its own line 1 as `# ci:validates …`:
+  `all` for `ci.yml`, `pkg__*` for the package workflow, `app__web` for the web one, `nothing` for a
+  deploy CI never executes. No table kept elsewhere — the scope sits beside the jobs it describes,
+  and an unmarked or unparseable claim means the whole workspace, so a new file can only over-run.
 
 ```mermaid
 flowchart LR
@@ -120,7 +128,7 @@ flowchart LR
         workerf["worker__&lt;name&gt;:<br/>workers/&lt;name&gt;/**"]
         pkgf["pkg__&lt;name&gt;:<br/>packages/&lt;name&gt;/**"]
         wff["wf__&lt;name&gt;:<br/>.github/workflows/&lt;name&gt;.yml"]
-        rootf["root:<br/>top-level files"]
+        rootf["root__&lt;file&gt;:<br/>one per top-level file"]
     end
     filters --> cj[("changes.json")]
 ```
@@ -138,12 +146,14 @@ platform (macOS ~10× cost — WebKit only). It `needs: web`, so a `web` failure
 the chromium row runs with coverage and uploads the `e2e` flag; Playwright's `webServer`
 builds/serves the app, so there is no separate build step.
 
-| Job / Step                                        | ubuntu | windows | macOS |
-| ------------------------------------------------- | :----: | :-----: | :---: |
-| **web** — build + unit/browser/storybook coverage |   ✅   |         |       |
-| **e2e** Chromium (+ coverage)                     |   ✅   |         |       |
-| **e2e** Firefox                                   |        |   ✅    |       |
-| **e2e** WebKit                                    |        |         |  ✅   |
+| Job / Step                                         | ubuntu | windows | macOS |
+| -------------------------------------------------- | :----: | :-----: | :---: |
+| **packages / worker** — one row per changed member |   ✅   |         |       |
+| **web** — build + unit/browser/storybook coverage  |   ✅   |         |       |
+| **e2e** Chromium (+ coverage)                      |   ✅   |         |       |
+| **e2e** Firefox                                    |        |   ✅    |       |
+| **e2e** WebKit                                     |        |         |  ✅   |
+| **editor** — unit tier + Electron under xvfb       |   ✅   |         |       |
 
 The Playwright browser binaries are cached by `runner.os` + Playwright version, with a
 fixed `PLAYWRIGHT_BROWSERS_PATH`; `web` and the `e2e` chromium row share the ubuntu cache.
@@ -154,15 +164,17 @@ Each workspace emits its own `coverage/lcov.info` and uploads under its own **fl
 Codecov merges uploads by commit SHA. 100% coverage is enforced inside each
 `vitest.config` — Codecov is for reporting, not the gate.
 
-| Flag                 | Source                              |
-| -------------------- | ----------------------------------- |
-| `<pkg>` (per matrix) | `packages/<pkg>/coverage/lcov.info` |
-| `api`                | `workers/api/coverage/lcov.info`    |
-| `bench-api`          | `workers/bench/coverage/lcov.info`  |
-| `unit`               | web unit (jsdom)                    |
-| `browser`            | web browser-mode unit               |
-| `storybook`          | Storybook test runner               |
-| `e2e`                | web Playwright (`coverage/e2e`)     |
+| Flag                 | Source                            |
+| -------------------- | --------------------------------- |
+| `<member>` (per row) | `<area>/<dir>/coverage/lcov.info` |
+| `api`                | `workers/api` (a matrix row)      |
+| `bench-api`          | `workers/bench` (a matrix row)    |
+| `editor`             | editor unit tier (a matrix row)   |
+| `editor-e2e`         | editor Playwright-Electron        |
+| `unit`               | web unit (jsdom)                  |
+| `browser`            | web browser-mode unit             |
+| `storybook`          | Storybook test runner             |
+| `e2e`                | web Playwright (`coverage/e2e`)   |
 
 ## `cd-web.yml` — GitHub Pages + Storybook deploy
 

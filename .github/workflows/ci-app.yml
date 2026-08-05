@@ -1,0 +1,46 @@
+# ci:validates app__*
+# Editing this file re-runs every app, since it decides how each of them is run.
+name: CI · Apps
+
+# Called by ci.yml, and calls one workflow per app in turn. The apps do not share a shape — the
+# site builds and covers three tiers across three browser engines, the editor drives Electron
+# under a display — so each keeps its own file and its own `ci:validates` marker, and editing one
+# re-runs only that app. What this layer buys is that adding a third app touches this file rather
+# than the entry workflow, which holds prepare, lint and the branch-protection check.
+on:
+  workflow_call:
+    inputs:
+      node_version: { required: true, type: string }
+      manager: { required: true, type: string }
+      command: { required: true, type: string }
+      runner: { required: true, type: string }
+      playwright_version: { required: true, type: string }
+      web: { required: true, type: string }
+      editor: { required: true, type: string }
+
+jobs:
+  web:
+    if: inputs.web == 'true'
+    uses: ./.github/workflows/ci-web.yml
+    permissions:
+      contents: read
+      id-token: write # e2e's tokenless Codecov upload
+    secrets: inherit
+    with:
+      node_version: ${{ inputs.node_version }}
+      manager: ${{ inputs.manager }}
+      command: ${{ inputs.command }}
+      runner: ${{ inputs.runner }}
+      playwright_version: ${{ inputs.playwright_version }}
+
+  editor:
+    if: inputs.editor == 'true'
+    uses: ./.github/workflows/ci-editor.yml
+    permissions:
+      contents: read
+      id-token: write # both editor uploads are tokenless, keeping this off the CI environment
+    with:
+      node_version: ${{ inputs.node_version }}
+      manager: ${{ inputs.manager }}
+      command: ${{ inputs.command }}
+      runner: ${{ inputs.runner }}

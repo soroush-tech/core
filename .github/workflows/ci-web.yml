@@ -1,0 +1,241 @@
+# ci:validates app__web
+# Editing this file re-runs the web app it holds, and nothing outside it.
+name: CI · Web
+
+# Called by ci.yml. The web app's own shape: a build, three coverage tiers in one V8 pass, and
+# the tri-OS Playwright matrix. `e2e` stays in this file with `web` — it reads `vite_base_url`
+# from it precisely so it can stay off the CI environment and add no second approval prompt.
+on:
+  workflow_call:
+    inputs:
+      node_version: { required: true, type: string }
+      manager: { required: true, type: string }
+      command: { required: true, type: string }
+      runner: { required: true, type: string }
+      playwright_version: { required: true, type: string }
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: CI
+    timeout-minutes: 30
+    # Forward the CI-environment-scoped `VITE_BASE_URL` to the `e2e` job, which can't read it
+    # itself (it stays off the environment to avoid a second approval). Non-secret value.
+    outputs:
+      vite_base_url: ${{ vars.VITE_BASE_URL }}
+
+    # Pin the browser download location so the cache path/key is stable and shared with the
+    # `e2e` job's chromium row on the same runner OS.
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # full history for Codecov base detection
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      - name: Restore cache - Playwright binaries
+        uses: actions/cache/restore@v5
+        id: playwright-cache
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      # Only Chromium is needed here — the unit-browser and storybook tiers run headless Chromium.
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @soroush/web exec playwright install --with-deps chromium
+
+      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @soroush/web exec playwright install-deps chromium
+
+      - name: Save cache - Playwright binaries
+        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      - name: Build project
+        run: ${{ inputs.runner }} run build
+        env:
+          SKIP_PRERENDER: 'true'
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag that
+      # `.codecov.yml` gates patch on. A single pass reports each file once with real execution
+      # data — no phantom-uncovered lines from the per-tier `all: true` reports — so `web` is the
+      # authoritative report and the per-tier flags below stay informational. Uploaded FIRST so
+      # the Codecov PR comment renders from this report.
+      #
+      # `test:coverage:web` is this app alone. The root `test:coverage` is recursive, so it
+      # ran every other workspace here too — each already covered by its own job, and the
+      # editor app starved of the runner it shares with the browser tiers until its tests
+      # timed out.
+      - name: Run Web Coverage (merged)
+        shell: bash
+        run: |
+          echo "### 🧪 Web — \`test:coverage:web\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
+          ${{ inputs.runner }} run test:coverage:web
+
+      - name: Upload Web Coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/web/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: web
+          name: Web
+
+      - name: Run Unit Tests with Coverage
+        shell: bash
+        run: |
+          echo "### 🧪 Unit — \`test:coverage:unit\`" >> "$GITHUB_STEP_SUMMARY"
+          ${{ inputs.runner }} run test:coverage:unit
+
+      - name: Upload Unit Coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/web/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: unit
+          name: Unit
+
+      - name: Run Browser Tests with Coverage
+        shell: bash
+        run: |
+          echo "### 🧪 Browser — \`test:coverage:browser\`" >> "$GITHUB_STEP_SUMMARY"
+          ${{ inputs.runner }} run test:coverage:browser
+
+      - name: Upload Browser Coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/web/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: browser
+          name: Browser
+
+      - name: Run Storybook Tests with Coverage
+        shell: bash
+        run: |
+          echo "### 🧪 Storybook — \`test:coverage:storybook\`" >> "$GITHUB_STEP_SUMMARY"
+          ${{ inputs.runner }} run test:coverage:storybook
+
+      - name: Upload Storybook Coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./apps/web/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: storybook
+          name: Storybook
+
+  # E2E: one engine per native OS. Chromium (ubuntu) runs with coverage → the `e2e` flag; Firefox
+  # (windows) and WebKit (macOS) run for cross-engine signal only. Playwright's `webServer` builds
+  # and serves the app, so there is no separate build step.
+  e2e:
+    needs: [web]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      id-token: write # tokenless (OIDC) Codecov upload — see the upload step
+    # No `environment: CI` on purpose — that would prompt a SECOND approval when e2e reaches the
+    # gate in its own (post-web) wave. e2e still needs the CI-environment-scoped `VITE_BASE_URL`
+    # (the dev-server SSR fetch in the article page's data() hook needs an absolute base, else the
+    # relative `/gists/:id` URL throws in Node and the article title falls back to a placeholder),
+    # so the already-gated `web` job reads it and forwards it via `needs.web.outputs.vite_base_url`.
+    timeout-minutes: 30
+
+    # Pin the browser download location so one cache path/key works on every OS.
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, engine: chromium, script: test:coverage:e2e, coverage: true }
+          - { os: windows-latest, engine: firefox, script: test:e2e:firefox }
+          - { os: macOS-latest, engine: webkit, script: test:e2e:webkit }
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      - name: Restore cache - Playwright binaries
+        uses: actions/cache/restore@v5
+        id: playwright-cache
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @soroush/web exec playwright install --with-deps ${{ matrix.engine }}
+
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true' && runner.os == 'Linux'
+        run: pnpm --filter @soroush/web exec playwright install-deps ${{ matrix.engine }}
+
+      - name: Save cache - Playwright binaries
+        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      - name: Run E2E (${{ matrix.engine }})
+        run: ${{ inputs.runner }} run ${{ matrix.script }}
+        env:
+          # From the `web` job's output — e2e is off the CI environment, so it can't read the
+          # env-scoped `vars.VITE_BASE_URL` directly (see the job-level comment above).
+          VITE_BASE_URL: ${{ needs.web.outputs.vite_base_url }}
+
+      - name: Upload E2E Coverage to Codecov
+        if: matrix.coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          use_oidc: true # tokenless upload (public repo) so e2e needs no CI-environment secret
+          files: ./apps/web/coverage/e2e/lcov.info
+          slug: soroush-tech/core
+          flags: e2e
+          name: E2E

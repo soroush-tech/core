@@ -1,3 +1,5 @@
+# ci:validates nothing
+# CI never runs this workflow, so no job here could prove anything about it.
 name: Publish Packages (npm)
 
 # Publishes non-private packages to npm via Trusted Publishing (OIDC): a single named

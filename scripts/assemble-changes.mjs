@@ -126,8 +126,10 @@ export function attributeLockfile(base, head) {
   )
 
   if (moved.length === 0 || moved.includes('.')) return null
-  const keys = moved.map(toFilterKey)
-  // An importer outside apps/workers/packages is a member CI does not know how to run on its own.
+  // `labs/*` is a bench experiment: no lint, no tests, no job. A dependency of its own asks for
+  // nothing here, rather than for the whole workspace because nothing knows what to do with it.
+  const keys = moved.filter((importer) => !importer.startsWith('labs/')).map(toFilterKey)
+  // An importer outside those areas is a member CI does not know how to run on its own.
   return keys.includes(null) ? null : keys
 }
 
@@ -142,52 +144,170 @@ export function packageJsonMattersBeyondScripts(base, head) {
 }
 
 /**
- * What ran, from what changed. Pure: `changed` is the paths-filter result, `attributed` is what
- * the root files were found to mean (extra filter keys, or `wholeWorkspace`).
+ * What a changed workflow file asks to be re-validated, from the `# ci:validates` marker it
+ * carries. A workflow says this about itself rather than being looked up in a table kept
+ * elsewhere: the scope belongs beside the jobs it describes, so moving a job means editing the
+ * file whose marker would have to change anyway.
+ *
+ *   # ci:validates all           → the whole workspace (`ci.yml`: it decides how every job runs)
+ *   # ci:validates nothing       → nothing (a deploy, Chromatic, the labeller: CI never runs them)
+ *   # ci:validates app__web      → those filter keys
+ *
+ * An unmarked workflow means the whole workspace. A new file can only ever over-run.
  */
-export function assembleChanges({ changed, allPackages, attributed = [], wholeWorkspace = false }) {
-  const keys = new Set([...changed, ...attributed])
-  const pick = (prefix) =>
-    [...keys].filter((key) => key.startsWith(prefix)).map((key) => key.slice(prefix.length))
+export function workflowValidates(name) {
+  let source
+  try {
+    source = readFileSync(join(repoRoot, '.github/workflows', `${name}.yml`), 'utf8')
+  } catch {
+    // Deleted in this very change: there is nothing left to read, so nothing is claimed.
+    return { keys: [], wholeWorkspace: false }
+  }
 
-  const apps = pick('app__')
-  const worker = pick('worker__')
-  const packages = pick('pkg__')
-  const workflows = pick('wf__')
+  const [, marker] = /^#\s*ci:validates\s+(.+)$/m.exec(source) ?? []
+  if (!marker) return { keys: [], wholeWorkspace: true }
 
-  // A workflow change re-validates everything for the same reason a root file does: it changes
-  // how every job runs, and the run proving that is this one.
-  const infra = wholeWorkspace || workflows.length > 0
-  const pkgsForCI = infra ? allPackages : packages
-  // A package the lockfile mentions but the tree no longer has — deleted or renamed —
-  // has nothing left to run, and reading a manifest that is gone would take the whole
-  // job down. `changes.packages` keeps it, so a CD workflow can still see it went.
-  const toRun = pkgsForCI.filter((dir) => allPackages.includes(dir))
+  // The marker line carries tokens and nothing else — prose belongs on the line below it. An
+  // unreadable token means the whole workspace rather than a guess: a marker nobody can parse
+  // must over-run, never quietly under-run. (It is not hypothetical: "…and nothing else" in a
+  // trailing explanation once made a file claim it validated nothing.)
+  const claimed = marker.trim().split(/\s+/)
+  const known = /^(all|nothing|(app|worker|pkg)__([\w.-]+|\*))$/
+  if (claimed.some((token) => !known.test(token))) return { keys: [], wholeWorkspace: true }
+
+  if (claimed.includes('all')) return { keys: [], wholeWorkspace: true }
+  if (claimed.includes('nothing')) return { keys: [], wholeWorkspace: false }
+  return { keys: claimed, wholeWorkspace: false }
+}
+
+/**
+ * What the changed workflow files mean between them: extra filter keys to re-validate, and
+ * whether any of them means the lot.
+ */
+export function attributeWorkflows(workflows) {
+  const claims = workflows.map((name) => ({ name, ...workflowValidates(name) }))
+  return {
+    keys: claims.flatMap(({ keys }) => keys),
+    wholeWorkspace: claims.some((claim) => claim.wholeWorkspace),
+    reasons: claims.map(
+      ({ name, keys, wholeWorkspace }) =>
+        `${name}.yml changed — ${wholeWorkspace ? 'it decides how every job runs' : keys.join(', ') || 'CI never runs it'}`
+    ),
+  }
+}
+
+/** A member's manifest, read from disk: `prepare` runs before anything is installed. */
+const readManifest = (area, dir) =>
+  JSON.parse(readFileSync(join(repoRoot, area, dir, 'package.json'), 'utf8'))
+
+/**
+ * One matrix row: where the member lives, what to filter pnpm by, and the Codecov flag it uploads
+ * under. The flag is the unscoped package name rather than the directory, because two members are
+ * called `bench` — `packages/bench` owns the flag `bench`, and `workers/bench` is `bench-api`.
+ */
+function toRow(area, dir) {
+  const pkg = readManifest(area, dir)
+  return {
+    area,
+    dir,
+    filter: pkg.name,
+    flag: pkg.name.split('/').pop(),
+    // A real-browser vitest tier declares `playwright` itself and needs Chromium downloaded
+    // first. A member with an e2e script of its own declares it for that instead — the editor's
+    // Electron ships its own Chromium, so downloading another would be a minute spent on nothing.
+    browsers:
+      Boolean(pkg.devDependencies?.playwright ?? pkg.dependencies?.playwright) &&
+      !pkg.scripts?.['test:e2e'],
+  }
+}
+
+/**
+ * What ran, from what changed. Pure: `changed` is the paths-filter result, `members` is every
+ * workspace member by area, and `attributed` is what the root files were found to mean.
+ */
+export function assembleChanges({
+  changed,
+  members,
+  attributed = [],
+  revalidate = [],
+  revalidateAll = false,
+  wholeWorkspace = false,
+}) {
+  // A workflow asking for every job is not the same fact as the workspace having changed.
+  // `changes.root` is the second one only: the CD workflows deploy on it, and editing `ci.yml`
+  // must re-run the tests without shipping the site and both workers.
+  const everything = wholeWorkspace || revalidateAll
+  // What the tree actually says changed — this is what `changes.json` reports and what the CD
+  // workflows deploy from. A workflow file asking for a job to run is not a change to that area,
+  // so it stays out of here: putting `web` in `changes.apps` because `ci-web.yml` moved would
+  // deploy the site off a CI edit.
+  // `pkg__*` in a marker means every package: a workflow that runs the package matrix asks for
+  // all of them without naming twelve directories it would have to be kept in step with.
+  const expand = (token) => {
+    const [, prefix] = /^(app__|worker__|pkg__)\*$/.exec(token) ?? []
+    if (prefix === undefined) return [token]
+    const area = { app__: 'apps', worker__: 'workers', pkg__: 'packages' }[prefix]
+    return members[area].map((dir) => `${prefix}${dir}`)
+  }
+
+  const recorded = new Set([...changed, ...attributed])
+  const gating = new Set([...recorded, ...revalidate.flatMap(expand)])
+
+  const pick = (from, prefix) =>
+    [...from].filter((key) => key.startsWith(prefix)).map((key) => key.slice(prefix.length))
+
+  const apps = pick(recorded, 'app__')
+  const worker = pick(recorded, 'worker__')
+  const packages = pick(recorded, 'pkg__')
+  const workflows = pick(recorded, 'wf__')
+
+  const asked = {
+    apps: pick(gating, 'app__'),
+    workers: pick(gating, 'worker__'),
+    packages: pick(gating, 'pkg__'),
+  }
+
+  // What each package is called, so a `workspace:` range can be traced back to a directory.
+  const dirOf = new Map(members.packages.map((dir) => [readManifest('packages', dir).name, dir]))
+
+  /**
+   * A member runs when it changed, when a workflow asked for it, or when a package it declares
+   * changed. Derived rather than listed: a hand-written list of consumers is a list to forget the
+   * day a dependency moves. Only a real change propagates along those edges — a workflow that
+   * asks for the packages says nothing about the apps that consume them.
+   */
+  const runs = (area, dir) => {
+    if (everything) return true
+    if (asked[area].includes(dir)) return true
+
+    const manifest = readManifest(area, dir)
+    const declared = { ...manifest.dependencies, ...manifest.devDependencies }
+    return (
+      Object.entries(declared)
+        .filter(([, range]) => String(range).startsWith('workspace:'))
+        .map(([name]) => dirOf.get(name))
+        // `eslint-config` is proved by `lint`, not by re-running every consumer's suite.
+        .some((dep) => dep !== undefined && dep !== 'eslint-config' && packages.includes(dep))
+    )
+  }
+
+  const matrix = (area) => {
+    const dirs = members[area].filter((dir) => runs(area, dir))
+    return { has: dirs.length > 0, include: dirs.map((dir) => toRow(area, dir)) }
+  }
+  const changedPackages = matrix('packages')
+  const changedWorkers = matrix('workers')
 
   return {
     changes: { apps, worker, packages, workflows, root: wholeWorkspace },
     outputs: {
-      web: apps.includes('web') || packages.length > 0 || infra,
-      worker:
-        worker.includes('api') ||
-        packages.includes('schema') ||
-        packages.includes('wrangler-tools') ||
-        infra,
-      worker_bench: worker.includes('bench') || packages.includes('wrangler-tools') || infra,
-      has_packages: toRun.length > 0,
-      // `browsers` marks a package with a real-browser vitest tier — it declares `playwright`
-      // itself, and its CI row has to install Chromium first.
-      changed_packages: {
-        include: toRun.map((dir) => {
-          const pkg = JSON.parse(
-            readFileSync(join(repoRoot, 'packages', dir, 'package.json'), 'utf8')
-          )
-          const browsers = Boolean(
-            pkg.devDependencies?.playwright ?? pkg.dependencies?.playwright ?? false
-          )
-          return { dir, filter: pkg.name, flag: dir, browsers }
-        }),
-      },
+      // The two apps have a workflow each, so they gate on a boolean rather than a matrix row.
+      web: runs('apps', 'web'),
+      editor: members.apps.includes('editor') && runs('apps', 'editor'),
+      has_packages: changedPackages.has,
+      changed_packages: { include: changedPackages.include },
+      has_workers: changedWorkers.has,
+      changed_workers: { include: changedWorkers.include },
     },
   }
 }
@@ -270,16 +390,21 @@ function main() {
   }
 
   const changed = JSON.parse(process.env.CHANGES ?? '[]')
-  const allPackages = dirsWithPackageJson('packages')
+  const members = Object.fromEntries(AREAS.map(({ dir }) => [dir, dirsWithPackageJson(dir)]))
 
-  const { attributed, wholeWorkspace, reasons } = attributeRootFiles(changed)
-  for (const reason of reasons) console.error(`changes: ${reason}`)
+  const root = attributeRootFiles(changed)
+  const workflows = attributeWorkflows(
+    changed.filter((key) => key.startsWith('wf__')).map((key) => key.slice('wf__'.length))
+  )
+  for (const reason of [...root.reasons, ...workflows.reasons]) console.error(`changes: ${reason}`)
 
   const { changes, outputs } = assembleChanges({
     changed,
-    allPackages,
-    attributed,
-    wholeWorkspace,
+    members,
+    attributed: root.attributed,
+    revalidate: workflows.keys,
+    revalidateAll: workflows.wholeWorkspace,
+    wholeWorkspace: root.wholeWorkspace,
   })
 
   writeFileSync(join(repoRoot, 'changes.json'), JSON.stringify(changes))

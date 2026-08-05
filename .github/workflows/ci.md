@@ -2,25 +2,24 @@
 
 # `ci.yml` — Continuous Integration
 
-Single CI workflow for the whole monorepo. A `prepare` job detects everything once,
-then change-gated jobs fan out from it. `ci-ok` is the single status check used for
-branch protection.
+Entry workflow for the monorepo. A `prepare` job detects everything once, `lint` covers the
+workspace, and each area's jobs run through a called workflow of its own. `ci-ok` is the single
+status check used for branch protection.
 
 ```yaml
 on:
   push: { branches: [main] }
   pull_request:
-permissions: { contents: read }
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true # supersede stale runs on the same ref
 ```
 
-| Field       | Value                                                          |
-| ----------- | -------------------------------------------------------------- |
-| Triggers    | `push` to `main`, every `pull_request`                         |
-| Permissions | `contents: read` (least privilege; jobs that need more opt in) |
-| Concurrency | one run per `workflow + ref`; in-progress runs are cancelled   |
+| Field       | Value                                                                            |
+| ----------- | -------------------------------------------------------------------------------- |
+| Triggers    | `push` to `main`, every `pull_request`                                           |
+| Permissions | declared per job, never workflow-wide — `ci-ok` takes `{}`, the rest the minimum |
+| Concurrency | one run per `workflow + ref`; in-progress runs are cancelled                     |
 
 ---
 
@@ -29,31 +28,28 @@ concurrency:
 ```mermaid
 flowchart TD
     prepare --> lint
-    lint --> packages
-    lint --> bench
-    lint --> worker
-    lint --> workerbench["worker-bench"]
-    lint --> web
-    web --> e2e
+    lint --> packages["packages → ci-packages.yml<br/>package matrix + bench"]
+    lint --> worker["worker → ci-worker.yml<br/>worker matrix"]
+    lint --> app["app → ci-app.yml<br/>web + editor"]
     prepare --> packages
-    prepare --> bench
     prepare --> worker
-    prepare --> workerbench
-    prepare --> web
-    prepare --> e2e
+    prepare --> app
     prepare --> ciok["ci-ok"]
     lint --> ciok
     packages --> ciok
-    bench --> ciok
     worker --> ciok
-    workerbench --> ciok
-    web --> ciok
-    e2e --> ciok
+    app --> ciok
 ```
 
-`packages`, `bench`, `worker`, `worker-bench`, `web`, and `e2e` only run when their area changed
-(see [`prepare`](#job-prepare)). `ci-ok` runs `if: always()` so it can turn skips
-into a pass and real failures into a fail.
+`prepare`, `lint` and `ci-ok` live here; every other job lives in the workflow its caller job
+names, and only runs when its area changed (see [`prepare`](#job-prepare)). `ci-ok` runs
+`if: always()` so it can turn skips into a pass and real failures into a fail — a caller job whose
+inner jobs all skipped reports `skipped`, and a failure anywhere inside it propagates out.
+
+**A file per area, because the gate cannot be narrower than the file.** While one workflow held
+every area's jobs, editing it could only mean "everything"; now each file says what it validates
+and a one-line change to how the editor runs its tests re-runs the editor. See
+[what a workflow validates](#what-a-workflow-validates).
 
 ---
 
@@ -62,28 +58,40 @@ into a pass and real failures into a fail.
 `runs-on: ubuntu-latest` · `timeout-minutes: 15`. Produces every output the other
 jobs consume via `needs.prepare.outputs.*`.
 
-| #   | Step                          | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                                              |
-| --- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout Repository           | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                                         |
-| 2   | Read Node.js version          | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                                            |
-| 3   | Detect package manager        | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile`), `runner`. Fails if none found.                                                                                                                                                                                                                       |
-| 4   | Read Playwright version       | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                                          |
-| 5   | Discover workspace entities   | `node scripts/assemble-changes.mjs filters`                                                                            | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), workflow file (`wf__<name>`), and **one per root file** (`root__lock`, `root__workspace`, `root__package`, `root__nvmrc`, `root__tsconfig`) — a whitelist, so root docs/tooling dotfiles trigger nothing. |
-| 6   | Detect changed entities       | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                                              |
-| 7   | Copy base manifest + lockfile | `git show "$BASE_SHA:…"` into `$RUNNER_TEMP/base`, fetching one commit deep first if the shallow clone lacks it        | Hands the next step the two files it compares against. Every command may fail without failing the job — a missing or empty copy reads as "cannot be compared", which validates everything.                                                                                                                                                |
-| 8   | Assemble `changes.json`       | `node scripts/assemble-changes.mjs assemble`                                                                           | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `worker` / `worker_bench` / `has_packages` / `changed_packages`. Root files are attributed first — see [What a root change means](#what-a-root-change-means). Whole-workspace or workflow change → infra → everything runs. |
-| 9   | Upload `changes.json`         | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                                                |
+| #   | Step                          | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                                                                                      |
+| --- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout Repository           | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                                                                                 |
+| 2   | Read Node.js version          | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                                                                                    |
+| 3   | Detect package manager        | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile`), `runner`. Fails if none found.                                                                                                                                                                                                                                                               |
+| 4   | Read Playwright version       | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                                                                                  |
+| 5   | Discover workspace entities   | `node scripts/assemble-changes.mjs filters`                                                                            | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), workflow file (`wf__<name>`), and **one per root file** (`root__lock`, `root__workspace`, `root__package`, `root__nvmrc`, `root__tsconfig`) — a whitelist, so root docs/tooling dotfiles trigger nothing.                                         |
+| 6   | Detect changed entities       | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                                                                                      |
+| 7   | Copy base manifest + lockfile | `git show "$BASE_SHA:…"` into `$RUNNER_TEMP/base`, fetching one commit deep first if the shallow clone lacks it        | Hands the next step the two files it compares against. Every command may fail without failing the job — a missing or empty copy reads as "cannot be compared", which validates everything.                                                                                                                                                                                        |
+| 8   | Assemble `changes.json`       | `node scripts/assemble-changes.mjs assemble`                                                                           | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `editor` / `has_packages` / `changed_packages` / `has_workers` / `changed_workers`. Root files are attributed first — see [What a root change means](#what-a-root-change-means). A whole-workspace root file, or a change to `ci.yml` itself, means every job runs. |
+| 9   | Upload `changes.json`         | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                                                                                        |
 
 ### Outputs
 
-| Output                            | Meaning                                                                                    |
-| --------------------------------- | ------------------------------------------------------------------------------------------ |
-| `node_version`                    | from `.nvmrc`                                                                              |
-| `manager` / `command` / `runner`  | package-manager triple                                                                     |
-| `playwright_version`              | `@playwright/test` semver (cache key input)                                                |
-| `web` / `worker` / `worker_bench` | `'true'` when that area, a dep it bundles, or infra changed                                |
-| `has_packages`                    | `'true'` when ≥1 package (or infra) changed                                                |
-| `changed_packages`                | `fromJSON`-ready matrix `{include:[{dir,filter,flag,browsers}]}` for the CI `packages` job |
+| Output                                 | Meaning                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| `node_version`                         | from `.nvmrc`                                                           |
+| `manager` / `command` / `runner`       | package-manager triple                                                  |
+| `playwright_version`                   | `@playwright/test` semver (cache key input)                             |
+| `web` / `editor`                       | `'true'` when that app, a package it declares, or infra changed         |
+| `has_packages` / `has_workers`         | `'true'` when ≥1 package / worker (or infra) changed                    |
+| `changed_packages` / `changed_workers` | `fromJSON`-ready matrices `{include:[{area,dir,filter,flag,browsers}]}` |
+
+**Who runs is derived, not listed.** A member runs when it changed, or when a package it declares
+as a `workspace:` dependency changed — read from its own `package.json` rather than from a list
+kept here. `workers/api` declares `schema` and `wrangler-tools`, `apps/web` declares the
+design-system, `markdown`, `hooks` and `schema`; those edges reproduce the rules that used to be
+hand-written, and stay right when a dependency moves. `eslint-config` is excluded: it is proved by
+`lint`, not by re-running every consumer's suite.
+
+`flag` is the unscoped package name, not the directory — two members are called `bench`, and their
+flags are `bench` (the package) and `bench-api` (the worker). `browsers` marks a real-browser
+vitest tier: it declares `playwright` and has no `test:e2e` script of its own, which is what tells
+`packages/design-system` apart from the editor, whose Electron ships its own Chromium.
 
 ### `changes.json`
 
@@ -117,7 +125,9 @@ what it actually affects ([`scripts/assemble-changes.mjs`](../../scripts/assembl
 | `pnpm-workspace.yaml` · `.nvmrc` · `tsconfig.json` | whole workspace — they change how everything installs and builds                                                             |
 | root `package.json`                                | whole workspace **only** when something outside `scripts` changed (devDependencies, `pnpm` config, `engines`)                |
 | `pnpm-lock.yaml`                                   | the members whose **importer** entry moved; the root importer `.`, or a change that moves no importer, means whole workspace |
-| any `.github/workflows/*`                          | whole workspace — it changes how every job runs, and this run is the proof                                                   |
+| `.github/workflows/ci.yml`                         | whole workspace — it decides how every job runs, and this run is the proof                                                   |
+| any other workflow                                 | nothing — CI never executes a deploy, Chromatic or the issue labeller, so running the workspace proves nothing about them    |
+| `labs/*` (lockfile importer)                       | nothing — a bench experiment with no lint, no tests and no job                                                               |
 
 The lockfile is compared **structurally**: its `importers:` blocks are sectioned by indentation and
 matched key by key against the same file at the base commit. A changed importer's inner lines carry
@@ -156,168 +166,63 @@ the resolved graph, and getting it wrong means skipping a package the bump did b
 
 ---
 
-## Job: `packages`
+## The caller jobs
 
-`needs: [prepare, lint]` · `if: has_packages == 'true'` · `environment: CI` · ubuntu ·
-15 min. Runs once per changed package via the matrix.
+Each area's jobs live in a workflow of its own, called from here:
 
-```yaml
-strategy:
-  fail-fast: false # one package failing doesn't cancel the others
-  matrix: ${{ fromJSON(needs.prepare.outputs.changed_packages) }}
-```
+| Caller job | Calls                                                                                                      | Gated on          |
+| ---------- | ---------------------------------------------------------------------------------------------------------- | ----------------- |
+| `packages` | [`ci-packages.yml`](./ci-packages.md) — the package matrix + `bench`                                       | `has_packages`    |
+| `worker`   | [`ci-worker.yml`](./ci-worker.md) — the worker matrix                                                      | `has_workers`     |
+| `app`      | [`ci-app.yml`](./ci-app.md), which calls [`ci-web.yml`](./ci-web.md) and [`ci-editor.yml`](./ci-editor.md) | `web` or `editor` |
 
-| #   | Step                                                      | Detail                                                                                                             |
-| --- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                               |
-| 5   | Playwright cache/install (browser-tier rows only)         | gated on `matrix.browsers`; same restore → install → save shape and cache key as the `web` job                     |
-| 6   | Tests with coverage                                       | `${runner} --filter ${{ matrix.filter }} test:coverage`                                                            |
-| 7   | Upload to Codecov                                         | `codecov/codecov-action@v7`, `files: ./packages/${{ matrix.dir }}/coverage/lcov.info`, `flags: ${{ matrix.flag }}` |
+They are **called**, not triggered separately, because `needs:` cannot cross workflow files and
+`ci-ok` has to keep seeing every job. Calling them keeps one run, one CI-environment approval wave
+and one required check — and gives each area a file whose own marker says what editing it re-runs.
 
-A matrix row sets `browsers: true` when the package declares `playwright` in its own
-dependencies (assembled in `prepare`) — i.e. it has a real-browser vitest tier (e.g.
-`design-system`'s `*.browser.test.*`). Only those rows pay for the Chromium install;
-the job pins `PLAYWRIGHT_BROWSERS_PATH` so they share the `web`/`e2e` browser cache.
+Three things about a caller job that are easy to get wrong:
 
----
+- It cannot declare `environment:`, `timeout-minutes:`, `runs-on:` or `env:` — those belong to the
+  jobs inside the called workflow. Its `permissions:` is a **ceiling**, so `packages` grants
+  `pull-requests: write` for `bench` while the matrix rows re-declare `contents: read`.
+- **`secrets: inherit` is mandatory, not stylistic.** `CODECOV_TOKEN` is scoped to the `CI`
+  environment; naming it explicitly at the call site evaluates it in this workflow's
+  environment-less context and passes an empty string — a green upload step that uploads nothing.
+- Check names become `caller / called-job` (`web / e2e (chromium)`). Only `ci-ok` is required, and
+  it stays a top-level job here, so branch protection is unaffected.
 
-## Job: `bench`
+### What a workflow validates
 
-`needs: [prepare, lint]` · `environment: CI` · ubuntu · 20 min. The performance
-gate: runs `packages/styled-system/bench/*.bench.ts` in the pinned Docker
-sandbox via the standalone
-[`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action)
-(own-org, so version-tagged `@v1` like `actions/*`) and fails when any case's speed
-drops below **80%** of the `previous` baseline (the last
-`@soroush.tech/styled-system` npm release, installed inside the sandbox via
-the `latest` dist-tag). Results are upserted as one sticky PR comment.
-
-Change-gated without its own filter: it runs when `styled-system` or `bench`
-appears in `changed_packages` — and since a root/workflow change puts every
-package in that matrix, infra changes (including edits to `ci.yml` itself,
-e.g. changing the action pin) trigger it too.
+Every workflow declares its own scope on line 1, read by
+[`scripts/assemble-changes.mjs`](../../scripts/assemble-changes.mjs):
 
 ```yaml
-if: >-
-  contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'styled-system') ||
-  contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'bench')
+# ci:validates app__web
 ```
 
-| #   | Step                                                      | Detail                                                                                               |
-| --- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                                                 |
-| 5   | Build styled-system                                       | the bench file imports the built dist, so the comparison against npm's prebuilt dist is fair         |
-| 6   | Mint bot token                                            | `actions/create-github-app-token@v2`; skipped unless `vars.BENCH_BOT_APP_ID` is set                  |
-| 7   | Run benchmark gate                                        | `uses: soroush-tech/bench-action@v1` with `baseline-case: previous`, `min-ratio: '80'` and the token |
+| Marker                          | Means                                                            |
+| ------------------------------- | ---------------------------------------------------------------- |
+| `all`                           | the whole workspace — `ci.yml`, which decides how every job runs |
+| `nothing`                       | nothing — a `cd-*`, Chromatic, the labeller: CI never runs them  |
+| `pkg__*` `worker__*` `app__web` | those members; `*` expands to every member of that area          |
 
-Since bench-action 1.1.0 the results comment is posted **via the OIDC-verified relay**
-(`api.bench.soroush.tech`) as the bench bot — that's what the job's `id-token: write`
-permission is for. On any relay failure the action falls back to direct token
-commenting: first the org GitHub App's token (step 6, from `vars.BENCH_BOT_APP_ID` +
-`secrets.BENCH_BOT_PRIVATE_KEY`), else `GITHUB_TOKEN` (`pull-requests: write`, comment
-author `github-actions[bot]`). On a read-only token the comment is skipped with a
-warning and only the gate decides the job.
+The scope lives in the file whose jobs it describes, rather than in a table kept somewhere else —
+so moving a job between files means editing the marker you were already editing. A workflow with
+no marker, or one carrying a token the parser doesn't recognise, means the **whole workspace**: an
+unreadable claim must over-run, never quietly under-run. The marker line holds tokens only; prose
+goes on the line below, because a trailing "…and nothing else" is enough to make a file claim it
+validates nothing.
 
----
-
-## Job: `worker`
-
-`needs: [prepare, lint]` · `if: worker == 'true'` · `environment: CI` · ubuntu · 15 min.
-
-| #   | Step                                                      | Detail                                                               |
-| --- | --------------------------------------------------------- | -------------------------------------------------------------------- |
-| 1–4 | Checkout · Setup pnpm · Setup Node (deps cache) · Install | same shape as `lint`                                                 |
-| 5   | Tests with coverage                                       | `${runner} --filter @soroush/api test:coverage`                      |
-| 6   | Upload to Codecov                                         | `files: ./workers/api/coverage/lcov.info`, `flags: api`, `name: api` |
-
----
-
-## Job: `worker-bench`
-
-`needs: [prepare, lint]` · `if: worker_bench == 'true'` · `environment: CI` · ubuntu · 15 min.
-Same shape as `worker`, for the bench-action comment relay
-([`workers/bench/worker.md`](../../workers/bench/worker.md)): tests with coverage via
-`${runner} --filter @soroush/bench-api test:coverage`, Codecov upload from
-`./workers/bench/coverage/lcov.info` under `flags: bench-api`.
-
----
-
-## Job: `web`
-
-`needs: [prepare, lint]` · `if: web == 'true'` · `environment: CI` · **ubuntu** · 30 min.
-Unit / browser / storybook coverage tiers. Browser engines (E2E) run in the separate
-[`e2e`](#job-e2e) job. Exposes `outputs.vite_base_url` (the env-scoped `VITE_BASE_URL`) so the
-environment-less `e2e` job can consume it.
-
-```yaml
-runs-on: ubuntu-latest
-env:
-  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-```
-
-`PLAYWRIGHT_BROWSERS_PATH` is pinned so the cache path/key is stable and shared with the
-`e2e` job's chromium row on the same runner OS.
-
-| #   | Step                            | Detail                                                                                                                                                                                                                                                                                                              |
-| --- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout                        | `fetch-depth: 0` (Codecov base detection), no persisted creds                                                                                                                                                                                                                                                       |
-| 2   | Setup pnpm                      | `if manager == 'pnpm'`                                                                                                                                                                                                                                                                                              |
-| 3   | Setup Node                      | deps cache via `cache: <manager>`                                                                                                                                                                                                                                                                                   |
-| 4   | **Restore Playwright cache**    | id `playwright-cache`, key `${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}`                                                                                                                                                                                                            |
-| 5   | Install                         | `${manager} ${command}`, `CI: true`                                                                                                                                                                                                                                                                                 |
-| 6   | Install Playwright browsers     | cache miss → `playwright install --with-deps chromium` (only Chromium — unit-browser + storybook run headless Chromium)                                                                                                                                                                                             |
-| 7   | Install Playwright system deps  | cache hit → `playwright install-deps chromium` (apt libs only)                                                                                                                                                                                                                                                      |
-| 8   | **Save Playwright cache**       | `if: always() && cache-hit != 'true'`, same key                                                                                                                                                                                                                                                                     |
-| 9   | Build project                   | `${runner} run build` with `SKIP_PRERENDER: 'true'` (Codecov bundle analysis)                                                                                                                                                                                                                                       |
-| 10  | Web coverage (merged) → Codecov | `test:coverage:web` (unit + browser + storybook in one V8 pass) → upload `flags: web`; `.codecov.yml` gates patch on it. **Uploaded first** so the Codecov PR comment renders from this authoritative report. **Not** the root `test:coverage`, which is recursive — that ran every other workspace inside this job |
-| 11  | Unit coverage → Codecov         | `test:coverage:unit` → upload `flags: unit` (informational)                                                                                                                                                                                                                                                         |
-| 12  | Browser coverage → Codecov      | `test:coverage:browser` → upload `flags: browser` (informational)                                                                                                                                                                                                                                                   |
-| 13  | Storybook coverage → Codecov    | `test:coverage:storybook` → upload `flags: storybook` (informational). Self-hosts Storybook from `.storybook` (no external URL)                                                                                                                                                                                     |
-
-`web` is the single merged V8 pass that gates patch; the per-tier flags stay informational
-(each runs `all: true`, so gating on them directly would surface phantom-uncovered lines). The
-per-tier runs mean each tier executes twice — accepted so `web` never depends on Codecov's
-same-flag merge. Visual review (Chromatic) is not here — it's a main-only, non-blocking
-workflow; see [`chromatic.md`](./chromatic.md).
-
----
-
-## Job: `e2e`
-
-`needs: [prepare, lint, web]` · `if: web == 'true'` · **no `environment`** · 30 min. Depends on
-`web`, so a `web` failure skips `e2e` (no point running the engines when the app's own suite is
-red). One browser engine per native OS; macOS (≈10× cost) is reserved for WebKit. Playwright's
-`webServer` builds and serves the app, so there is **no separate build step**. Stays off the CI
-environment to avoid a second approval prompt; instead it reads the env-scoped `VITE_BASE_URL`
-via `needs.web.outputs.vite_base_url` (the already-gated `web` job forwards it).
-
-```yaml
-runs-on: ${{ matrix.os }}
-strategy:
-  fail-fast: false
-  matrix:
-    include:
-      - { os: ubuntu-latest, engine: chromium, script: test:coverage:e2e, coverage: true }
-      - { os: windows-latest, engine: firefox, script: test:e2e:firefox }
-      - { os: macOS-latest, engine: webkit, script: test:e2e:webkit }
-```
-
-| #   | Step                     | Detail                                                                                                                    |
-| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout                 | default depth, no persisted creds                                                                                         |
-| 2–5 | Setup + Playwright cache | same as `web`, but installs only the matrix `engine` (`playwright install --with-deps <engine>`)                          |
-| 6   | Run E2E                  | `${runner} run <matrix.script>`, `VITE_BASE_URL` from `needs.web.outputs.vite_base_url` (web forwards the env-scoped var) |
-| 7   | Upload E2E coverage      | `if: matrix.coverage` (chromium only) → `files: ./apps/web/coverage/e2e/lcov.info`, `flags: e2e`                          |
-
-Only the chromium row runs with coverage (`E2E_COVERAGE=true` via `test:coverage:e2e`);
-Firefox and WebKit run for cross-engine signal only.
+This attribution gates jobs and **never reaches `changes.json`**. Editing `ci-web.yml` must re-run
+the web suite without shipping the site — and `cd-web.yml` deploys on `changes.apps` containing
+`web`.
 
 ---
 
 ## Job: `ci-ok`
 
-`if: always()` · `needs: [prepare, lint, packages, bench, worker, web, e2e]` · ubuntu · 5 min.
-The single required check for branch protection.
+`if: always()` · `needs: [prepare, lint, packages, worker, app]` · ubuntu · 5 min.
+The single required check for branch protection — **every job belongs in that list**.
 
 ```yaml
 - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -340,7 +245,7 @@ pnpm this caches the **pnpm store**, keyed automatically off the `pnpm-lock.yaml
 hash. A lockfile change → new key → fresh install; otherwise the store is restored
 and `--frozen-lockfile` just links.
 
-### 2. Playwright browser binaries (`web` job only)
+### 2. Playwright browser binaries (browser-tier package rows, `web`, `e2e`)
 
 ```yaml
 env:

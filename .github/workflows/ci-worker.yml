@@ -1,0 +1,68 @@
+# ci:validates worker__*
+# Editing this file re-runs the workers it holds, and nothing outside them.
+name: CI · Workers
+
+# Called by ci.yml. The same shape as the package matrix, over `workers/*`: the API behind the
+# site's contact form and the bench-action comment relay. Two rows today, detected rather than
+# written out, which is what replaced the two near-identical jobs this file came from.
+on:
+  workflow_call:
+    inputs:
+      node_version: { required: true, type: string }
+      manager: { required: true, type: string }
+      command: { required: true, type: string }
+      runner: { required: true, type: string }
+      changed_workers: { required: true, type: string }
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: CI
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.changed_workers) }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      - name: Run Tests with Coverage
+        run: ${{ inputs.runner }} --filter ${{ matrix.filter }} test:coverage
+
+      # vitest writes lcov paths relative to the member (e.g. SF:src/index.ts), which is
+      # ambiguous across the monorepo — Codecov can't map a lone src/index.ts (five exist)
+      # and silently drops the flag's coverage. Prefix with the member's own directory so paths
+      # are repo-relative and unique. Both via env (never spliced into the shell).
+      - name: Make lcov paths repo-relative for Codecov
+        env:
+          AREA: ${{ matrix.area }}
+          DIR: ${{ matrix.dir }}
+        run: sed -i "s#^SF:#SF:$AREA/$DIR/#" "$AREA/$DIR/coverage/lcov.info"
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./${{ matrix.area }}/${{ matrix.dir }}/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: ${{ matrix.flag }}
+          name: ${{ matrix.flag }}
