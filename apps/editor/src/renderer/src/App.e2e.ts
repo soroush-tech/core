@@ -137,11 +137,19 @@ test('cancels a Claude run, putting the document back', async ({ page }) => {
 })
 
 test('prompts before closing a window with unsaved changes', async ({ page, electronApp }) => {
+  // The app opens on a gist file, which is kept by staging it in the sandbox —
+  // silently, with nothing to observe. Start a plain document, where keeping the
+  // work means a save dialog. Waiting for the sandbox to have settled first, or
+  // the menu action lands before it does.
+  await expect(page.getByText('en.md', { exact: true })).toBeVisible()
+  await clickMenuItem(electronApp, 'file-new')
+  await expect(page.getByText('Untitled', { exact: true })).toBeVisible()
+
   await getEditor(page).fill('unsaved')
-  await expect(page.getByText('en.md •')).toBeVisible()
-  // Main only prompts once it knows the document is dirty, and it prompts for a
-  // file on disk rather than a draft. Awaiting the same call the renderer makes
-  // settles both, rather than guessing at how long the IPC takes.
+  await expect(page.getByText('Untitled •')).toBeVisible()
+  // Main only prompts once it knows the document is dirty. Awaiting the same
+  // call the renderer makes settles that, rather than guessing at how long the
+  // IPC takes.
   await page.evaluate(() => window.editorAPI.file.setDirty(true, false))
 
   // Button 0 keeps the work: main asks the renderer to save, which opens the
