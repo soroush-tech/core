@@ -159,6 +159,10 @@ export function assembleChanges({ changed, allPackages, attributed = [], wholeWo
   // how every job runs, and the run proving that is this one.
   const infra = wholeWorkspace || workflows.length > 0
   const pkgsForCI = infra ? allPackages : packages
+  // A package the lockfile mentions but the tree no longer has — deleted or renamed —
+  // has nothing left to run, and reading a manifest that is gone would take the whole
+  // job down. `changes.packages` keeps it, so a CD workflow can still see it went.
+  const toRun = pkgsForCI.filter((dir) => allPackages.includes(dir))
 
   return {
     changes: { apps, worker, packages, workflows, root: wholeWorkspace },
@@ -170,11 +174,11 @@ export function assembleChanges({ changed, allPackages, attributed = [], wholeWo
         packages.includes('wrangler-tools') ||
         infra,
       worker_bench: worker.includes('bench') || packages.includes('wrangler-tools') || infra,
-      has_packages: pkgsForCI.length > 0,
+      has_packages: toRun.length > 0,
       // `browsers` marks a package with a real-browser vitest tier — it declares `playwright`
       // itself, and its CI row has to install Chromium first.
       changed_packages: {
-        include: pkgsForCI.map((dir) => {
+        include: toRun.map((dir) => {
           const pkg = JSON.parse(
             readFileSync(join(repoRoot, 'packages', dir, 'package.json'), 'utf8')
           )
