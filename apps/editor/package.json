@@ -49,7 +49,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.9.0",
-    "jsdom": "^30.0.1",
+    "jsdom": "^29.1.1",
     "monocart-coverage-reports": "^2.12.12",
     "playwright": "^1.62.1",
     "typescript": "~6.0.3",
