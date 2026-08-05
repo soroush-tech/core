@@ -199,6 +199,62 @@ describe('ClaudePanel', () => {
       )
     })
 
+    it('chooses the same gist from the keyboard, without a drag', async () => {
+      renderPanel('', false)
+
+      const picker = await screen.findByLabelText('Gist to write from')
+      await userEvent.selectOptions(picker, 'abc123')
+
+      expect(await screen.findByText('Writing from Rehydration')).toBeInTheDocument()
+
+      await ask('now write the part about data fetching')
+      expect(claudeApi.startEdit).toHaveBeenCalledWith(
+        '',
+        'now write the part about data fetching',
+        '# Rehydration\n\n## en.md\n# Part one'
+      )
+    })
+
+    it('names a gist that has no description by what it holds', async () => {
+      gistsApi.list.mockResolvedValue({
+        success: true,
+        data: [{ ...GIST, description: '   ', fileCount: 3 }],
+      })
+      renderPanel('', false)
+
+      expect(await screen.findByRole('option', { name: 'Untitled · 3 files' })).toBeInTheDocument()
+    })
+
+    it('names a gist holding one file in the singular', async () => {
+      gistsApi.list.mockResolvedValue({ success: true, data: [{ ...GIST, description: null }] })
+      renderPanel('', false)
+
+      expect(await screen.findByRole('option', { name: 'Untitled · 1 file' })).toBeInTheDocument()
+    })
+
+    it('offers no picker when there is no gist to choose', async () => {
+      gistsApi.list.mockResolvedValue({ success: false, error: 'Connect a GitHub account' })
+      renderPanel('', false)
+
+      await waitFor(() => expect(gistsApi.list).toHaveBeenCalled())
+      // Signed out looks the same as an empty account from here, and an empty
+      // list would say nothing either way.
+      expect(screen.queryByLabelText('Gist to write from')).not.toBeInTheDocument()
+    })
+
+    it('goes back to offering the choice once the reference is dropped', async () => {
+      renderPanel('', false)
+
+      const picker = await screen.findByLabelText('Gist to write from')
+      await userEvent.selectOptions(picker, 'abc123')
+      await screen.findByText('Writing from Rehydration')
+
+      await userEvent.click(screen.getByRole('button', { name: 'Stop writing from Rehydration' }))
+
+      expect(screen.queryByText(/Writing from/)).not.toBeInTheDocument()
+      expect(screen.getByLabelText('Gist to write from')).toHaveValue('')
+    })
+
     it('offers the drop through the placeholder, so nothing takes space', () => {
       renderPanel('', false)
 

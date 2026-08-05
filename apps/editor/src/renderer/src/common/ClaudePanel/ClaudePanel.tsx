@@ -3,11 +3,13 @@ import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Icon } from '@soroush.tech/design-system/Icon'
 import { LinearProgress } from '@soroush.tech/design-system/LinearProgress'
+import { NativeSelect } from '@soroush.tech/design-system/NativeSelect'
 import { Pressable } from '@soroush.tech/design-system/Pressable'
 import { TextInput } from '@soroush.tech/design-system/TextInput'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { useClaudeEdit } from '../../hooks/useClaudeEdit'
 import { useGistFiles } from '../../hooks/useGistFiles'
+import { useGists } from '../../hooks/useGists'
 import { isGistDrag, readGistDrag } from '../../utils/gistDrag'
 import { CONTEXT_LIMIT, toContext } from './utils/toContext'
 import { toPreview } from './utils/toPreview'
@@ -52,6 +54,10 @@ export function ClaudePanel({
   const [referenceId, setReferenceId] = useState(NO_REFERENCE)
   const [isDropTarget, setIsDropTarget] = useState(false)
   const { files, description, error: referenceError } = useGistFiles(referenceId || null)
+  // The same choice the drag makes, for anyone not making it with a mouse.
+  // Dropped when the account has no gists to offer — which is also what a
+  // signed-out account looks like from here, and neither needs saying twice.
+  const { gists } = useGists()
 
   // Every delta goes straight into the document, so the answer is watched
   // being written where it will live rather than in a box beside it. A delta
@@ -109,6 +115,27 @@ export function ClaudePanel({
           <Typography variant="body2" m={0}>
             {preview}
           </Typography>
+        )}
+        {/* The keyboard's way to the same thing the drag does. Shown only while
+            there is something to choose, so an account with no gists — or none
+            connected — is not offered an empty list. */}
+        {gists.length > 0 && (
+          <NativeSelect
+            size="sm"
+            variant="text"
+            placeholder="Write from a gist…"
+            value={referenceId}
+            onChange={(value) => setReferenceId(String(value))}
+            selectProps={{ 'aria-label': 'Gist to write from' }}
+            options={gists.map((gist) => ({
+              // A gist need not be described, and the summary carries no
+              // filenames to fall back on — only how many there are.
+              label:
+                gist.description?.trim() ||
+                `Untitled · ${gist.fileCount === 1 ? '1 file' : `${String(gist.fileCount)} files`}`,
+              value: gist.id,
+            }))}
+          />
         )}
         {/* On the heading's own line, so referring to a gist costs no space. */}
         {reference && (
