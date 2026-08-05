@@ -53,7 +53,11 @@ export function App() {
     () =>
       window.editorAPI.menu.onAction((action) => {
         const actions = {
-          new: () => void newDocument(),
+          // A new document starts its own history: the filePath-keyed reset
+          // above cannot see this one, since an untitled document replacing a
+          // gist file leaves filePath null throughout — and undoing back into
+          // what was just discarded is not what Ctrl+Z is for.
+          new: () => void newDocument().then(reset),
           open: () => void open(),
           save: () => void save(),
           // Save As always means a file on disk, gist origin or not.
@@ -63,7 +67,7 @@ export function App() {
         }
         actions[action]()
       }),
-    [newDocument, open, save, undo, redo]
+    [newDocument, open, save, undo, redo, reset]
   )
 
   // Clamp against stale ranges after external content changes (open/undo/…).

@@ -89,6 +89,10 @@ export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSideb
         onSelect={() => toggle('files')}
       >
         <GistFiles
+          // Another gist is another panel: a name half-typed for the last one, a
+          // rename left open, or a visibility chosen for a sandbox must not be
+          // carried over and applied here. Remounting asks for all of it again.
+          key={gistId}
           gistId={gistId}
           onOpenFile={onOpenFile}
           onRenamed={onRenameFile}

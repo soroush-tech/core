@@ -90,7 +90,12 @@ describe('fetchGists', () => {
     const result = await fetchGists('github_pat_123', fetchFn)
 
     expect(fetchMock).toHaveBeenCalledTimes(GISTS_MAX_PAGES)
-    expect(result.success && result.data).toHaveLength(GISTS_PAGE_SIZE * GISTS_MAX_PAGES)
+    // A full last page means there are more; a list that stops there is not the
+    // every-gist this promised, so it says so rather than looking complete.
+    expect(result).toEqual({
+      success: false,
+      error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists — more than this can list`,
+    })
   })
 
   it('abandons the whole list when a later page fails', async () => {

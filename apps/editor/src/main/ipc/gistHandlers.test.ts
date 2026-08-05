@@ -22,6 +22,7 @@ const service = {
   draft: vi.fn(),
   drafts: vi.fn(),
   stage: vi.fn(),
+  renameFile: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),
   publish: vi.fn(),
@@ -161,6 +162,35 @@ describe('registerGistHandlers', () => {
     expect(service.stage).toHaveBeenCalledWith('abc123', 'notes.md', entry)
   })
 
+  it('renames a file through the service, trimming both names', async () => {
+    service.renameFile.mockResolvedValue({ success: true, data: DRAFT })
+
+    await expect(
+      invoke(GIST_CHANNELS.renameFile, 'abc123', ' notes.md ', ' renamed.md ', '# notes')
+    ).resolves.toEqual({ success: true, data: DRAFT })
+    expect(service.renameFile).toHaveBeenCalledWith('abc123', 'notes.md', 'renamed.md', '# notes')
+  })
+
+  it.each([
+    ['a non-string id', 42, 'notes.md', 'renamed.md', '# notes', 'Invalid gist id'],
+    ['a blank old name', 'abc123', '  ', 'renamed.md', '# notes', 'Enter a filename'],
+    [
+      'a new name carrying a path',
+      'abc123',
+      'notes.md',
+      'src/renamed.md',
+      '# notes',
+      'A gist filename cannot contain a path separator',
+    ],
+    ['content that is not text', 'abc123', 'notes.md', 'renamed.md', 42, 'Invalid file content'],
+  ])('refuses to rename for %s', async (_name, id, from, to, content, error) => {
+    await expect(invoke(GIST_CHANNELS.renameFile, id, from, to, content)).resolves.toEqual({
+      success: false,
+      error,
+    })
+    expect(service.renameFile).not.toHaveBeenCalled()
+  })
+
   it.each([
     ['a non-string id', 42, 'A better one', 'Invalid gist id'],
     ['a non-string description', 'abc123', 42, 'Invalid description'],
@@ -229,6 +259,7 @@ describe('registerGistHandlers', () => {
     beforeEach(() => {
       service.draft.mockResolvedValue(DRAFT)
       service.stage.mockResolvedValue({ success: true, data: DRAFT })
+      service.renameFile.mockResolvedValue({ success: true, data: DRAFT })
       service.stageDescription.mockResolvedValue({ success: true, data: DRAFT })
       service.reset.mockResolvedValue({ success: true, data: null })
       service.publish.mockResolvedValue({ success: true, data: null })
@@ -237,6 +268,10 @@ describe('registerGistHandlers', () => {
 
     it.each([
       ['stage', () => invoke(GIST_CHANNELS.stage, 'abc123', 'notes.md', { status: 'deleted' })],
+      [
+        'renameFile',
+        () => invoke(GIST_CHANNELS.renameFile, 'abc123', 'notes.md', 'renamed.md', '# notes'),
+      ],
       ['stageDescription', () => invoke(GIST_CHANNELS.stageDescription, 'abc123', 'A better one')],
       ['reset', () => invoke(GIST_CHANNELS.reset, 'abc123')],
       ['publish', () => invoke(GIST_CHANNELS.publish, 'abc123')],
@@ -275,6 +310,13 @@ describe('registerGistHandlers', () => {
 
       // Two of the three still succeed; the failing one must not announce.
       expect(send).toHaveBeenCalledTimes(2)
+    })
+
+    it('says nothing when a rename fails', async () => {
+      service.renameFile.mockResolvedValue({ success: false, error: 'EACCES' })
+
+      await invoke(GIST_CHANNELS.renameFile, 'abc123', 'notes.md', 'renamed.md', '# notes')
+      expect(send).not.toHaveBeenCalled()
     })
 
     it('says nothing when the reset was cancelled', async () => {

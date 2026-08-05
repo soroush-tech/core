@@ -134,6 +134,21 @@ describe('createClaudeRunner', () => {
     expect(events.at(-1)).toEqual({ type: 'RUN_FINISHED', runId: 'run-1', text: 'Hello' })
   })
 
+  it('keeps a character whose bytes arrived in two chunks', () => {
+    const { child, events, runner } = createRunner()
+    const bytes = Buffer.from(result('Hello 世界'), 'utf8')
+    // Between the first and second byte of 世, where decoding each chunk on its
+    // own would leave a replacement character in the middle of the answer.
+    const split = bytes.indexOf(Buffer.from('世', 'utf8')) + 1
+
+    runner.start('run-1', request)
+    child.stdout.emit('data', bytes.subarray(0, split))
+    child.stdout.emit('data', bytes.subarray(split))
+    child.emit('close', 0, null)
+
+    expect(events.at(-1)).toEqual({ type: 'RUN_FINISHED', runId: 'run-1', text: 'Hello 世界' })
+  })
+
   it('names a missing CLI rather than reporting ENOENT', () => {
     const { child, events, runner } = createRunner()
 

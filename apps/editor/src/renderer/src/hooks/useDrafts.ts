@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { GistDrafts } from '../../../shared/ipc'
 import { countChanges } from './useGistDraft'
 
@@ -16,10 +16,19 @@ export function useDrafts() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  // Gists an announcement has already spoken for. The subscription below is live
+  // from the same commit as the fetch, so one can arrive first — and what it said
+  // is newer than the snapshot, including that a published gist has nothing left.
+  const announced = useRef(new Set<string>())
+
   useEffect(() => {
     void window.editorAPI.gists.drafts().then((result) => {
-      if (result.success) setDrafts(result.data)
-      else setError(result.error)
+      if (result.success) {
+        setDrafts((current) => {
+          const older = Object.entries(result.data).filter(([id]) => !announced.current.has(id))
+          return { ...Object.fromEntries(older), ...current }
+        })
+      } else setError(result.error)
       setIsLoading(false)
     })
   }, [])
@@ -27,6 +36,7 @@ export function useDrafts() {
   useEffect(
     () =>
       window.editorAPI.gists.onDraftChanged(({ gistId, draft }) => {
+        announced.current.add(gistId)
         setDrafts((previous) => {
           const next = { ...previous }
           // A published or reset gist has nothing left to come back to.

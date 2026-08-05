@@ -63,7 +63,15 @@ export function GistFiles({
     isLoading,
     reload,
   } = useGistFiles(gistId)
-  const { draft, error: draftError, stage, stageDescription, reset, publish } = useGistDraft(gistId)
+  const {
+    draft,
+    error: draftError,
+    stage,
+    renameFile: rename,
+    stageDescription,
+    reset,
+    publish,
+  } = useGistDraft(gistId)
   const [filename, setFilename] = useState('')
   // The name field only exists while a file is being added, the way the
   // description and a rename only show a field once asked for.
@@ -110,9 +118,9 @@ export function GistFiles({
     void stage(id, file.filename, file.status === null ? { status: 'deleted' } : null)
 
   /**
-   * Renames by staging the new name and dropping the old one. A file that only
-   * exists locally just moves key; one GitHub already has must also be staged
-   * as deleted, which is exactly what a rename is in a gist PATCH.
+   * Renames through one draft change: staging the deletion and the new name
+   * separately could leave the file gone with nothing in its place, and what is
+   * staged exists nowhere else. The document follows only once it has stuck.
    */
   const renameFile = async (id: string, file: DraftedFile) => {
     const name = renamedTo.trim()
@@ -120,9 +128,7 @@ export function GistFiles({
     if (name === '' || name === file.filename) return
     if (merged.some((other) => other.filename === name)) return
 
-    await stage(id, file.filename, file.status === 'added' ? null : { status: 'deleted' })
-    await stage(id, name, { status: 'added', content: file.content })
-    onRenamed?.(id, file.filename, name)
+    if (await rename(id, file.filename, name, file.content)) onRenamed?.(id, file.filename, name)
   }
 
   const startRename = (filename: string) => {

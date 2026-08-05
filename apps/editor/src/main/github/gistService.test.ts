@@ -164,6 +164,51 @@ describe('gistService.stage', () => {
   })
 })
 
+describe('gistService.renameFile', () => {
+  it('stages a published file as deleted under its new name, in one change', async () => {
+    drafts.read.mockResolvedValue({ files: {} })
+
+    await expect(
+      service.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    ).resolves.toEqual({
+      success: true,
+      data: {
+        files: {
+          'notes.md': { status: 'deleted' },
+          'renamed.md': { status: 'added', content: '# notes' },
+        },
+      },
+    })
+    // One read-modify-write, so the file cannot go without its replacement arriving.
+    expect(drafts.update).toHaveBeenCalledWith('abc123', expect.any(Function))
+    expect(drafts.update).toHaveBeenCalledTimes(1)
+  })
+
+  it('just moves a file that only exists locally', async () => {
+    drafts.read.mockResolvedValue({
+      files: { 'draft.md': { status: 'added', content: '# draft' } },
+    })
+
+    // Nothing is published under the old name, so there is nothing to delete.
+    await expect(
+      service.renameFile('abc123', 'draft.md', 'renamed.md', '# draft')
+    ).resolves.toEqual({
+      success: true,
+      data: { files: { 'renamed.md': { status: 'added', content: '# draft' } } },
+    })
+  })
+
+  it('leaves the rest of the draft alone', async () => {
+    drafts.read.mockResolvedValue({ files: { 'todo.md': { status: 'deleted' } }, description: 'A' })
+
+    await expect(
+      service.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    ).resolves.toMatchObject({
+      data: { description: 'A', files: { 'todo.md': { status: 'deleted' } } },
+    })
+  })
+})
+
 describe('gistService.stageDescription', () => {
   beforeEach(() => drafts.read.mockResolvedValue({ files: {} }))
 

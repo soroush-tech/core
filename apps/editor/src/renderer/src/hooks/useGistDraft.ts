@@ -73,6 +73,21 @@ export function useGistDraft(gistId: string | null) {
     [claim, isNewest]
   )
 
+  const renameFile = useCallback(
+    async (id: string, from: string, to: string, content: string) => {
+      setError(null)
+      const ticket = claim()
+      const result = await window.editorAPI.gists.renameFile(id, from, to, content)
+      if (!result.success) {
+        setError(result.error)
+        return false
+      }
+      if (isNewest(ticket)) setLoaded({ gistId: id, draft: result.data })
+      return true
+    },
+    [claim, isNewest]
+  )
+
   const stageDescription = useCallback(
     async (id: string, description: string | null) => {
       setError(null)
@@ -121,5 +136,5 @@ export function useGistDraft(gistId: string | null) {
   )
 
   const draft = loaded !== null && loaded.gistId === gistId ? loaded.draft : EMPTY
-  return { draft, error, stage, stageDescription, reset, publish }
+  return { draft, error, stage, renameFile, stageDescription, reset, publish }
 }

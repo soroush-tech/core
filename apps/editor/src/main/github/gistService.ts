@@ -28,6 +28,11 @@ export interface GistService {
   drafts: () => Promise<GistDrafts>
   /** Stages one file change, or clears it when `entry` is null. Returns the new draft. */
   stage: (id: string, filename: string, entry: GistDraftEntry | null) => Promise<Result<GistDraft>>
+  /**
+   * Renames a staged or published file as one change, so a rename can never
+   * come apart into a deletion without its replacement.
+   */
+  renameFile: (id: string, from: string, to: string, content: string) => Promise<Result<GistDraft>>
   /** Stages a description, or clears the staged one when `description` is null. */
   stageDescription: (id: string, description: string | null) => Promise<Result<GistDraft>>
   reset: (id: string) => Promise<Result<null>>
@@ -81,6 +86,20 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
           files[filename] = entry
         }
 
+        return { ...draft, files }
+      }),
+
+    // One step, so the old name and the new one cannot disagree: a rename that
+    // staged the deletion and then failed would leave the file gone with nothing
+    // in its place — and what is staged exists nowhere else.
+    renameFile: (id, from, to, content) =>
+      drafts.update(id, (draft) => {
+        const files = { ...draft.files }
+        // A file GitHub has must be staged as deleted, which is what a rename is
+        // in a gist PATCH; one that only exists here just moves key.
+        if (files[from]?.status === 'added') delete files[from]
+        else files[from] = { status: 'deleted' }
+        files[to] = { status: 'added', content }
         return { ...draft, files }
       }),
 

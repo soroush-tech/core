@@ -17,8 +17,15 @@ export function registerClaudeHandlers(
 
   const runner = createRunner((event) => {
     const contents = listeners.get(event.runId)
-    // A run whose window has gone, or that already ended, has nobody to tell.
+    // A run that already ended has nobody to tell.
     if (!contents) return
+    // A window closed mid-run: sending to it throws, and the CLI is answering
+    // nobody. Forgotten and killed, rather than left writing into the dark.
+    if (contents.isDestroyed()) {
+      listeners.delete(event.runId)
+      runner.cancel(event.runId)
+      return
+    }
     if (event.type === 'RUN_FINISHED' || event.type === 'RUN_ERROR') listeners.delete(event.runId)
     contents.send(CLAUDE_CHANNELS.event, event)
   })

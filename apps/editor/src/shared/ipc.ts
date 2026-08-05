@@ -141,6 +141,7 @@ export const GIST_CHANNELS = {
   draft: 'github:gist-draft',
   drafts: 'github:gist-drafts',
   stage: 'github:gist-stage',
+  renameFile: 'github:gist-rename-file',
   stageDescription: 'github:gist-stage-description',
   reset: 'github:gist-reset',
   publish: 'github:gist-publish',

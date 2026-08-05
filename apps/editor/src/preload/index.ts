@@ -60,6 +60,14 @@ const editorAPI = {
       filename: string,
       entry: GistDraftEntry | null
     ): Promise<Result<GistDraft>> => ipcRenderer.invoke(GIST_CHANNELS.stage, id, filename, entry),
+    /** Renames a file as one change, so it cannot come apart halfway. */
+    renameFile: (
+      id: string,
+      from: string,
+      to: string,
+      content: string
+    ): Promise<Result<GistDraft>> =>
+      ipcRenderer.invoke(GIST_CHANNELS.renameFile, id, from, to, content),
     /** Stages the gist's description, or clears the staged one with `null`. */
     stageDescription: (id: string, description: string | null): Promise<Result<GistDraft>> =>
       ipcRenderer.invoke(GIST_CHANNELS.stageDescription, id, description),

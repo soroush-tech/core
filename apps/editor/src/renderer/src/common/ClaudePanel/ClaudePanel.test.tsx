@@ -243,10 +243,13 @@ describe('ClaudePanel', () => {
       expect(gistsApi.files).not.toHaveBeenCalled()
     })
 
-    it('gives the gist back its own name when it has no description', async () => {
+    it.each([
+      ['no description', null],
+      ['one that is nothing but spaces', '   '],
+    ])('gives the gist back its own name when it has %s', async (_name, description) => {
       gistsApi.files.mockResolvedValue({
         success: true,
-        data: { description: null, files: [{ filename: 'en.md', content: '# Part one' }] },
+        data: { description, files: [{ filename: 'en.md', content: '# Part one' }] },
       })
       renderPanel('', false)
 

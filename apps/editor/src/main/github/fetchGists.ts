@@ -62,6 +62,14 @@ export async function fetchGists(
       gists.push(...(payload as RawGist[]).map(toSummary))
       // A page that is not full is the last one — no need to ask for another.
       if (payload.length < GISTS_PAGE_SIZE) break
+      // A full last page means there are more, and this promised every gist.
+      // Saying so beats handing back a list that only looks complete.
+      if (page === GISTS_MAX_PAGES) {
+        return {
+          success: false,
+          error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists — more than this can list`,
+        }
+      }
     }
 
     return { success: true, data: gists }

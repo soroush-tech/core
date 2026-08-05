@@ -91,6 +91,15 @@ describe('preload editorAPI', () => {
     await api.gists.stage('abc123', 'notes.md', entry)
     expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.stage, 'abc123', 'notes.md', entry)
 
+    await api.gists.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    expect(invoke).toHaveBeenLastCalledWith(
+      GIST_CHANNELS.renameFile,
+      'abc123',
+      'notes.md',
+      'renamed.md',
+      '# notes'
+    )
+
     await api.gists.stageDescription('abc123', 'A better one')
     expect(invoke).toHaveBeenLastCalledWith(
       GIST_CHANNELS.stageDescription,

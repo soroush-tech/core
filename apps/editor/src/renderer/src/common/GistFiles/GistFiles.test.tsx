@@ -11,6 +11,7 @@ const gistsApi = {
   draft: vi.fn(),
   drafts: vi.fn(),
   stage: vi.fn(),
+  renameFile: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),
   publish: vi.fn(),
@@ -58,6 +59,7 @@ beforeEach(() => {
   })
   gistsApi.draft.mockResolvedValue(staged({}))
   gistsApi.stage.mockResolvedValue(staged({}))
+  gistsApi.renameFile.mockResolvedValue(staged({}))
   gistsApi.stageDescription.mockResolvedValue(staged({}))
   gistsApi.reset.mockResolvedValue({ success: true, data: true })
   gistsApi.publish.mockResolvedValue({ success: true, data: null })
@@ -216,18 +218,21 @@ describe('GistFiles', () => {
       await userEvent.type(screen.getByLabelText(`Rename ${from}`), `${to}{Enter}`)
     }
 
-    it('stages a published file as deleted under its new name', async () => {
+    it('renames as one change, carrying the content across', async () => {
       renderFiles()
       await screen.findByRole('button', { name: 'notes.md' })
 
       await rename('notes.md', 'renamed.md')
 
-      // A rename in a gist is exactly this: the old name goes, the new one arrives.
-      expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'notes.md', { status: 'deleted' })
-      expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'renamed.md', {
-        status: 'added',
-        content: '# notes',
-      })
+      // Staging the deletion and the new name apart could lose the file between
+      // them, so main is asked for the rename itself.
+      expect(gistsApi.renameFile).toHaveBeenCalledWith(
+        'abc123',
+        'notes.md',
+        'renamed.md',
+        '# notes'
+      )
+      expect(gistsApi.stage).not.toHaveBeenCalled()
       // So a document open on that file saves under the name it now has.
       expect(onRenamed).toHaveBeenCalledWith('abc123', 'notes.md', 'renamed.md')
     })
@@ -242,13 +247,15 @@ describe('GistFiles', () => {
 
       await rename('notes.md', 'renamed.md')
 
-      expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'renamed.md', {
-        status: 'added',
-        content: '# notes',
-      })
+      expect(gistsApi.renameFile).toHaveBeenCalledWith(
+        'abc123',
+        'notes.md',
+        'renamed.md',
+        '# notes'
+      )
     })
 
-    it('just moves a file that only exists locally', async () => {
+    it('sends the staged content of a file that only exists locally', async () => {
       gistsApi.draft.mockResolvedValue(
         staged({ files: { 'draft.md': { status: 'added', content: '# draft' } } })
       )
@@ -257,12 +264,24 @@ describe('GistFiles', () => {
 
       await rename('draft.md', 'renamed.md')
 
-      // Nothing is published under the old name, so there is nothing to delete.
-      expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'draft.md', null)
-      expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'renamed.md', {
-        status: 'added',
-        content: '# draft',
-      })
+      expect(gistsApi.renameFile).toHaveBeenCalledWith(
+        'abc123',
+        'draft.md',
+        'renamed.md',
+        '# draft'
+      )
+    })
+
+    it('leaves the open document on its old name when the rename fails', async () => {
+      gistsApi.renameFile.mockResolvedValue({ success: false, error: 'EACCES' })
+      renderFiles()
+      await screen.findByRole('button', { name: 'notes.md' })
+
+      await rename('notes.md', 'renamed.md')
+
+      // Nothing was staged, so the document still belongs to the name it had.
+      expect(onRenamed).not.toHaveBeenCalled()
+      expect(await screen.findByRole('alert')).toHaveTextContent('EACCES')
     })
 
     it.each([

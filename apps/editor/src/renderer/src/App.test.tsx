@@ -46,7 +46,8 @@ const gistsApi = {
   list: vi.fn().mockResolvedValue({ success: true, data: [] }),
   files: vi.fn().mockResolvedValue({ success: true, data: { description: null, files: [] } }),
   draft: vi.fn(),
-  drafts: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
+  // Keyed by gist id, so nothing staged anywhere is an empty record.
+  drafts: vi.fn().mockResolvedValue({ success: true, data: {} }),
   stage: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
   stageDescription: vi.fn().mockResolvedValue({ success: true, data: { files: {} } }),
   reset: vi.fn(),

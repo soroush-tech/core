@@ -8,6 +8,7 @@ const gistsApi = {
   draft: vi.fn(),
   drafts: vi.fn(),
   stage: vi.fn(),
+  renameFile: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),
   publish: vi.fn(),
@@ -106,6 +107,37 @@ describe('useGistDraft', () => {
       await result.current.stage('abc123', 'notes.md', { status: 'deleted' })
     })
 
+    expect(result.current.error).toBe('EACCES')
+    expect(result.current.draft).toEqual(DRAFT)
+  })
+
+  it('adopts the draft main returns after a rename', async () => {
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    const renamed = { files: { 'renamed.md': { status: 'added' as const, content: '# notes' } } }
+    gistsApi.renameFile.mockResolvedValue({ success: true, data: renamed })
+
+    let accepted: boolean | undefined
+    await act(async () => {
+      accepted = await result.current.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    })
+
+    expect(accepted).toBe(true)
+    expect(result.current.draft).toEqual(renamed)
+  })
+
+  it('reports a failed rename and keeps the draft', async () => {
+    gistsApi.renameFile.mockResolvedValue({ success: false, error: 'EACCES' })
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    let accepted: boolean | undefined
+    await act(async () => {
+      accepted = await result.current.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    })
+
+    expect(accepted).toBe(false)
     expect(result.current.error).toBe('EACCES')
     expect(result.current.draft).toEqual(DRAFT)
   })
@@ -261,6 +293,30 @@ describe('useGistDraft', () => {
         ? result.current.stage('abc123', 'newest.md', { status: 'added', content: 'newest' })
         : result.current.stageDescription('abc123', 'newest')
     )
+
+    await act(async () => {
+      slow.settle({
+        success: true,
+        data: { files: { 'slow.md': { status: 'added', content: 'slow' } } },
+      })
+      await first
+    })
+
+    expect(result.current.draft).toEqual(newest)
+  })
+
+  it('drops a slow rename answer once a newer one has landed', async () => {
+    const slow = deferred<unknown>()
+    const newest = { files: { 'newest.md': { status: 'added' as const, content: 'newest' } } }
+
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    gistsApi.renameFile.mockReturnValueOnce(slow.promise)
+    const first = result.current.renameFile('abc123', 'notes.md', 'slow.md', 'slow')
+
+    gistsApi.renameFile.mockResolvedValue({ success: true, data: newest })
+    await act(() => result.current.renameFile('abc123', 'notes.md', 'newest.md', 'newest'))
 
     await act(async () => {
       slow.settle({

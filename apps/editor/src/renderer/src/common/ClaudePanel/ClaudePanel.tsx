@@ -66,7 +66,9 @@ export function ClaudePanel({
   const reference = referenceId === NO_REFERENCE ? null : toContext(description, files)
   // What the dropped gist is called: its description, else its first file —
   // the drag carries only an id, so the name comes from what was fetched.
-  const referenceName = description?.trim() ?? files[0]?.filename ?? 'that gist'
+  // `||`, not `??`: a description of nothing but spaces is no name either, and
+  // an empty one would leave the button to stop referring to it unlabelled.
+  const referenceName = description?.trim() || files[0]?.filename || 'that gist'
 
   const submit = async () => {
     onStart?.()

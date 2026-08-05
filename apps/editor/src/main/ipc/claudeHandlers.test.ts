@@ -27,8 +27,8 @@ registerClaudeHandlers(
   () => nextRunId
 )
 
-/** Stands in for a window: only its `send` matters here. */
-const createSender = () => ({ send: vi.fn() })
+/** Stands in for a window: what it was sent, and whether it is still there. */
+const createSender = () => ({ send: vi.fn(), isDestroyed: vi.fn(() => false) })
 const window = createSender()
 
 const start = (...args: unknown[]) =>
@@ -116,6 +116,22 @@ describe('registerClaudeHandlers', () => {
     emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'late' })
 
     expect(window.send).not.toHaveBeenCalled()
+  })
+
+  it('kills a run whose window has gone, rather than sending into a closed one', async () => {
+    await start('old', 'improve')
+    window.isDestroyed.mockReturnValue(true)
+
+    emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'half' })
+
+    // Sending to a destroyed window throws, and the CLI would go on answering nobody.
+    expect(window.send).not.toHaveBeenCalled()
+    expect(runner.cancel).toHaveBeenCalledWith('run-1')
+
+    // Forgotten with it: what arrives next belongs to no run.
+    runner.cancel.mockClear()
+    emit({ type: 'RUN_FINISHED', runId: 'run-1', text: 'Hello' })
+    expect(runner.cancel).not.toHaveBeenCalled()
   })
 
   it('cancels a run the asking window started', async () => {

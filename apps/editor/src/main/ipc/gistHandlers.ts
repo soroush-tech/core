@@ -103,6 +103,23 @@ export function registerGistHandlers(service: GistService, getWindow: () => Brow
   )
 
   ipcMain.handle(
+    GIST_CHANNELS.renameFile,
+    async (_event, id: unknown, from: unknown, to: unknown, content: unknown) => {
+      const gistId = validateId(id)
+      if (!gistId.success) return gistId
+      const oldName = validateFilename(from)
+      if (!oldName.success) return oldName
+      const newName = validateFilename(to)
+      if (!newName.success) return newName
+      if (typeof content !== 'string') return { success: false, error: 'Invalid file content' }
+
+      const renamed = await service.renameFile(gistId.data, oldName.data, newName.data, content)
+      if (renamed.success) await announce(gistId.data)
+      return renamed
+    }
+  )
+
+  ipcMain.handle(
     GIST_CHANNELS.stageDescription,
     async (_event, id: unknown, description: unknown): Promise<Result<GistDraft>> => {
       const gistId = validateId(id)

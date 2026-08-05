@@ -243,6 +243,26 @@ describe('useDocument', () => {
     })
   })
 
+  it('does not call the document clean when it was renamed mid-stage', async () => {
+    let staged!: (result: unknown) => void
+    gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    const saving = result.current.save()
+    act(() => result.current.renameOrigin('abc123', 'notes.md', 'renamed.md'))
+    await act(async () => staged({ success: true, data: {} }))
+
+    // What reached the sandbox is notes.md; the file is renamed.md now, and it
+    // still holds work nothing has written under that name.
+    await expect(saving).resolves.toBe(false)
+    expect(result.current).toMatchObject({
+      isDirty: true,
+      origin: { gistId: 'abc123', filename: 'renamed.md' },
+    })
+  })
+
   it('does not hand a finished stage to the document that replaced it', async () => {
     let staged!: (result: unknown) => void
     gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))

@@ -1,5 +1,6 @@
 import type { spawn } from 'node:child_process'
 import { tmpdir } from 'node:os'
+import { StringDecoder } from 'node:string_decoder'
 import type { ClaudeEvent } from '../../shared/ipc'
 import { createLineReader, parseStreamLine } from './parseStream'
 
@@ -88,7 +89,13 @@ export function createClaudeRunner(
         else if (parsed.kind === 'error') failure = parsed.message
       })
 
-      child.stdout?.on('data', (chunk: Buffer | string) => reader.push(String(chunk)))
+      // One decoder for the whole run: a chunk can end halfway through a character,
+      // and decoding each on its own would leave a replacement character in the
+      // middle of the answer. What it holds back is flushed when the child closes.
+      const stdout = new StringDecoder('utf8')
+      child.stdout?.on('data', (chunk: Buffer | string) =>
+        reader.push(stdout.write(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)))
+      )
       child.stderr?.on('data', (chunk: Buffer | string) => {
         stderr += String(chunk)
       })
@@ -105,6 +112,7 @@ export function createClaudeRunner(
       child.on('close', (code, signal) => {
         // Already reported through 'error' — nothing here to add.
         if (!running.delete(runId)) return
+        reader.push(stdout.end())
         reader.end()
 
         if (cancelled.delete(runId)) return
