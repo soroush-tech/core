@@ -68,31 +68,13 @@ jobs:
           VERSION=$(node -p "require('./apps/web/package.json').devDependencies?.['@playwright/test'] || require('./apps/web/package.json').dependencies?.['@playwright/test']")
           echo "version=${VERSION#^}" >> "$GITHUB_OUTPUT"
 
-      # Discover apps / workers / packages (folders with a package.json) and the
-      # workflow files, then build a per-entity paths-filter config so we can report
-      # exactly which ones changed.
+      # One key per app / worker / package (folders with a package.json), per workflow file,
+      # and per root file — each root file is its own key so what changed can be attributed
+      # rather than read as "everything". Root docs/tooling dotfiles are deliberately absent:
+      # they must not validate the workspace, so the list is explicit rather than a glob.
       - name: Discover workspace entities
         id: discover
-        run: |
-          node <<'NODE' >> "$GITHUB_OUTPUT"
-          const fs = require('fs')
-          const dirsWithPkg = (root) => fs.existsSync(root) ? fs.readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory() && fs.existsSync(`${root}/${d.name}/package.json`)).map((d) => d.name) : []
-          const apps = dirsWithPkg('apps')
-          const workers = dirsWithPkg('workers')
-          const packages = dirsWithPkg('packages')
-          const workflows = fs.readdirSync('.github/workflows').filter((f) => /\.ya?ml$/.test(f))
-          const filters = {}
-          apps.forEach((n) => (filters[`app__${n}`] = [`apps/${n}/**`]))
-          workers.forEach((n) => (filters[`worker__${n}`] = [`workers/${n}/**`]))
-          packages.forEach((n) => (filters[`pkg__${n}`] = [`packages/${n}/**`]))
-          workflows.forEach((f) => (filters[`wf__${f.replace(/\.ya?ml$/, '')}`] = [`.github/workflows/${f}`]))
-          // Root = build/deploy-affecting top-level files only (lockfile, workspace,
-          // manifest, .nvmrc, tsconfig). Root docs/tooling dotfiles must NOT trigger a
-          // full workspace validate + deploy, so list them explicitly rather than glob.
-          filters.root = ['pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json', '.nvmrc', 'tsconfig.json']
-          console.log(`filters=${JSON.stringify(filters)}`)
-          console.log(`packages=${JSON.stringify(packages)}`)
-          NODE
+        run: node scripts/assemble-changes.mjs filters >> "$GITHUB_OUTPUT"
 
       - name: Detect changed entities
         uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
@@ -103,39 +85,16 @@ jobs:
       # Assemble the single changes.json the CD workflows read: apps/worker/packages/
       # workflows are lists of the changed names, root is a boolean. Also derive the
       # booleans + package matrix this CI run's own jobs gate on.
+      #
+      # BASE_SHA is what the change is measured against — the target branch for a pull
+      # request, the previous tip for a push. The root manifest and the lockfile are read
+      # at that commit to say what they mean; anything unreadable validates everything.
       - name: Assemble changes.json
         id: assemble
         env:
           CHANGES: ${{ steps.filter.outputs.changes }}
-          ALL_PACKAGES: ${{ steps.discover.outputs.packages }}
-        run: |
-          node <<'NODE' >> "$GITHUB_OUTPUT"
-          const fs = require('fs')
-          const changed = new Set(JSON.parse(process.env.CHANGES))
-          const allPackages = JSON.parse(process.env.ALL_PACKAGES)
-          const pick = (prefix) => [...changed].filter((k) => k.startsWith(prefix)).map((k) => k.slice(prefix.length))
-          const apps = pick('app__')
-          const worker = pick('worker__')
-          const packages = pick('pkg__')
-          const workflows = pick('wf__')
-          const root = changed.has('root')
-          fs.writeFileSync('changes.json', JSON.stringify({ apps, worker, packages, workflows, root }))
-          // CI gating: a root or workflow change validates the whole workspace.
-          const infra = root || workflows.length > 0
-          const pkgsForCI = infra ? allPackages : packages
-          // `browsers` marks packages with a real-browser vitest tier — they declare
-          // `playwright` themselves, and their CI row must install Chromium first.
-          const include = pkgsForCI.map((dir) => {
-            const pkg = require(`./packages/${dir}/package.json`)
-            const browsers = Boolean(pkg.devDependencies?.playwright || pkg.dependencies?.playwright)
-            return { dir, filter: pkg.name, flag: dir, browsers }
-          })
-          console.log(`web=${apps.includes('web') || packages.length > 0 || infra}`)
-          console.log(`worker=${worker.includes('api') || packages.includes('schema') || packages.includes('wrangler-tools') || infra}`)
-          console.log(`worker_bench=${worker.includes('bench') || packages.includes('wrangler-tools') || infra}`)
-          console.log(`has_packages=${pkgsForCI.length ? 'true' : 'false'}`)
-          console.log(`changed_packages=${JSON.stringify({ include })}`)
-          NODE
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/assemble-changes.mjs assemble >> "$GITHUB_OUTPUT"
 
       # Hand the single changes.json to the workflow_run-triggered CD workflows; they
       # carry no diff base of their own and read this run's answer (computed against

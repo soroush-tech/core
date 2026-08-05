@@ -62,16 +62,16 @@ into a pass and real failures into a fail.
 `runs-on: ubuntu-latest` · `timeout-minutes: 15`. Produces every output the other
 jobs consume via `needs.prepare.outputs.*`.
 
-| #   | Step                        | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                          |
-| --- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout Repository         | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                     |
-| 2   | Read Node.js version        | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                        |
-| 3   | Detect package manager      | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile`), `runner`. Fails if none found.                                                                                                                                                                                                   |
-| 4   | Read Playwright version     | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                      |
-| 5   | Discover workspace entities | inline `node` script over `apps/*`, `workers/*`, `packages/*`, `.github/workflows/*`                                   | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), and workflow file (`wf__<name>`), plus `root` (a whitelist of build/deploy-affecting root files: `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package.json`, `.nvmrc`, `tsconfig.json`). |
-| 6   | Detect changed entities     | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                          |
-| 7   | Assemble `changes.json`     | inline `node` script                                                                                                   | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `worker` / `worker_bench` / `has_packages` / `changed_packages`. A `root` or workflow change counts as infra → validates the whole workspace.                                                           |
-| 8   | Upload `changes.json`       | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                            |
+| #   | Step                        | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                                              |
+| --- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout Repository         | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                                         |
+| 2   | Read Node.js version        | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                                            |
+| 3   | Detect package manager      | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile`), `runner`. Fails if none found.                                                                                                                                                                                                                       |
+| 4   | Read Playwright version     | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                                          |
+| 5   | Discover workspace entities | `node scripts/assemble-changes.mjs filters`                                                                            | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), workflow file (`wf__<name>`), and **one per root file** (`root__lock`, `root__workspace`, `root__package`, `root__nvmrc`, `root__tsconfig`) — a whitelist, so root docs/tooling dotfiles trigger nothing. |
+| 6   | Detect changed entities     | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                                              |
+| 7   | Assemble `changes.json`     | `node scripts/assemble-changes.mjs assemble`                                                                           | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `worker` / `worker_bench` / `has_packages` / `changed_packages`. Root files are attributed first — see [What a root change means](#what-a-root-change-means). Whole-workspace or workflow change → infra → everything runs. |
+| 8   | Upload `changes.json`       | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                                                |
 
 ### Outputs
 
@@ -88,8 +88,12 @@ jobs consume via `needs.prepare.outputs.*`.
 
 The single artifact the CD workflows consume. `apps` / `worker` / `packages` /
 `workflows` are **lists of the changed names** (empty when nothing changed); `root`
-is a **boolean** (a top-level file changed). No `dir`/`filter`/`flag` — a name is
-enough; each CD applies its own [condition](./cd-web.md#job-changes).
+is a **boolean** — a root change that means the **whole workspace**, not merely that a
+top-level file was touched. No `dir`/`filter`/`flag` — a name is enough; each CD applies
+its own [condition](./cd-web.md#job-changes).
+
+A lockfile change is attributed, so `apps` / `packages` / `worker` can name a member whose
+files were not themselves edited — adding a dependency to `apps/web` lists `web` here.
 
 ```json
 {
@@ -100,6 +104,34 @@ enough; each CD applies its own [condition](./cd-web.md#job-changes).
   "root": false
 }
 ```
+
+### What a root change means
+
+A root file used to mean "everything changed". Every dependency bump writes `pnpm-lock.yaml`,
+so adding one dependency to one package paid for the entire matrix. Each root file is now asked
+what it actually affects ([`scripts/assemble-changes.mjs`](../../scripts/assemble-changes.mjs)):
+
+| Changed                                            | Means                                                                                                                        |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm-workspace.yaml` · `.nvmrc` · `tsconfig.json` | whole workspace — they change how everything installs and builds                                                             |
+| root `package.json`                                | whole workspace **only** when something outside `scripts` changed (devDependencies, `pnpm` config, `engines`)                |
+| `pnpm-lock.yaml`                                   | the members whose **importer** entry moved; the root importer `.`, or a change that moves no importer, means whole workspace |
+| any `.github/workflows/*`                          | whole workspace — it changes how every job runs, and this run is the proof                                                   |
+
+The lockfile is compared **structurally**: its `importers:` blocks are sectioned by indentation and
+matched key by key against the same file at the base commit. A changed importer's inner lines carry
+no key of their own, so a diff hunk cannot say whose dependency moved — the block it sits in can.
+It is sectioned rather than parsed because `prepare` runs before any install, so there is no YAML
+parser to reach for, and pnpm writes the file itself.
+
+Reading the base needs that commit: `BASE_SHA` is the target branch for a pull request and the
+previous tip for a push, fetched one commit deep if the shallow clone lacks it. **Anything that
+cannot be compared validates the whole workspace** — a missing base, an unreadable file, a lockfile
+importer outside `apps/`, `workers/` or `packages/`. Each decision is logged to the step's stderr
+(`changes: pnpm-lock.yaml moved app__editor`), so a surprising run says why it happened.
+
+Deliberately out of scope: tracing a transitive bump to the packages that depend on it. That needs
+the resolved graph, and getting it wrong means skipping a package the bump did break.
 
 ---
 
