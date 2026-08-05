@@ -2,7 +2,7 @@
 # Editing this file re-runs the web app it holds, and nothing outside it.
 name: CI · Web
 
-# Called by ci.yml. The web app's own shape: a build, three coverage tiers in one V8 pass, and
+# Called by ci-app.yml. The web app's own shape: a build, three coverage tiers in one V8 pass, and
 # the tri-OS Playwright matrix. `e2e` stays in this file with `web` — it reads `vite_base_url`
 # from it precisely so it can stay off the CI environment and add no second approval prompt.
 on:

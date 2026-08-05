@@ -2,8 +2,8 @@
 
 # `ci-web.yml` — CI · Web
 
-Called by [`ci.yml`](./ci.md), never triggered on its own. The web app's own shape: a build, three
-coverage tiers in one V8 pass, and the tri-OS browser matrix.
+Called by [`ci-app.yml`](./ci-app.md), never triggered on its own. The web app's own shape: a
+build, three coverage tiers in one V8 pass, and the tri-OS browser matrix.
 
 ```yaml
 # ci:validates app__web

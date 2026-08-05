@@ -2,8 +2,8 @@
 
 # `ci-editor.yml` — CI · Editor
 
-Called by [`ci.yml`](./ci.md), never triggered on its own. The desktop editor's two tiers: the jsdom
-unit suite and the Playwright-Electron e2e.
+Called by [`ci-app.yml`](./ci-app.md), never triggered on its own. The desktop editor's two
+tiers: the jsdom unit suite and the Playwright-Electron e2e.
 
 ```yaml
 # ci:validates app__editor

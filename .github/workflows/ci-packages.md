@@ -42,5 +42,6 @@ of its own — that's what separates `design-system`'s browser tier from the edi
 The performance gate: `packages/styled-system/bench` runs in the pinned Docker sandbox via
 [`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action) against the last npm
 release, failing below 80% of the baseline. Gated on the matrix rather than its own filter, keyed on
-`flag` — `dir` would match `workers/bench` too. Results post as one sticky PR comment through the
-OIDC relay, falling back to the org app token and then `GITHUB_TOKEN`.
+`flag` — `dir` would match `workers/bench` too. Results post as one sticky PR comment under a token
+minted from the org's GitHub App, so the comment carries the brand bot identity; with the app
+unconfigured the step is skipped and the gate falls back to `GITHUB_TOKEN`.
