@@ -82,18 +82,31 @@ jobs:
         with:
           filters: ${{ steps.discover.outputs.filters }} # JSON is valid YAML
 
+      # The root manifest and the lockfile are attributed by comparing them against the
+      # base — the target branch for a pull request, the previous tip for a push — so both
+      # are copied out at that commit, fetched one deep first when the shallow clone lacks
+      # it. Every step here may fail without failing the job: a copy that is missing or
+      # empty is one the next step reads as "cannot be compared", which validates
+      # everything. Reading is git's job; what it means is the script's.
+      - name: Copy the base manifest and lockfile
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/base"
+          git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null ||
+            git fetch --no-tags --depth=1 origin "$BASE_SHA" 2>/dev/null || true
+          git show "$BASE_SHA:package.json"   > "$RUNNER_TEMP/base/package.json"   2>/dev/null || true
+          git show "$BASE_SHA:pnpm-lock.yaml" > "$RUNNER_TEMP/base/pnpm-lock.yaml" 2>/dev/null || true
+
       # Assemble the single changes.json the CD workflows read: apps/worker/packages/
       # workflows are lists of the changed names, root is a boolean. Also derive the
       # booleans + package matrix this CI run's own jobs gate on.
-      #
-      # BASE_SHA is what the change is measured against — the target branch for a pull
-      # request, the previous tip for a push. The root manifest and the lockfile are read
-      # at that commit to say what they mean; anything unreadable validates everything.
       - name: Assemble changes.json
         id: assemble
         env:
           CHANGES: ${{ steps.filter.outputs.changes }}
-          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          BASE_PACKAGE_JSON: ${{ runner.temp }}/base/package.json
+          BASE_LOCKFILE: ${{ runner.temp }}/base/pnpm-lock.yaml
         run: node scripts/assemble-changes.mjs assemble >> "$GITHUB_OUTPUT"
 
       # Hand the single changes.json to the workflow_run-triggered CD workflows; they

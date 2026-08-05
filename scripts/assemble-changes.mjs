@@ -10,7 +10,10 @@
 // the whole matrix — a lockfile is written by every dependency change. Each root file is now
 // asked what it actually affects; only `pnpm-lock.yaml` and the root `package.json` need their
 // previous version to answer, and both fall back to the whole workspace when it cannot be read.
-import { execFileSync } from 'node:child_process'
+//
+// Those previous versions arrive as files, laid out by the workflow step before this one and
+// named by BASE_PACKAGE_JSON and BASE_LOCKFILE. Reading them is `git`'s job, deciding what they
+// mean is this file's, and nothing here shells out.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -29,7 +32,7 @@ const ROOT_FILES = {
   root__lock: 'pnpm-lock.yaml',
 }
 
-const WHOLE_WORKSPACE = ['root__workspace', 'root__nvmrc', 'root__tsconfig']
+const WHOLE_WORKSPACE = new Set(['root__workspace', 'root__nvmrc', 'root__tsconfig'])
 
 /** Where a workspace member lives, and the filter-key prefix it answers to. */
 const AREAS = [
@@ -86,8 +89,10 @@ export function readImporters(lockfile) {
     }
     if (!inImporters) continue
 
+    // Truthiness, not `!== undefined`: the capture group starts with `\S`, so a match is always
+    // a non-empty string and a miss is always undefined.
     const [, key] = /^ {2}(\S.*?):\s*$/.exec(line) ?? []
-    if (key !== undefined) {
+    if (key) {
       current = key.replace(/^['"]|['"]$/g, '')
       importers.set(current, [])
       continue
@@ -101,8 +106,9 @@ export function readImporters(lockfile) {
 /** The filter key a lockfile importer belongs to, or null when it is not a workspace member. */
 function toFilterKey(importer) {
   for (const { dir, prefix } of AREAS) {
+    // Truthiness again: `[^/]+` cannot match an empty name.
     const [, name] = new RegExp(`^${dir}/([^/]+)$`).exec(importer) ?? []
-    if (name !== undefined) return `${prefix}${name}`
+    if (name) return `${prefix}${name}`
   }
   return null
 }
@@ -128,8 +134,9 @@ export function attributeLockfile(base, head) {
 /** True when the root manifest changed anywhere but `scripts` — the part that shapes the install. */
 export function packageJsonMattersBeyondScripts(base, head) {
   const withoutScripts = (json) => {
-    const { scripts: _scripts, ...rest } = JSON.parse(json)
-    return JSON.stringify(rest)
+    const manifest = JSON.parse(json)
+    delete manifest.scripts
+    return JSON.stringify(manifest)
   }
   return withoutScripts(base) !== withoutScripts(head)
 }
@@ -181,48 +188,26 @@ export function assembleChanges({ changed, allPackages, attributed = [], wholeWo
   }
 }
 
-/** A file as it was at `baseSha`, or null when that commit is not here to be read. */
-function fileAtBase(baseSha, file) {
-  try {
-    return execFileSync('git', ['show', `${baseSha}:${file}`], {
-      cwd: repoRoot,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-  } catch {
-    return null
-  }
-}
-
-/** Makes sure the base commit is in a shallow clone, so it can be read without fetching history. */
-function fetchBase(baseSha) {
-  // All zeros is what a push event carries for a branch that had no previous commit.
-  if (!baseSha || /^0+$/.test(baseSha)) return false
-  try {
-    execFileSync('git', ['cat-file', '-e', `${baseSha}^{commit}`], {
-      cwd: repoRoot,
-      stdio: 'ignore',
-    })
-    return true
-  } catch {
-    /* Not in the shallow clone yet — ask for that one commit. */
-  }
-  try {
-    execFileSync('git', ['fetch', '--no-tags', '--depth=1', 'origin', baseSha], {
-      cwd: repoRoot,
-      stdio: 'ignore',
-    })
-    return true
-  } catch {
-    return false
-  }
+/**
+ * A file as the base commit had it, or null when there is nothing to compare against. The copies
+ * are laid out by the workflow step before this one — the rules live here, `git` stays there.
+ * An empty file is a `git show` that found nothing, which is no answer either.
+ */
+function fileAtBase(file) {
+  const path = {
+    'package.json': process.env.BASE_PACKAGE_JSON,
+    'pnpm-lock.yaml': process.env.BASE_LOCKFILE,
+  }[file]
+  if (!path || !existsSync(path)) return null
+  const contents = readFileSync(path, 'utf8')
+  return contents === '' ? null : contents
 }
 
 /**
  * Reads the root files that changed and reports what they mean. Anything that cannot be compared
  * against its previous version counts as the whole workspace — the safe answer is the slow one.
  */
-export function attributeRootFiles(changed, baseSha, read = (file) => fileAtBase(baseSha, file)) {
+export function attributeRootFiles(changed, read = fileAtBase) {
   const touched = Object.keys(ROOT_FILES).filter((key) => changed.includes(key))
   if (touched.length === 0) return { attributed: [], wholeWorkspace: false, reasons: [] }
 
@@ -230,7 +215,7 @@ export function attributeRootFiles(changed, baseSha, read = (file) => fileAtBase
   const attributed = []
   let wholeWorkspace = false
 
-  for (const key of touched.filter((key) => WHOLE_WORKSPACE.includes(key))) {
+  for (const key of touched.filter((key) => WHOLE_WORKSPACE.has(key))) {
     wholeWorkspace = true
     reasons.push(`${ROOT_FILES[key]} changed — it shapes the whole workspace`)
   }
@@ -282,12 +267,8 @@ function main() {
 
   const changed = JSON.parse(process.env.CHANGES ?? '[]')
   const allPackages = dirsWithPackageJson('packages')
-  const baseSha = process.env.BASE_SHA ?? ''
 
-  const { attributed, wholeWorkspace, reasons } = attributeRootFiles(
-    changed,
-    fetchBase(baseSha) ? baseSha : null
-  )
+  const { attributed, wholeWorkspace, reasons } = attributeRootFiles(changed)
   for (const reason of reasons) console.error(`changes: ${reason}`)
 
   const { changes, outputs } = assembleChanges({
