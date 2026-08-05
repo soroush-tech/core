@@ -156,7 +156,8 @@ jobs:
           permission-pull-requests: write
 
       - name: Run benchmark gate
-        uses: soroush-tech/bench-action@v1
+        # Our own action, pinned like any other: `v1` is a tag, and a tag moves.
+        uses: soroush-tech/bench-action@b527ad437545189516e36ee3c29f6aeb09c3557e # v1.1.1
         with:
           bench-dir: packages/styled-system/bench
           baseline-case: previous

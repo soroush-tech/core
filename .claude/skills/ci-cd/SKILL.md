@@ -1,5 +1,5 @@
 ---
-description: GitHub Actions CI/CD conventions for this repo — the CI entry workflow calling one workflow per area (prepare → lint → packages/worker/web/editor → ci-ok), the action-pinning rule (first-party version tags, third-party SHAs), per-workspace Codecov flags with tokenless-OIDC uploads, the CI-environment approval gate (with env-scoped vars forwarded to environment-less jobs via job outputs), Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
+description: GitHub Actions CI/CD conventions for this repo — the CI entry workflow calling one workflow per area (prepare → lint → packages/worker/web/editor → ci-ok), the action-pinning rule (version tags for `actions/*`, commit SHAs for everything else including our own org), per-workspace Codecov flags with tokenless-OIDC uploads, the CI-environment approval gate (with env-scoped vars forwarded to environment-less jobs via job outputs), Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
 paths: .github/workflows/**
 ---
 
@@ -27,10 +27,12 @@ One CI entry workflow calling one per area; CD is separate and **gated on CI suc
 
 ## Action pinning convention — the load-bearing rule
 
-Pin every `uses:` by the action's **origin**. Getting this wrong fails review: CodeRabbit flags SHA-pinned first-party actions; SonarQube flags version-tagged third-party ones.
+Pin every `uses:` by the action's **origin**. Getting this wrong fails review: CodeRabbit flags SHA-pinned `actions/*`; SonarQube flags anything else on a version tag.
 
-- **First-party** — `actions/*` (checkout, setup-node, cache, upload-artifact, github-script) and own-org `soroush-tech/*` (bench-action) → **version tag**: `actions/checkout@v5`, `soroush-tech/bench-action@v1`.
-- **Third-party** (anything else — `pnpm/action-setup`, `codecov/codecov-action`, `cloudflare/wrangler-action`, `chromaui/action`, `dorny/paths-filter`) → **commit SHA** + `# vX` comment.
+- **GitHub's own** — `actions/*` (checkout, setup-node, cache, upload-artifact, github-script) → **version tag**: `actions/checkout@v5`.
+- **Everything else, our own org included** (`soroush-tech/bench-action`, `pnpm/action-setup`, `codecov/codecov-action`, `cloudflare/wrangler-action`, `chromaui/action`, `dorny/paths-filter`) → **commit SHA** + `# vX` comment.
+
+Own-org used to sit with `actions/*` on a tag. It does not any more: what SHA-pinning defends against is a tag being moved, and our own tags move like anyone's. The SHA is bumped when the action releases, which is the point — the upgrade is a reviewed line, not a silent one.
 
 ## CI job shape
 
