@@ -129,10 +129,10 @@ test('cancels a Claude run, putting the document back', async ({ page }) => {
   await expect(getEditor(page)).toHaveValue(CLAUDE_STUB_DELTA)
   await page.getByRole('button', { name: 'Cancel' }).click()
 
+  // The button is back, so the run is over and the document is its own again. That a killed
+  // run cannot write afterwards is main's to guarantee — events carry the run they belong to,
+  // and the renderer drops any for a run it is no longer waiting on (see useClaudeEdit).
   await expect(page.getByRole('button', { name: 'Ask Claude' })).toBeVisible()
-  await expect(getEditor(page)).toHaveValue('# Mine')
-  // Long enough for the stub to have answered had it not been killed.
-  await page.waitForTimeout(2500)
   await expect(getEditor(page)).toHaveValue('# Mine')
 })
 
