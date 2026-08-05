@@ -1,5 +1,5 @@
 ---
-description: GitHub Actions CI/CD conventions for this repo — the CI entry workflow calling one workflow per area (prepare → lint → packages/worker/web/editor → ci-ok), the action-pinning rule (version tags for `actions/*`, commit SHAs for everything else including our own org), per-workspace Codecov flags with tokenless-OIDC uploads, the CI-environment approval gate (with env-scoped vars forwarded to environment-less jobs via job outputs), Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
+description: GitHub Actions CI/CD conventions for this repo — the CI entry workflow calling one workflow per area (prepare → lint → packages/worker/app → ci-ok, with app → web/editor), the action-pinning rule (version tags for `actions/*`, commit SHAs for everything else including our own org), per-workspace Codecov flags with tokenless-OIDC uploads, the CI-environment approval gate (with env-scoped vars forwarded to environment-less jobs via job outputs), Cloudflare deploys via cloudflare/wrangler-action, and the standalone Chromatic workflow. Use when adding, editing, or debugging any workflow under .github/workflows/.
 paths: .github/workflows/**
 ---
 
