@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import type { GistDraft } from '../../../../shared/ipc'
@@ -432,6 +432,32 @@ describe('GistFiles', () => {
 
     expect(gistsApi.publish).toHaveBeenCalledWith('abc123', false)
     await waitFor(() => expect(gistsApi.files).toHaveBeenCalledTimes(2))
+  })
+
+  it('publishes once however many times the button is pressed', async () => {
+    let published!: (result: unknown) => void
+    gistsApi.publish.mockReturnValue(new Promise((resolve) => (published = resolve)))
+    gistsApi.draft.mockResolvedValue(
+      staged({ files: { 'notes.md': { status: 'modified', content: 'edited' } } })
+    )
+    renderFiles()
+
+    const publishButton = await screen.findByRole('button', { name: 'Publish' })
+    await userEvent.click(publishButton)
+    // A second press before the first answers. For a sandbox that would be a
+    // second gist, and nothing about the two would say which was meant.
+    expect(publishButton).toBeDisabled()
+    await userEvent.click(publishButton)
+
+    expect(gistsApi.publish).toHaveBeenCalledTimes(1)
+
+    // The hold lasts as long as the request and no longer: a publish that came
+    // back refused leaves the draft where it was, and the button ready to try
+    // again rather than dead.
+    await act(async () => {
+      published({ success: false, error: 'GitHub responded 422' })
+    })
+    await waitFor(() => expect(publishButton).toBeEnabled())
   })
 
   it('resets the draft and reloads the gist', async () => {

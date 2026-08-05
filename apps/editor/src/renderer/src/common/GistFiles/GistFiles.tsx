@@ -86,6 +86,10 @@ export function GistFiles({
   // Secret by default: publishing someone's notes to the world by accident is
   // not a mistake they can take back.
   const [isPublic, setIsPublic] = useState(false)
+  // Publishing a sandbox creates the gist, so a second press before the first
+  // has answered is a second gist — and nothing about the two says which was
+  // meant. The button is held until the request comes back.
+  const [isPublishing, setIsPublishing] = useState(false)
 
   const isNew = gistId !== null && isNewGist(gistId)
 
@@ -141,9 +145,14 @@ export function GistFiles({
   }
 
   const publishDraft = async (id: string) => {
-    const published = await publish(id, isPublic)
-    if (published !== null) onPublished?.(id, published)
-    reload()
+    setIsPublishing(true)
+    try {
+      const published = await publish(id, isPublic)
+      if (published !== null) onPublished?.(id, published)
+      reload()
+    } finally {
+      setIsPublishing(false)
+    }
   }
 
   const resetDraft = async (id: string) => {
@@ -330,6 +339,7 @@ export function GistFiles({
               type="button"
               variant="contained"
               size="sm"
+              disabled={isPublishing}
               onClick={() => void publishDraft(gistId)}
             >
               {isNew ? 'Create gist' : 'Publish'}

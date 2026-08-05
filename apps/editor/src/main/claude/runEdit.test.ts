@@ -258,6 +258,18 @@ describe('createClaudeRunner', () => {
     expect(events).toEqual([{ type: 'RUN_STARTED', runId: 'run-1' }])
   })
 
+  it('says nothing when a cancelled run fails to die', () => {
+    const { child, events, runner } = createRunner()
+
+    runner.start('run-1', request)
+    runner.cancel('run-1')
+    // The kill itself went wrong. The panel is idle and asked for this, so the
+    // failure is of the killing rather than of the run.
+    child.emit('error', new Error('kill ESRCH'))
+
+    expect(events).toEqual([{ type: 'RUN_STARTED', runId: 'run-1' }])
+  })
+
   it('ignores a cancel for a run it does not have', () => {
     const { child, runner } = createRunner()
 

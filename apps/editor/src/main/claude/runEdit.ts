@@ -106,6 +106,10 @@ export function createClaudeRunner(
 
       child.on('error', (error) => {
         running.delete(runId)
+        // A run the user stopped, whose child then failed to go quietly. The
+        // panel is idle and asked for this: the failure is of the killing, not
+        // of the run, and there is nothing for anyone to do about it.
+        if (cancelled.delete(runId)) return
         emit({
           type: 'RUN_ERROR',
           runId,
