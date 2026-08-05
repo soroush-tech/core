@@ -21,8 +21,12 @@ export interface GistFilesProps {
   gistId: string | null
   /** Loads a file into the document for editing, tagged with where it came from. */
   onOpenFile: (content: string, origin: GistOrigin) => void
-  /** Called once a draft reaches GitHub, so the rail can leave the sandbox behind. */
-  onPublished?: (gistId: string) => void
+  /**
+   * Called once a draft reaches GitHub, so the rail can leave the sandbox
+   * behind. `published` is the gist that now holds the work: the created one
+   * when `gistId` was a sandbox, and `gistId` itself otherwise.
+   */
+  onPublished?: (gistId: string, published: string) => void
   /** Called after a rename, so a document open on that file follows the new name. */
   onRenamed?: (gistId: string, from: string, to: string) => void
 }
@@ -137,7 +141,8 @@ export function GistFiles({
   }
 
   const publishDraft = async (id: string) => {
-    if (await publish(id, isPublic)) onPublished?.(id)
+    const published = await publish(id, isPublic)
+    if (published !== null) onPublished?.(id, published)
     reload()
   }
 

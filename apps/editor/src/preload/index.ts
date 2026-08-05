@@ -78,7 +78,7 @@ const editorAPI = {
      * new-gist sandbox this creates the gist — `isPublic` decides its
      * visibility and is ignored for one that already exists.
      */
-    publish: (id: string, isPublic: boolean): Promise<Result<null>> =>
+    publish: (id: string, isPublic: boolean): Promise<Result<string>> =>
       ipcRenderer.invoke(GIST_CHANNELS.publish, id, isPublic),
     /** Subscribes to draft changes made anywhere in the app; returns an unsubscribe. */
     onDraftChanged: (callback: (change: GistDraftChange) => void): (() => void) => {

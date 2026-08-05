@@ -149,7 +149,7 @@ export function registerGistHandlers(service: GistService, getWindow: () => Brow
 
   ipcMain.handle(
     GIST_CHANNELS.publish,
-    async (_event, id: unknown, isPublic: unknown): Promise<Result<null>> => {
+    async (_event, id: unknown, isPublic: unknown): Promise<Result<string>> => {
       const gistId = validateId(id)
       if (!gistId.success) return gistId
 

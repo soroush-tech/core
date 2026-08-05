@@ -146,6 +146,20 @@ export function useDocument() {
     setDocument((prev) => ({ ...prev, origin: { gistId, filename: to } }))
   }, [])
 
+  /**
+   * Follows the sandbox to the gist that publishing created. The same document
+   * under a new address, so a later save stages against the gist that exists
+   * rather than resurrecting a draft for the sandbox that has just gone.
+   */
+  const followPublished = useCallback((from: string, to: string) => {
+    const { origin } = documentRef.current
+    if (origin?.gistId !== from) return
+    // As with a rename: a save still in flight staged where this document no
+    // longer is, and what comes back says nothing about where it went.
+    originName.current += 1
+    setDocument((prev) => ({ ...prev, origin: { gistId: to, filename: origin.filename } }))
+  }, [])
+
   const newDocument = useCallback(async () => {
     if (!(await confirmDiscardIfDirty())) return
     setError(null)
@@ -179,5 +193,16 @@ export function useDocument() {
     [confirmDiscardIfDirty]
   )
 
-  return { ...document, revision, error, change, newDocument, open, load, save, renameOrigin }
+  return {
+    ...document,
+    revision,
+    error,
+    change,
+    newDocument,
+    open,
+    load,
+    save,
+    renameOrigin,
+    followPublished,
+  }
 }

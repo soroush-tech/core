@@ -36,8 +36,13 @@ export interface GistService {
   /** Stages a description, or clears the staged one when `description` is null. */
   stageDescription: (id: string, description: string | null) => Promise<Result<GistDraft>>
   reset: (id: string) => Promise<Result<null>>
-  /** `isPublic` only applies to the new-gist sandbox, which publishing creates. */
-  publish: (id: string, isPublic: boolean) => Promise<Result<null>>
+  /**
+   * `isPublic` only applies to the new-gist sandbox, which publishing creates.
+   * Resolves with the id that now holds the work: the created gist's for a
+   * sandbox, and the same id back for one that already existed — so the caller
+   * can follow a sandbox to what it became.
+   */
+  publish: (id: string, isPublic: boolean) => Promise<Result<string>>
 }
 
 const SIGNED_OUT = 'Connect a GitHub account to see your gists'
@@ -140,7 +145,13 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
 
       // The draft is only dropped once GitHub has it — a failed publish keeps the work.
       if (!published.success) return published
-      return drafts.clear(id)
+
+      // Whether the sandbox could be tidied away afterwards does not change what
+      // happened: GitHub has the work. Reporting the cleanup's failure instead
+      // would invite the one retry that must never happen — publishing a sandbox
+      // twice is two gists, and the second is not a correction of the first.
+      await drafts.clear(id)
+      return { success: true, data: published.data ?? id }
     },
   }
 }

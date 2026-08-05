@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { editorTheme } from '../../theme/editorTheme'
@@ -29,11 +29,16 @@ vi.stubGlobal('editorAPI', { github: githubApi, gists: gistsApi })
 
 const onOpenFile = vi.fn()
 const onRenameFile = vi.fn()
+const onPublished = vi.fn()
 
 const renderSidebar = () =>
   render(
     <ThemeProvider theme={editorTheme}>
-      <EditorSidebar onOpenFile={onOpenFile} onRenameFile={onRenameFile} />
+      <EditorSidebar
+        onOpenFile={onOpenFile}
+        onRenameFile={onRenameFile}
+        onPublished={onPublished}
+      />
     </ThemeProvider>
   )
 
@@ -67,7 +72,7 @@ beforeEach(() => {
   gistsApi.draft.mockResolvedValue({ success: true, data: { files: {} } })
   gistsApi.stage.mockResolvedValue({ success: true, data: { files: {} } })
   gistsApi.stageDescription.mockResolvedValue({ success: true, data: { files: {} } })
-  gistsApi.publish.mockResolvedValue({ success: true, data: null })
+  gistsApi.publish.mockResolvedValue({ success: true, data: 'created123' })
   gistsApi.drafts.mockResolvedValue({ success: true, data: {} })
 })
 
@@ -251,7 +256,7 @@ describe('EditorSidebar', () => {
       expect(await screen.findByRole('button', { name: 'notes.md' })).toBeInTheDocument()
     })
 
-    it('leaves the published sandbox behind and starts another', async () => {
+    it('follows the sandbox to the gist it became', async () => {
       gistsApi.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
       gistsApi.draft.mockResolvedValue({
         success: true,
@@ -264,15 +269,16 @@ describe('EditorSidebar', () => {
 
       await userEvent.click(await screen.findByRole('button', { name: 'Create gist' }))
 
-      // The gist it created is on GitHub now, so the panel moves on to an empty
-      // sandbox with an empty document, rather than sitting on a dead one.
-      expect(await screen.findByText('New gist')).toBeInTheDocument()
-      const [replacement] = gistsApi.files.mock.lastCall as [string]
-      expect(replacement).not.toBe(published)
-      expect(onOpenFile).toHaveBeenCalledWith('', { gistId: replacement, filename: 'en.md' })
+      // The gist it created is on GitHub now, so the panel goes there: what was
+      // just published is the thing to be looking at, and the sandbox it was
+      // written in no longer exists to sit on.
+      await waitFor(() => expect(gistsApi.files).toHaveBeenLastCalledWith('created123'))
+      expect(published).toContain(NEW_GIST_PREFIX)
+      // And the document goes with it, rather than being left on the dead address.
+      expect(onPublished).toHaveBeenCalledWith(published, 'created123')
     })
 
-    it('does not carry "public" over to the sandbox that follows', async () => {
+    it('does not carry "public" over to the next sandbox', async () => {
       gistsApi.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
       gistsApi.draft.mockResolvedValue({
         success: true,
@@ -283,9 +289,11 @@ describe('EditorSidebar', () => {
 
       fireEvent.click(await screen.findByRole('checkbox', { name: 'Public gist' }))
       await userEvent.click(screen.getByRole('button', { name: 'Create gist' }))
-      await screen.findByText('New gist')
+      await waitFor(() => expect(gistsApi.files).toHaveBeenLastCalledWith('created123'))
 
-      // The panel stays mounted across the swap, so a choice made for the gist
+      await userEvent.click(row('New gist'))
+
+      // The panel stays mounted across every swap, so a choice made for the gist
       // just created would otherwise still be ticked for the next one — and
       // publishing someone's notes to the world is not a mistake they can take back.
       expect(await screen.findByRole('checkbox', { name: 'Public gist' })).not.toBeChecked()

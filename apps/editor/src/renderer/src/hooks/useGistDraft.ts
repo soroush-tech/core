@@ -123,17 +123,21 @@ export function useGistDraft(gistId: string | null) {
     [claim, isNewest]
   )
 
+  /**
+   * Resolves with the gist that now holds the work — the created one when a
+   * sandbox was published — or null when nothing was published.
+   */
   const publish = useCallback(
-    async (id: string, isPublic = false) => {
+    async (id: string, isPublic = false): Promise<string | null> => {
       setError(null)
       const ticket = claim()
       const result = await window.editorAPI.gists.publish(id, isPublic)
       if (!result.success) {
         if (isNewest(ticket)) setError(result.error)
-        return false
+        return null
       }
       if (isNewest(ticket)) setLoaded({ gistId: id, draft: EMPTY })
-      return true
+      return result.data
     },
     [claim, isNewest]
   )

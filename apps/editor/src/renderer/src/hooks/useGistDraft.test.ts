@@ -360,7 +360,9 @@ describe('useGistDraft', () => {
     const first = call(result.current, 'slow')
 
     gistsApi[method].mockResolvedValue({ success: true, data: DRAFT })
-    await act(() => call(result.current, 'newest'))
+    await act(async () => {
+      await call(result.current, 'newest')
+    })
 
     await act(async () => {
       slow.settle({ success: false, error: 'an answer nobody is waiting for' })

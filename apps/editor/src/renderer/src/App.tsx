@@ -27,6 +27,7 @@ export function App() {
     load,
     save,
     renameOrigin,
+    followPublished,
   } = useDocument()
   const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
@@ -135,7 +136,11 @@ export function App() {
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
       <Flex flexDirection="row" height="100vh">
-        <EditorSidebar onOpenFile={openGistFile} onRenameFile={renameOrigin} />
+        <EditorSidebar
+          onOpenFile={openGistFile}
+          onRenameFile={renameOrigin}
+          onPublished={followPublished}
+        />
         <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
           <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>
             <Typography variant="body2" color="secondary" m={0}>

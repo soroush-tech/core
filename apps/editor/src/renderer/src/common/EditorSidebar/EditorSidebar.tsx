@@ -21,6 +21,11 @@ export interface EditorSidebarProps {
   onOpenFile: (content: string, origin: GistOrigin) => void
   /** Tells the document that the file it is on has been renamed. */
   onRenameFile: (gistId: string, from: string, to: string) => void
+  /**
+   * Tells the document that the sandbox it is on has become a real gist, so it
+   * can follow the work to where the work now lives.
+   */
+  onPublished: (from: string, to: string) => void
 }
 
 /**
@@ -33,7 +38,11 @@ export interface EditorSidebarProps {
  * the gist itself, so a gist reached from the draft list knows as much as one
  * picked from the list.
  */
-export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSidebarProps>) {
+export function EditorSidebar({
+  onOpenFile,
+  onRenameFile,
+  onPublished,
+}: Readonly<EditorSidebarProps>) {
   const auth = useGitHubAuth()
   // Open on a sandbox rather than nothing, so a file or a description can be
   // written straight away. An untouched one is never persisted, so starting
@@ -96,11 +105,15 @@ export function EditorSidebar({ onOpenFile, onRenameFile }: Readonly<EditorSideb
           gistId={gistId}
           onOpenFile={onOpenFile}
           onRenamed={onRenameFile}
-          // Once created, the sandbox is gone — its draft with it, and the real
-          // gist is in the list now. A fresh one takes its place rather than an
-          // empty panel, so the next thing can be written straight away.
-          onPublished={(published) => {
-            if (isNewGist(published)) openSandbox(newGistId())
+          // Once created, the sandbox is gone — its draft with it. The panel
+          // follows the work to the gist that now holds it rather than opening
+          // an empty one: what was just published is the thing to be looking at,
+          // and the document would otherwise be left on an address that no
+          // longer exists.
+          onPublished={(sandbox, published) => {
+            if (!isNewGist(sandbox)) return
+            openGist(published)
+            onPublished(sandbox, published)
           }}
         />
       </SidebarPanelItem>

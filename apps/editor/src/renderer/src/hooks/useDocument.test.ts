@@ -162,6 +162,52 @@ describe('useDocument', () => {
     expect(result.current.origin).toEqual({ gistId: 'abc123', filename: 'notes.md' })
   })
 
+  it('stages against the created gist once the sandbox it was in is published', async () => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'new:abc', filename: 'notes.md' }))
+
+    act(() => result.current.followPublished('new:abc', 'created123'))
+    act(() => result.current.change('# edited'))
+    await act(() => result.current.save())
+
+    // Staging against the sandbox would resurrect a draft for something that
+    // was published and thrown away.
+    expect(result.current.origin).toEqual({ gistId: 'created123', filename: 'notes.md' })
+    expect(gistsApi.stage).toHaveBeenCalledWith('created123', 'notes.md', {
+      status: 'modified',
+      content: '# edited',
+    })
+  })
+
+  it('ignores a publish of a sandbox this document was never in', async () => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    act(() => result.current.followPublished('new:other', 'created123'))
+
+    expect(result.current.origin).toEqual({ gistId: 'abc123', filename: 'notes.md' })
+  })
+
+  it('does not call a save that staged into the published sandbox a save of the gist', async () => {
+    let staged!: (result: unknown) => void
+    gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'new:abc', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    const saving = result.current.save()
+    act(() => result.current.followPublished('new:abc', 'created123'))
+    await act(async () => staged({ success: true, data: {} }))
+
+    // What reached the sandbox went with the sandbox; the gist holds nothing
+    // written under this document's hand, so it is still unsaved work.
+    await expect(saving).resolves.toBe(false)
+    expect(result.current).toMatchObject({
+      isDirty: true,
+      origin: { gistId: 'created123', filename: 'notes.md' },
+    })
+  })
+
   it('keeps a gist-backed document dirty when staging fails', async () => {
     gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
     const { result } = renderHook(() => useDocument())

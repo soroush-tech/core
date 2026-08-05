@@ -294,7 +294,11 @@ describe('gistService.publish', () => {
   it('sends the whole draft in one request, then clears it', async () => {
     drafts.read.mockResolvedValue(DRAFT)
 
-    await expect(service.publish('abc123', false)).resolves.toEqual({ success: true, data: null })
+    // A gist that already existed comes back as itself: the work is where it was.
+    await expect(service.publish('abc123', false)).resolves.toEqual({
+      success: true,
+      data: 'abc123',
+    })
     expect(patchGist).toHaveBeenCalledWith('abc123', DRAFT, 'github_pat_123', fetchFn)
     expect(drafts.clear).toHaveBeenCalledWith('abc123')
   })
@@ -302,8 +306,23 @@ describe('gistService.publish', () => {
   it('publishes a description-only draft', async () => {
     drafts.read.mockResolvedValue({ files: {}, description: 'A better one' })
 
-    await expect(service.publish('abc123', false)).resolves.toEqual({ success: true, data: null })
+    await expect(service.publish('abc123', false)).resolves.toEqual({
+      success: true,
+      data: 'abc123',
+    })
     expect(patchGist).toHaveBeenCalled()
+  })
+
+  it('reports the publish that happened, even when the sandbox could not be tidied', async () => {
+    drafts.read.mockResolvedValue(DRAFT)
+    drafts.clear.mockResolvedValue({ success: false, error: 'EACCES' })
+
+    // GitHub has the work. Reporting the cleanup's failure would read as "that
+    // did not publish", and the retry it invites is what creates a second gist.
+    await expect(service.publish('abc123', false)).resolves.toEqual({
+      success: true,
+      data: 'abc123',
+    })
   })
 
   it('keeps the draft when GitHub refuses it', async () => {
@@ -360,9 +379,10 @@ describe('the new-gist sandbox', () => {
   it('creates the gist on publish rather than patching one', async () => {
     drafts.read.mockResolvedValue(NEW_DRAFT)
 
+    // The created gist's id, so the caller can follow the sandbox to it.
     await expect(service.publish(NEW_ID, false)).resolves.toEqual({
       success: true,
-      data: null,
+      data: 'created123',
     })
     expect(createGist).toHaveBeenCalledWith(NEW_DRAFT, false, 'github_pat_123', fetchFn)
     expect(patchGist).not.toHaveBeenCalled()
