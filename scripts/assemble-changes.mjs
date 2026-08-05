@@ -164,7 +164,10 @@ export function workflowValidates(name) {
     return { keys: [], wholeWorkspace: false }
   }
 
-  const [, marker] = /^#\s*ci:validates\s+(.+)$/m.exec(source) ?? []
+  // Horizontal space only: `\s` spans newlines, which would let a marker's tokens sit on a line
+  // of their own — and gives the engine a second way to match the same text, which it pays for
+  // in backtracking on every workflow that has no marker at all.
+  const [, marker] = /^#[ \t]*ci:validates[ \t]+(.+)$/m.exec(source) ?? []
   if (!marker) return { keys: [], wholeWorkspace: true }
 
   // The marker line carries tokens and nothing else — prose belongs on the line below it. An
@@ -244,8 +247,9 @@ export function assembleChanges({
   // `pkg__*` in a marker means every package: a workflow that runs the package matrix asks for
   // all of them without naming twelve directories it would have to be kept in step with.
   const expand = (token) => {
-    const [, prefix] = /^(app__|worker__|pkg__)\*$/.exec(token) ?? []
-    if (prefix === undefined) return [token]
+    const wildcard = /^(app__|worker__|pkg__)\*$/.exec(token)
+    if (wildcard === null) return [token]
+    const [, prefix] = wildcard
     const area = { app__: 'apps', worker__: 'workers', pkg__: 'packages' }[prefix]
     return members[area].map((dir) => `${prefix}${dir}`)
   }
