@@ -198,6 +198,28 @@ describe('gistService.renameFile', () => {
     })
   })
 
+  it('refuses to rename onto a name that is holding staged work', async () => {
+    drafts.read.mockResolvedValue({
+      files: { 'renamed.md': { status: 'added', content: '# not to be lost' } },
+    })
+
+    // The panel rejects a duplicate name, but a stale request would not have
+    // seen it — and what is staged under that name exists nowhere else.
+    await expect(
+      service.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    ).resolves.toEqual({ success: false, error: 'renamed.md has unpublished changes' })
+  })
+
+  it('renames over a name staged as deleted, which is what bringing it back means', async () => {
+    drafts.read.mockResolvedValue({ files: { 'renamed.md': { status: 'deleted' } } })
+
+    await expect(
+      service.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    ).resolves.toMatchObject({
+      data: { files: { 'renamed.md': { status: 'added', content: '# notes' } } },
+    })
+  })
+
   it('leaves the rest of the draft alone', async () => {
     drafts.read.mockResolvedValue({ files: { 'todo.md': { status: 'deleted' } }, description: 'A' })
 

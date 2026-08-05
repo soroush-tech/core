@@ -82,6 +82,10 @@ export function createClaudeRunner(
       let stderr = ''
 
       const reader = createLineReader((line) => {
+        // Killing the child does not stop what it already wrote from arriving.
+        // The panel is idle and the document is its own again, so an answer that
+        // lands now is not one: it belongs to a run the user ended.
+        if (cancelled.has(runId)) return
         const parsed = parseStreamLine(line)
         if (parsed.kind === 'delta')
           emit({ type: 'TEXT_MESSAGE_CONTENT', runId, delta: parsed.text })
@@ -112,10 +116,12 @@ export function createClaudeRunner(
       child.on('close', (code, signal) => {
         // Already reported through 'error' — nothing here to add.
         if (!running.delete(runId)) return
+        // Before the flush, not after: what the decoder is holding is the tail of
+        // an answer nobody is waiting for.
+        if (cancelled.delete(runId)) return
+
         reader.push(stdout.end())
         reader.end()
-
-        if (cancelled.delete(runId)) return
 
         if (failure !== null) return emit({ type: 'RUN_ERROR', runId, error: failure })
         if (signal !== null) {

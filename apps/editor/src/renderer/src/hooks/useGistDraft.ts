@@ -27,7 +27,10 @@ export function useGistDraft(gistId: string | null) {
 
   // IPC answers in whatever order it likes: a slow first read landing after a
   // quick stage would put the staged file back the way it was. Every request
-  // takes a ticket, and only the newest one is allowed to set the draft.
+  // takes a ticket, and only the newest one is allowed to speak for the draft —
+  // to set it, or to report that it could not be changed. An overtaken request
+  // that fails has been answered by the one that overtook it, and its error
+  // describes a draft the panel is no longer showing.
   const issued = useRef(0)
   const claim = useCallback(() => {
     issued.current += 1
@@ -64,7 +67,7 @@ export function useGistDraft(gistId: string | null) {
       const ticket = claim()
       const result = await window.editorAPI.gists.stage(id, filename, entry)
       if (!result.success) {
-        setError(result.error)
+        if (isNewest(ticket)) setError(result.error)
         return false
       }
       if (isNewest(ticket)) setLoaded({ gistId: id, draft: result.data })
@@ -79,7 +82,7 @@ export function useGistDraft(gistId: string | null) {
       const ticket = claim()
       const result = await window.editorAPI.gists.renameFile(id, from, to, content)
       if (!result.success) {
-        setError(result.error)
+        if (isNewest(ticket)) setError(result.error)
         return false
       }
       if (isNewest(ticket)) setLoaded({ gistId: id, draft: result.data })
@@ -94,7 +97,7 @@ export function useGistDraft(gistId: string | null) {
       const ticket = claim()
       const result = await window.editorAPI.gists.stageDescription(id, description)
       if (!result.success) {
-        setError(result.error)
+        if (isNewest(ticket)) setError(result.error)
         return false
       }
       if (isNewest(ticket)) setLoaded({ gistId: id, draft: result.data })
@@ -110,7 +113,7 @@ export function useGistDraft(gistId: string | null) {
       const ticket = claim()
       const result = await window.editorAPI.gists.reset(id)
       if (!result.success) {
-        setError(result.error)
+        if (isNewest(ticket)) setError(result.error)
         return false
       }
       // `false` means the confirmation was cancelled — the draft stands.
@@ -126,7 +129,7 @@ export function useGistDraft(gistId: string | null) {
       const ticket = claim()
       const result = await window.editorAPI.gists.publish(id, isPublic)
       if (!result.success) {
-        setError(result.error)
+        if (isNewest(ticket)) setError(result.error)
         return false
       }
       if (isNewest(ticket)) setLoaded({ gistId: id, draft: EMPTY })

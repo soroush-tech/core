@@ -92,8 +92,19 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
     // One step, so the old name and the new one cannot disagree: a rename that
     // staged the deletion and then failed would leave the file gone with nothing
     // in its place — and what is staged exists nowhere else.
-    renameFile: (id, from, to, content) =>
-      drafts.update(id, (draft) => {
+    async renameFile(id, from, to, content) {
+      // Read inside the update rather than before it, so the check and the write
+      // cannot be separated by another change to the same draft.
+      let taken = false
+      const updated = await drafts.update(id, (draft) => {
+        // Renaming onto a name that is holding staged work would drop it, and
+        // staged work exists nowhere else. A destination staged as deleted is
+        // fair game: writing over it is what bringing the file back means.
+        if (draft.files[to] !== undefined && draft.files[to].status !== 'deleted') {
+          taken = true
+          return draft
+        }
+
         const files = { ...draft.files }
         // A file GitHub has must be staged as deleted, which is what a rename is
         // in a gist PATCH; one that only exists here just moves key.
@@ -101,7 +112,10 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
         else files[from] = { status: 'deleted' }
         files[to] = { status: 'added', content }
         return { ...draft, files }
-      }),
+      })
+      if (taken) return { success: false, error: `${to} has unpublished changes` }
+      return updated
+    },
 
     stageDescription: (id, description) =>
       drafts.update(id, (draft) => {

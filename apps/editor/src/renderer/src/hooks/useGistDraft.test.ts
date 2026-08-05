@@ -22,6 +22,8 @@ vi.stubGlobal('editorAPI', { gists: gistsApi })
 
 const DRAFT = { files: { 'notes.md': { status: 'modified' as const, content: 'edited' } } }
 
+type DraftApi = ReturnType<typeof useGistDraft>
+
 /** A promise the test decides when to settle, for answers that arrive late. */
 const deferred = <T>() => {
   let settle!: (value: T) => void
@@ -327,6 +329,45 @@ describe('useGistDraft', () => {
     })
 
     expect(result.current.draft).toEqual(newest)
+  })
+
+  // Every one of these reports its own failure, and every one can be overtaken.
+  // The panel shows one error, so a failure that has been answered by a later
+  // request describes a draft it is no longer showing.
+  it.each([
+    [
+      'stage' as const,
+      (draft: DraftApi, label: string) =>
+        draft.stage('abc123', `${label}.md`, { status: 'added', content: label }),
+    ],
+    [
+      'renameFile' as const,
+      (draft: DraftApi, label: string) =>
+        draft.renameFile('abc123', 'notes.md', `${label}.md`, label),
+    ],
+    [
+      'stageDescription' as const,
+      (draft: DraftApi, label: string) => draft.stageDescription('abc123', label),
+    ],
+    ['reset' as const, (draft: DraftApi) => draft.reset('abc123')],
+    ['publish' as const, (draft: DraftApi) => draft.publish('abc123')],
+  ])('drops a slow %s failure once a newer answer has landed', async (method, call) => {
+    const slow = deferred<unknown>()
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    gistsApi[method].mockReturnValueOnce(slow.promise)
+    const first = call(result.current, 'slow')
+
+    gistsApi[method].mockResolvedValue({ success: true, data: DRAFT })
+    await act(() => call(result.current, 'newest'))
+
+    await act(async () => {
+      slow.settle({ success: false, error: 'an answer nobody is waiting for' })
+      await first
+    })
+
+    expect(result.current.error).toBeNull()
   })
 
   it('unsubscribes on unmount', () => {

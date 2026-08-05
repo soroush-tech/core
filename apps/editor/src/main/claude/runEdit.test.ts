@@ -243,6 +243,21 @@ describe('createClaudeRunner', () => {
     ])
   })
 
+  it('drops what a cancelled run writes on its way out', () => {
+    const { child, events, runner } = createRunner()
+
+    runner.start('run-1', request)
+    runner.cancel('run-1')
+    // Killing the child does not stop what it had already written from arriving,
+    // and the last of it is held back until the close flush. The document is the
+    // user's own again by now, so none of it may reach the renderer.
+    child.stdout.emit('data', delta('too late'))
+    child.stdout.emit('data', delta('later still').trimEnd())
+    child.emit('close', null, 'SIGTERM')
+
+    expect(events).toEqual([{ type: 'RUN_STARTED', runId: 'run-1' }])
+  })
+
   it('ignores a cancel for a run it does not have', () => {
     const { child, runner } = createRunner()
 
