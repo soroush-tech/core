@@ -271,6 +271,25 @@ describe('EditorSidebar', () => {
       expect(replacement).not.toBe(published)
       expect(onOpenFile).toHaveBeenCalledWith('', { gistId: replacement, filename: 'en.md' })
     })
+
+    it('does not carry "public" over to the sandbox that follows', async () => {
+      gistsApi.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
+      gistsApi.draft.mockResolvedValue({
+        success: true,
+        data: { files: { 'notes.md': { status: 'added', content: '# notes' } } },
+      })
+      renderSidebar()
+      await userEvent.click(row('New gist'))
+
+      fireEvent.click(await screen.findByRole('checkbox', { name: 'Public gist' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Create gist' }))
+      await screen.findByText('New gist')
+
+      // The panel stays mounted across the swap, so a choice made for the gist
+      // just created would otherwise still be ticked for the next one — and
+      // publishing someone's notes to the world is not a mistake they can take back.
+      expect(await screen.findByRole('checkbox', { name: 'Public gist' })).not.toBeChecked()
+    })
   })
 
   it('goes back to a gist through the draft list', async () => {
