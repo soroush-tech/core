@@ -188,6 +188,9 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: '4.110.0'
+          wranglerVersion: '4.119.0'
+          # The lockfile lives at the repo root, so the action's per-directory
+          # detection falls back to npm — which cannot read workspace:* deps.
+          packageManager: pnpm
           workingDirectory: apps/web
           command: pages deploy --branch=main

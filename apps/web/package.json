@@ -125,7 +125,7 @@
     "vite-plugin-compression2": "^2.5.3",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.10",
-    "wrangler": "^4.110.0"
+    "wrangler": "^4.119.0"
   },
   "msw": {
     "workerDirectory": [

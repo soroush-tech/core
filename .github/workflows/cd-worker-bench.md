@@ -27,7 +27,9 @@ const worker =
 (`persist-credentials: false`) → node via `node-version-file: .nvmrc` →
 `pnpm install --frozen-lockfile --ignore-scripts` →
 `pnpm --filter @soroush/bench-api config:gen` (env: `WORKER_NAME`, `BENCH_GH_APP_ID`) →
-`cloudflare/wrangler-action` (SHA-pinned) `command: deploy` in `workers/bench`. The first
+`cloudflare/wrangler-action` (SHA-pinned) `command: deploy` in `workers/bench`, with
+`packageManager: pnpm` set explicitly (the root-level lockfile means detection would fall
+back to npm, which cannot read `workspace:*` deps). The first
 deploy creates the `api.bench.soroush.tech` custom domain from the generated config.
 
 ### `cd-worker-bench` environment values
