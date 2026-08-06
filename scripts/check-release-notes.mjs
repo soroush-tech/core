@@ -32,18 +32,12 @@ const publishablePackages = () =>
     .filter(({ private: isPrivate }) => isPrivate !== true)
     .map(({ dir, name, version }) => ({ dir, name, version }))
 
-/** True while a merge is being committed: MERGE_HEAD exists from `git merge` to its commit. */
-const mergeInProgress = () => {
-  try {
-    execFileSync('git', ['rev-parse', '-q', '--verify', 'MERGE_HEAD'], {
-      cwd: repoRoot,
-      stdio: 'ignore',
-    })
-    return true
-  } catch {
-    return false
-  }
-}
+/**
+ * True while a merge is being committed: MERGE_HEAD exists from `git merge` to
+ * its commit. Read from disk rather than asked of git — one less process, and
+ * the path is fixed for a regular checkout, which this repo's workflow is.
+ */
+const mergeInProgress = () => existsSync(join(repoRoot, '.git', 'MERGE_HEAD'))
 
 /** Package dirs touched by the staged diff. Empty when nothing is staged (e.g. in CI). */
 const stagedPackageDirs = () => {
