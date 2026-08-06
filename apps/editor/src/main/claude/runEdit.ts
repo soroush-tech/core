@@ -59,10 +59,11 @@ export function createClaudeRunner(
   spawnFn: typeof spawn,
   emit: (event: ClaudeEvent) => void
 ): ClaudeRunner {
-  const running = new Map<string, ReturnType<typeof spawn>>()
-  // Runs the user stopped. They end without an event: the panel asked for this
-  // and has already gone back to idle, and there is nothing to apply.
-  const cancelled = new Set<string>()
+  // Each run in flight, with the way to stop it. The stopping is the run's own,
+  // rather than a note kept out here that every terminal event has to remember to
+  // read and to clear: whichever event lands first would consume the note, and the
+  // output the child had already written arrives after it.
+  const running = new Map<string, { child: ReturnType<typeof spawn>; cancel: () => void }>()
 
   return {
     start(runId, request) {
@@ -72,7 +73,16 @@ export function createClaudeRunner(
         timeout: EDIT_TIMEOUT_MS,
         windowsHide: true,
       })
-      running.set(runId, child)
+      // Set once the user stops this run, and never unset: it has ended, and the
+      // panel is idle. Nothing the child writes from here on is an answer.
+      let isCancelled = false
+      running.set(runId, {
+        child,
+        cancel: () => {
+          isCancelled = true
+          child.kill()
+        },
+      })
       emit({ type: 'RUN_STARTED', runId })
 
       // Set by the terminal `result` line, and only then is the run a success:
@@ -83,9 +93,9 @@ export function createClaudeRunner(
 
       const reader = createLineReader((line) => {
         // Killing the child does not stop what it already wrote from arriving.
-        // The panel is idle and the document is its own again, so an answer that
-        // lands now is not one: it belongs to a run the user ended.
-        if (cancelled.has(runId)) return
+        // The document is the user's own again, so an answer that lands now is not
+        // one: it belongs to a run they ended.
+        if (isCancelled) return
         const parsed = parseStreamLine(line)
         if (parsed.kind === 'delta')
           emit({ type: 'TEXT_MESSAGE_CONTENT', runId, delta: parsed.text })
@@ -109,7 +119,7 @@ export function createClaudeRunner(
         // A run the user stopped, whose child then failed to go quietly. The
         // panel is idle and asked for this: the failure is of the killing, not
         // of the run, and there is nothing for anyone to do about it.
-        if (cancelled.delete(runId)) return
+        if (isCancelled) return
         emit({
           type: 'RUN_ERROR',
           runId,
@@ -122,7 +132,7 @@ export function createClaudeRunner(
         if (!running.delete(runId)) return
         // Before the flush, not after: what the decoder is holding is the tail of
         // an answer nobody is waiting for.
-        if (cancelled.delete(runId)) return
+        if (isCancelled) return
 
         reader.push(stdout.end())
         reader.end()
@@ -148,10 +158,7 @@ export function createClaudeRunner(
     },
 
     cancel(runId) {
-      const child = running.get(runId)
-      if (!child) return
-      cancelled.add(runId)
-      child.kill()
+      running.get(runId)?.cancel()
     },
   }
 }
