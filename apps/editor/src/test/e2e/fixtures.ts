@@ -102,6 +102,10 @@ export const test = base.extend<ElectronFixtures>({
         ...(isCoverageEnabled ? { NODE_V8_COVERAGE: mainCoverageDir } : {}),
       },
     })
+    // Main-process output: a preload that failed to load or a Chromium sandbox
+    // warning is reported here and nowhere the renderer can see.
+    app.process().stdout?.on('data', (chunk) => console.log('[main]', String(chunk)))
+    app.process().stderr?.on('data', (chunk) => console.error('[main]', String(chunk)))
     await run(app)
     if (isCoverageEnabled) {
       // Flush main-process coverage; a test may already have quit the app
@@ -122,6 +126,14 @@ export const test = base.extend<ElectronFixtures>({
   },
   page: async ({ electronApp }, run) => {
     const page = await electronApp.firstWindow()
+    // Forwarded to the runner's own output, because a renderer that fails to
+    // mount leaves a window that is merely empty: every locator then times out
+    // on its own, and the reason is on a console nobody is reading. Cheap here,
+    // and the only account of a failure that reproduces nowhere else.
+    page.on('pageerror', (error) => console.error('[renderer]', error.stack ?? error.message))
+    page.on('console', (message) => {
+      if (message.type() === 'error') console.error('[renderer console]', message.text())
+    })
     if (isCoverageEnabled) {
       await page.coverage.startJSCoverage({ resetOnNavigation: false })
       // The renderer entry already ran during launch, before coverage could

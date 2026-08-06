@@ -127,6 +127,17 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
             ${{ inputs.runner }} run test:coverage:e2e:editor
 
+      # Playwright already wrote the trace and a snapshot of the page for every
+      # failure; without this they are thrown away with the runner, and a failure
+      # that only happens here has to be guessed at from a stack trace.
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-e2e-failure
+          path: apps/editor/test-results
+          retention-days: 7
+
       - name: Make lcov paths repo-relative for Codecov
         run: sed -i "s#^SF:#SF:apps/editor/#" apps/editor/coverage/e2e/lcov.info
 
