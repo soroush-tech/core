@@ -34,6 +34,11 @@
       "description": "Hold TypeScript at 6.x: typescript-eslint's supported peer range is '>=4.8.4 <6.1.0', and eslint crashes under the native TS 7 compiler ('Cannot read properties of undefined (reading Cjs)'). Revisit when typescript-eslint supports TypeScript 7."
     },
     {
+      "matchPackageNames": ["jsdom"],
+      "allowedVersions": "<30.0.0",
+      "description": "Hold jsdom at 29.x: jsdom 30 absolutizes relative lengths in getComputedStyle (2rem resolves to 32px, -0.025em to -0.4px), so every design-system toHaveStyle assertion written in rem/em fails. Revisit once those assertions stop comparing against computed style."
+    },
+    {
       "matchFileNames": ["apps/web/package.json"],
       "matchPackageNames": ["vite"],
       "allowedVersions": "<8.1.0",
