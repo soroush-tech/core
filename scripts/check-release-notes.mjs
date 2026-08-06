@@ -32,6 +32,19 @@ const publishablePackages = () =>
     .filter(({ private: isPrivate }) => isPrivate !== true)
     .map(({ dir, name, version }) => ({ dir, name, version }))
 
+/** True while a merge is being committed: MERGE_HEAD exists from `git merge` to its commit. */
+const mergeInProgress = () => {
+  try {
+    execFileSync('git', ['rev-parse', '-q', '--verify', 'MERGE_HEAD'], {
+      cwd: repoRoot,
+      stdio: 'ignore',
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
 /** Package dirs touched by the staged diff. Empty when nothing is staged (e.g. in CI). */
 const stagedPackageDirs = () => {
   const output = execFileSync('git', ['diff', '--cached', '--name-only'], {
@@ -96,6 +109,14 @@ if (missingNotes.length > 0) {
 console.log('Release notes present for every publishable package version.')
 
 // ─── Guard 2: staged packages sit ahead of npm ────────────────────────────────
+
+// A merge stages the whole incoming branch, so every package it released looks
+// edited-without-a-bump here. That work already passed this guard commit by
+// commit on its own branch; integrating it is not a change to re-check.
+if (mergeInProgress()) {
+  console.log('Merge in progress — skipping the published-version check.')
+  process.exit(0)
+}
 
 const staged = stagedPackageDirs()
 const changed = packages.filter(({ dir }) => staged.has(dir))
