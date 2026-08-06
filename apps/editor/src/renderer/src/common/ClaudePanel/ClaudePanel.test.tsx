@@ -215,21 +215,15 @@ describe('ClaudePanel', () => {
       )
     })
 
-    it('names a gist that has no description by what it holds', async () => {
+    it('names a gist that has no description by its first file', async () => {
       gistsApi.list.mockResolvedValue({
         success: true,
-        data: [{ ...GIST, description: '   ', fileCount: 3 }],
+        data: [{ ...GIST, description: '   ', filename: 'part-one.md' }],
       })
       renderPanel('', false)
 
-      expect(await screen.findByRole('option', { name: 'Untitled · 3 files' })).toBeInTheDocument()
-    })
-
-    it('names a gist holding one file in the singular', async () => {
-      gistsApi.list.mockResolvedValue({ success: true, data: [{ ...GIST, description: null }] })
-      renderPanel('', false)
-
-      expect(await screen.findByRole('option', { name: 'Untitled · 1 file' })).toBeInTheDocument()
+      // The same name GitHub gives it, so the list reads the same in both places.
+      expect(await screen.findByRole('option', { name: 'part-one.md' })).toBeInTheDocument()
     })
 
     it('offers no picker when there is no gist to choose', async () => {

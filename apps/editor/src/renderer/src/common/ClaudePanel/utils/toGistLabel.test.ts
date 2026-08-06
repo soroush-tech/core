@@ -1,9 +1,11 @@
+import type { GistSummary } from '../../../../../shared/ipc'
 import { toGistLabel } from './toGistLabel'
 
-const gist = (description: string | null, fileCount = 1) => ({
+const gist = (description: string | null, filename = 'en.md'): GistSummary => ({
   id: 'abc123',
   description,
-  fileCount,
+  filename,
+  fileCount: 1,
   isPublic: false,
 })
 
@@ -13,9 +15,13 @@ describe('toGistLabel', () => {
   })
 
   it.each([
-    ['no description at all', null, 1, 'Untitled · 1 file'],
-    ['a description of nothing but spaces', '   ', 3, 'Untitled · 3 files'],
-  ])('names one with %s by what it holds', (_case, description, fileCount, expected) => {
-    expect(toGistLabel(gist(description, fileCount))).toBe(expected)
+    ['no description at all', null],
+    ['a description of nothing but spaces', '   '],
+  ])('falls back to the first file for one with %s', (_case, description) => {
+    expect(toGistLabel(gist(description))).toBe('en.md')
+  })
+
+  it('has a name for a gist with neither', () => {
+    expect(toGistLabel(gist(null, ''))).toBe('Untitled gist')
   })
 })
