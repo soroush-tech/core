@@ -67,6 +67,7 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
 
 - [.github/workflows/README.md](./.github/workflows/README.md) — CI/CD pipeline explained with Mermaid diagrams.
 - [apps/web/README.md](./apps/web/README.md) — the website: structure, scripts, testing.
+- [apps/editor/README.md](./apps/editor/README.md) — the desktop editor: architecture and release flow, with diagrams.
 - [.github/workflows/ci-editor.md](./.github/workflows/ci-editor.md) — how the editor is tested.
 - [packages/README.md](./packages/README.md) — workspace packages.
 - [workers/README.md](./workers/README.md) — backend.
@@ -143,12 +144,12 @@ soroush.tech/
     └── bench/      # api.bench.soroush.tech — bench-action comment relay
 ```
 
-| Workspace         | What it is                                                                                                                                                                           | Details                                    |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| **`apps/web`**    | The production website — pages, sections, hooks, tests.                                                                                                                              | [apps/web/README.md](./apps/web/README.md) |
-| **`apps/editor`** | A desktop markdown editor — Electron, editing gist files in place, rewrites through the local Claude CLI.                                                                            | [apps/editor/](./apps/editor)              |
-| **`packages/*`**  | `@soroush.tech/*` packages — the published UI stack (styled-system, design-system, markdown), testing tools (bench, playwright-coverage), Vite plugins, and internal shared tooling. | [packages/README.md](./packages/README.md) |
-| **`workers/*`**   | Backend deployables — the contact-form API and the bench comment relay, both Hono on Cloudflare Workers.                                                                             | [workers/README.md](./workers/README.md)   |
+| Workspace         | What it is                                                                                                                                                                           | Details                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| **`apps/web`**    | The production website — pages, sections, hooks, tests.                                                                                                                              | [apps/web/README.md](./apps/web/README.md)       |
+| **`apps/editor`** | A desktop markdown editor — Electron, editing gist files in place, rewrites through the local Claude CLI.                                                                            | [apps/editor/README.md](./apps/editor/README.md) |
+| **`packages/*`**  | `@soroush.tech/*` packages — the published UI stack (styled-system, design-system, markdown), testing tools (bench, playwright-coverage), Vite plugins, and internal shared tooling. | [packages/README.md](./packages/README.md)       |
+| **`workers/*`**   | Backend deployables — the contact-form API and the bench comment relay, both Hono on Cloudflare Workers.                                                                             | [workers/README.md](./workers/README.md)         |
 
 Globs live in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) (`apps/*`,
 `packages/*`, `workers/*`).

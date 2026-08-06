@@ -20,6 +20,7 @@ Each workflow has a per-file deep-dive doc next to it (`ci.md`, `cd-*.md`, `chro
 | `cd-web.yml`        | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + dispatch                            |
 | `cd-worker-api.yml` | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + dispatch                            |
 | `cd-packages.yml`   | Publish Packages (npm)   | manual `workflow_dispatch` only — see the `release-notes` skill              |
+| `cd-editor.yml`     | CD · Editor              | manual `workflow_dispatch` only — draft GitHub Release of the installers     |
 | `chromatic.yml`     | Chromatic                | `pull_request` + `push` to `main` + `workflow_dispatch` (main), non-blocking |
 | `label-area.yml`    | Label Affected Area      | `issues: opened`                                                             |
 

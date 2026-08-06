@@ -1,10 +1,11 @@
 # GitHub Actions workflows
 
 This directory holds the CI/CD pipeline for the `soroush.tech` monorepo. The CI
-entry workflow calls **four** area workflows (packages, workers, web, editor), and there are **four** deployment workflows, a main-only
+entry workflow calls **four** area workflows (packages, workers, web, editor), and there are **five** deployment workflows, a main-only
 Chromatic visual-review workflow, and an issue-labeling automation. The three deploys
 (`cd-web`, `cd-worker-api`, `cd-worker-bench`) are gated on CI success and never run off a
-raw `push`; package publishing (`cd-packages`) is **manual `workflow_dispatch` only**.
+raw `push`; package publishing (`cd-packages`) and the editor release (`cd-editor`) are
+**manual `workflow_dispatch` only**.
 
 | File                                           | Name                      | Trigger                                                      |
 | ---------------------------------------------- | ------------------------- | ------------------------------------------------------------ |
@@ -18,11 +19,12 @@ raw `push`; package publishing (`cd-packages`) is **manual `workflow_dispatch` o
 | [`cd-worker-api.yml`](./cd-worker-api.yml)     | Cloudflare Worker deploy  | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-worker-bench.yml`](./cd-worker-bench.yml) | Bench relay Worker deploy | `workflow_run` of CI (success, `main`) + `workflow_dispatch` |
 | [`cd-packages.yml`](./cd-packages.yml)         | Publish Packages (npm)    | manual `workflow_dispatch` only                              |
+| [`cd-editor.yml`](./cd-editor.yml)             | CD · Editor               | manual `workflow_dispatch` only                              |
 | [`chromatic.yml`](./chromatic.yml)             | Chromatic                 | `push` to `main` (paths) + `workflow_dispatch`               |
 | [`label-area.yml`](./label-area.yml)           | Label Affected Area       | `issues` `opened`                                            |
 
 **Per-workflow deep dives** (every step + caching):
-[`ci.md`](./ci.md) · [`ci-packages.md`](./ci-packages.md) · [`ci-worker.md`](./ci-worker.md) · [`ci-app.md`](./ci-app.md) · [`ci-web.md`](./ci-web.md) · [`ci-editor.md`](./ci-editor.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-worker-bench.md`](./cd-worker-bench.md) · [`cd-packages.md`](./cd-packages.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
+[`ci.md`](./ci.md) · [`ci-packages.md`](./ci-packages.md) · [`ci-worker.md`](./ci-worker.md) · [`ci-app.md`](./ci-app.md) · [`ci-web.md`](./ci-web.md) · [`ci-editor.md`](./ci-editor.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-worker-bench.md`](./cd-worker-bench.md) · [`cd-packages.md`](./cd-packages.md) · [`cd-editor.md`](./cd-editor.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
 
 ## How the pieces fit together
 

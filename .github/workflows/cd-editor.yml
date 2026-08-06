@@ -1,0 +1,68 @@
+# ci:validates nothing
+# Packages the desktop editor and uploads a draft GitHub Release.
+name: CD · Editor
+
+# Manual only — a release is a decision, not a side effect of a merge. Both legs
+# publish into one draft release tagged v<version> (from apps/editor's
+# package.json); publishing that draft on GitHub is the release act, and the
+# moment running apps start seeing the update.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: cd-editor
+  cancel-in-progress: false # never abort an in-flight release build
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      # One at a time: both legs write into the same draft release, and two
+      # creating it at once is two drafts.
+      max-parallel: 1
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    environment: cd-editor
+    timeout-minutes: 30 # notarization waits on Apple
+    permissions:
+      contents: write # electron-builder uploads the draft GitHub Release
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Read Node.js version from .nvmrc
+        shell: bash
+        run: |
+          if [ -f "${{ github.workspace }}/.nvmrc" ]; then
+            echo "NODE_VERSION=$(cat ${{ github.workspace }}/.nvmrc)" >> "$GITHUB_ENV"
+          else
+            echo ".nvmrc file not found"
+            exit 1
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: pnpm install --frozen-lockfile
+
+      # Both legs build unsigned for now: Windows by choice (SmartScreen warns
+      # until a signature or reputation arrives), macOS because there is no
+      # Apple Developer account yet — see electron-builder.yml's `identity` /
+      # `notarize` and the runbook's "when the Apple account exists" section
+      # for what returns here with one.
+      - name: Build and publish draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm --filter @soroush/editor release
