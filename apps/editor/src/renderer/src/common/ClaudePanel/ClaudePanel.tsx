@@ -12,6 +12,7 @@ import { useGistFiles } from '../../hooks/useGistFiles'
 import { useGists } from '../../hooks/useGists'
 import { isGistDrag, readGistDrag } from '../../utils/gistDrag'
 import { CONTEXT_LIMIT, toContext } from './utils/toContext'
+import { toGistLabel } from './utils/toGistLabel'
 import { toPreview } from './utils/toPreview'
 
 /** No gist referenced. Empty rather than null, so it doubles as "not set". */
@@ -127,14 +128,7 @@ export function ClaudePanel({
             value={referenceId}
             onChange={(value) => setReferenceId(String(value))}
             selectProps={{ 'aria-label': 'Gist to write from' }}
-            options={gists.map((gist) => ({
-              // A gist need not be described, and the summary carries no
-              // filenames to fall back on — only how many there are.
-              label:
-                gist.description?.trim() ||
-                `Untitled · ${gist.fileCount === 1 ? '1 file' : `${String(gist.fileCount)} files`}`,
-              value: gist.id,
-            }))}
+            options={gists.map((gist) => ({ label: toGistLabel(gist), value: gist.id }))}
           />
         )}
         {/* On the heading's own line, so referring to a gist costs no space. */}

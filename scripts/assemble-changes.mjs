@@ -153,8 +153,13 @@ export function packageJsonMattersBeyondScripts(base, head) {
  *   # ci:validates nothing       → nothing (a deploy, Chromatic, the labeller: CI never runs them)
  *   # ci:validates app__web      → those filter keys
  *
- * An unmarked workflow means the whole workspace. A new file can only ever over-run.
+ * The prefix is exact — `# ci:validates ` and then the tokens. A file that spells it any other
+ * way is unmarked as far as this is concerned, and an unmarked workflow means the whole
+ * workspace: a new file, or a mistyped marker, can only ever over-run.
  */
+/** How a workflow opens its scope. Exactly this, then the tokens — see the doc block above. */
+const MARKER = '# ci:validates '
+
 export function workflowValidates(name) {
   let source
   try {
@@ -164,10 +169,17 @@ export function workflowValidates(name) {
     return { keys: [], wholeWorkspace: false }
   }
 
-  // Horizontal space only: `\s` spans newlines, which would let a marker's tokens sit on a line
-  // of their own — and gives the engine a second way to match the same text, which it pays for
-  // in backtracking on every workflow that has no marker at all.
-  const [, marker] = /^#[ \t]*ci:validates[ \t]+(.+)$/m.exec(source) ?? []
+  // Found by looking at each line rather than by pattern: the marker is a fixed prefix at the
+  // start of a line, which is a thing to compare, not to search for. A regular expression asked
+  // to find it has to consider every place it might begin, and pays for that on every workflow
+  // that carries no marker at all — which is most of them. It also settles CRLF, where `$` and
+  // the trailing `\r` disagree.
+  const marker = source
+    .split('\n')
+    .map((line) => line.trim())
+    .find((line) => line.startsWith(MARKER))
+    ?.slice(MARKER.length)
+    .trim()
   if (!marker) return { keys: [], wholeWorkspace: true }
 
   // The marker line carries tokens and nothing else — prose belongs on the line below it. An
