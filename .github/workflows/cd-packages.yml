@@ -98,8 +98,10 @@ jobs:
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
 
+      # --ignore-scripts, as everywhere in CI/CD: no lifecycle script runs at
+      # install — the packages build with tsdown, which needs none.
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       # Publish each resolved package via npm Trusted Publishing (OIDC). Auth comes from
       # the id-token minted above — there is no NPM_TOKEN, and NODE_AUTH_TOKEN must stay

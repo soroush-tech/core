@@ -37,7 +37,7 @@ concurrency:
 | 1   | Checkout             | `actions/checkout@v5`, `fetch-depth: 0` (full history — Chromatic's `onlyChanged` needs it), no persisted creds                                                                                                         |
 | 2   | Setup pnpm           | `pnpm/action-setup@v5`                                                                                                                                                                                                  |
 | 3   | Setup Node           | `actions/setup-node@v5`, `node-version-file: .nvmrc`, `cache: pnpm`                                                                                                                                                     |
-| 4   | Install              | `pnpm install --frozen-lockfile`                                                                                                                                                                                        |
+| 4   | Install              | `pnpm install --frozen-lockfile --ignore-scripts`                                                                                                                                                                       |
 | 5   | Publish to Chromatic | `chromaui/action@v17.7.1` with `buildScriptName: build:storybook`, `storybookBaseDir: apps/web`, `onlyChanged: true`, `exitZeroOnChanges: true`. The action builds Storybook itself, so there's no separate build step. |
 
 ## Why a separate workflow, and what changed in CI

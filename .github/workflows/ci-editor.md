@@ -25,7 +25,10 @@ app holds three operating systems behind its own.
 
 Both check out, set up pnpm and Node, restore `~/.cache/electron` — keyed on
 `hashFiles('apps/editor/package.json')`, since the binary lives outside the pnpm store — and
-install. Then:
+install. The shared install command runs `--ignore-scripts`, which also skips Electron's
+postinstall, so both jobs follow it with `rebuild electron` — the one lifecycle script CI needs,
+run explicitly: it downloads into the restored cache and unpacks into
+`node_modules/electron/dist`. Then:
 
 | Job    | Runs                                                                         | Flag         |
 | ------ | ---------------------------------------------------------------------------- | ------------ |

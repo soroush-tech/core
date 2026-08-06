@@ -57,6 +57,13 @@ jobs:
           CI: true
         run: ${{ inputs.manager }} ${{ inputs.command }}
 
+      # The shared install command runs --ignore-scripts, which also skips
+      # Electron's postinstall — the binary download. Rebuild runs just that one
+      # script, explicitly: into ~/.cache/electron (restored above), unpacked to
+      # node_modules/electron/dist.
+      - name: Download Electron binary
+        run: ${{ inputs.runner }} rebuild electron
+
       - name: Run Editor Unit Tests with Coverage
         shell: bash
         run: |
@@ -110,6 +117,11 @@ jobs:
         env:
           CI: true
         run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      # Same as the unit job: the install skipped Electron's postinstall, so run
+      # just that one script — this tier launches the real binary.
+      - name: Download Electron binary
+        run: ${{ inputs.runner }} rebuild electron
 
       # Electron bundles its own Chromium, so nothing is downloaded here — this installs only the
       # shared libraries it needs, through the editor's own Playwright rather than a hand-kept apt

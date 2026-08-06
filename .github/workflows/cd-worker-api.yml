@@ -70,8 +70,10 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
+      # --ignore-scripts, as in the bench deploy: no lifecycle script runs at
+      # install — workerd's binary ships as a platform package.
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Generate wrangler.json from env
         run: pnpm --filter @soroush/api config:gen
