@@ -1,13 +1,11 @@
 import type { Preview } from '@storybook/react-vite'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { mswLoader } from 'msw-storybook-addon/csf3'
 import type { PageContext as VikePageContext } from 'vike/types'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { light, dark } from '../src/theme/themes'
 import { GlobalStyles } from '../src/theme/GlobalStyles'
 import { PageContext } from '../src/common/PageContext'
-
-initialize()
 
 const preview: Preview = {
   parameters: {
@@ -25,7 +23,7 @@ const preview: Preview = {
       test: 'error',
     },
   },
-  loaders: [mswLoader],
+  loaders: [mswLoader()],
   decorators: [
     (Story, { parameters }) => (
       <PageContext.Provider

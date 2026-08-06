@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/markdown",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Headless, composable markdown editor + renderer for @soroush.tech/design-system — Control, Toolbar, Editor, and Preview built on react-markdown, remark-gfm, and rehype-highlight.",
   "keywords": [
     "markdown",
@@ -78,7 +78,7 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "mermaid": "^11.4.0",
+    "mermaid": "^11.16.1",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "rehype-parse": "^9.0.1",
@@ -89,31 +89,31 @@
   },
   "peerDependencies": {
     "@soroush.tech/design-system": "workspace:^",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@soroush.tech/design-system": "workspace:*",
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/hooks": "workspace:*",
-    "@storybook/react-vite": "^10.5.0",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@storybook/react-vite": "^10.5.6",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^26.1.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.7.0",
+    "eslint": "^10.8.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "eslint-plugin-storybook": "^10.5.0",
-    "globals": "^17.7.0",
+    "eslint-plugin-storybook": "^10.5.6",
+    "globals": "^17.9.0",
     "jsdom": "^29.1.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "storybook": "^10.5.0",
-    "tsdown": "^0.22.7",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "storybook": "^10.5.6",
+    "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }
