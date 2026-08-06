@@ -4,8 +4,9 @@
 FROM node:24-slim
 
 # tsx runs the TypeScript harness and bench files. mitata is bundled into the
-# harness at build time, so it is not installed here.
-RUN npm install -g tsx@^4
+# harness at build time, so it is not installed here. --ignore-scripts: no
+# lifecycle script runs at install — esbuild's binary ships as a platform package.
+RUN npm install -g --ignore-scripts tsx@^4
 
 # Expose manual GC so mitata runs a collection after warmup (steadier samples)
 # and reports the GC-impact + heap-usage rows.
