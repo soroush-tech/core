@@ -8,4 +8,6 @@ import { startAutoUpdates } from './updater'
 // only injects the real spawn and the real updater. Covered by the Playwright
 // e2e suite instead of unit tests.
 bootstrap(spawn)
+// A chain, not top-level await: Electron holds the ready event until this
+// module finishes executing, so awaiting whenReady() here deadlocks the launch.
 void app.whenReady().then(() => startAutoUpdates(app.isPackaged, autoUpdater))

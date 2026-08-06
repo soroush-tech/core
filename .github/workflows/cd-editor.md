@@ -41,10 +41,12 @@ Matrix over `windows-latest` + `macos-latest`, `max-parallel: 1` (both legs
 write into the same draft release — two creating it at once is two drafts).
 `environment: cd-editor` · `timeout-minutes: 30` · `permissions: contents: write`.
 
-Each leg: checkout → node via `.nvmrc` → pnpm install → `pnpm --filter
-@soroush/editor release` (`electron-vite build && electron-builder --publish
-always`). Packaging config lives in `apps/editor/electron-builder.yml`; the
-bundles in `out/` carry every dependency, so no `node_modules` ship.
+Each leg: checkout → node via `.nvmrc` → `pnpm install --frozen-lockfile
+--ignore-scripts` (no lifecycle script is needed: electron-builder downloads
+its own Electron for packaging) → `pnpm --filter @soroush/editor release`
+(`electron-vite build && electron-builder --publish always`). Packaging config
+lives in `apps/editor/electron-builder.yml`; the bundles in `out/` carry every
+dependency, so no `node_modules` ship.
 
 | Leg     | Artifacts                                      | Signing                                                                      |
 | ------- | ---------------------------------------------- | ---------------------------------------------------------------------------- |

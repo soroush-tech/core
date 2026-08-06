@@ -52,10 +52,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
+      # --ignore-scripts, as in the bench deploy: no lifecycle script runs at
+      # install. Nothing here needs one — electron-builder downloads its own
+      # Electron for packaging, and esbuild's binary ships as a platform package.
       - name: Install dependencies
         env:
           CI: true
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       # Both legs build unsigned for now: Windows by choice (SmartScreen warns
       # until a signature or reputation arrives), macOS because there is no
