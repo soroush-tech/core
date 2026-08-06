@@ -33,15 +33,23 @@ const publishablePackages = () =>
     .map(({ dir, name, version }) => ({ dir, name, version }))
 
 /**
- * True while a merge is being committed: MERGE_HEAD exists from `git merge` to
- * its commit. Read from disk rather than asked of git — one less process, and
- * the path is fixed for a regular checkout, which this repo's workflow is.
+ * The incoming commit of a merge in progress: MERGE_HEAD sits in .git from
+ * `git merge` until its commit, and holds the merged commit's sha. Read from
+ * disk rather than asked of git — one less process, and the path is fixed for
+ * a regular checkout, which this repo's workflow is. Null outside a merge.
  */
-const mergeInProgress = () => existsSync(join(repoRoot, '.git', 'MERGE_HEAD'))
+const mergeHeadSha = () => {
+  const marker = join(repoRoot, '.git', 'MERGE_HEAD')
+  return existsSync(marker) ? readFileSync(marker, 'utf8').trim() : null
+}
 
-/** Package dirs touched by the staged diff. Empty when nothing is staged (e.g. in CI). */
-const stagedPackageDirs = () => {
-  const output = execFileSync('git', ['diff', '--cached', '--name-only'], {
+/**
+ * Package dirs whose staged content differs from `base` — HEAD when omitted.
+ * Empty when nothing is staged (e.g. in CI).
+ */
+const stagedPackageDirs = (base) => {
+  const args = ['diff', '--cached', '--name-only', ...(base ? [base] : [])]
+  const output = execFileSync('git', args, {
     cwd: repoRoot,
     encoding: 'utf8',
   })
@@ -104,15 +112,19 @@ console.log('Release notes present for every publishable package version.')
 
 // ─── Guard 2: staged packages sit ahead of npm ────────────────────────────────
 
-// A merge stages the whole incoming branch, so every package it released looks
-// edited-without-a-bump here. That work already passed this guard commit by
-// commit on its own branch; integrating it is not a change to re-check.
-if (mergeInProgress()) {
-  console.log('Merge in progress — skipping the published-version check.')
-  process.exit(0)
+// A merge stages the whole incoming branch, so a package released there looks
+// edited-without-a-bump here. Content that matches either parent already
+// passed this guard on its own branch; only a package differing from both —
+// an edit made during conflict resolution — is new to this commit, and that
+// one stays checked.
+const mergeHead = mergeHeadSha()
+let staged = stagedPackageDirs()
+if (mergeHead) {
+  const vsIncoming = stagedPackageDirs(mergeHead)
+  staged = new Set([...staged].filter((dir) => vsIncoming.has(dir)))
+  console.log('Merge in progress — checking only packages that match neither parent.')
 }
 
-const staged = stagedPackageDirs()
 const changed = packages.filter(({ dir }) => staged.has(dir))
 
 if (changed.length === 0) {
