@@ -7,6 +7,7 @@ import type { GistOrigin } from '../../shared/ipc'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
 import { EditorSidebar } from './common/EditorSidebar'
+import { useAutosave } from './hooks/useAutosave'
 import { useDocument } from './hooks/useDocument'
 import { useUndoRedo } from './hooks/useUndoRedo'
 import { useWindowTitle } from './hooks/useWindowTitle'
@@ -31,6 +32,10 @@ export function App() {
   } = useDocument()
   const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
+
+  // A gist document saves itself into its sandbox draft while it is dirty, so
+  // a crash or reload costs seconds of typing, not the article.
+  useAutosave(origin !== null, isDirty, save)
 
   // A gist file has no path on disk, so it is named by its filename instead.
   const documentName = origin?.filename ?? filePath ?? 'Untitled'

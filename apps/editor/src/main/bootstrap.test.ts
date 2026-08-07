@@ -20,7 +20,7 @@ const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.
     options: { webPreferences: Record<string, unknown> }
     loadURL = vi.fn()
     loadFile = vi.fn()
-    webContents = { send: vi.fn() }
+    webContents = { send: vi.fn(), reload: vi.fn() }
     listeners = new Map<string, (...args: unknown[]) => void>()
     on = vi.fn((event: string, handler: (...args: unknown[]) => void) => {
       this.listeners.set(event, handler)
@@ -271,6 +271,68 @@ describe('bootstrap', () => {
     // Only the renderer can save; closing again then goes straight through.
     expect(window.webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
     expect(window.destroy).not.toHaveBeenCalled()
+  })
+
+  it('reloads a clean window straight away from the menu', async () => {
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    reload()
+    expect(FakeBrowserWindow.created[0].webContents.reload).toHaveBeenCalled()
+    expect(confirmDiscard).not.toHaveBeenCalled()
+  })
+
+  it('drops a menu reload once the window it would act on has closed', async () => {
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+
+    window.emit('closed')
+    reload()
+
+    expect(window.webContents.reload).not.toHaveBeenCalled()
+  })
+
+  it('reloads a dirty window only once the user discards', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: true })
+    vi.mocked(confirmDiscard).mockResolvedValue('discard')
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+
+    reload()
+    expect(FakeBrowserWindow.created[0].webContents.reload).not.toHaveBeenCalled()
+    await flushWhenReady()
+
+    expect(confirmDiscard).toHaveBeenCalledWith(FakeBrowserWindow.created[0], true)
+    expect(FakeBrowserWindow.created[0].webContents.reload).toHaveBeenCalled()
+  })
+
+  it('asks the renderer to save, and does not reload, when the work is kept', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockResolvedValue('save')
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+
+    reload()
+    await flushWhenReady()
+
+    const { webContents } = FakeBrowserWindow.created[0]
+    expect(webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
+    expect(webContents.reload).not.toHaveBeenCalled()
+  })
+
+  it('leaves the window alone when the reload prompt itself fails', async () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockRejectedValue(new Error('no window to prompt on'))
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+
+    reload()
+    await flushWhenReady()
+
+    expect(FakeBrowserWindow.created[0].webContents.reload).not.toHaveBeenCalled()
+    expect(logged).toHaveBeenCalledWith('Unsaved-changes prompt failed', expect.any(Error))
+    logged.mockRestore()
   })
 
   it('keeps the window open when the prompt itself fails', async () => {

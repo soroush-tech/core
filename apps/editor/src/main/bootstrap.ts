@@ -105,9 +105,28 @@ export function bootstrap(spawnFn: typeof spawn): void {
 
       createWindow(devRendererUrl)
 
+      // Reload from the View menu runs the same guard as closing: a dirty
+      // document prompts first, so a reload can never wipe unsaved work. As
+      // with close, choosing to save leaves the window as it is — reloading
+      // again then goes straight through, with nothing unsaved.
+      const guardedReload = () => {
+        const window = mainWindow
+        if (!window) return
+        if (!fileState.isDirty) return window.webContents.reload()
+        confirmDiscard(window, fileState.isDraft)
+          .then((choice) => {
+            if (choice === 'discard') return window.webContents.reload()
+            window.webContents.send(MENU_CHANNELS.action, 'save')
+          })
+          .catch((error: unknown) => console.error('Unsaved-changes prompt failed', error))
+      }
+
       // The menu outlives the window on macOS, so an action with nothing to act on
       // is dropped rather than sent to a window that has been destroyed.
-      installApplicationMenu((action) => mainWindow?.webContents.send(MENU_CHANNELS.action, action))
+      installApplicationMenu(
+        (action) => mainWindow?.webContents.send(MENU_CHANNELS.action, action),
+        guardedReload
+      )
 
       app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow(devRendererUrl)
