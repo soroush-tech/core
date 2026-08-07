@@ -3,12 +3,13 @@ import {
   GIST_CHANNELS,
   type GistDraft,
   type GistDraftEntry,
-  type GistFile,
+  type GistContents,
+  type GistDrafts,
   type GistSummary,
   type Result,
 } from '../../shared/ipc'
 import type { GistService } from '../github/gistService'
-import { toGistId } from '../github/toGistId'
+import { toGistId, toNewGistId } from '../github/toGistId'
 
 /** Gists are flat, so a path separator is never a valid gist filename. */
 const PATH_SEPARATOR = /[/\\]/
@@ -16,7 +17,10 @@ const PATH_SEPARATOR = /[/\\]/
 function validateId(id: unknown): Result<string> {
   // The id reaches a request URL and a key in the draft file, so only the shape
   // GitHub actually issues is let through — not merely "some non-blank string".
-  const gistId = typeof id === 'string' ? toGistId(id.trim()) : null
+  // A gist that does not exist yet has no id from GitHub to check it against,
+  // so the sandbox ids this app mints for one are matched by their own shape.
+  const trimmed = typeof id === 'string' ? id.trim() : null
+  const gistId = trimmed === null ? null : (toNewGistId(trimmed) ?? toGistId(trimmed))
   if (gistId === null) return { success: false, error: 'Invalid gist id' }
   return { success: true, data: gistId }
 }
@@ -59,11 +63,19 @@ export function registerGistHandlers(service: GistService, getWindow: () => Brow
 
   ipcMain.handle(GIST_CHANNELS.list, (): Promise<Result<GistSummary[]>> => service.list())
 
-  ipcMain.handle(GIST_CHANNELS.files, async (_event, id: unknown): Promise<Result<GistFile[]>> => {
-    const gistId = validateId(id)
-    if (!gistId.success) return gistId
-    return service.files(gistId.data)
-  })
+  ipcMain.handle(
+    GIST_CHANNELS.files,
+    async (_event, id: unknown): Promise<Result<GistContents>> => {
+      const gistId = validateId(id)
+      if (!gistId.success) return gistId
+      return service.files(gistId.data)
+    }
+  )
+
+  ipcMain.handle(GIST_CHANNELS.drafts, async (): Promise<Result<GistDrafts>> => ({
+    success: true,
+    data: await service.drafts(),
+  }))
 
   ipcMain.handle(GIST_CHANNELS.draft, async (_event, id: unknown): Promise<Result<GistDraft>> => {
     const gistId = validateId(id)
@@ -87,6 +99,23 @@ export function registerGistHandlers(service: GistService, getWindow: () => Brow
       const staged = await service.stage(gistId.data, name.data, entry)
       if (staged.success) await announce(gistId.data)
       return staged
+    }
+  )
+
+  ipcMain.handle(
+    GIST_CHANNELS.renameFile,
+    async (_event, id: unknown, from: unknown, to: unknown, content: unknown) => {
+      const gistId = validateId(id)
+      if (!gistId.success) return gistId
+      const oldName = validateFilename(from)
+      if (!oldName.success) return oldName
+      const newName = validateFilename(to)
+      if (!newName.success) return newName
+      if (typeof content !== 'string') return { success: false, error: 'Invalid file content' }
+
+      const renamed = await service.renameFile(gistId.data, oldName.data, newName.data, content)
+      if (renamed.success) await announce(gistId.data)
+      return renamed
     }
   )
 
@@ -118,12 +147,16 @@ export function registerGistHandlers(service: GistService, getWindow: () => Brow
     return { success: true, data: true }
   })
 
-  ipcMain.handle(GIST_CHANNELS.publish, async (_event, id: unknown): Promise<Result<null>> => {
-    const gistId = validateId(id)
-    if (!gistId.success) return gistId
+  ipcMain.handle(
+    GIST_CHANNELS.publish,
+    async (_event, id: unknown, isPublic: unknown): Promise<Result<string>> => {
+      const gistId = validateId(id)
+      if (!gistId.success) return gistId
 
-    const result = await service.publish(gistId.data)
-    if (result.success) await announce(gistId.data)
-    return result
-  })
+      // Anything but an explicit true keeps a new gist secret.
+      const result = await service.publish(gistId.data, isPublic === true)
+      if (result.success) await announce(gistId.data)
+      return result
+    }
+  )
 }

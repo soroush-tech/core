@@ -1,8 +1,15 @@
 export const USER_URL = 'https://api.github.com/user'
 export const GISTS_URL = 'https://api.github.com/gists'
 
-/** One panel's worth of gists — the rail lists, it does not paginate. */
-export const GISTS_PAGE_SIZE = 30
+/** Kept small so each request stays light; the fetch pages until the list is complete. */
+export const GISTS_PAGE_SIZE = 10
+
+/**
+ * Stops a malformed response from paging forever. At 10 a page this is 1000
+ * gists — past any real account, so hitting it means something is wrong rather
+ * than that the user has that many.
+ */
+export const GISTS_MAX_PAGES = 100
 
 /**
  * What an empty file is published as. GitHub rejects a gist file whose content

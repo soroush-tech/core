@@ -1,6 +1,6 @@
 import type { spawn } from 'node:child_process'
 import { MENU_CHANNELS } from '../shared/ipc'
-import { editSelection } from './claude/editSelection'
+import { createClaudeRunner } from './claude/runEdit'
 import { createAuthService } from './github/authService'
 import { CREDENTIALS_FILE } from './github/const'
 import { createCredentialStore } from './github/credentialStore'
@@ -20,7 +20,8 @@ const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.
     options: { webPreferences: Record<string, unknown> }
     loadURL = vi.fn()
     loadFile = vi.fn()
-    webContents = { send: vi.fn() }
+    isDestroyed = vi.fn(() => false)
+    webContents = { send: vi.fn(), reload: vi.fn() }
     listeners = new Map<string, (...args: unknown[]) => void>()
     on = vi.fn((event: string, handler: (...args: unknown[]) => void) => {
       this.listeners.set(event, handler)
@@ -59,7 +60,7 @@ vi.mock('electron', () => ({
   BrowserWindow: FakeBrowserWindow,
 }))
 
-vi.mock('./claude/editSelection', () => ({ editSelection: vi.fn() }))
+vi.mock('./claude/runEdit', () => ({ createClaudeRunner: vi.fn() }))
 vi.mock('./github/authService', () => ({ createAuthService: vi.fn() }))
 vi.mock('./github/credentialStore', () => ({ createCredentialStore: vi.fn() }))
 vi.mock('./github/gistService', () => ({ createGistService: vi.fn() }))
@@ -196,12 +197,14 @@ describe('bootstrap', () => {
     expect(window.webContents.send).not.toHaveBeenCalled()
   })
 
-  it('wires claude edits to the injected spawn', async () => {
+  it('wires claude runs to the injected spawn', async () => {
     await start()
-    const [runEdit] = vi.mocked(registerClaudeHandlers).mock.calls[0]
-    const request = { selectedText: 'text', instruction: 'shorten' }
-    void runEdit(request)
-    expect(editSelection).toHaveBeenCalledWith(request, spawnFn)
+    const [createRunner] = vi.mocked(registerClaudeHandlers).mock.calls[0]
+    const emit = vi.fn()
+
+    createRunner(emit)
+
+    expect(createClaudeRunner).toHaveBeenCalledWith(spawnFn, emit)
   })
 
   it('stores GitHub credentials under the app userData directory', async () => {
@@ -269,6 +272,103 @@ describe('bootstrap', () => {
     // Only the renderer can save; closing again then goes straight through.
     expect(window.webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
     expect(window.destroy).not.toHaveBeenCalled()
+  })
+
+  it('reloads a clean window straight away from the menu', async () => {
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    reload()
+    expect(FakeBrowserWindow.created[0].webContents.reload).toHaveBeenCalled()
+    expect(confirmDiscard).not.toHaveBeenCalled()
+  })
+
+  it('drops a menu reload once the window it would act on has closed', async () => {
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+
+    window.emit('closed')
+    reload()
+
+    expect(window.webContents.reload).not.toHaveBeenCalled()
+  })
+
+  it('reloads a dirty window only once the user discards', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: true })
+    vi.mocked(confirmDiscard).mockResolvedValue('discard')
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+
+    reload()
+    expect(FakeBrowserWindow.created[0].webContents.reload).not.toHaveBeenCalled()
+    await flushWhenReady()
+
+    expect(confirmDiscard).toHaveBeenCalledWith(FakeBrowserWindow.created[0], true)
+    expect(FakeBrowserWindow.created[0].webContents.reload).toHaveBeenCalled()
+  })
+
+  it('drops the confirmed reload when the window closed while the prompt was up', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    let choose!: (choice: 'save' | 'discard') => void
+    vi.mocked(confirmDiscard).mockReturnValue(
+      new Promise((resolve) => {
+        choose = resolve
+      })
+    )
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+
+    reload()
+    window.emit('closed')
+    choose('discard')
+    await flushWhenReady()
+
+    expect(window.webContents.reload).not.toHaveBeenCalled()
+    expect(window.webContents.send).not.toHaveBeenCalled()
+  })
+
+  it('drops the confirmed reload when the window was destroyed while the prompt was up', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockResolvedValue('discard')
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+    window.isDestroyed.mockReturnValue(true)
+
+    reload()
+    await flushWhenReady()
+
+    expect(window.webContents.reload).not.toHaveBeenCalled()
+  })
+
+  it('asks the renderer to save, and does not reload, when the work is kept', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockResolvedValue('save')
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+
+    reload()
+    await flushWhenReady()
+
+    const { webContents } = FakeBrowserWindow.created[0]
+    expect(webContents.send).toHaveBeenCalledWith(MENU_CHANNELS.action, 'save')
+    expect(webContents.reload).not.toHaveBeenCalled()
+  })
+
+  it('leaves the window alone when the reload prompt itself fails', async () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockRejectedValue(new Error('no window to prompt on'))
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+
+    reload()
+    await flushWhenReady()
+
+    expect(FakeBrowserWindow.created[0].webContents.reload).not.toHaveBeenCalled()
+    expect(logged).toHaveBeenCalledWith('Unsaved-changes prompt failed', expect.any(Error))
+    logged.mockRestore()
   })
 
   it('keeps the window open when the prompt itself fails', async () => {

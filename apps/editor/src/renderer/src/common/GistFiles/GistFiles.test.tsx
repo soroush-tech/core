@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import type { GistDraft } from '../../../../shared/ipc'
@@ -9,7 +9,9 @@ const gistsApi = {
   list: vi.fn(),
   files: vi.fn(),
   draft: vi.fn(),
+  drafts: vi.fn(),
   stage: vi.fn(),
+  renameFile: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),
   publish: vi.fn(),
@@ -19,14 +21,12 @@ const gistsApi = {
 vi.stubGlobal('editorAPI', { gists: gistsApi })
 
 const onOpenFile = vi.fn()
+const onRenamed = vi.fn()
 
-const renderFiles = (
-  gistId: string | null = 'abc123',
-  gistDescription: string | null = 'A snippet'
-) =>
+const renderFiles = (gistId: string | null = 'abc123') =>
   render(
     <ThemeProvider theme={editorTheme}>
-      <GistFiles gistId={gistId} gistDescription={gistDescription} onOpenFile={onOpenFile} />
+      <GistFiles gistId={gistId} onOpenFile={onOpenFile} onRenamed={onRenamed} />
     </ThemeProvider>
   )
 
@@ -36,6 +36,12 @@ const staged = (draft: Partial<GistDraft>) => ({
   data: { files: {}, ...draft },
 })
 
+/** Opens the name field and types into it — the only way to add a file. */
+const addFile = async (typed: string) => {
+  await userEvent.click(screen.getByRole('button', { name: 'Add file' }))
+  await userEvent.type(screen.getByLabelText('New filename'), typed)
+}
+
 const descriptionField = () => screen.getByLabelText('Gist description')
 const editDescription = () => screen.getByRole('button', { name: 'Edit description' })
 
@@ -43,13 +49,17 @@ beforeEach(() => {
   vi.clearAllMocks()
   gistsApi.files.mockResolvedValue({
     success: true,
-    data: [
-      { filename: 'notes.md', content: '# notes' },
-      { filename: 'todo.md', content: '# todo' },
-    ],
+    data: {
+      description: 'A snippet',
+      files: [
+        { filename: 'notes.md', content: '# notes' },
+        { filename: 'todo.md', content: '# todo' },
+      ],
+    },
   })
   gistsApi.draft.mockResolvedValue(staged({}))
   gistsApi.stage.mockResolvedValue(staged({}))
+  gistsApi.renameFile.mockResolvedValue(staged({}))
   gistsApi.stageDescription.mockResolvedValue(staged({}))
   gistsApi.reset.mockResolvedValue({ success: true, data: true })
   gistsApi.publish.mockResolvedValue({ success: true, data: null })
@@ -57,7 +67,7 @@ beforeEach(() => {
 
 describe('GistFiles', () => {
   it('prompts for a gist before one is selected', () => {
-    renderFiles(null, null)
+    renderFiles(null)
 
     expect(screen.getByText('Select a gist to see its files.')).toBeInTheDocument()
     expect(gistsApi.files).not.toHaveBeenCalled()
@@ -118,6 +128,15 @@ describe('GistFiles', () => {
     expect(screen.getByText('3 unpublished changes')).toBeInTheDocument()
   })
 
+  it('asks for a name only once Add file is pressed', async () => {
+    renderFiles()
+    await screen.findByRole('button', { name: 'notes.md' })
+
+    expect(screen.queryByLabelText('New filename')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Add file' }))
+    expect(screen.getByLabelText('New filename')).toBeInTheDocument()
+  })
+
   it('stages a new file locally rather than calling GitHub', async () => {
     gistsApi.stage.mockResolvedValue(
       staged({ files: { 'new-file.md': { status: 'added', content: '' } } })
@@ -125,31 +144,16 @@ describe('GistFiles', () => {
     renderFiles()
     await screen.findByRole('button', { name: 'notes.md' })
 
-    await userEvent.type(screen.getByLabelText('New filename'), 'new-file.md{Enter}')
+    await addFile('new-file.md{Enter}')
 
     expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'new-file.md', {
       status: 'added',
       content: '',
     })
     expect(onOpenFile).toHaveBeenCalledWith('', { gistId: 'abc123', filename: 'new-file.md' })
-    expect(screen.getByLabelText('New filename')).toHaveValue('')
+    // The field has done its job and steps aside for the button again.
+    expect(screen.queryByLabelText('New filename')).not.toBeInTheDocument()
     expect(await screen.findByText('1 unpublished change')).toBeInTheDocument()
-  })
-
-  it('stages a new file from the button too', async () => {
-    gistsApi.stage.mockResolvedValue(
-      staged({ files: { 'new-file.md': { status: 'added', content: '' } } })
-    )
-    renderFiles()
-    await screen.findByRole('button', { name: 'notes.md' })
-
-    await userEvent.type(screen.getByLabelText('New filename'), 'new-file.md')
-    await userEvent.click(screen.getByRole('button', { name: 'Add file' }))
-
-    expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'new-file.md', {
-      status: 'added',
-      content: '',
-    })
   })
 
   it('keeps the typed name when staging it fails', async () => {
@@ -157,22 +161,39 @@ describe('GistFiles', () => {
     renderFiles()
     await screen.findByRole('button', { name: 'notes.md' })
 
-    await userEvent.type(screen.getByLabelText('New filename'), 'new-file.md{Enter}')
+    await addFile('new-file.md{Enter}')
 
     expect(screen.getByLabelText('New filename')).toHaveValue('new-file.md')
     expect(onOpenFile).not.toHaveBeenCalled()
     expect(await screen.findByRole('alert')).toHaveTextContent('EACCES')
   })
 
-  it('refuses a name the gist already has, without staging', async () => {
+  it.each([
+    ['a name the gist already has', 'notes.md{Enter}'],
+    ['a blank name', '   {Enter}'],
+  ])('refuses %s, without staging', async (_name, typed) => {
     renderFiles()
     await screen.findByRole('button', { name: 'notes.md' })
 
-    await userEvent.type(screen.getByLabelText('New filename'), 'notes.md')
+    await addFile(typed)
 
-    expect(screen.getByRole('button', { name: 'Add file' })).toBeDisabled()
-    await userEvent.type(screen.getByLabelText('New filename'), '{Enter}')
     expect(gistsApi.stage).not.toHaveBeenCalled()
+    // Still open, so the name can be corrected rather than typed again.
+    expect(screen.getByLabelText('New filename')).toBeInTheDocument()
+  })
+
+  it.each([
+    ['Escape', async () => userEvent.keyboard('{Escape}')],
+    ['clicking away', async () => userEvent.tab()],
+  ])('abandons the new file on %s', async (_name, abandon) => {
+    renderFiles()
+    await screen.findByRole('button', { name: 'notes.md' })
+
+    await addFile('new-file.md')
+    await abandon()
+
+    expect(gistsApi.stage).not.toHaveBeenCalled()
+    expect(screen.queryByLabelText('New filename')).not.toBeInTheDocument()
   })
 
   it('stages a deletion instead of deleting on GitHub', async () => {
@@ -190,11 +211,124 @@ describe('GistFiles', () => {
     expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'notes.md', null)
   })
 
+  describe('renaming', () => {
+    const rename = async (from: string, to: string) => {
+      await userEvent.click(await screen.findByRole('button', { name: `Rename ${from}` }))
+      await userEvent.clear(screen.getByLabelText(`Rename ${from}`))
+      await userEvent.type(screen.getByLabelText(`Rename ${from}`), `${to}{Enter}`)
+    }
+
+    it('renames as one change, carrying the content across', async () => {
+      renderFiles()
+      await screen.findByRole('button', { name: 'notes.md' })
+
+      await rename('notes.md', 'renamed.md')
+
+      // Staging the deletion and the new name apart could lose the file between
+      // them, so main is asked for the rename itself.
+      expect(gistsApi.renameFile).toHaveBeenCalledWith(
+        'abc123',
+        'notes.md',
+        'renamed.md',
+        '# notes'
+      )
+      expect(gistsApi.stage).not.toHaveBeenCalled()
+      // So a document open on that file saves under the name it now has.
+      expect(onRenamed).toHaveBeenCalledWith('abc123', 'notes.md', 'renamed.md')
+    })
+
+    it('renames just as well with nobody listening', async () => {
+      render(
+        <ThemeProvider theme={editorTheme}>
+          <GistFiles gistId="abc123" onOpenFile={onOpenFile} />
+        </ThemeProvider>
+      )
+      await screen.findByRole('button', { name: 'notes.md' })
+
+      await rename('notes.md', 'renamed.md')
+
+      expect(gistsApi.renameFile).toHaveBeenCalledWith(
+        'abc123',
+        'notes.md',
+        'renamed.md',
+        '# notes'
+      )
+    })
+
+    it('sends the staged content of a file that only exists locally', async () => {
+      gistsApi.draft.mockResolvedValue(
+        staged({ files: { 'draft.md': { status: 'added', content: '# draft' } } })
+      )
+      renderFiles()
+      await screen.findByRole('button', { name: 'draft.md — added' })
+
+      await rename('draft.md', 'renamed.md')
+
+      expect(gistsApi.renameFile).toHaveBeenCalledWith(
+        'abc123',
+        'draft.md',
+        'renamed.md',
+        '# draft'
+      )
+    })
+
+    it('leaves the open document on its old name when the rename fails', async () => {
+      gistsApi.renameFile.mockResolvedValue({ success: false, error: 'EACCES' })
+      renderFiles()
+      await screen.findByRole('button', { name: 'notes.md' })
+
+      await rename('notes.md', 'renamed.md')
+
+      // Nothing was staged, so the document still belongs to the name it had.
+      expect(onRenamed).not.toHaveBeenCalled()
+      expect(await screen.findByRole('alert')).toHaveTextContent('EACCES')
+    })
+
+    it.each([
+      ['the name is unchanged', 'notes.md'],
+      ['the name is blank', '   '],
+      ['the name is already taken', 'todo.md'],
+    ])('stages nothing when %s', async (_name, to) => {
+      renderFiles()
+      await screen.findByRole('button', { name: 'notes.md' })
+
+      await rename('notes.md', to)
+      expect(gistsApi.stage).not.toHaveBeenCalled()
+    })
+
+    it('abandons the rename on Escape', async () => {
+      renderFiles()
+      await userEvent.click(await screen.findByRole('button', { name: 'Rename notes.md' }))
+      await userEvent.type(screen.getByLabelText('Rename notes.md'), 'renamed.md{Escape}')
+
+      expect(gistsApi.stage).not.toHaveBeenCalled()
+      expect(await screen.findByRole('button', { name: 'notes.md' })).toBeInTheDocument()
+    })
+
+    it('abandons the rename when the field is left', async () => {
+      renderFiles()
+      await userEvent.click(await screen.findByRole('button', { name: 'Rename notes.md' }))
+      await userEvent.type(screen.getByLabelText('Rename notes.md'), 'renamed.md')
+      await userEvent.tab()
+
+      expect(gistsApi.stage).not.toHaveBeenCalled()
+    })
+
+    it('offers no rename for a file staged for deletion', async () => {
+      gistsApi.draft.mockResolvedValue(staged({ files: { 'notes.md': { status: 'deleted' } } }))
+      renderFiles()
+      await screen.findByRole('button', { name: 'notes.md — deleted' })
+
+      expect(screen.queryByRole('button', { name: 'Rename notes.md' })).not.toBeInTheDocument()
+    })
+  })
+
   describe('the description', () => {
     it('reads as text until Edit is pressed', async () => {
       renderFiles()
 
-      expect(screen.getByText('A snippet')).toBeInTheDocument()
+      // It arrives with the gist itself now, not from the list row.
+      expect(await screen.findByText('A snippet')).toBeInTheDocument()
       expect(screen.queryByLabelText('Gist description')).not.toBeInTheDocument()
 
       await userEvent.click(editDescription())
@@ -202,7 +336,8 @@ describe('GistFiles', () => {
     })
 
     it('says so when the gist has none', () => {
-      renderFiles('abc123', null)
+      gistsApi.files.mockResolvedValue({ success: true, data: { description: null, files: [] } })
+      renderFiles()
       expect(screen.getByText('No description')).toBeInTheDocument()
     })
 
@@ -295,8 +430,34 @@ describe('GistFiles', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Publish' }))
 
-    expect(gistsApi.publish).toHaveBeenCalledWith('abc123')
+    expect(gistsApi.publish).toHaveBeenCalledWith('abc123', false)
     await waitFor(() => expect(gistsApi.files).toHaveBeenCalledTimes(2))
+  })
+
+  it('publishes once however many times the button is pressed', async () => {
+    let published!: (result: unknown) => void
+    gistsApi.publish.mockReturnValue(new Promise((resolve) => (published = resolve)))
+    gistsApi.draft.mockResolvedValue(
+      staged({ files: { 'notes.md': { status: 'modified', content: 'edited' } } })
+    )
+    renderFiles()
+
+    const publishButton = await screen.findByRole('button', { name: 'Publish' })
+    await userEvent.click(publishButton)
+    // A second press before the first answers. For a sandbox that would be a
+    // second gist, and nothing about the two would say which was meant.
+    expect(publishButton).toBeDisabled()
+    await userEvent.click(publishButton)
+
+    expect(gistsApi.publish).toHaveBeenCalledTimes(1)
+
+    // The hold lasts as long as the request and no longer: a publish that came
+    // back refused leaves the draft where it was, and the button ready to try
+    // again rather than dead.
+    await act(async () => {
+      published({ success: false, error: 'GitHub responded 422' })
+    })
+    await waitFor(() => expect(publishButton).toBeEnabled())
   })
 
   it('resets the draft and reloads the gist', async () => {

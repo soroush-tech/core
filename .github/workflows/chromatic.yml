@@ -1,3 +1,5 @@
+# ci:validates nothing
+# CI never runs this workflow, so no job here could prove anything about it.
 name: Chromatic
 
 # Publishes Storybook to Chromatic for visual review, in its own workflow (split out of ci.yml)
@@ -55,10 +57,12 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
+      # --ignore-scripts, as everywhere in CI/CD: no lifecycle script runs at
+      # install — the Storybook build needs none.
       - name: Install dependencies
         env:
           CI: true
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       # The action runs buildScriptName (build:storybook) itself, so no separate build step.
       - name: Publish to Chromatic

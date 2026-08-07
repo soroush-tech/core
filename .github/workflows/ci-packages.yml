@@ -1,0 +1,165 @@
+# ci:validates pkg__*
+# Editing this file re-runs the package matrix it holds, and nothing outside it.
+name: CI · Packages
+
+# Called by ci.yml. One row per changed package: install, run its `test:coverage`, upload its
+# lcov under its own Codecov flag. Packages are alike, so they are a matrix rather than a job
+# each — a new package appears here without this file being touched.
+on:
+  workflow_call:
+    inputs:
+      node_version: { required: true, type: string }
+      manager: { required: true, type: string }
+      command: { required: true, type: string }
+      runner: { required: true, type: string }
+      playwright_version: { required: true, type: string }
+      changed_packages: { required: true, type: string }
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: CI
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.changed_packages) }}
+    # Same pinned browser location as the `web`/`e2e` jobs so browser-tier package rows
+    # share their Playwright cache.
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      - name: Restore cache - Playwright binaries
+        if: matrix.browsers
+        uses: actions/cache/restore@v5
+        id: playwright-cache
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      # Only Chromium is needed — the browser test tier runs headless Chromium.
+      - name: Install Playwright browsers
+        if: matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter ${{ matrix.filter }} exec playwright install --with-deps chromium
+
+      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
+      - name: Install Playwright system deps
+        if: matrix.browsers && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter ${{ matrix.filter }} exec playwright install-deps chromium
+
+      - name: Save cache - Playwright binaries
+        if: always() && matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      - name: Run Tests with Coverage
+        run: ${{ inputs.runner }} --filter ${{ matrix.filter }} test:coverage
+
+      # vitest writes lcov paths relative to the member (e.g. SF:src/index.ts), which is
+      # ambiguous across the monorepo — Codecov can't map a lone src/index.ts (five exist)
+      # and silently drops the flag's coverage. Prefix with the member's own directory so paths
+      # are repo-relative and unique. Both via env (never spliced into the shell).
+      - name: Make lcov paths repo-relative for Codecov
+        env:
+          AREA: ${{ matrix.area }}
+          DIR: ${{ matrix.dir }}
+        run: sed -i "s#^SF:#SF:$AREA/$DIR/#" "$AREA/$DIR/coverage/lcov.info"
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./${{ matrix.area }}/${{ matrix.dir }}/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: ${{ matrix.flag }}
+          name: ${{ matrix.flag }}
+
+  # Performance gate: styled-system's bench suite runs in the pinned Docker
+  # sandbox against the last npm release (via soroush-tech/bench-action); any
+  # case below the minimum speed ratio fails the job — and, via ci-ok, the PR.
+  # Runs when styled-system or the bench tooling changed (infra changes put
+  # every member in the matrix, so they trigger it too). Keyed on the Codecov
+  # flag rather than the directory: two members are called `bench`, and the one
+  # meant here is the package, not the relay worker (`bench-api`).
+  bench:
+    if: >-
+      contains(fromJSON(inputs.changed_packages).include.*.flag, 'styled-system') ||
+      contains(fromJSON(inputs.changed_packages).include.*.flag, 'bench')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # bench-action posts/updates the results comment
+      id-token: write # OIDC token for the branded comment relay (api.bench.soroush.tech)
+    environment: CI
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      # The bench file imports this package's built dist so the comparison
+      # against the npm release's prebuilt dist is like-for-like.
+      - name: Build styled-system
+        run: ${{ inputs.runner }} --filter @soroush.tech/styled-system build
+
+      # Mint a token from the org's GitHub App so the results comment is posted
+      # under the brand bot identity instead of github-actions[bot]. Skipped (and
+      # the gate falls back to GITHUB_TOKEN) when the app isn't configured.
+      - name: Mint bot token
+        id: bot-token
+        if: vars.BENCH_BOT_APP_ID != ''
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.BENCH_BOT_APP_ID }}
+          private-key: ${{ secrets.BENCH_BOT_PRIVATE_KEY }}
+          # Scope the minted token to commenting only, instead of inheriting every
+          # permission the app installation has.
+          permission-pull-requests: write
+
+      - name: Run benchmark gate
+        # Our own action, pinned like any other: `v1` is a tag, and a tag moves.
+        uses: soroush-tech/bench-action@b527ad437545189516e36ee3c29f6aeb09c3557e # v1.1.1
+        with:
+          bench-dir: packages/styled-system/bench
+          baseline-case: previous
+          min-ratio: '80'
+          github-token: ${{ steps.bot-token.outputs.token || secrets.GITHUB_TOKEN }}

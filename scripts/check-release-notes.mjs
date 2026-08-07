@@ -32,9 +32,29 @@ const publishablePackages = () =>
     .filter(({ private: isPrivate }) => isPrivate !== true)
     .map(({ dir, name, version }) => ({ dir, name, version }))
 
-/** Package dirs touched by the staged diff. Empty when nothing is staged (e.g. in CI). */
-const stagedPackageDirs = () => {
-  const output = execFileSync('git', ['diff', '--cached', '--name-only'], {
+/**
+ * The incoming commits of a merge in progress: MERGE_HEAD sits in .git from
+ * `git merge` until its commit, one sha per line — several for an octopus
+ * merge. Read from disk rather than asked of git — one less process, and the
+ * path is fixed for a regular checkout, which this repo's workflow is.
+ * Empty outside a merge.
+ */
+const mergeHeadShas = () => {
+  const marker = join(repoRoot, '.git', 'MERGE_HEAD')
+  if (!existsSync(marker)) return []
+  return readFileSync(marker, 'utf8')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+}
+
+/**
+ * Package dirs whose staged content differs from `base` — HEAD when omitted.
+ * Empty when nothing is staged (e.g. in CI).
+ */
+const stagedPackageDirs = (base) => {
+  const args = ['diff', '--cached', '--name-only', ...(base ? [base] : [])]
+  const output = execFileSync('git', args, {
     cwd: repoRoot,
     encoding: 'utf8',
   })
@@ -97,7 +117,21 @@ console.log('Release notes present for every publishable package version.')
 
 // ─── Guard 2: staged packages sit ahead of npm ────────────────────────────────
 
-const staged = stagedPackageDirs()
+// A merge stages the whole incoming branch, so a package released there looks
+// edited-without-a-bump here. Content that matches any parent already passed
+// this guard on its own branch; only a package differing from HEAD and from
+// every incoming parent — an edit made during conflict resolution — is new to
+// this commit, and that one stays checked.
+const mergeHeads = mergeHeadShas()
+let staged = stagedPackageDirs()
+if (mergeHeads.length > 0) {
+  for (const parent of mergeHeads) {
+    const vsParent = stagedPackageDirs(parent)
+    staged = new Set([...staged].filter((dir) => vsParent.has(dir)))
+  }
+  console.log('Merge in progress — checking only packages that match no parent.')
+}
+
 const changed = packages.filter(({ dir }) => staged.has(dir))
 
 if (changed.length === 0) {

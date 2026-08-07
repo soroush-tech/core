@@ -1,3 +1,5 @@
+# ci:validates nothing
+# CI never runs this workflow, so no job here could prove anything about it.
 name: Label Affected Area
 on:
   issues:

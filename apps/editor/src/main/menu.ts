@@ -7,9 +7,15 @@ import type { MenuAction } from '../shared/ipc'
  * IPC via `send`. Undo/Redo accelerators are display-only
  * (`registerAccelerator: false`): the renderer already binds those keys
  * (useUndoRedo), and registering them here would swallow the keydown.
+ *
+ * The View menu is spelled out rather than taken as the `viewMenu` role: the
+ * role ships Reload on Ctrl+R and Force Reload, which throw the document away
+ * with no questions asked. Reload here is menu-only — no accelerator — and
+ * `onReload` routes it through main's unsaved-changes guard.
  */
 export function createMenuTemplate(
-  send: (action: MenuAction) => void
+  send: (action: MenuAction) => void,
+  onReload: () => void
 ): MenuItemConstructorOptions[] {
   return [
     {
@@ -53,12 +59,28 @@ export function createMenuTemplate(
         { role: 'selectAll' },
       ],
     },
-    { role: 'viewMenu' },
+    {
+      label: 'View',
+      submenu: [
+        { id: 'view-reload', label: 'Reload', click: () => onReload() },
+        { type: 'separator' },
+        { role: 'toggleDevTools' },
+        { type: 'separator' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' },
+      ],
+    },
     { role: 'windowMenu' },
   ]
 }
 
 /** Builds and installs the application menu, forwarding item clicks to `send`. */
-export function installApplicationMenu(send: (action: MenuAction) => void): void {
-  Menu.setApplicationMenu(Menu.buildFromTemplate(createMenuTemplate(send)))
+export function installApplicationMenu(
+  send: (action: MenuAction) => void,
+  onReload: () => void
+): void {
+  Menu.setApplicationMenu(Menu.buildFromTemplate(createMenuTemplate(send, onReload)))
 }

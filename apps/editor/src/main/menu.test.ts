@@ -15,7 +15,8 @@ const findItem = (template: MenuItemConstructorOptions[], id: string) => {
 
 describe('createMenuTemplate', () => {
   const send = vi.fn()
-  const template = createMenuTemplate(send)
+  const onReload = vi.fn()
+  const template = createMenuTemplate(send, onReload)
 
   beforeEach(() => vi.clearAllMocks())
 
@@ -44,16 +45,34 @@ describe('createMenuTemplate', () => {
     expect(roles).toEqual(expect.arrayContaining(['quit', 'cut', 'copy', 'paste', 'selectAll']))
   })
 
-  it('keeps the native View and Window menus', () => {
-    const menuRoles = template.map((menu) => menu.role)
-    expect(menuRoles).toEqual(expect.arrayContaining(['viewMenu', 'windowMenu']))
+  it('keeps the native Window menu', () => {
+    expect(template.map((menu) => menu.role)).toEqual(expect.arrayContaining(['windowMenu']))
+  })
+
+  it('routes the Reload item through the guard rather than the renderer', () => {
+    ;(findItem(template, 'view-reload').click as () => void)()
+    expect(onReload).toHaveBeenCalledTimes(1)
+    expect(send).not.toHaveBeenCalled()
+  })
+
+  it('gives Reload no accelerator, so only the menu itself can reload', () => {
+    expect(findItem(template, 'view-reload').accelerator).toBeUndefined()
+  })
+
+  it('ships no native reload role, whose Ctrl+R would bypass the guard', () => {
+    const roles = template.flatMap((menu) => [
+      menu.role,
+      ...((menu.submenu as MenuItemConstructorOptions[]) ?? []).map((item) => item.role),
+    ])
+    expect(roles).not.toEqual(expect.arrayContaining(['viewMenu']))
+    expect(roles).not.toEqual(expect.arrayContaining(['reload']))
+    expect(roles).not.toEqual(expect.arrayContaining(['forceReload']))
   })
 })
 
 describe('installApplicationMenu', () => {
   it('builds the template and installs it as the application menu', () => {
-    const send = vi.fn()
-    installApplicationMenu(send)
+    installApplicationMenu(vi.fn(), vi.fn())
     expect(buildFromTemplate).toHaveBeenCalledTimes(1)
     expect(setApplicationMenu).toHaveBeenCalledWith(buildFromTemplate.mock.results[0]!.value)
   })

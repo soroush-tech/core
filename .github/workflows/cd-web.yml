@@ -1,3 +1,5 @@
+# ci:validates nothing
+# CI never runs this workflow, so no job here could prove anything about it.
 name: Continuous Deployment to GitHub Pages
 on:
   workflow_dispatch:
@@ -68,17 +70,19 @@ jobs:
             exit 1
           fi
 
+      # --ignore-scripts, as everywhere in CI/CD: no lifecycle script runs at
+      # install — sharp and esbuild ship their binaries as platform packages.
       - name: Detect package manager
         id: detect-package-manager
         run: |
           if [ -f "${{ github.workspace }}/pnpm-lock.yaml" ]; then
             echo "manager=pnpm" >> $GITHUB_OUTPUT
-            echo "command=install --frozen-lockfile" >> $GITHUB_OUTPUT
+            echo "command=install --frozen-lockfile --ignore-scripts" >> $GITHUB_OUTPUT
             echo "runner=pnpm" >> $GITHUB_OUTPUT
             exit 0
           elif [ -f "${{ github.workspace }}/package.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "command=ci" >> $GITHUB_OUTPUT
+            echo "command=ci --ignore-scripts" >> $GITHUB_OUTPUT
             echo "runner=npx --no-install" >> $GITHUB_OUTPUT
             exit 0
           else
@@ -167,8 +171,10 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
+      # --ignore-scripts, as everywhere in CI/CD: no lifecycle script runs at
+      # install — sharp and esbuild ship their binaries as platform packages.
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build Storybook
         run: pnpm --filter @soroush/web build:storybook
@@ -186,6 +192,9 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: '4.110.0'
+          wranglerVersion: '4.119.0'
+          # The lockfile lives at the repo root, so the action's per-directory
+          # detection falls back to npm — which cannot read workspace:* deps.
+          packageManager: pnpm
           workingDirectory: apps/web
           command: pages deploy --branch=main

@@ -1,3 +1,5 @@
+# ci:validates all
+# ci.yml holds prepare, lint and ci-ok — it decides how every job runs, so every job proves it.
 name: Continuous Integration
 
 on:
@@ -25,10 +27,11 @@ jobs:
       runner: ${{ steps.detect-package-manager.outputs.runner }}
       playwright_version: ${{ steps.detect-playwright.outputs.version }}
       web: ${{ steps.assemble.outputs.web }}
-      worker: ${{ steps.assemble.outputs.worker }}
-      worker_bench: ${{ steps.assemble.outputs.worker_bench }}
+      editor: ${{ steps.assemble.outputs.editor }}
       has_packages: ${{ steps.assemble.outputs.has_packages }}
       changed_packages: ${{ steps.assemble.outputs.changed_packages }}
+      has_workers: ${{ steps.assemble.outputs.has_workers }}
+      changed_workers: ${{ steps.assemble.outputs.changed_workers }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
@@ -39,22 +42,25 @@ jobs:
         id: node-version
         run: echo "version=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
 
+      # Every install runs --ignore-scripts: no lifecycle script at install
+      # time, anywhere in CI. The one script a job genuinely needs — Electron's
+      # binary download — runs explicitly in ci-editor.yml (`rebuild electron`).
       - name: Detect package manager
         id: detect-package-manager
         run: |
           if [ -f "${{ github.workspace }}/pnpm-lock.yaml" ]; then
             echo "manager=pnpm" >> $GITHUB_OUTPUT
-            echo "command=install --frozen-lockfile" >> $GITHUB_OUTPUT
+            echo "command=install --frozen-lockfile --ignore-scripts" >> $GITHUB_OUTPUT
             echo "runner=pnpm" >> $GITHUB_OUTPUT
             exit 0
           elif [ -f "${{ github.workspace }}/yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
-            echo "command=install --frozen-lockfile --non-interactive" >> $GITHUB_OUTPUT
+            echo "command=install --frozen-lockfile --non-interactive --ignore-scripts" >> $GITHUB_OUTPUT
             echo "runner=yarn" >> $GITHUB_OUTPUT
             exit 0
           elif [ -f "${{ github.workspace }}/package.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "command=ci" >> $GITHUB_OUTPUT
+            echo "command=ci --ignore-scripts" >> $GITHUB_OUTPUT
             echo "runner=npm" >> $GITHUB_OUTPUT
             exit 0
           else
@@ -68,31 +74,13 @@ jobs:
           VERSION=$(node -p "require('./apps/web/package.json').devDependencies?.['@playwright/test'] || require('./apps/web/package.json').dependencies?.['@playwright/test']")
           echo "version=${VERSION#^}" >> "$GITHUB_OUTPUT"
 
-      # Discover apps / workers / packages (folders with a package.json) and the
-      # workflow files, then build a per-entity paths-filter config so we can report
-      # exactly which ones changed.
+      # One key per app / worker / package (folders with a package.json), per workflow file,
+      # and per root file — each root file is its own key so what changed can be attributed
+      # rather than read as "everything". Root docs/tooling dotfiles are deliberately absent:
+      # they must not validate the workspace, so the list is explicit rather than a glob.
       - name: Discover workspace entities
         id: discover
-        run: |
-          node <<'NODE' >> "$GITHUB_OUTPUT"
-          const fs = require('fs')
-          const dirsWithPkg = (root) => fs.existsSync(root) ? fs.readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory() && fs.existsSync(`${root}/${d.name}/package.json`)).map((d) => d.name) : []
-          const apps = dirsWithPkg('apps')
-          const workers = dirsWithPkg('workers')
-          const packages = dirsWithPkg('packages')
-          const workflows = fs.readdirSync('.github/workflows').filter((f) => /\.ya?ml$/.test(f))
-          const filters = {}
-          apps.forEach((n) => (filters[`app__${n}`] = [`apps/${n}/**`]))
-          workers.forEach((n) => (filters[`worker__${n}`] = [`workers/${n}/**`]))
-          packages.forEach((n) => (filters[`pkg__${n}`] = [`packages/${n}/**`]))
-          workflows.forEach((f) => (filters[`wf__${f.replace(/\.ya?ml$/, '')}`] = [`.github/workflows/${f}`]))
-          // Root = build/deploy-affecting top-level files only (lockfile, workspace,
-          // manifest, .nvmrc, tsconfig). Root docs/tooling dotfiles must NOT trigger a
-          // full workspace validate + deploy, so list them explicitly rather than glob.
-          filters.root = ['pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json', '.nvmrc', 'tsconfig.json']
-          console.log(`filters=${JSON.stringify(filters)}`)
-          console.log(`packages=${JSON.stringify(packages)}`)
-          NODE
+        run: node scripts/assemble-changes.mjs filters >> "$GITHUB_OUTPUT"
 
       - name: Detect changed entities
         uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
@@ -100,42 +88,32 @@ jobs:
         with:
           filters: ${{ steps.discover.outputs.filters }} # JSON is valid YAML
 
+      # The root manifest and the lockfile are attributed by comparing them against the
+      # base — the target branch for a pull request, the previous tip for a push — so both
+      # are copied out at that commit, fetched one deep first when the shallow clone lacks
+      # it. Every step here may fail without failing the job: a copy that is missing or
+      # empty is one the next step reads as "cannot be compared", which validates
+      # everything. Reading is git's job; what it means is the script's.
+      - name: Copy the base manifest and lockfile
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/base"
+          git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null ||
+            git fetch --no-tags --depth=1 origin "$BASE_SHA" 2>/dev/null || true
+          git show "$BASE_SHA:package.json"   > "$RUNNER_TEMP/base/package.json"   2>/dev/null || true
+          git show "$BASE_SHA:pnpm-lock.yaml" > "$RUNNER_TEMP/base/pnpm-lock.yaml" 2>/dev/null || true
+
       # Assemble the single changes.json the CD workflows read: apps/worker/packages/
       # workflows are lists of the changed names, root is a boolean. Also derive the
-      # booleans + package matrix this CI run's own jobs gate on.
+      # per-area matrices and the booleans this run's caller jobs gate on.
       - name: Assemble changes.json
         id: assemble
         env:
           CHANGES: ${{ steps.filter.outputs.changes }}
-          ALL_PACKAGES: ${{ steps.discover.outputs.packages }}
-        run: |
-          node <<'NODE' >> "$GITHUB_OUTPUT"
-          const fs = require('fs')
-          const changed = new Set(JSON.parse(process.env.CHANGES))
-          const allPackages = JSON.parse(process.env.ALL_PACKAGES)
-          const pick = (prefix) => [...changed].filter((k) => k.startsWith(prefix)).map((k) => k.slice(prefix.length))
-          const apps = pick('app__')
-          const worker = pick('worker__')
-          const packages = pick('pkg__')
-          const workflows = pick('wf__')
-          const root = changed.has('root')
-          fs.writeFileSync('changes.json', JSON.stringify({ apps, worker, packages, workflows, root }))
-          // CI gating: a root or workflow change validates the whole workspace.
-          const infra = root || workflows.length > 0
-          const pkgsForCI = infra ? allPackages : packages
-          // `browsers` marks packages with a real-browser vitest tier — they declare
-          // `playwright` themselves, and their CI row must install Chromium first.
-          const include = pkgsForCI.map((dir) => {
-            const pkg = require(`./packages/${dir}/package.json`)
-            const browsers = Boolean(pkg.devDependencies?.playwright || pkg.dependencies?.playwright)
-            return { dir, filter: pkg.name, flag: dir, browsers }
-          })
-          console.log(`web=${apps.includes('web') || packages.length > 0 || infra}`)
-          console.log(`worker=${worker.includes('api') || packages.includes('schema') || packages.includes('wrangler-tools') || infra}`)
-          console.log(`worker_bench=${worker.includes('bench') || packages.includes('wrangler-tools') || infra}`)
-          console.log(`has_packages=${pkgsForCI.length ? 'true' : 'false'}`)
-          console.log(`changed_packages=${JSON.stringify({ include })}`)
-          NODE
+          BASE_PACKAGE_JSON: ${{ runner.temp }}/base/package.json
+          BASE_LOCKFILE: ${{ runner.temp }}/base/pnpm-lock.yaml
+        run: node scripts/assemble-changes.mjs assemble >> "$GITHUB_OUTPUT"
 
       # Hand the single changes.json to the workflow_run-triggered CD workflows; they
       # carry no diff base of their own and read this run's answer (computed against
@@ -185,475 +163,69 @@ jobs:
       - name: Check release notes
         run: ${{ needs.prepare.outputs.runner }} run check:release-notes
 
-  # Shared packages: one job per package, each uploads its own Codecov flag.
+  # Each area's jobs live in a workflow of its own, called from here rather than triggered
+  # separately: `needs:` cannot cross workflow files, and `ci-ok` has to stay able to see every
+  # job. Calling them keeps one run, one CI-environment approval wave and one required check —
+  # and gives each area a file whose own `# ci:validates` marker says what editing it re-runs.
+  #
+  # `secrets: inherit` is not decoration: CODECOV_TOKEN is scoped to the CI environment, and
+  # naming it explicitly here would evaluate it in this workflow's environment-less context and
+  # pass an empty string — a green upload step that uploads nothing.
   packages:
     needs: [prepare, lint]
     if: needs.prepare.outputs.has_packages == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    environment: CI
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.prepare.outputs.changed_packages) }}
-    # Same pinned browser location as the `web`/`e2e` jobs so browser-tier package rows
-    # share their Playwright cache.
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Restore cache - Playwright binaries
-        if: matrix.browsers
-        uses: actions/cache/restore@v5
-        id: playwright-cache
-        with:
-          path: ${{ github.workspace }}/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
-
-      # Only Chromium is needed — the browser test tier runs headless Chromium.
-      - name: Install Playwright browsers
-        if: matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter ${{ matrix.filter }} exec playwright install --with-deps chromium
-
-      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
-      - name: Install Playwright system deps
-        if: matrix.browsers && steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter ${{ matrix.filter }} exec playwright install-deps chromium
-
-      - name: Save cache - Playwright binaries
-        if: always() && matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ github.workspace }}/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-
-      - name: Run Tests with Coverage
-        run: ${{ needs.prepare.outputs.runner }} --filter ${{ matrix.filter }} test:coverage
-
-      # vitest writes lcov paths relative to the package (e.g. SF:src/index.ts), which is
-      # ambiguous across the monorepo — Codecov can't map a lone src/index.ts (five exist)
-      # and silently drops the flag's coverage. Prefix with the package dir so paths are
-      # repo-relative and unique. $DIR via env (never spliced into the shell).
-      - name: Make lcov paths repo-relative for Codecov
-        env:
-          DIR: ${{ matrix.dir }}
-        run: sed -i "s#^SF:#SF:packages/$DIR/#" "packages/$DIR/coverage/lcov.info"
-
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/${{ matrix.dir }}/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: ${{ matrix.flag }}
-          name: ${{ matrix.dir }}
-
-  # Performance gate: styled-system's bench suite runs in the pinned Docker
-  # sandbox against the last npm release (via soroush-tech/bench-action); any
-  # case below the minimum speed ratio fails the job — and, via ci-ok, the PR.
-  # Runs when styled-system or the bench tooling changed (infra changes put
-  # every package in the matrix, so they trigger it too).
-  bench:
-    needs: [prepare, lint]
-    if: >-
-      contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'styled-system') ||
-      contains(fromJSON(needs.prepare.outputs.changed_packages).include.*.dir, 'bench')
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/ci-packages.yml
     permissions:
       contents: read
       pull-requests: write # bench-action posts/updates the results comment
-      id-token: write # OIDC token for the branded comment relay (api.bench.soroush.tech)
-    environment: CI
-    timeout-minutes: 20
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
+      id-token: write # OIDC token for the branded comment relay
+    secrets: inherit
+    with:
+      node_version: ${{ needs.prepare.outputs.node_version }}
+      manager: ${{ needs.prepare.outputs.manager }}
+      command: ${{ needs.prepare.outputs.command }}
+      runner: ${{ needs.prepare.outputs.runner }}
+      playwright_version: ${{ needs.prepare.outputs.playwright_version }}
+      changed_packages: ${{ needs.prepare.outputs.changed_packages }}
 
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
-
-      # The bench file imports this package's built dist so the comparison
-      # against the npm release's prebuilt dist is like-for-like.
-      - name: Build styled-system
-        run: ${{ needs.prepare.outputs.runner }} --filter @soroush.tech/styled-system build
-
-      # Mint a token from the org's GitHub App so the results comment is posted
-      # under the brand bot identity instead of github-actions[bot]. Skipped (and
-      # the gate falls back to GITHUB_TOKEN) when the app isn't configured.
-      - name: Mint bot token
-        id: bot-token
-        if: vars.BENCH_BOT_APP_ID != ''
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ vars.BENCH_BOT_APP_ID }}
-          private-key: ${{ secrets.BENCH_BOT_PRIVATE_KEY }}
-          # Scope the minted token to commenting only, instead of inheriting every
-          # permission the app installation has.
-          permission-pull-requests: write
-
-      - name: Run benchmark gate
-        uses: soroush-tech/bench-action@v1
-        with:
-          bench-dir: packages/styled-system/bench
-          baseline-case: previous
-          min-ratio: '80'
-          github-token: ${{ steps.bot-token.outputs.token || secrets.GITHUB_TOKEN }}
-
-  # Cloudflare Worker API.
   worker:
     needs: [prepare, lint]
-    if: needs.prepare.outputs.worker == 'true'
-    runs-on: ubuntu-latest
+    if: needs.prepare.outputs.has_workers == 'true'
+    uses: ./.github/workflows/ci-worker.yml
     permissions:
       contents: read
-    environment: CI
-    timeout-minutes: 15
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
+    secrets: inherit
+    with:
+      node_version: ${{ needs.prepare.outputs.node_version }}
+      manager: ${{ needs.prepare.outputs.manager }}
+      command: ${{ needs.prepare.outputs.command }}
+      runner: ${{ needs.prepare.outputs.runner }}
+      changed_workers: ${{ needs.prepare.outputs.changed_workers }}
 
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
-
-      - name: Run Tests with Coverage
-        run: ${{ needs.prepare.outputs.runner }} --filter @soroush/api test:coverage
-
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./workers/api/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: api
-          name: api
-
-  # Cloudflare Worker: the bench-action comment relay.
-  worker-bench:
+  app:
     needs: [prepare, lint]
-    if: needs.prepare.outputs.worker_bench == 'true'
-    runs-on: ubuntu-latest
+    if: needs.prepare.outputs.web == 'true' || needs.prepare.outputs.editor == 'true'
+    uses: ./.github/workflows/ci-app.yml
     permissions:
       contents: read
-    environment: CI
-    timeout-minutes: 15
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
-
-      - name: Run Tests with Coverage
-        run: ${{ needs.prepare.outputs.runner }} --filter @soroush/bench-api test:coverage
-
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./workers/bench/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: bench-api
-          name: bench-api
-
-  # Web app (ubuntu-only): unit / browser / storybook coverage tiers. The browser engines
-  # (E2E) run in the separate `e2e` matrix job below.
-  web:
-    needs: [prepare, lint]
-    if: needs.prepare.outputs.web == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    environment: CI
-    timeout-minutes: 30
-    # Forward the CI-environment-scoped `VITE_BASE_URL` to the `e2e` job, which can't read it
-    # itself (it stays off the environment to avoid a second approval). Non-secret value.
-    outputs:
-      vite_base_url: ${{ vars.VITE_BASE_URL }}
-
-    # Pin the browser download location so the cache path/key is stable and shared with the
-    # `e2e` job's chromium row on the same runner OS.
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0 # full history for Codecov base detection
-          persist-credentials: false
-
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Restore cache - Playwright binaries
-        uses: actions/cache/restore@v5
-        id: playwright-cache
-        with:
-          path: ${{ github.workspace }}/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
-
-      # Only Chromium is needed here — the unit-browser and storybook tiers run headless Chromium.
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @soroush/web exec playwright install --with-deps chromium
-
-      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
-      - name: Install Playwright system deps
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter @soroush/web exec playwright install-deps chromium
-
-      - name: Save cache - Playwright binaries
-        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ github.workspace }}/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-
-      - name: Build project
-        run: ${{ needs.prepare.outputs.runner }} run build
-        env:
-          SKIP_PRERENDER: 'true'
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      # Merged V8 pass over unit + browser + storybook, uploaded as the `web` flag that
-      # `.codecov.yml` gates patch on. A single pass reports each file once with real execution
-      # data — no phantom-uncovered lines from the per-tier `all: true` reports — so `web` is the
-      # authoritative report and the per-tier flags below stay informational. Uploaded FIRST so
-      # the Codecov PR comment renders from this report.
-      #
-      # `test:coverage:web` is this app alone. The root `test:coverage` is recursive, so it
-      # ran every other workspace here too — each already covered by its own job, and the
-      # editor app starved of the runner it shares with the browser tiers until its tests
-      # timed out.
-      - name: Run Web Coverage (merged)
-        shell: bash
-        run: |
-          echo "### 🧪 Web — \`test:coverage:web\` (unit + browser + storybook, one V8 pass)" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} run test:coverage:web
-
-      - name: Upload Web Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: web
-          name: Web
-
-      - name: Run Unit Tests with Coverage
-        shell: bash
-        run: |
-          echo "### 🧪 Unit — \`test:coverage:unit\`" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} run test:coverage:unit
-
-      - name: Upload Unit Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: unit
-          name: Unit
-
-      - name: Run Browser Tests with Coverage
-        shell: bash
-        run: |
-          echo "### 🧪 Browser — \`test:coverage:browser\`" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} run test:coverage:browser
-
-      - name: Upload Browser Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: browser
-          name: Browser
-
-      - name: Run Storybook Tests with Coverage
-        shell: bash
-        run: |
-          echo "### 🧪 Storybook — \`test:coverage:storybook\`" >> "$GITHUB_STEP_SUMMARY"
-          ${{ needs.prepare.outputs.runner }} run test:coverage:storybook
-
-      - name: Upload Storybook Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./apps/web/coverage/lcov.info
-          slug: soroush-tech/core
-          flags: storybook
-          name: Storybook
-
-  # E2E: one engine per native OS. Chromium (ubuntu) runs with coverage → the `e2e` flag; Firefox
-  # (windows) and WebKit (macOS) run for cross-engine signal only. Playwright's `webServer` builds
-  # and serves the app, so there is no separate build step.
-  e2e:
-    needs: [prepare, lint, web]
-    if: needs.prepare.outputs.web == 'true'
-    runs-on: ${{ matrix.os }}
-    permissions:
-      contents: read
-      id-token: write # tokenless (OIDC) Codecov upload — see the upload step
-    # No `environment: CI` on purpose — that would prompt a SECOND approval when e2e reaches the
-    # gate in its own (post-web) wave. e2e still needs the CI-environment-scoped `VITE_BASE_URL`
-    # (the dev-server SSR fetch in the article page's data() hook needs an absolute base, else the
-    # relative `/gists/:id` URL throws in Node and the article title falls back to a placeholder),
-    # so the already-gated `web` job reads it and forwards it via `needs.web.outputs.vite_base_url`.
-    timeout-minutes: 30
-
-    # Pin the browser download location so one cache path/key works on every OS.
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { os: ubuntu-latest, engine: chromium, script: test:coverage:e2e, coverage: true }
-          - { os: windows-latest, engine: firefox, script: test:e2e:firefox }
-          - { os: macOS-latest, engine: webkit, script: test:e2e:webkit }
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Restore cache - Playwright binaries
-        uses: actions/cache/restore@v5
-        id: playwright-cache
-        with:
-          path: ${{ github.workspace }}/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @soroush/web exec playwright install --with-deps ${{ matrix.engine }}
-
-      - name: Install Playwright system deps
-        if: steps.playwright-cache.outputs.cache-hit == 'true' && runner.os == 'Linux'
-        run: pnpm --filter @soroush/web exec playwright install-deps ${{ matrix.engine }}
-
-      - name: Save cache - Playwright binaries
-        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ github.workspace }}/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-
-      - name: Run E2E (${{ matrix.engine }})
-        run: ${{ needs.prepare.outputs.runner }} run ${{ matrix.script }}
-        env:
-          # From the `web` job's output — e2e is off the CI environment, so it can't read the
-          # env-scoped `vars.VITE_BASE_URL` directly (see the job-level comment above).
-          VITE_BASE_URL: ${{ needs.web.outputs.vite_base_url }}
-
-      - name: Upload E2E Coverage to Codecov
-        if: matrix.coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
-        with:
-          use_oidc: true # tokenless upload (public repo) so e2e needs no CI-environment secret
-          files: ./apps/web/coverage/e2e/lcov.info
-          slug: soroush-tech/core
-          flags: e2e
-          name: E2E
+      id-token: write # the apps upload their coverage tokenlessly
+    secrets: inherit
+    with:
+      node_version: ${{ needs.prepare.outputs.node_version }}
+      manager: ${{ needs.prepare.outputs.manager }}
+      command: ${{ needs.prepare.outputs.command }}
+      runner: ${{ needs.prepare.outputs.runner }}
+      playwright_version: ${{ needs.prepare.outputs.playwright_version }}
+      web: ${{ needs.prepare.outputs.web }}
+      editor: ${{ needs.prepare.outputs.editor }}
 
   # Single stable status check for branch protection: tolerates change-gated jobs
   # being skipped, fails only if a required job actually failed or was cancelled.
+  # Every job reaches it through one of the caller jobs above.
   ci-ok:
     name: ci-ok
     if: always()
-    needs: [prepare, lint, packages, bench, worker, worker-bench, web, e2e]
+    needs: [prepare, lint, packages, worker, app]
     runs-on: ubuntu-latest
     permissions: {}
     timeout-minutes: 5

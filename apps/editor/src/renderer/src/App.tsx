@@ -2,10 +2,12 @@ import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { GistOrigin } from '../../shared/ipc'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
 import { EditorSidebar } from './common/EditorSidebar'
+import { useAutosave } from './hooks/useAutosave'
 import { useDocument } from './hooks/useDocument'
 import { useUndoRedo } from './hooks/useUndoRedo'
 import { useWindowTitle } from './hooks/useWindowTitle'
@@ -25,9 +27,15 @@ export function App() {
     open,
     load,
     save,
+    renameOrigin,
+    followPublished,
   } = useDocument()
   const { undo, redo, reset } = useUndoRedo(content, change)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0 })
+
+  // A gist document saves itself into its sandbox draft while it is dirty, so
+  // a crash or reload costs seconds of typing, not the article.
+  useAutosave(origin !== null, isDirty, save)
 
   // A gist file has no path on disk, so it is named by its filename instead.
   const documentName = origin?.filename ?? filePath ?? 'Untitled'
@@ -36,12 +44,26 @@ export function App() {
   // A different file on disk means a different document — its history starts fresh.
   useEffect(() => reset(), [filePath, reset])
 
+  // A gist file is a new document, so its history starts fresh — the
+  // filePath-keyed reset above cannot see it (filePath stays null). Stable, so
+  // the rail can open its startup sandbox exactly once.
+  const openGistFile = useCallback(
+    (fileContent: string, fileOrigin: GistOrigin) => {
+      void load(fileContent, fileOrigin).then((loaded) => loaded && reset())
+    },
+    [load, reset]
+  )
+
   // File and undo/redo commands live in the application menu (see main/menu.ts).
   useEffect(
     () =>
       window.editorAPI.menu.onAction((action) => {
         const actions = {
-          new: () => void newDocument(),
+          // A new document starts its own history: the filePath-keyed reset
+          // above cannot see this one, since an untitled document replacing a
+          // gist file leaves filePath null throughout — and undoing back into
+          // what was just discarded is not what Ctrl+Z is for.
+          new: () => void newDocument().then(reset),
           open: () => void open(),
           save: () => void save(),
           // Save As always means a file on disk, gist origin or not.
@@ -51,7 +73,7 @@ export function App() {
         }
         actions[action]()
       }),
-    [newDocument, open, save, undo, redo]
+    [newDocument, open, save, undo, redo, reset]
   )
 
   // Clamp against stale ranges after external content changes (open/undo/…).
@@ -80,12 +102,17 @@ export function App() {
   }
 
   /**
-   * Splices the rewrite over what Claude was given — but only if it is still
-   * the same document, and that text is still exactly where it was. Typing,
-   * undo/redo, or opening another file while the request runs would otherwise
-   * land the answer at shifted offsets, or in a document Claude never saw.
-   * Returns false when it was dropped, so the panel can say so rather than
-   * losing it silently.
+   * Splices the answer over what Claude was given — but only if it is still the
+   * same document, and what the last one wrote is still exactly where it was
+   * put. Typing, undo/redo, or opening another file while the request runs
+   * would otherwise land the answer at shifted offsets, or in a document Claude
+   * never saw. Returns false when it was dropped, so the panel can say so
+   * rather than losing it silently.
+   *
+   * The answer streams in, so this runs once per delta, each carrying the whole
+   * answer so far. What was written last is remembered as the text to find next
+   * time, which is what makes a delta replace the one before it rather than
+   * being refused as a stranger.
    */
   const applyEdit = (rewritten: string) => {
     const current = live.current
@@ -99,12 +126,14 @@ export function App() {
     if (from === to) {
       if (current !== text) return false
       change(rewritten)
+      asked.current = { ...asked.current, text: rewritten }
       return true
     }
 
     if (current.slice(from, to) !== text) return false
     change(current.slice(0, from) + rewritten + current.slice(to))
     setSelection({ start: from, end: from + rewritten.length })
+    asked.current = { ...asked.current, end: from + rewritten.length, text: rewritten }
     return true
   }
 
@@ -112,12 +141,10 @@ export function App() {
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
       <Flex flexDirection="row" height="100vh">
-        {/* A gist file is a new document, so its history starts fresh — the
-            filePath-keyed reset above cannot see it (filePath stays null). */}
         <EditorSidebar
-          onOpenFile={(fileContent, fileOrigin) =>
-            void load(fileContent, fileOrigin).then((loaded) => loaded && reset())
-          }
+          onOpenFile={openGistFile}
+          onRenameFile={renameOrigin}
+          onPublished={followPublished}
         />
         <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
           <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>
@@ -151,6 +178,7 @@ export function App() {
           <ClaudePanel
             targetText={targetText}
             isSelection={hasSelection}
+            documentName={documentName}
             onStart={beginEdit}
             onApply={applyEdit}
           />

@@ -18,8 +18,9 @@ Not a static résumé — a living one. Every commit is CI-gated, every touched 
 **100% coverage**, and the whole thing ships to production on green. What you see is
 how I work.
 
-It is organized as a **pnpm workspace monorepo**: the website is one app among
-its own shared tooling packages and backend workers.
+It is organized as a **pnpm workspace monorepo**: the website and a desktop
+markdown editor are apps among their own shared tooling packages and backend
+workers.
 
 [https://soroush.tech](https://soroush.tech)
 
@@ -66,6 +67,8 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
 
 - [.github/workflows/README.md](./.github/workflows/README.md) — CI/CD pipeline explained with Mermaid diagrams.
 - [apps/web/README.md](./apps/web/README.md) — the website: structure, scripts, testing.
+- [apps/editor/README.md](./apps/editor/README.md) — the desktop editor: architecture and release flow, with diagrams.
+- [.github/workflows/ci-editor.md](./.github/workflows/ci-editor.md) — how the editor is tested.
 - [packages/README.md](./packages/README.md) — workspace packages.
 - [workers/README.md](./workers/README.md) — backend.
 
@@ -80,6 +83,8 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
 | `web:unit:browser`               | [![browser](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=browser&label=browser)](https://codecov.io/github/soroush-tech/core?flag=browser)                                                             | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `web:storybook`                  | [![storybook](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=storybook&label=storybook)](https://codecov.io/github/soroush-tech/core?flag=storybook)                                                     | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `web:e2e`                        | [![e2e](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=e2e&label=e2e)](https://codecov.io/github/soroush-tech/core?flag=e2e)                                                                             | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
+| `editor`                         | [![editor](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=editor&label=editor)](https://codecov.io/github/soroush-tech/core?flag=editor)                                                                 | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
+| `editor:e2e`                     | [![editor-e2e](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=editor-e2e&label=editor-e2e)](https://codecov.io/github/soroush-tech/core?flag=editor-e2e)                                                 | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `worker:api`                     | [![api](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=api&label=api)](https://codecov.io/github/soroush-tech/core?flag=api)                                                                             | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `worker:bench-api`               | [![bench-api](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=bench-api&label=bench-api)](https://codecov.io/github/soroush-tech/core?flag=bench-api)                                                     | —                                                                                                                                                                      | —                                                                                                                                                                             | —                                                                                                                                                                                            |
 | `package:bench`                  | [![bench](https://codecov.io/github/soroush-tech/core/branch/main/graph/badge.svg?flag=bench&label=bench)](https://codecov.io/github/soroush-tech/core?flag=bench)                                                                     | [![npm](https://img.shields.io/npm/v/%40soroush.tech%2Fbench?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/bench)                                   | [![downloads](https://img.shields.io/npm/dm/%40soroush.tech%2Fbench?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/bench)                                   | [![unpacked size](https://img.shields.io/npm/unpacked-size/%40soroush.tech%2Fbench?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/bench)                                   |
@@ -100,8 +105,12 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
 - **Lint** — `pnpm lint` uses `--max-warnings 0`; any warning fails.
 - **Coverage** — touched files reach **100%**, and **every `packages/*` package
   is held at 100%** as a hard threshold.
-- **Matrices** — unit/component tests run on Linux · Windows · macOS, and e2e
-  runs against Chromium · Firefox · WebKit (3 × 3).
+- **One workflow per area** — CI is an entry workflow calling one file per area
+  (packages, workers, apps), each declaring on its own first line what it
+  validates. A change runs what it touches: editing how the editor is tested
+  does not re-run twelve packages.
+- **Matrices** — the web app builds on Linux only; its e2e is the one multi-OS
+  matrix, one Playwright engine per native OS (Chromium · Firefox · WebKit).
 - **Visual regression** — Storybook publishes to **Chromatic** on every PR
   ([live demo](https://main--6a17c33fc4e9466680e34e97.chromatic.com/)).
 - **Performance gate** — PRs touching `styled-system` run its bench suite in a
@@ -123,7 +132,8 @@ Full pipeline detail — with Mermaid diagrams of every workflow — lives in
 ```
 soroush.tech/
 ├── apps/
-│   └── web/        # The website itself — React 19 + Vike (SSG/SSR)
+│   ├── web/        # The website itself — React 19 + Vike (SSG/SSR)
+│   └── editor/     # Desktop markdown editor — Electron, gists, Claude CLI
 ├── packages/       # Shared @soroush.tech/* packages (12 and counting)
 │   ├── styled-system / design-system / markdown     # the UI stack
 │   ├── bench / playwright-coverage                  # testing & benchmarking
@@ -134,11 +144,12 @@ soroush.tech/
     └── bench/      # api.bench.soroush.tech — bench-action comment relay
 ```
 
-| Workspace        | What it is                                                                                                                                                                           | Details                                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| **`apps/web`**   | The production website — pages, sections, hooks, tests.                                                                                                                              | [apps/web/README.md](./apps/web/README.md) |
-| **`packages/*`** | `@soroush.tech/*` packages — the published UI stack (styled-system, design-system, markdown), testing tools (bench, playwright-coverage), Vite plugins, and internal shared tooling. | [packages/README.md](./packages/README.md) |
-| **`workers/*`**  | Backend deployables — the contact-form API and the bench comment relay, both Hono on Cloudflare Workers.                                                                             | [workers/README.md](./workers/README.md)   |
+| Workspace         | What it is                                                                                                                                                                           | Details                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| **`apps/web`**    | The production website — pages, sections, hooks, tests.                                                                                                                              | [apps/web/README.md](./apps/web/README.md)       |
+| **`apps/editor`** | A desktop markdown editor — Electron, editing gist files in place, rewrites through the local Claude CLI.                                                                            | [apps/editor/README.md](./apps/editor/README.md) |
+| **`packages/*`**  | `@soroush.tech/*` packages — the published UI stack (styled-system, design-system, markdown), testing tools (bench, playwright-coverage), Vite plugins, and internal shared tooling. | [packages/README.md](./packages/README.md)       |
+| **`workers/*`**   | Backend deployables — the contact-form API and the bench comment relay, both Hono on Cloudflare Workers.                                                                             | [workers/README.md](./workers/README.md)         |
 
 Globs live in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) (`apps/*`,
 `packages/*`, `workers/*`).

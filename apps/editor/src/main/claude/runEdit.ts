@@ -1,0 +1,164 @@
+import type { spawn } from 'node:child_process'
+import { tmpdir } from 'node:os'
+import { StringDecoder } from 'node:string_decoder'
+import type { ClaudeEvent } from '../../shared/ipc'
+import { createLineReader, parseStreamLine } from './parseStream'
+
+export interface EditSelectionRequest {
+  selectedText: string
+  instruction: string
+  /** Background material — another gist to build on. Empty when there is none. */
+  context?: string
+}
+
+const EDIT_TASK_PROMPT =
+  'Rewrite the TEXT block according to the INSTRUCTION block, both provided on stdin. ' +
+  'If the TEXT block is empty, write new content that satisfies the INSTRUCTION block. ' +
+  'A CONTEXT block, when present, is earlier work to build on - refer to it, but do not ' +
+  'repeat it or rewrite it. ' +
+  'Output only the rewritten text - no explanations, no commentary, no code fences around the result.'
+
+/**
+ * The full CLI invocation as one constant string: every flag is fixed and all
+ * user content travels over stdin, so nothing user-controlled ever reaches the
+ * shell. Deliberately NOT `--bare` — bare mode skips the OAuth/keychain reads,
+ * and reusing the signed-in user's own `claude` login is the point.
+ *
+ * `--include-partial-messages` is what makes the answer arrive as it is
+ * written rather than in one lump at the end; `--verbose` is required by the
+ * CLI for streamed output under `-p`.
+ */
+export const CLAUDE_COMMAND =
+  `claude -p "${EDIT_TASK_PROMPT}" --output-format stream-json --include-partial-messages ` +
+  `--verbose --permission-mode dontAsk --allowedTools ""`
+
+export const EDIT_TIMEOUT_MS = 120_000
+
+const NOT_INSTALLED = 'Claude Code CLI not found - install it and sign in with `claude` first'
+
+export function buildStdin({ selectedText, instruction, context }: EditSelectionRequest): string {
+  const blocks = context ? [`CONTEXT:\n${context}`] : []
+  blocks.push(`INSTRUCTION:\n${instruction}`, `TEXT:\n${selectedText}`)
+  return blocks.join('\n\n')
+}
+
+export interface ClaudeRunner {
+  /** Spawns a run and reports it through `emit`. Returns once it has started. */
+  start: (runId: string, request: EditSelectionRequest) => void
+  /** Kills a run in flight. Unknown ids are ignored — it may have just finished. */
+  cancel: (runId: string) => void
+}
+
+/**
+ * Runs selection edits through the local `claude` CLI, one child per run,
+ * keyed by `runId` so it can be killed. Spawned from the OS temp dir (never a
+ * project folder) so no repo CLAUDE.md/hooks/MCP config bleeds into the
+ * request; `spawnFn` is injected so this stays unit-testable.
+ */
+export function createClaudeRunner(
+  spawnFn: typeof spawn,
+  emit: (event: ClaudeEvent) => void
+): ClaudeRunner {
+  // Each run in flight, with the way to stop it. The stopping is the run's own,
+  // rather than a note kept out here that every terminal event has to remember to
+  // read and to clear: whichever event lands first would consume the note, and the
+  // output the child had already written arrives after it.
+  const running = new Map<string, { child: ReturnType<typeof spawn>; cancel: () => void }>()
+
+  return {
+    start(runId, request) {
+      const child = spawnFn(CLAUDE_COMMAND, {
+        shell: true,
+        cwd: tmpdir(),
+        timeout: EDIT_TIMEOUT_MS,
+        windowsHide: true,
+      })
+      // Set once the user stops this run, and never unset: it has ended, and the
+      // panel is idle. Nothing the child writes from here on is an answer.
+      let isCancelled = false
+      running.set(runId, {
+        child,
+        cancel: () => {
+          isCancelled = true
+          child.kill()
+        },
+      })
+      emit({ type: 'RUN_STARTED', runId })
+
+      // Set by the terminal `result` line, and only then is the run a success:
+      // an exit without one means the CLI stopped before answering.
+      let finished: string | null = null
+      let failure: string | null = null
+      let stderr = ''
+
+      const reader = createLineReader((line) => {
+        // Killing the child does not stop what it already wrote from arriving.
+        // The document is the user's own again, so an answer that lands now is not
+        // one: it belongs to a run they ended.
+        if (isCancelled) return
+        const parsed = parseStreamLine(line)
+        if (parsed.kind === 'delta')
+          emit({ type: 'TEXT_MESSAGE_CONTENT', runId, delta: parsed.text })
+        else if (parsed.kind === 'result') finished = parsed.text
+        else if (parsed.kind === 'error') failure = parsed.message
+      })
+
+      // One decoder for the whole run: a chunk can end halfway through a character,
+      // and decoding each on its own would leave a replacement character in the
+      // middle of the answer. What it holds back is flushed when the child closes.
+      const stdout = new StringDecoder('utf8')
+      child.stdout?.on('data', (chunk: Buffer | string) =>
+        reader.push(stdout.write(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)))
+      )
+      child.stderr?.on('data', (chunk: Buffer | string) => {
+        stderr += String(chunk)
+      })
+
+      child.on('error', (error) => {
+        running.delete(runId)
+        // A run the user stopped, whose child then failed to go quietly. The
+        // panel is idle and asked for this: the failure is of the killing, not
+        // of the run, and there is nothing for anyone to do about it.
+        if (isCancelled) return
+        emit({
+          type: 'RUN_ERROR',
+          runId,
+          error: error.message.includes('ENOENT') ? NOT_INSTALLED : error.message,
+        })
+      })
+
+      child.on('close', (code, signal) => {
+        // Already reported through 'error' — nothing here to add.
+        if (!running.delete(runId)) return
+        // Before the flush, not after: what the decoder is holding is the tail of
+        // an answer nobody is waiting for.
+        if (isCancelled) return
+
+        reader.push(stdout.end())
+        reader.end()
+
+        if (failure !== null) return emit({ type: 'RUN_ERROR', runId, error: failure })
+        if (signal !== null) {
+          return emit({ type: 'RUN_ERROR', runId, error: `The Claude CLI stopped (${signal})` })
+        }
+        if (code !== 0) {
+          return emit({
+            type: 'RUN_ERROR',
+            runId,
+            error: stderr.trim() || `Claude CLI exited with code ${String(code)}`,
+          })
+        }
+        if (finished === null) {
+          return emit({ type: 'RUN_ERROR', runId, error: 'The Claude CLI returned no result' })
+        }
+        emit({ type: 'RUN_FINISHED', runId, text: finished })
+      })
+
+      child.stdin?.end(buildStdin(request))
+    },
+
+    cancel(runId) {
+      running.get(runId)?.cancel()
+    },
+  }
+}

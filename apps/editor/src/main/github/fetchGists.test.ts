@@ -1,4 +1,4 @@
-import { API_HEADERS, GISTS_PAGE_SIZE, GISTS_URL } from './const'
+import { API_HEADERS, GISTS_MAX_PAGES, GISTS_PAGE_SIZE, GISTS_URL } from './const'
 import { fetchGists } from './fetchGists'
 
 const jsonResponse = (payload: unknown, ok = true, status = 200) =>
@@ -12,13 +12,19 @@ const rawGist = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 })
 
+/** A page GitHub would consider full, so the fetch asks for another. */
+const fullPage = (id: string) => Array.from({ length: GISTS_PAGE_SIZE }, () => rawGist({ id }))
+
 const fetchMock = vi.fn()
 const fetchFn = fetchMock as unknown as typeof fetch
+
+/** The page number asked for on the nth request. */
+const pageOf = (call: number) => (fetchMock.mock.calls[call][0] as URL).searchParams.get('page')
 
 beforeEach(() => vi.clearAllMocks())
 
 describe('fetchGists', () => {
-  it('summarises the account gists and asks for a single page', async () => {
+  it('summarises the account gists and asks GitHub for its largest page', async () => {
     fetchMock.mockResolvedValue(jsonResponse([rawGist()]))
 
     await expect(fetchGists('github_pat_123', fetchFn)).resolves.toEqual({
@@ -40,6 +46,66 @@ describe('fetchGists', () => {
     expect(init.headers).toMatchObject({
       ...API_HEADERS,
       authorization: 'Bearer github_pat_123',
+    })
+  })
+
+  it('stops after one request when the first page is not full', async () => {
+    fetchMock.mockResolvedValue(jsonResponse([rawGist()]))
+
+    await fetchGists('github_pat_123', fetchFn)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(pageOf(0)).toBe('1')
+  })
+
+  it('keeps paging while GitHub returns full pages, and concatenates them', async () => {
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(fullPage('page-one')))
+      .mockResolvedValueOnce(jsonResponse(fullPage('page-two')))
+      .mockResolvedValueOnce(jsonResponse([rawGist({ id: 'last' })]))
+
+    const result = await fetchGists('github_pat_123', fetchFn)
+
+    expect(result.success && result.data).toHaveLength(GISTS_PAGE_SIZE * 2 + 1)
+    expect(fetchMock).toHaveBeenCalledTimes(3)
+    expect([pageOf(0), pageOf(1), pageOf(2)]).toEqual(['1', '2', '3'])
+    // Newest first, so the order pages arrived in is the order they are listed.
+    expect(result.success && result.data.at(-1)?.id).toBe('last')
+  })
+
+  it('stops at an empty page rather than asking again', async () => {
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(fullPage('page-one')))
+      .mockResolvedValueOnce(jsonResponse([]))
+
+    const result = await fetchGists('github_pat_123', fetchFn)
+
+    expect(result.success && result.data).toHaveLength(GISTS_PAGE_SIZE)
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('gives up at the page cap, so a broken response cannot page forever', async () => {
+    // Every page comes back full, which would otherwise never terminate.
+    fetchMock.mockResolvedValue(jsonResponse(fullPage('endless')))
+
+    const result = await fetchGists('github_pat_123', fetchFn)
+
+    expect(fetchMock).toHaveBeenCalledTimes(GISTS_MAX_PAGES)
+    // A full last page means there are more; a list that stops there is not the
+    // every-gist this promised, so it says so rather than looking complete.
+    expect(result).toEqual({
+      success: false,
+      error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists — more than this can list`,
+    })
+  })
+
+  it('abandons the whole list when a later page fails', async () => {
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(fullPage('page-one')))
+      .mockResolvedValueOnce(jsonResponse({}, false, 503))
+
+    await expect(fetchGists('github_pat_123', fetchFn)).resolves.toEqual({
+      success: false,
+      error: 'GitHub responded 503',
     })
   })
 

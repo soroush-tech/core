@@ -64,7 +64,7 @@ describe('useDocument', () => {
 
     await act(() => result.current.newDocument())
 
-    expect(fileApi.save).toHaveBeenCalledWith(null, 'draft')
+    expect(fileApi.save).toHaveBeenCalledWith(null, 'draft', null)
     expect(result.current).toMatchObject({ content: '', isDirty: false })
   })
 
@@ -136,6 +136,78 @@ describe('useDocument', () => {
     expect(result.current.isDirty).toBe(true)
   })
 
+  it('saves under the new name after the open file is renamed', async () => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    act(() => result.current.renameOrigin('abc123', 'notes.md', 'renamed.md'))
+    act(() => result.current.change('# edited'))
+    await act(() => result.current.save())
+
+    expect(gistsApi.stage).toHaveBeenCalledWith('abc123', 'renamed.md', {
+      status: 'modified',
+      content: '# edited',
+    })
+  })
+
+  it.each([
+    ['another file of the same gist', 'abc123', 'other.md'],
+    ['the same filename in another gist', 'def456', 'notes.md'],
+  ])('ignores a rename of %s', async (_name, gistId, filename) => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    act(() => result.current.renameOrigin(gistId, filename, 'renamed.md'))
+
+    expect(result.current.origin).toEqual({ gistId: 'abc123', filename: 'notes.md' })
+  })
+
+  it('stages against the created gist once the sandbox it was in is published', async () => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'new:abc', filename: 'notes.md' }))
+
+    act(() => result.current.followPublished('new:abc', 'created123'))
+    act(() => result.current.change('# edited'))
+    await act(() => result.current.save())
+
+    // Staging against the sandbox would resurrect a draft for something that
+    // was published and thrown away.
+    expect(result.current.origin).toEqual({ gistId: 'created123', filename: 'notes.md' })
+    expect(gistsApi.stage).toHaveBeenCalledWith('created123', 'notes.md', {
+      status: 'modified',
+      content: '# edited',
+    })
+  })
+
+  it('ignores a publish of a sandbox this document was never in', async () => {
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+
+    act(() => result.current.followPublished('new:other', 'created123'))
+
+    expect(result.current.origin).toEqual({ gistId: 'abc123', filename: 'notes.md' })
+  })
+
+  it('does not call a save that staged into the published sandbox a save of the gist', async () => {
+    let staged!: (result: unknown) => void
+    gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'new:abc', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    const saving = result.current.save()
+    act(() => result.current.followPublished('new:abc', 'created123'))
+    await act(async () => staged({ success: true, data: {} }))
+
+    // What reached the sandbox went with the sandbox; the gist holds nothing
+    // written under this document's hand, so it is still unsaved work.
+    await expect(saving).resolves.toBe(false)
+    expect(result.current).toMatchObject({
+      isDirty: true,
+      origin: { gistId: 'created123', filename: 'notes.md' },
+    })
+  })
+
   it('keeps a gist-backed document dirty when staging fails', async () => {
     gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
     const { result } = renderHook(() => useDocument())
@@ -154,7 +226,8 @@ describe('useDocument', () => {
 
     await act(() => result.current.save(true))
 
-    expect(fileApi.save).toHaveBeenCalledWith(null, '# notes')
+    // Save As on a gist file opens the dialog on that file's name.
+    expect(fileApi.save).toHaveBeenCalledWith(null, '# notes', 'notes.md')
     expect(gistsApi.stage).not.toHaveBeenCalled()
     // It now belongs to that file, not to the gist.
     expect(result.current).toMatchObject({ filePath: 'C:\\notes.md', origin: null })
@@ -216,6 +289,26 @@ describe('useDocument', () => {
     })
   })
 
+  it('does not call the document clean when it was renamed mid-stage', async () => {
+    let staged!: (result: unknown) => void
+    gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))
+    const { result } = renderHook(() => useDocument())
+    await act(() => result.current.load('# notes', { gistId: 'abc123', filename: 'notes.md' }))
+    act(() => result.current.change('# edited'))
+
+    const saving = result.current.save()
+    act(() => result.current.renameOrigin('abc123', 'notes.md', 'renamed.md'))
+    await act(async () => staged({ success: true, data: {} }))
+
+    // What reached the sandbox is notes.md; the file is renamed.md now, and it
+    // still holds work nothing has written under that name.
+    await expect(saving).resolves.toBe(false)
+    expect(result.current).toMatchObject({
+      isDirty: true,
+      origin: { gistId: 'abc123', filename: 'renamed.md' },
+    })
+  })
+
   it('does not hand a finished stage to the document that replaced it', async () => {
     let staged!: (result: unknown) => void
     gistsApi.stage.mockReturnValue(new Promise((resolve) => (staged = resolve)))
@@ -272,7 +365,7 @@ describe('useDocument', () => {
     await act(() => result.current.open())
     act(() => result.current.change('# edited'))
     await act(() => result.current.save())
-    expect(fileApi.save).toHaveBeenCalledWith('C:\\notes.md', '# edited')
+    expect(fileApi.save).toHaveBeenCalledWith('C:\\notes.md', '# edited', 'C:\\notes.md')
     expect(result.current.isDirty).toBe(false)
   })
 
@@ -281,7 +374,8 @@ describe('useDocument', () => {
     const { result } = renderHook(() => useDocument())
     act(() => result.current.change('body'))
     await act(() => result.current.save(true))
-    expect(fileApi.save).toHaveBeenCalledWith(null, 'body')
+    // Nothing to propose for a document that has never been named.
+    expect(fileApi.save).toHaveBeenCalledWith(null, 'body', null)
     expect(result.current.filePath).toBe('C:\\new.md')
   })
 

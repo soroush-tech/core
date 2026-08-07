@@ -1,0 +1,177 @@
+# ci:validates app__editor
+# Editing this file re-runs the editor and nothing outside it.
+name: CI · Editor
+
+# Called by ci-app.yml. Two tiers, two jobs — the same shape as the web app, where `web` and `e2e`
+# are separate. They run in parallel rather than one after the other: the editor's e2e is a single
+# job, so there is nothing to save by holding it behind the unit suite the way the web app holds
+# three operating systems behind its own.
+#
+# Separate jobs also settle an ordering hazard: vitest's `coverage.clean` wipes
+# apps/editor/coverage/, and the e2e report lives at coverage/e2e inside it. In one job the steps
+# had to be ordered so the e2e run did not delete its own lcov. In two, each has its own workspace.
+on:
+  workflow_call:
+    inputs:
+      node_version: { required: true, type: string }
+      manager: { required: true, type: string }
+      command: { required: true, type: string }
+      runner: { required: true, type: string }
+
+jobs:
+  # The jsdom unit and integration suites. No display, no Electron — just the renderer and main
+  # process under test.
+  unit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # tokenless (OIDC) Codecov upload
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      # Electron's postinstall downloads its binary to ~/.cache/electron, outside the store
+      # setup-node caches. Both jobs install, so both want it. Keyed on the manifest, so an
+      # upgrade fetches and nothing else does.
+      - name: Restore cache - Electron binary
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/electron
+          key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      # The shared install command runs --ignore-scripts, which also skips
+      # Electron's postinstall — the binary download. Rebuild runs just that one
+      # script, explicitly: into ~/.cache/electron (restored above), unpacked to
+      # node_modules/electron/dist. The runner input goes through env and a
+      # fixed dispatch, never into shell source — zizmor: template-injection.
+      - name: Download Electron binary
+        env:
+          RUNNER: ${{ inputs.runner }}
+        run: |
+          case "$RUNNER" in
+            pnpm|yarn|npm) "$RUNNER" rebuild electron ;;
+            *) echo "Unsupported runner: $RUNNER" >&2; exit 1 ;;
+          esac
+
+      - name: Run Editor Unit Tests with Coverage
+        shell: bash
+        run: |
+          echo "### 🧪 Editor — \`test:coverage:editor\` (jsdom unit)" >> "$GITHUB_STEP_SUMMARY"
+          ${{ inputs.runner }} run test:coverage:editor
+
+      # vitest writes lcov paths relative to the app (SF:src/main/menu.ts). Prefix them so Codecov
+      # maps them by exact path rather than guessing which src/ in the monorepo they belong to.
+      - name: Make lcov paths repo-relative for Codecov
+        run: sed -i "s#^SF:#SF:apps/editor/#" apps/editor/coverage/lcov.info
+
+      - name: Upload Editor Coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          use_oidc: true # tokenless, so this job needs no CI-environment secret
+          files: ./apps/editor/coverage/lcov.info
+          slug: soroush-tech/core
+          flags: editor
+          name: Editor
+
+  # The Playwright-Electron suite: a real Electron, so a real display.
+  e2e:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # tokenless (OIDC) Codecov upload
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: inputs.manager == 'pnpm'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: ${{ inputs.manager }}
+
+      - name: Restore cache - Electron binary
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/electron
+          key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: ${{ inputs.manager }} ${{ inputs.command }}
+
+      # Same as the unit job: the install skipped Electron's postinstall, so run
+      # just that one script — this tier launches the real binary. Same fixed
+      # dispatch as there, keeping the input out of shell source.
+      - name: Download Electron binary
+        env:
+          RUNNER: ${{ inputs.runner }}
+        run: |
+          case "$RUNNER" in
+            pnpm|yarn|npm) "$RUNNER" rebuild electron ;;
+            *) echo "Unsupported runner: $RUNNER" >&2; exit 1 ;;
+          esac
+
+      # Electron bundles its own Chromium, so nothing is downloaded here — this installs only the
+      # shared libraries it needs, through the editor's own Playwright rather than a hand-kept apt
+      # list. xvfb is the display: the runner is headless and Electron is not.
+      - name: Install Electron system dependencies
+        run: |
+          pnpm --filter @soroush/editor exec playwright install-deps chromium
+          sudo apt-get install -y --no-install-recommends xvfb
+
+      # `test:e2e` builds the app itself (electron-vite build), so there is no separate build step.
+      - name: Run Editor E2E with Coverage
+        shell: bash
+        run: |
+          echo "### 🧪 Editor E2E — \`test:coverage:e2e:editor\` (Playwright + Electron)" >> "$GITHUB_STEP_SUMMARY"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
+            ${{ inputs.runner }} run test:coverage:e2e:editor
+
+      # Playwright already wrote the trace and a snapshot of the page for every
+      # failure; without this they are thrown away with the runner, and a failure
+      # that only happens here has to be guessed at from a stack trace.
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-e2e-failure
+          path: apps/editor/test-results
+          retention-days: 7
+
+      - name: Make lcov paths repo-relative for Codecov
+        run: sed -i "s#^SF:#SF:apps/editor/#" apps/editor/coverage/e2e/lcov.info
+
+      - name: Upload Editor E2E Coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          use_oidc: true
+          files: ./apps/editor/coverage/e2e/lcov.info
+          slug: soroush-tech/core
+          flags: editor-e2e
+          name: Editor E2E

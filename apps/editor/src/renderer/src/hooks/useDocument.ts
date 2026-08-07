@@ -35,6 +35,11 @@ export function useDocument() {
   // between would still read the document it replaced.
   const revision = useRef(0)
 
+  // Counts renames of the open gist file. The document is the same one, so this
+  // is not a replacement — but a save that staged under the old name did not
+  // stage what the file is now called.
+  const originName = useRef(0)
+
   // Actions read the latest state through a ref so they stay stable across
   // renders. Assigned in a layout effect: a passive one runs after paint, and a
   // save fired in between would write the content as it was a render ago.
@@ -59,17 +64,22 @@ export function useDocument() {
    */
   const save = useCallback(async (forceDialog = false): Promise<boolean> => {
     const { filePath, origin, content } = documentRef.current
-    // The document this save is about. Another can take its place while the
-    // write is in flight, and what comes back says nothing about that one —
-    // marking it clean, or handing it this one's path, would be a lie.
+    // The document this save is about, and the name it went by. Either can
+    // change while the write is in flight, and what comes back says nothing
+    // about what took its place — marking that clean, or handing it this one's
+    // path, would be a lie. A rename is the same document under another name,
+    // so it moves the name and not the document.
     const saved = revision.current
+    const savedAs = originName.current
 
     if (origin && !forceDialog) {
       const staged = await window.editorAPI.gists.stage(origin.gistId, origin.filename, {
         status: 'modified',
         content,
       })
-      if (revision.current !== saved) return false
+      // Staged under a name the file has since been renamed away from: what
+      // reached the sandbox is not what the document is called any more.
+      if (revision.current !== saved || originName.current !== savedAs) return false
       if (!staged.success) {
         setError(staged.error)
         return false
@@ -81,7 +91,13 @@ export function useDocument() {
       return true
     }
 
-    const result = await window.editorAPI.file.save(forceDialog ? null : filePath, content)
+    // Save As opens on the name the document already goes by: its path on disk,
+    // or the gist file it came from.
+    const result = await window.editorAPI.file.save(
+      forceDialog ? null : filePath,
+      content,
+      filePath ?? origin?.filename ?? null
+    )
     if (revision.current !== saved) return false
     if (!result.success) {
       setError(result.error)
@@ -114,6 +130,35 @@ export function useDocument() {
     if (result.data === 'discard') return true
     return save()
   }, [save])
+
+  /**
+   * Follows a gist file renamed under the editor, so a later save stages the
+   * content under the name the file now has rather than resurrecting the old one.
+   */
+  const renameOrigin = useCallback((gistId: string, from: string, to: string) => {
+    if (
+      documentRef.current.origin?.gistId !== gistId ||
+      documentRef.current.origin.filename !== from
+    ) {
+      return
+    }
+    originName.current += 1
+    setDocument((prev) => ({ ...prev, origin: { gistId, filename: to } }))
+  }, [])
+
+  /**
+   * Follows the sandbox to the gist that publishing created. The same document
+   * under a new address, so a later save stages against the gist that exists
+   * rather than resurrecting a draft for the sandbox that has just gone.
+   */
+  const followPublished = useCallback((from: string, to: string) => {
+    const { origin } = documentRef.current
+    if (origin?.gistId !== from) return
+    // As with a rename: a save still in flight staged where this document no
+    // longer is, and what comes back says nothing about where it went.
+    originName.current += 1
+    setDocument((prev) => ({ ...prev, origin: { gistId: to, filename: origin.filename } }))
+  }, [])
 
   const newDocument = useCallback(async () => {
     if (!(await confirmDiscardIfDirty())) return
@@ -148,5 +193,16 @@ export function useDocument() {
     [confirmDiscardIfDirty]
   )
 
-  return { ...document, revision, error, change, newDocument, open, load, save }
+  return {
+    ...document,
+    revision,
+    error,
+    change,
+    newDocument,
+    open,
+    load,
+    save,
+    renameOrigin,
+    followPublished,
+  }
 }

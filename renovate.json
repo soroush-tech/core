@@ -43,6 +43,18 @@
       "matchPackageNames": ["vite"],
       "allowedVersions": "<8.1.0",
       "description": "Hold apps/web Vite at 8.0.x: 8.1.x (Rolldown) drops top-level bindings in the Storybook production build, breaking Chromatic with 'ReferenceError: ... is not defined' (MSW checkGlobals). See https://github.com/storybookjs/storybook/issues/33789. Revisit when Storybook supports Vite 8/Rolldown."
+    },
+    {
+      "matchFileNames": ["apps/editor/package.json"],
+      "matchPackageNames": ["vite"],
+      "allowedVersions": "<8.0.0",
+      "description": "Hold the editor's Vite at 7.x: electron-vite 5's supported peer range is '^5 || ^6 || ^7', and under Vite 8 the preload build stops externalizing 'electron' — the npm package's binary-path shim gets bundled, requires child_process, and a sandboxed preload cannot load it, so the renderer starts without editorAPI and every e2e locator times out on a blank window. Revisit when electron-vite supports Vite 8."
+    },
+    {
+      "matchFileNames": ["apps/editor/package.json"],
+      "matchPackageNames": ["@vitejs/plugin-react"],
+      "allowedVersions": "<6.0.0",
+      "description": "Hold the editor's @vitejs/plugin-react at 5.x: v6 imports the 'vite/internal' subpath that only exists in Vite 8, and the editor's Vite is held at 7.x for electron-vite (see the rule above). The two move together — lift both when electron-vite supports Vite 8."
     }
   ],
   "platformAutomerge": true

@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { editorTheme } from '../../theme/editorTheme'
+import { GIST_DRAG_TYPE } from '../../utils/gistDrag'
+import { GISTS_PER_PAGE } from './const'
 import { GistList } from './GistList'
 
 const gistsApi = { list: vi.fn() }
@@ -64,6 +66,54 @@ describe('GistList', () => {
     expect(screen.queryByText('A useful snippet')).not.toBeInTheDocument()
   })
 
+  describe('pagination', () => {
+    /** More gists than fit on one page, each findable by its number. */
+    const many = (count: number) =>
+      Array.from({ length: count }, (_, index) =>
+        gist({ id: `gist-${String(index)}`, description: `Gist ${String(index)}` })
+      )
+
+    it('stays out of the way when everything fits on one page', async () => {
+      gistsApi.list.mockResolvedValue({ success: true, data: many(GISTS_PER_PAGE) })
+      renderList()
+      await screen.findByText('Gist 0')
+
+      expect(screen.queryByRole('navigation', { name: 'Gist pages' })).not.toBeInTheDocument()
+    })
+
+    it('shows only a page of gists at a time', async () => {
+      gistsApi.list.mockResolvedValue({ success: true, data: many(GISTS_PER_PAGE + 3) })
+      renderList()
+
+      expect(await screen.findByText('Gist 0')).toBeInTheDocument()
+      expect(screen.getByText(`Gist ${String(GISTS_PER_PAGE - 1)}`)).toBeInTheDocument()
+      expect(screen.queryByText(`Gist ${String(GISTS_PER_PAGE)}`)).not.toBeInTheDocument()
+      expect(screen.getByText(`${String(GISTS_PER_PAGE + 3)} gists`)).toBeInTheDocument()
+    })
+
+    it('moves to the next page', async () => {
+      gistsApi.list.mockResolvedValue({ success: true, data: many(GISTS_PER_PAGE + 3) })
+      renderList()
+      await screen.findByText('Gist 0')
+
+      await userEvent.click(screen.getByRole('button', { name: 'Go to page 2' }))
+
+      expect(screen.getByText(`Gist ${String(GISTS_PER_PAGE)}`)).toBeInTheDocument()
+      expect(screen.queryByText('Gist 0')).not.toBeInTheDocument()
+    })
+
+    it('goes back to an earlier page', async () => {
+      gistsApi.list.mockResolvedValue({ success: true, data: many(GISTS_PER_PAGE + 3) })
+      renderList()
+      await screen.findByText('Gist 0')
+
+      await userEvent.click(screen.getByRole('button', { name: 'Go to page 2' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Go to page 1' }))
+
+      expect(screen.getByText('Gist 0')).toBeInTheDocument()
+    })
+  })
+
   it('says so when the account has no gists', async () => {
     gistsApi.list.mockResolvedValue({ success: true, data: [] })
     renderList()
@@ -85,6 +135,17 @@ describe('GistList', () => {
       'aria-pressed',
       'true'
     )
+  })
+
+  it('lets a gist be dragged onto the Claude panel to write from', async () => {
+    renderList()
+    const row = await screen.findByRole('button', { name: /A useful snippet/ })
+    expect(row).toHaveAttribute('draggable', 'true')
+
+    const dataTransfer = { setData: vi.fn(), effectAllowed: 'none' }
+    fireEvent.dragStart(row, { dataTransfer })
+
+    expect(dataTransfer.setData).toHaveBeenCalledWith(GIST_DRAG_TYPE, 'abc123')
   })
 
   it('surfaces a failure as an alert instead of an empty list', async () => {

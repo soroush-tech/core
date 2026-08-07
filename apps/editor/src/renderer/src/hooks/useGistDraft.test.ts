@@ -6,7 +6,9 @@ const unsubscribe = vi.fn()
 
 const gistsApi = {
   draft: vi.fn(),
+  drafts: vi.fn(),
   stage: vi.fn(),
+  renameFile: vi.fn(),
   stageDescription: vi.fn(),
   reset: vi.fn(),
   publish: vi.fn(),
@@ -19,6 +21,8 @@ const gistsApi = {
 vi.stubGlobal('editorAPI', { gists: gistsApi })
 
 const DRAFT = { files: { 'notes.md': { status: 'modified' as const, content: 'edited' } } }
+
+type DraftApi = ReturnType<typeof useGistDraft>
 
 /** A promise the test decides when to settle, for answers that arrive late. */
 const deferred = <T>() => {
@@ -105,6 +109,37 @@ describe('useGistDraft', () => {
       await result.current.stage('abc123', 'notes.md', { status: 'deleted' })
     })
 
+    expect(result.current.error).toBe('EACCES')
+    expect(result.current.draft).toEqual(DRAFT)
+  })
+
+  it('adopts the draft main returns after a rename', async () => {
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    const renamed = { files: { 'renamed.md': { status: 'added' as const, content: '# notes' } } }
+    gistsApi.renameFile.mockResolvedValue({ success: true, data: renamed })
+
+    let accepted: boolean | undefined
+    await act(async () => {
+      accepted = await result.current.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    })
+
+    expect(accepted).toBe(true)
+    expect(result.current.draft).toEqual(renamed)
+  })
+
+  it('reports a failed rename and keeps the draft', async () => {
+    gistsApi.renameFile.mockResolvedValue({ success: false, error: 'EACCES' })
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    let accepted: boolean | undefined
+    await act(async () => {
+      accepted = await result.current.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
+    })
+
+    expect(accepted).toBe(false)
     expect(result.current.error).toBe('EACCES')
     expect(result.current.draft).toEqual(DRAFT)
   })
@@ -270,6 +305,71 @@ describe('useGistDraft', () => {
     })
 
     expect(result.current.draft).toEqual(newest)
+  })
+
+  it('drops a slow rename answer once a newer one has landed', async () => {
+    const slow = deferred<unknown>()
+    const newest = { files: { 'newest.md': { status: 'added' as const, content: 'newest' } } }
+
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    gistsApi.renameFile.mockReturnValueOnce(slow.promise)
+    const first = result.current.renameFile('abc123', 'notes.md', 'slow.md', 'slow')
+
+    gistsApi.renameFile.mockResolvedValue({ success: true, data: newest })
+    await act(() => result.current.renameFile('abc123', 'notes.md', 'newest.md', 'newest'))
+
+    await act(async () => {
+      slow.settle({
+        success: true,
+        data: { files: { 'slow.md': { status: 'added', content: 'slow' } } },
+      })
+      await first
+    })
+
+    expect(result.current.draft).toEqual(newest)
+  })
+
+  // Every one of these reports its own failure, and every one can be overtaken.
+  // The panel shows one error, so a failure that has been answered by a later
+  // request describes a draft it is no longer showing.
+  it.each([
+    [
+      'stage' as const,
+      (draft: DraftApi, label: string) =>
+        draft.stage('abc123', `${label}.md`, { status: 'added', content: label }),
+    ],
+    [
+      'renameFile' as const,
+      (draft: DraftApi, label: string) =>
+        draft.renameFile('abc123', 'notes.md', `${label}.md`, label),
+    ],
+    [
+      'stageDescription' as const,
+      (draft: DraftApi, label: string) => draft.stageDescription('abc123', label),
+    ],
+    ['reset' as const, (draft: DraftApi) => draft.reset('abc123')],
+    ['publish' as const, (draft: DraftApi) => draft.publish('abc123')],
+  ])('drops a slow %s failure once a newer answer has landed', async (method, call) => {
+    const slow = deferred<unknown>()
+    const { result } = renderHook(() => useGistDraft('abc123'))
+    await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
+
+    gistsApi[method].mockReturnValueOnce(slow.promise)
+    const first = call(result.current, 'slow')
+
+    gistsApi[method].mockResolvedValue({ success: true, data: DRAFT })
+    await act(async () => {
+      await call(result.current, 'newest')
+    })
+
+    await act(async () => {
+      slow.settle({ success: false, error: 'an answer nobody is waiting for' })
+      await first
+    })
+
+    expect(result.current.error).toBeNull()
   })
 
   it('unsubscribes on unmount', () => {

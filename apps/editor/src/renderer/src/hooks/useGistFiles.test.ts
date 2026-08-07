@@ -5,6 +5,7 @@ const gistsApi = {
   list: vi.fn(),
   files: vi.fn(),
   draft: vi.fn(),
+  drafts: vi.fn(),
   stage: vi.fn(),
   reset: vi.fn(),
   publish: vi.fn(),
@@ -13,10 +14,11 @@ const gistsApi = {
 vi.stubGlobal('editorAPI', { gists: gistsApi })
 
 const FILES = [{ filename: 'notes.md', content: '# notes' }]
+const CONTENTS = { description: 'A snippet', files: FILES }
 
 beforeEach(() => {
   vi.clearAllMocks()
-  gistsApi.files.mockResolvedValue({ success: true, data: FILES })
+  gistsApi.files.mockResolvedValue({ success: true, data: CONTENTS })
 })
 
 describe('useGistFiles', () => {
@@ -47,7 +49,7 @@ describe('useGistFiles', () => {
   })
 
   it('ignores a slower response for a gist that is no longer selected', async () => {
-    const slow = [{ filename: 'stale.md', content: 'stale' }]
+    const slow = { description: null, files: [{ filename: 'stale.md', content: 'stale' }] }
     let resolveSlow: ((value: unknown) => void) | undefined
     gistsApi.files.mockReturnValueOnce(
       new Promise((resolve) => {

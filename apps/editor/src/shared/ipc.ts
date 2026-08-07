@@ -33,8 +33,28 @@ export const FILE_CHANNELS = {
 } as const
 
 export const CLAUDE_CHANNELS = {
-  editSelection: 'claude:edit-selection',
+  startEdit: 'claude:start-edit',
+  cancel: 'claude:cancel',
+  /** Main → renderer: one `ClaudeEvent` per message of a run. */
+  event: 'claude:event',
 } as const
+
+/**
+ * What a run tells the renderer as it happens. The names are the AG-UI
+ * (Agent–User Interaction) protocol's, so the vocabulary is a known quantity
+ * rather than invented here — without taking the dependency. Tool-call and
+ * state events are deliberately absent: the CLI runs with `--allowedTools ""`,
+ * so they would be dead weight.
+ *
+ * `RUN_FINISHED` carries the whole text rather than leaving the renderer to
+ * reassemble the deltas: the CLI's own final result is authoritative, and a
+ * dropped delta must not quietly corrupt what lands in the document.
+ */
+export type ClaudeEvent =
+  | { type: 'RUN_STARTED'; runId: string }
+  | { type: 'TEXT_MESSAGE_CONTENT'; runId: string; delta: string }
+  | { type: 'RUN_FINISHED'; runId: string; text: string }
+  | { type: 'RUN_ERROR'; runId: string; error: string }
 
 /** The signed-in GitHub account. Never carries the token — that stays in main. */
 export interface GitHubStatus {
@@ -60,6 +80,13 @@ export interface GistFile {
   content: string
 }
 
+/** What one gist holds on GitHub, from the single-gist endpoint. */
+export interface GistContents {
+  /** The published description, or null when it has none. */
+  description: string | null
+  files: GistFile[]
+}
+
 /**
  * One staged change to a gist file. `added` and `modified` carry the local
  * content; `deleted` needs none.
@@ -77,6 +104,31 @@ export interface GistDraft {
   description?: string
 }
 
+/** Every gist that has unpublished changes, by gist id. */
+export type GistDrafts = Record<string, GistDraft>
+
+/**
+ * Marks the sandbox for a gist that does not exist on GitHub yet. Not a real
+ * gist id — GitHub's are hex — so it cannot collide with one, and publishing
+ * such an id creates the gist rather than patching it.
+ *
+ * Each new gist gets its own id after the prefix, so starting one never
+ * disturbs another still waiting to be published.
+ */
+export const NEW_GIST_PREFIX = 'new:'
+
+/** A fresh sandbox id. Every call starts a gist of its own. */
+export function newGistId(): string {
+  return `${NEW_GIST_PREFIX}${crypto.randomUUID()}`
+}
+
+/** True for a gist that has never been published — see `NEW_GIST_PREFIX`. */
+export function isNewGist(gistId: string): boolean {
+  // 'new' was the single shared sandbox before each got its own id; a draft
+  // left under it is still a gist that does not exist yet.
+  return gistId === 'new' || gistId.startsWith(NEW_GIST_PREFIX)
+}
+
 /** Where a document came from, when it came from a gist rather than disk. */
 export interface GistOrigin {
   gistId: string
@@ -87,7 +139,9 @@ export const GIST_CHANNELS = {
   list: 'github:gists',
   files: 'github:gist-files',
   draft: 'github:gist-draft',
+  drafts: 'github:gist-drafts',
   stage: 'github:gist-stage',
+  renameFile: 'github:gist-rename-file',
   stageDescription: 'github:gist-stage-description',
   reset: 'github:gist-reset',
   publish: 'github:gist-publish',
