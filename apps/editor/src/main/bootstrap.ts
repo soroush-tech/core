@@ -115,6 +115,10 @@ export function bootstrap(spawnFn: typeof spawn): void {
         if (!fileState.isDirty) return window.webContents.reload()
         confirmDiscard(window, fileState.isDraft)
           .then((choice) => {
+            // The prompt does not hold the window: it can be closed, or
+            // replaced as the main window, while the choice is being made —
+            // and a destroyed webContents throws on both calls below.
+            if (mainWindow !== window || window.isDestroyed()) return
             if (choice === 'discard') return window.webContents.reload()
             window.webContents.send(MENU_CHANNELS.action, 'save')
           })

@@ -4,7 +4,9 @@
 
 Builds the editor's installers and uploads them to a **draft GitHub Release**.
 Manual `workflow_dispatch` only — a release is a decision, not a side effect of
-a merge. Dispatch it from a `main` that CI has already validated.
+a merge. The release job runs only when dispatched from `main`
+(`if: github.ref == 'refs/heads/main'`), so it always builds a line CI has
+already validated.
 
 ```yaml
 on:

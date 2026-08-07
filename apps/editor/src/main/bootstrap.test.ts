@@ -20,6 +20,7 @@ const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.
     options: { webPreferences: Record<string, unknown> }
     loadURL = vi.fn()
     loadFile = vi.fn()
+    isDestroyed = vi.fn(() => false)
     webContents = { send: vi.fn(), reload: vi.fn() }
     listeners = new Map<string, (...args: unknown[]) => void>()
     on = vi.fn((event: string, handler: (...args: unknown[]) => void) => {
@@ -304,6 +305,41 @@ describe('bootstrap', () => {
 
     expect(confirmDiscard).toHaveBeenCalledWith(FakeBrowserWindow.created[0], true)
     expect(FakeBrowserWindow.created[0].webContents.reload).toHaveBeenCalled()
+  })
+
+  it('drops the confirmed reload when the window closed while the prompt was up', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    let choose!: (choice: 'save' | 'discard') => void
+    vi.mocked(confirmDiscard).mockReturnValue(
+      new Promise((resolve) => {
+        choose = resolve
+      })
+    )
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+
+    reload()
+    window.emit('closed')
+    choose('discard')
+    await flushWhenReady()
+
+    expect(window.webContents.reload).not.toHaveBeenCalled()
+    expect(window.webContents.send).not.toHaveBeenCalled()
+  })
+
+  it('drops the confirmed reload when the window was destroyed while the prompt was up', async () => {
+    vi.mocked(registerFileHandlers).mockReturnValue({ isDirty: true, isDraft: false })
+    vi.mocked(confirmDiscard).mockResolvedValue('discard')
+    await start()
+    const [, reload] = vi.mocked(installApplicationMenu).mock.calls[0]
+    const window = FakeBrowserWindow.created[0]
+    window.isDestroyed.mockReturnValue(true)
+
+    reload()
+    await flushWhenReady()
+
+    expect(window.webContents.reload).not.toHaveBeenCalled()
   })
 
   it('asks the renderer to save, and does not reload, when the work is kept', async () => {
