@@ -5,9 +5,9 @@ name: CD · Editor
 # Manual only — a release is a decision, not a side effect of a merge, and
 # approving the dispatch is the release act. The two build legs upload their
 # installers as workflow artifacts; a final job assembles them into a single
-# release tagged v<version> (from apps/editor's package.json) with a title and
-# generated notes, and publishes it — the moment running apps start seeing the
-# update.
+# release tagged v<version> (from apps/editor's package.json), titled and with
+# notes read from apps/editor/release-notes/<version>.md, and publishes it —
+# the moment running apps start seeing the update.
 on:
   workflow_dispatch:
 
@@ -90,13 +90,10 @@ jobs:
     permissions:
       contents: write # creates and publishes the GitHub Release
     steps:
-      # fetch-tags, not a shallow clone: the previous v* tag anchors the
-      # generated release notes.
       - name: Checkout Repository
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-          fetch-tags: true
 
       - name: Download installers
         uses: actions/download-artifact@v8
@@ -116,6 +113,12 @@ jobs:
         run: |
           version="$(node -p "require('./apps/editor/package.json').version")"
           tag="v${version}"
+          notes="apps/editor/release-notes/${version}.md"
+
+          # Notes come from an in-repo file, like package releases — a release
+          # can never ship without them. pnpm check:release-notes guards this
+          # earlier, at commit time.
+          test -f "$notes" || { echo "::error::Missing release notes: $notes"; exit 1; }
 
           if is_draft="$(gh release view "$tag" --json isDraft --jq .isDraft 2>/dev/null)"; then
             if [ "$is_draft" = "true" ]; then
@@ -132,18 +135,10 @@ jobs:
           # clear it — safe here, the published-release check above has passed.
           gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag}" 2>/dev/null || true
 
-          # Notes span from the last published editor release (plain v* tags
-          # are the editor's namespace; packages tag as @soroush.tech/…),
-          # never this run's own tag. First release: no start tag, GitHub
-          # picks the range itself.
-          prev="$(git tag --list 'v*' --sort=-v:refname | grep -vx "$tag" | head -n 1 || true)"
-          notes_args=()
-          if [ -n "$prev" ]; then notes_args+=(--notes-start-tag "$prev"); fi
-
           gh release create "$tag" dist/* \
             --draft \
             --target "$GITHUB_SHA" \
             --title "Soroush Editor v${version}" \
-            --generate-notes "${notes_args[@]}"
+            --notes-file "$notes"
 
           gh release edit "$tag" --draft=false

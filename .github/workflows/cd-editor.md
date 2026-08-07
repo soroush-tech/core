@@ -77,9 +77,11 @@ environment currently holds no values — it exists as the approval gate.
 - **Tag** `v<version>` from `apps/editor/package.json` — the plain `v*`
   namespace is the editor's; packages tag as `@soroush.tech/name@x.y.z`.
 - **Title** `Soroush Editor v<version>`.
-- **Notes** via `--generate-notes`, spanning from the last published `v*` tag
-  (`--notes-start-tag`; omitted on the first release). Edit the release body
-  afterwards if the auto-generated changelog needs shaping.
+- **Notes** read verbatim (`--notes-file`) from the in-repo
+  `apps/editor/release-notes/<version>.md`, exactly like package releases
+  (see the release-notes skill). The job fails without the file, and
+  `pnpm check:release-notes` (pre-commit + CI lint) catches the gap earlier —
+  a version bump can't land on `main` without its notes.
 - **Assets**: both legs' installers, blockmaps and `latest*.yml`.
 
 The release is created as a draft and flipped to published only once every
@@ -106,15 +108,16 @@ Restore signing in two places — nothing else moves:
 
 ## Releasing
 
-1. Bump `apps/editor/package.json` `version` on a branch, merge to `main`.
+1. In one PR to `main`: bump `apps/editor/package.json` `version` **and** add
+   `apps/editor/release-notes/<version>.md` with the notes
+   (`pnpm check:release-notes` fails the commit without it).
 2. Dispatch this workflow; approve the `cd-editor` environment gate. **That
    approval is the release act** — nothing after it waits on a human.
 3. Both legs build in parallel; the `release` job assembles one release tagged
-   `v<version>` with title, generated notes and all assets, and publishes it.
-   From that moment installed apps check its `latest*.yml` on startup
-   (`src/main/updater.ts`, packaged builds only) and update in the background.
-4. Edit the published notes on GitHub afterwards if they need shaping — the
-   body is not what updaters read.
+   `v<version>` with title, the notes file's contents and all assets, and
+   publishes it. From that moment installed apps check its `latest*.yml` on
+   startup (`src/main/updater.ts`, packaged builds only) and update in the
+   background.
 
 ---
 

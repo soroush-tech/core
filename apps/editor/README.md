@@ -21,7 +21,9 @@ Built on `@soroush.tech/design-system` and `@soroush.tech/markdown`.
 CI validates every change twice — the jsdom suites and a Playwright run
 against the real, built Electron app. Releasing is a separate, deliberate act:
 approving a manual dispatch packs both platforms into one published release,
-which is what puts the update in front of installed apps.
+which is what puts the update in front of installed apps. Release notes are
+hand-written like the packages' — `release-notes/<version>.md`, committed with
+the version bump (`pnpm check:release-notes` enforces it).
 
 ```mermaid
 flowchart TD

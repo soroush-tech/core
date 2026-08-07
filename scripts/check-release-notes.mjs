@@ -3,14 +3,18 @@
 // 1. Every publishable package must have a release-notes file for its current version.
 //    cd-packages.yml reads packages/<pkg>/release-notes/<version>.md at publish time and refuses
 //    to release without it; this catches the same gap earlier, so a version bump can't land on
-//    main without its notes.
+//    main without its notes. The editor is held to the same rule: cd-editor.yml reads
+//    apps/editor/release-notes/<version>.md into its GitHub Release the same way.
 // 2. A package with *staged changes* must sit ahead of its latest npm-published version — you
 //    can't edit a package and forget the bump. Packages with no staged changes are skipped, so
 //    resting at the published version is fine, and repeated commits against one unreleased
 //    version (e.g. 1.1.0 while 1.0.0 is live) all pass without touching the version again.
+//    The editor mirrors this against its own release channel: staged apps/editor changes must
+//    sit ahead of the newest *published* GitHub Release (a v* tag only exists once a release
+//    is published — drafts carry none).
 //
 // Private packages are skipped by both (they never publish). Guard 2 needs the network: when the
-// registry is unreachable it warns and passes, so being offline never blocks a commit.
+// registry (or GitHub) is unreachable it warns and passes, so being offline never blocks a commit.
 // Run `pnpm check:release-notes`.
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -49,17 +53,19 @@ const mergeHeadShas = () => {
 }
 
 /**
- * Package dirs whose staged content differs from `base` — HEAD when omitted.
+ * Staged file paths differing from `base` — HEAD when omitted.
  * Empty when nothing is staged (e.g. in CI).
  */
-const stagedPackageDirs = (base) => {
-  const args = ['diff', '--cached', '--name-only', ...(base ? [base] : [])]
-  const output = execFileSync('git', args, {
+const stagedFiles = (base) =>
+  execFileSync('git', ['diff', '--cached', '--name-only', ...(base ? [base] : [])], {
     cwd: repoRoot,
     encoding: 'utf8',
-  })
+  }).split('\n')
+
+/** Package dirs whose staged content differs from `base`. */
+const stagedPackageDirs = (base) => {
   const dirs = new Set()
-  for (const file of output.split('\n')) {
+  for (const file of stagedFiles(base)) {
     // Truthiness, not `!== undefined`: the capture group is `[^/]+`, so a match
     // is always a non-empty string and a miss is always undefined.
     const [, dir] = /^packages\/([^/]+)\//.exec(file) ?? []
@@ -67,6 +73,9 @@ const stagedPackageDirs = (base) => {
   }
   return dirs
 }
+
+/** True when apps/editor content differs from `base` in the stage. */
+const editorIsStaged = (base) => stagedFiles(base).some((file) => file.startsWith('apps/editor/'))
 
 /**
  * Compares two semver core versions. Returns a positive number when `a` is newer, 0 when equal.
@@ -96,24 +105,57 @@ const latestPublishedVersion = async (name) => {
   }
 }
 
+/**
+ * The editor's latest released version — the newest published v* GitHub Release. Read from the
+ * tag refs: a release's tag is only created when it is published, so drafts never count.
+ * `null` when no release exists yet, `undefined` when GitHub was unreachable.
+ */
+const latestEditorRelease = async () => {
+  try {
+    const response = await fetch(
+      'https://api.github.com/repos/soroush-tech/core/git/matching-refs/tags/v',
+      { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
+    )
+    if (!response.ok) return undefined
+    const versions = (await response.json())
+      .map(({ ref }) => /^refs\/tags\/v(\d+\.\d+\.\d+)$/.exec(ref)?.[1])
+      .filter(Boolean)
+    if (versions.length === 0) return null
+    return versions.sort(compareVersions).at(-1)
+  } catch {
+    return undefined
+  }
+}
+
 const packages = publishablePackages()
 
 // ─── Guard 1: notes file exists for the current version ───────────────────────
 
-const missingNotes = packages.filter(
-  ({ dir, version }) => !existsSync(join(packagesDir, dir, 'release-notes', `${version}.md`))
-)
+// The editor releases through cd-editor.yml rather than npm, but its GitHub
+// Release reads the same kind of file — hold it to the same guard.
+const editor = JSON.parse(readFileSync(join(repoRoot, 'apps', 'editor', 'package.json'), 'utf8'))
+
+const missingNotes = packages
+  .map(({ dir, name, version }) => ({
+    name: `${name}@${version}`,
+    file: `packages/${dir}/release-notes/${version}.md`,
+  }))
+  .concat({
+    name: `${editor.name} v${editor.version}`,
+    file: `apps/editor/release-notes/${editor.version}.md`,
+  })
+  .filter(({ file }) => !existsSync(join(repoRoot, file)))
 
 if (missingNotes.length > 0) {
   console.error('Missing release notes for published version(s):')
-  for (const { dir, name, version } of missingNotes) {
-    console.error(`  - packages/${dir}/release-notes/${version}.md (${name}@${version})`)
+  for (const { name, file } of missingNotes) {
+    console.error(`  - ${file} (${name})`)
   }
   console.error('\nAdd the file(s) above (see the release-notes skill), then commit.')
   process.exit(1)
 }
 
-console.log('Release notes present for every publishable package version.')
+console.log('Release notes present for every publishable package version and the editor.')
 
 // ─── Guard 2: staged packages sit ahead of npm ────────────────────────────────
 
@@ -124,18 +166,20 @@ console.log('Release notes present for every publishable package version.')
 // this commit, and that one stays checked.
 const mergeHeads = mergeHeadShas()
 let staged = stagedPackageDirs()
+let editorStaged = editorIsStaged()
 if (mergeHeads.length > 0) {
   for (const parent of mergeHeads) {
     const vsParent = stagedPackageDirs(parent)
     staged = new Set([...staged].filter((dir) => vsParent.has(dir)))
   }
-  console.log('Merge in progress — checking only packages that match no parent.')
+  editorStaged = editorStaged && mergeHeads.every((parent) => editorIsStaged(parent))
+  console.log('Merge in progress — checking only changes that match no parent.')
 }
 
 const changed = packages.filter(({ dir }) => staged.has(dir))
 
-if (changed.length === 0) {
-  console.log('No staged package changes — skipping the published-version check.')
+if (changed.length === 0 && !editorStaged) {
+  console.log('No staged package or editor changes — skipping the published-version check.')
   process.exit(0)
 }
 
@@ -169,4 +213,25 @@ for (const { name, version, published } of results) {
   if (published === undefined) continue
   const live = published === null ? 'unpublished' : published
   console.log(`${name}: ${version} is ahead of npm (${live}).`)
+}
+
+// The editor's published versions live in GitHub Releases, not on npm — same
+// "did you bump?" rule, different registry.
+if (editorStaged) {
+  const published = await latestEditorRelease()
+  if (published === undefined) {
+    console.warn('Warning: could not reach GitHub for the editor — version check skipped.')
+  } else if (published !== null && compareVersions(editor.version, published) <= 0) {
+    console.error('\nStaged editor is not ahead of the version already released on GitHub:')
+    console.error(
+      `  - ${editor.name}: apps/editor/package.json is ${editor.version}, GitHub has v${published}`
+    )
+    console.error(
+      '\nBump the version and add its release-notes file (see the release-notes skill).'
+    )
+    process.exit(1)
+  } else {
+    const live = published === null ? 'unreleased' : `v${published}`
+    console.log(`${editor.name}: ${editor.version} is ahead of GitHub Releases (${live}).`)
+  }
 }
