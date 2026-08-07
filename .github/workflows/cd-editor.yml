@@ -126,10 +126,17 @@ jobs:
             fi
           fi
 
+          # A draft carries no tag, but a stray one can be left behind (made
+          # by hand, or by a published release that was later deleted).
+          # gh release create reuses an existing tag and ignores --target, so
+          # clear it — safe here, the published-release check above has passed.
+          gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag}" 2>/dev/null || true
+
           # Notes span from the last published editor release (plain v* tags
-          # are the editor's namespace; packages tag as @soroush.tech/…). First
-          # release: no start tag, GitHub picks the range itself.
-          prev="$(git tag --list 'v*' --sort=-v:refname | head -n 1)"
+          # are the editor's namespace; packages tag as @soroush.tech/…),
+          # never this run's own tag. First release: no start tag, GitHub
+          # picks the range itself.
+          prev="$(git tag --list 'v*' --sort=-v:refname | grep -vx "$tag" | head -n 1 || true)"
           notes_args=()
           if [ -n "$prev" ]; then notes_args+=(--notes-start-tag "$prev"); fi
 

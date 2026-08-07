@@ -160,7 +160,7 @@ describe('bootstrap', () => {
     expect(window.loadURL).toHaveBeenCalledWith('http://localhost:5173/')
     expect(window.loadFile).not.toHaveBeenCalled()
     // Dev runs the stock Electron binary, so the window carries the icon itself.
-    expect(String(window.options.icon)).toContain('icon.png')
+    expect(window.options.icon).toMatch(/[\\/]build[\\/]icon\.png$/)
 
     const [applyCsp] = onHeadersReceived.mock.calls[0] as [
       (details: { responseHeaders: undefined }, callback: (response: unknown) => void) => void,
