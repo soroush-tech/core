@@ -36,11 +36,11 @@ win:
     - target: nsis
       arch: x64
 
-# Draft, deliberately: publishing the release on GitHub is the release act —
-# that is the moment running apps start seeing the update (electron-updater
-# reads latest*.yml from the newest published release).
+# Not used to publish — CD builds with --publish never and assembles the draft
+# release itself (see cd-editor.yml). This block still matters: it is baked
+# into the packaged app as app-update.yml, telling electron-updater where to
+# read latest*.yml from (the newest published release).
 publish:
   provider: github
   owner: soroush-tech
   repo: core
-  releaseType: draft

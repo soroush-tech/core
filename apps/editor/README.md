@@ -15,7 +15,6 @@ Built on `@soroush.tech/design-system` and `@soroush.tech/markdown`.
 | `pnpm test:coverage` | the same with coverage — 100% is the bar                          |
 | `pnpm test:e2e`      | builds the app, then Playwright drives the real Electron          |
 | `pnpm dist`          | builds and packs the current platform's installer into `release/` |
-| `pnpm release`       | what CD runs: pack and upload to the draft GitHub Release         |
 
 ## How the editor moves through CI and CD
 
@@ -34,7 +33,7 @@ flowchart TD
 
     dispatch["cd-editor.yml — manual dispatch"] --> winbuild["windows-latest<br/>NSIS .exe + latest.yml"]
     dispatch --> macbuild["macos-latest<br/>universal .dmg + .zip + latest-mac.yml"]
-    winbuild --> draft["draft GitHub Release · v&lt;version&gt;"]
+    winbuild --> draft["release job<br/>one draft GitHub Release · v&lt;version&gt;<br/>title + generated notes"]
     macbuild --> draft
     draft -->|"published by hand"| update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only)"]
 ```

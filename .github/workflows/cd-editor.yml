@@ -1,11 +1,13 @@
 # ci:validates nothing
-# Packages the desktop editor and uploads a draft GitHub Release.
+# Packages the desktop editor and assembles one draft GitHub Release.
 name: CD · Editor
 
-# Manual only — a release is a decision, not a side effect of a merge. Both legs
-# publish into one draft release tagged v<version> (from apps/editor's
-# package.json); publishing that draft on GitHub is the release act, and the
-# moment running apps start seeing the update.
+# Manual only — a release is a decision, not a side effect of a merge. The two
+# build legs upload their installers as workflow artifacts; a final job
+# assembles them into a single draft release tagged v<version> (from
+# apps/editor's package.json) with a title and generated notes. Publishing that
+# draft on GitHub is the release act, and the moment running apps start seeing
+# the update.
 on:
   workflow_dispatch:
 
@@ -14,22 +16,17 @@ concurrency:
   cancel-in-progress: false # never abort an in-flight release build
 
 jobs:
-  release:
-    # Dispatch is manual, but only from main: any other ref would upload a
-    # draft release built from code CI has not validated as the release line.
+  build:
+    # Dispatch is manual, but only from main: any other ref would release code
+    # CI has not validated as the release line.
     if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
-      # One at a time: both legs write into the same draft release, and two
-      # creating it at once is two drafts.
-      max-parallel: 1
       matrix:
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     environment: cd-editor
     timeout-minutes: 30 # notarization waits on Apple
-    permissions:
-      contents: write # electron-builder uploads the draft GitHub Release
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
@@ -68,7 +65,73 @@ jobs:
       # Apple Developer account yet — see electron-builder.yml's `identity` /
       # `notarize` and the runbook's "when the Apple account exists" section
       # for what returns here with one.
-      - name: Build and publish draft release
+      - name: Build installers
+        run: pnpm --filter @soroush/editor dist
+
+      # Only what the release (and electron-updater) needs: the installers,
+      # their blockmaps, and the latest*.yml update manifests. The unpacked app
+      # directories stay behind.
+      - name: Upload installers
+        uses: actions/upload-artifact@v7
+        with:
+          name: editor-${{ runner.os }}
+          if-no-files-found: error
+          path: |
+            apps/editor/release/*.exe
+            apps/editor/release/*.dmg
+            apps/editor/release/*.zip
+            apps/editor/release/*.blockmap
+            apps/editor/release/latest*.yml
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # creates the draft GitHub Release
+    steps:
+      # fetch-tags, not a shallow clone: the previous v* tag anchors the
+      # generated release notes.
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-tags: true
+
+      - name: Download installers
+        uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      # One draft release for both platforms. Re-run safe: an existing draft
+      # for the tag is replaced; a published tag is never touched — that
+      # version has shipped, so bump the version instead.
+      - name: Create draft release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm --filter @soroush/editor release
+        run: |
+          version="$(node -p "require('./apps/editor/package.json').version")"
+          tag="v${version}"
+
+          if is_draft="$(gh release view "$tag" --json isDraft --jq .isDraft 2>/dev/null)"; then
+            if [ "$is_draft" = "true" ]; then
+              gh release delete "$tag" --yes
+            else
+              echo "::error::$tag is already published — bump apps/editor/package.json"
+              exit 1
+            fi
+          fi
+
+          # Notes span from the last published editor release (plain v* tags
+          # are the editor's namespace; packages tag as @soroush.tech/…). First
+          # release: no start tag, GitHub picks the range itself.
+          prev="$(git tag --list 'v*' --sort=-v:refname | head -n 1)"
+          notes_args=()
+          if [ -n "$prev" ]; then notes_args+=(--notes-start-tag "$prev"); fi
+
+          gh release create "$tag" dist/* \
+            --draft \
+            --target "$GITHUB_SHA" \
+            --title "Soroush Editor v${version}" \
+            --generate-notes "${notes_args[@]}"
