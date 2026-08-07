@@ -3,11 +3,11 @@
 # `cd-editor.yml` — Package and release the desktop editor
 
 Builds the editor's installers on both platforms and assembles them into **one
-draft GitHub Release** with a title and generated notes. Manual
+published GitHub Release** with a title and generated notes. Manual
 `workflow_dispatch` only — a release is a decision, not a side effect of a
-merge. The build job runs only when dispatched from `main`
-(`if: github.ref == 'refs/heads/main'`), so it always builds a line CI has
-already validated.
+merge, and **approving the dispatch is the release act**. The build job runs
+only when dispatched from `main` (`if: github.ref == 'refs/heads/main'`), so
+it always builds a line CI has already validated.
 
 ```yaml
 on:
@@ -31,9 +31,9 @@ flowchart TD
         mac["macos-latest<br/>universal .dmg + .zip + latest-mac.yml"]
     end
 
-    win -->|"upload-artifact"| rel["release (ubuntu)<br/>one draft release · v&lt;version&gt;<br/>title + generated notes + all assets"]
+    win -->|"upload-artifact"| rel["release (ubuntu)<br/>one release · v&lt;version&gt;<br/>title + generated notes + all assets<br/>published once every asset is attached"]
     mac -->|"upload-artifact"| rel
-    rel -->|"published by hand — the release act"| users["installed apps see it on next start<br/>(electron-updater, packaged builds only)"]
+    rel --> users["installed apps see it on next start<br/>(electron-updater, packaged builds only)"]
 ```
 
 ---
@@ -78,13 +78,17 @@ environment currently holds no values — it exists as the approval gate.
   namespace is the editor's; packages tag as `@soroush.tech/name@x.y.z`.
 - **Title** `Soroush Editor v<version>`.
 - **Notes** via `--generate-notes`, spanning from the last published `v*` tag
-  (`--notes-start-tag`; omitted on the first release). Edit the draft body
-  before publishing if the auto-generated changelog needs shaping.
+  (`--notes-start-tag`; omitted on the first release). Edit the release body
+  afterwards if the auto-generated changelog needs shaping.
 - **Assets**: both legs' installers, blockmaps and `latest*.yml`.
 
-Re-run safe: an existing **draft** for the tag is deleted and recreated; a
-**published** tag fails the job — that version has shipped, bump the version
-instead.
+The release is created as a draft and flipped to published only once every
+asset is attached — electron-updater reads the newest published release, and
+it must never see one whose `latest*.yml` or installers are still uploading.
+
+Re-run safe: a leftover **draft** (from a run that failed before publishing)
+is deleted and recreated; a **published** tag fails the job — that version has
+shipped, bump the version instead.
 
 ### When the Apple Developer account exists
 
@@ -103,13 +107,14 @@ Restore signing in two places — nothing else moves:
 ## Releasing
 
 1. Bump `apps/editor/package.json` `version` on a branch, merge to `main`.
-2. Dispatch this workflow; approve the `cd-editor` environment gate.
-3. Both legs build in parallel; the `release` job assembles one draft release
-   tagged `v<version>` with title, generated notes and all assets.
-4. Review the draft on GitHub — edit the notes if needed — and publish it.
-   **Publishing is the release act**: installed apps check the newest
-   published release's `latest*.yml` on startup (`src/main/updater.ts`,
-   packaged builds only) and update in the background.
+2. Dispatch this workflow; approve the `cd-editor` environment gate. **That
+   approval is the release act** — nothing after it waits on a human.
+3. Both legs build in parallel; the `release` job assembles one release tagged
+   `v<version>` with title, generated notes and all assets, and publishes it.
+   From that moment installed apps check its `latest*.yml` on startup
+   (`src/main/updater.ts`, packaged builds only) and update in the background.
+4. Edit the published notes on GitHub afterwards if they need shaping — the
+   body is not what updaters read.
 
 ---
 

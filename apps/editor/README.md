@@ -20,8 +20,8 @@ Built on `@soroush.tech/design-system` and `@soroush.tech/markdown`.
 
 CI validates every change twice — the jsdom suites and a Playwright run
 against the real, built Electron app. Releasing is a separate, deliberate act:
-a manual dispatch packs both platforms into one draft release, and publishing
-that draft is what puts the update in front of installed apps.
+approving a manual dispatch packs both platforms into one published release,
+which is what puts the update in front of installed apps.
 
 ```mermaid
 flowchart TD
@@ -33,9 +33,9 @@ flowchart TD
 
     dispatch["cd-editor.yml — manual dispatch"] --> winbuild["windows-latest<br/>NSIS .exe + latest.yml"]
     dispatch --> macbuild["macos-latest<br/>universal .dmg + .zip + latest-mac.yml"]
-    winbuild --> draft["release job<br/>one draft GitHub Release · v&lt;version&gt;<br/>title + generated notes"]
-    macbuild --> draft
-    draft -->|"published by hand"| update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only)"]
+    winbuild --> release["release job<br/>one published GitHub Release · v&lt;version&gt;<br/>title + generated notes"]
+    macbuild --> release
+    release --> update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only)"]
 ```
 
 The deep dives live with the workflows:

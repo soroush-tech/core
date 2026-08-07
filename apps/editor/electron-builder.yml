@@ -36,7 +36,7 @@ win:
     - target: nsis
       arch: x64
 
-# Not used to publish — CD builds with --publish never and assembles the draft
+# Not used to publish — CD builds with --publish never and assembles the
 # release itself (see cd-editor.yml). This block still matters: it is baked
 # into the packaged app as app-update.yml, telling electron-updater where to
 # read latest*.yml from (the newest published release).

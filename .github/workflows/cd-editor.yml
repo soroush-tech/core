@@ -1,13 +1,13 @@
 # ci:validates nothing
-# Packages the desktop editor and assembles one draft GitHub Release.
+# Packages the desktop editor and publishes one GitHub Release.
 name: CD · Editor
 
-# Manual only — a release is a decision, not a side effect of a merge. The two
-# build legs upload their installers as workflow artifacts; a final job
-# assembles them into a single draft release tagged v<version> (from
-# apps/editor's package.json) with a title and generated notes. Publishing that
-# draft on GitHub is the release act, and the moment running apps start seeing
-# the update.
+# Manual only — a release is a decision, not a side effect of a merge, and
+# approving the dispatch is the release act. The two build legs upload their
+# installers as workflow artifacts; a final job assembles them into a single
+# release tagged v<version> (from apps/editor's package.json) with a title and
+# generated notes, and publishes it — the moment running apps start seeing the
+# update.
 on:
   workflow_dispatch:
 
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write # creates the draft GitHub Release
+      contents: write # creates and publishes the GitHub Release
     steps:
       # fetch-tags, not a shallow clone: the previous v* tag anchors the
       # generated release notes.
@@ -104,10 +104,13 @@ jobs:
           path: dist
           merge-multiple: true
 
-      # One draft release for both platforms. Re-run safe: an existing draft
-      # for the tag is replaced; a published tag is never touched — that
-      # version has shipped, so bump the version instead.
-      - name: Create draft release
+      # One release for both platforms. Created as a draft and flipped to
+      # published only once every asset is attached — electron-updater reads
+      # the newest published release, and it must never see one whose
+      # latest*.yml or installers are still uploading. Re-run safe: a leftover
+      # draft from a failed run is replaced; a published tag is never touched —
+      # that version has shipped, so bump the version instead.
+      - name: Create and publish release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -135,3 +138,5 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "Soroush Editor v${version}" \
             --generate-notes "${notes_args[@]}"
+
+          gh release edit "$tag" --draft=false
