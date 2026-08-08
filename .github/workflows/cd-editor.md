@@ -3,7 +3,8 @@
 # `cd-editor.yml` — Package and release the desktop editor
 
 Builds the editor's installers on both platforms and assembles them into **one
-published GitHub Release** with a title and generated notes. Manual
+published GitHub Release** with a title and the notes from
+`apps/editor/release-notes/<version>.md`. Manual
 `workflow_dispatch` only — a release is a decision, not a side effect of a
 merge, and **approving the dispatch is the release act**. The build job runs
 only when dispatched from `main` (`if: github.ref == 'refs/heads/main'`), so
@@ -31,9 +32,9 @@ flowchart TD
         mac["macos-latest<br/>universal .dmg + .zip + latest-mac.yml"]
     end
 
-    win -->|"upload-artifact"| rel["release (ubuntu)<br/>one release · v&lt;version&gt;<br/>title + generated notes + all assets<br/>published once every asset is attached"]
+    win -->|"upload-artifact"| rel["release (ubuntu)<br/>one release · v&lt;version&gt;<br/>title + notes from release-notes/&lt;version&gt;.md + all assets<br/>published once every asset is attached"]
     mac -->|"upload-artifact"| rel
-    rel --> users["installed apps see it on next start<br/>(electron-updater, packaged builds only)"]
+    rel --> users["installed apps see it on next start<br/>(electron-updater, packaged builds only;<br/>Windows-only while macOS is unsigned)"]
 ```
 
 ---
@@ -117,7 +118,7 @@ Restore signing in two places — nothing else moves:
    `v<version>` with title, the notes file's contents and all assets, and
    publishes it. From that moment installed apps check its `latest*.yml` on
    startup (`src/main/updater.ts`, packaged builds only) and update in the
-   background.
+   background — Windows only while the macOS build is unsigned (see above).
 
 ---
 

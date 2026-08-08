@@ -37,7 +37,7 @@ flowchart TD
     dispatch --> macbuild["macos-latest<br/>universal .dmg + .zip + latest-mac.yml"]
     winbuild --> release["release job<br/>one published GitHub Release · v&lt;version&gt;<br/>title + generated notes"]
     macbuild --> release
-    release --> update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only)"]
+    release --> update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only;<br/>Windows-only while macOS is unsigned)"]
 ```
 
 The deep dives live with the workflows:

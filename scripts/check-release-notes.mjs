@@ -106,19 +106,21 @@ const latestPublishedVersion = async (name) => {
 }
 
 /**
- * The editor's latest released version — the newest published v* GitHub Release. Read from the
- * tag refs: a release's tag is only created when it is published, so drafts never count.
- * `null` when no release exists yet, `undefined` when GitHub was unreachable.
+ * The editor's latest released version — the newest *published* v* GitHub Release, asked of the
+ * Releases API rather than the tag refs: a stray tag with no release, or one sitting under a
+ * draft, is not a published baseline. `null` when no release exists yet, `undefined` when
+ * GitHub was unreachable.
  */
 const latestEditorRelease = async () => {
   try {
     const response = await fetch(
-      'https://api.github.com/repos/soroush-tech/core/git/matching-refs/tags/v',
+      'https://api.github.com/repos/soroush-tech/core/releases?per_page=100',
       { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
     )
     if (!response.ok) return undefined
     const versions = (await response.json())
-      .map(({ ref }) => /^refs\/tags\/v(\d+\.\d+\.\d+)$/.exec(ref)?.[1])
+      .filter(({ draft }) => draft === false)
+      .map(({ tag_name: tagName }) => /^v(\d+\.\d+\.\d+)$/.exec(tagName)?.[1])
       .filter(Boolean)
     if (versions.length === 0) return null
     return versions.sort(compareVersions).at(-1)
