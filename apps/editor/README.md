@@ -15,14 +15,15 @@ Built on `@soroush.tech/design-system` and `@soroush.tech/markdown`.
 | `pnpm test:coverage` | the same with coverage — 100% is the bar                          |
 | `pnpm test:e2e`      | builds the app, then Playwright drives the real Electron          |
 | `pnpm dist`          | builds and packs the current platform's installer into `release/` |
-| `pnpm release`       | what CD runs: pack and upload to the draft GitHub Release         |
 
 ## How the editor moves through CI and CD
 
 CI validates every change twice — the jsdom suites and a Playwright run
 against the real, built Electron app. Releasing is a separate, deliberate act:
-a manual dispatch packs both platforms into one draft release, and publishing
-that draft is what puts the update in front of installed apps.
+approving a manual dispatch packs both platforms into one published release,
+which is what puts the update in front of installed apps. Release notes are
+hand-written like the packages' — `release-notes/<version>.md`, committed with
+the version bump (`pnpm check:release-notes` enforces it).
 
 ```mermaid
 flowchart TD
@@ -34,9 +35,9 @@ flowchart TD
 
     dispatch["cd-editor.yml — manual dispatch"] --> winbuild["windows-latest<br/>NSIS .exe + latest.yml"]
     dispatch --> macbuild["macos-latest<br/>universal .dmg + .zip + latest-mac.yml"]
-    winbuild --> draft["draft GitHub Release · v&lt;version&gt;"]
-    macbuild --> draft
-    draft -->|"published by hand"| update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only)"]
+    winbuild --> release["release job<br/>one published GitHub Release · v&lt;version&gt;<br/>title + generated notes"]
+    macbuild --> release
+    release --> update["installed apps auto-update on next start<br/>(src/main/updater.ts, packaged builds only;<br/>Windows-only while macOS is unsigned)"]
 ```
 
 The deep dives live with the workflows:

@@ -163,20 +163,13 @@ describe('Card', () => {
   })
 
   describe('variant', () => {
-    it('renders paper variant without error', () => {
-      renderWithTheme(<Card variant="paper" data-testid="card" />)
-      expect(screen.getByTestId('card')).toBeInTheDocument()
-    })
-
-    it('renders bracketBox variant without error', () => {
-      renderWithTheme(<Card variant="bracketBox" data-testid="card" />)
-      expect(screen.getByTestId('card')).toBeInTheDocument()
-    })
-
-    it('renders interactive variant without error', () => {
-      renderWithTheme(<Card variant="interactive" data-testid="card" />)
-      expect(screen.getByTestId('card')).toBeInTheDocument()
-    })
+    it.each(['paper', 'bracketBox', 'interactive'] as const)(
+      'renders %s variant without error',
+      (variant) => {
+        renderWithTheme(<Card variant={variant} data-testid="card" />)
+        expect(screen.getByTestId('card')).toBeInTheDocument()
+      }
+    )
 
     it('defaults to paper variant', () => {
       renderWithTheme(<Card data-testid="card" />)

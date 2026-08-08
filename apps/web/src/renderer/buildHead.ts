@@ -91,9 +91,11 @@ export const collectHeadTags = (pageContext: PageContext): HeadTag[] => {
 /** Serializes a managed tag to an HTML string with the `data-mh` marker (server-side). */
 const serialize = (tag: HeadTag): string => {
   if (tag.el === 'title') return `<title ${MARK}>${escape(tag.text)}</title>`
-  if (tag.el === 'script')
+  if (tag.el === 'script') {
     // < guards against a "</script>" sequence breaking out of the tag.
-    return `<script type="application/ld+json" ${MARK}>${JSON.stringify(tag.json).replaceAll('<', String.raw`\u003c`)}</script>`
+    const json = JSON.stringify(tag.json).replaceAll('<', String.raw`\u003c`)
+    return `<script type="application/ld+json" ${MARK}>${json}</script>`
+  }
   const attrs = Object.entries(tag.attrs)
     .map(([key, value]) => `${key}="${escape(value)}"`)
     .join(' ')

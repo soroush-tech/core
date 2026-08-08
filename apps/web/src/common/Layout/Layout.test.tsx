@@ -17,19 +17,9 @@ vi.mock('src/common/CookieNotice', () => ({
 import { Layout } from './Layout'
 
 describe('Layout', () => {
-  it('renders the default Header', () => {
+  it.each(['header', 'footer', 'cookie-notice'])('renders the default %s', (testId) => {
     renderWithTheme(<Layout>content</Layout>)
-    expect(screen.getByTestId('header')).toBeInTheDocument()
-  })
-
-  it('renders the default Footer', () => {
-    renderWithTheme(<Layout>content</Layout>)
-    expect(screen.getByTestId('footer')).toBeInTheDocument()
-  })
-
-  it('renders the CookieNotice', () => {
-    renderWithTheme(<Layout>content</Layout>)
-    expect(screen.getByTestId('cookie-notice')).toBeInTheDocument()
+    expect(screen.getByTestId(testId)).toBeInTheDocument()
   })
 
   it('renders children inside Blueprint', () => {

@@ -22,6 +22,10 @@ function createWindow(devRendererUrl: string | undefined): void {
   const window = new BrowserWindow({
     width: 1280,
     height: 800,
+    // Dev only: the packaged app carries the icon in its executable/bundle
+    // (electron-builder, from build/icon.png), but dev runs the stock Electron
+    // binary, which would otherwise show the default Electron icon.
+    ...(devRendererUrl ? { icon: join(import.meta.dirname, '../../build/icon.png') } : {}),
     webPreferences: {
       // Sandboxed preloads must be CJS — see the preload output config in electron.vite.config.ts.
       preload: join(import.meta.dirname, '../preload/index.cjs'),

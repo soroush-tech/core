@@ -1,12 +1,17 @@
 import { test, expect } from 'src/test/e2e/fixtures'
 import type { Page } from '@playwright/test'
 
-// Navigate to the contact page. The embedded Turnstile widget keeps the network
-// busy, so we can't wait for `networkidle`; Playwright's web-first assertions below
-// auto-wait for hydration before interacting.
+// Navigate to the contact page and wait for hydration — the blur-validation
+// handlers the tests below drive only exist once React has attached. The
+// embedded Turnstile widget keeps the network busy, so `networkidle` never
+// settles; instead observe hydration itself: `hydrateRoot` marks the container
+// with an internal `__reactContainer*` key the moment it attaches.
 const gotoContact = async (page: Page) => {
   await page.goto('/contact')
-  await page.waitForTimeout(1000)
+  await page.waitForFunction(() => {
+    const root = document.getElementById('root')
+    return root !== null && Object.keys(root).some((key) => key.startsWith('__reactContainer'))
+  })
 }
 
 // Focus then blur an empty field to trigger blur-mode validation for it.

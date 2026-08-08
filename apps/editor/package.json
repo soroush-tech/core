@@ -2,7 +2,7 @@
   "name": "@soroush/editor",
   "description": "Claude-integrated desktop markdown editor",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "Custom -> SEE LICENSE file",
   "author": {
@@ -20,8 +20,7 @@
     "test:e2e": "electron-vite build && playwright test",
     "test:coverage:e2e": "cross-env E2E_COVERAGE=true pnpm test:e2e",
     "coverage:check:e2e": "node ../web/scripts/coverage-check.ts --file=coverage/e2e/lcov.info",
-    "dist": "electron-vite build && electron-builder --publish never",
-    "release": "electron-vite build && electron-builder --publish always"
+    "dist": "electron-vite build && electron-builder --publish never"
   },
   "devDependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.3.0",

@@ -17,7 +17,7 @@ const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.
   class FakeBrowserWindow {
     static created: FakeBrowserWindow[] = []
     static getAllWindows = vi.fn((): unknown[] => [])
-    options: { webPreferences: Record<string, unknown> }
+    options: { icon?: string; webPreferences: Record<string, unknown> }
     loadURL = vi.fn()
     loadFile = vi.fn()
     isDestroyed = vi.fn(() => false)
@@ -27,7 +27,7 @@ const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.
       this.listeners.set(event, handler)
     })
 
-    constructor(options: { webPreferences: Record<string, unknown> }) {
+    constructor(options: { icon?: string; webPreferences: Record<string, unknown> }) {
       this.options = options
       FakeBrowserWindow.created.push(this)
     }
@@ -149,6 +149,8 @@ describe('bootstrap', () => {
     expect(String(window.options.webPreferences.preload)).toContain('preload')
     expect(window.loadFile).toHaveBeenCalledWith(expect.stringContaining('index.html'))
     expect(window.loadURL).not.toHaveBeenCalled()
+    // Packaged builds get their icon from the executable/bundle, not the window.
+    expect(window.options.icon).toBeUndefined()
   })
 
   it('loads the dev server URL and relaxes the CSP in dev', async () => {
@@ -157,6 +159,8 @@ describe('bootstrap', () => {
     const [window] = FakeBrowserWindow.created
     expect(window.loadURL).toHaveBeenCalledWith('http://localhost:5173/')
     expect(window.loadFile).not.toHaveBeenCalled()
+    // Dev runs the stock Electron binary, so the window carries the icon itself.
+    expect(window.options.icon).toMatch(/[\\/]build[\\/]icon\.png$/)
 
     const [applyCsp] = onHeadersReceived.mock.calls[0] as [
       (details: { responseHeaders: undefined }, callback: (response: unknown) => void) => void,
