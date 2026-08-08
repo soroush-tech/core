@@ -41,12 +41,14 @@ const ARIA_HIDDEN_FORBIDDEN_TAGS = new Set([
   'TRACK',
 ])
 
-export function ariaHidden(element: Element, hide: boolean): void {
-  if (hide) {
-    element.setAttribute('aria-hidden', 'true')
-  } else {
-    element.removeAttribute('aria-hidden')
-  }
+/** Hides an element from assistive tech. */
+export function hideFromAria(element: Element): void {
+  element.setAttribute('aria-hidden', 'true')
+}
+
+/** Reveals an element to assistive tech again. */
+export function exposeToAria(element: Element): void {
+  element.removeAttribute('aria-hidden')
 }
 
 function isAriaHiddenForbidden(element: Element): boolean {
@@ -61,12 +63,12 @@ function ariaHiddenSiblings(
   mountElement: Element,
   currentElement: Element,
   hiddenSiblings: Element[],
-  hide: boolean
+  apply: (element: Element) => void
 ): void {
   const exclude = new Set([mountElement, currentElement, ...hiddenSiblings])
   Array.from(container.children).forEach((element) => {
     if (!exclude.has(element) && !isAriaHiddenForbidden(element)) {
-      ariaHidden(element, hide)
+      apply(element)
     }
   })
 }
@@ -142,13 +144,13 @@ export class ModalManager {
     const modalIndex = this.modals.length
     this.modals.push(modal)
 
-    ariaHidden(modal.modalRef, false)
+    exposeToAria(modal.modalRef)
 
     const hiddenSiblings = getHiddenSiblings(container)
     // A non-modal popover (e.g. a select's listbox) must not hide the page — its
     // trigger stays focused and controls the listbox via `aria-activedescendant`.
     if (!disableAriaHidden) {
-      ariaHiddenSiblings(container, modal.mount, modal.modalRef, hiddenSiblings, true)
+      ariaHiddenSiblings(container, modal.mount, modal.modalRef, hiddenSiblings, hideFromAria)
     }
 
     const containerState = this.containers.find((item) => item.container === container)
@@ -193,14 +195,14 @@ export class ModalManager {
       if (containerState.restore) {
         containerState.restore()
       }
-      ariaHidden(modal.modalRef, ariaHiddenState)
+      ;(ariaHiddenState ? hideFromAria : exposeToAria)(modal.modalRef)
       if (containerState.ariaHiddenApplied) {
         ariaHiddenSiblings(
           containerState.container,
           modal.mount,
           modal.modalRef,
           containerState.hiddenSiblings,
-          false
+          exposeToAria
         )
       }
       this.containers.splice(this.containers.indexOf(containerState), 1)
@@ -209,8 +211,8 @@ export class ModalManager {
       // reveal the next modal down the stack to assistive tech. The modal roots are
       // portaled directly into the container, so revealing the sibling below is enough.
       const nextTop = containerState.modals.at(-1)!
-      ariaHidden(modal.modalRef, ariaHiddenState)
-      ariaHidden(nextTop.modalRef, false)
+      ;(ariaHiddenState ? hideFromAria : exposeToAria)(modal.modalRef)
+      exposeToAria(nextTop.modalRef)
     }
 
     return modalIndex

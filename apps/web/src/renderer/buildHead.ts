@@ -36,7 +36,7 @@ const isMetaTag = (value: unknown): value is MetaTag => {
 // 'unsafe-inline' styles are required by Emotion's critical-CSS extraction;
 // *.githubusercontent.com covers avatars and gist-proxied images.
 // challenges.cloudflare.com loads the Turnstile script and renders its challenge
-// in an iframe (frame-src — otherwise default-src 'self' would block it).
+// in an iframe (frame-src â€” otherwise default-src 'self' would block it).
 const CSP = [
   "default-src 'self'",
   "script-src 'self' https://challenges.cloudflare.com",
@@ -57,7 +57,7 @@ const metaAttrs = (tag: MetaTag): Record<string, string> =>
 /**
  * The managed `<head>` tags for a page: the mechanical/required tags (title, canonical, og:url,
  * referrer, robots, og:site_name) plus the page-owned tags from `+data.ts` (`HeadMeta.meta` and
- * `HeadMeta.jsonLd`). CSP is excluded — it's a parse-time, server-only concern. This single source
+ * `HeadMeta.jsonLd`). CSP is excluded â€” it's a parse-time, server-only concern. This single source
  * of truth feeds both `buildHead` (server HTML) and `applyHead` (client DOM on navigation).
  */
 export const collectHeadTags = (pageContext: PageContext): HeadTag[] => {
@@ -91,9 +91,11 @@ export const collectHeadTags = (pageContext: PageContext): HeadTag[] => {
 /** Serializes a managed tag to an HTML string with the `data-mh` marker (server-side). */
 const serialize = (tag: HeadTag): string => {
   if (tag.el === 'title') return `<title ${MARK}>${escape(tag.text)}</title>`
-  if (tag.el === 'script')
+  if (tag.el === 'script') {
     // < guards against a "</script>" sequence breaking out of the tag.
-    return `<script type="application/ld+json" ${MARK}>${JSON.stringify(tag.json).replaceAll('<', String.raw`\u003c`)}</script>`
+    const json = JSON.stringify(tag.json).replaceAll('<', String.raw`\u003c`)
+    return `<script type="application/ld+json" ${MARK}>${json}</script>`
+  }
   const attrs = Object.entries(tag.attrs)
     .map(([key, value]) => `${key}="${escape(value)}"`)
     .join(' ')

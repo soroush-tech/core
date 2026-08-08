@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { ModalManager, ariaHidden, type ManagedModal } from './ModalManager'
+import { ModalManager, hideFromAria, exposeToAria, type ManagedModal } from './ModalManager'
 
 let container: HTMLElement
 
@@ -23,17 +23,17 @@ const makeModal = (parent: HTMLElement = container): ManagedModal => {
   return { mount, modalRef }
 }
 
-describe('ariaHidden', () => {
-  it('sets aria-hidden when hiding', () => {
+describe('hideFromAria / exposeToAria', () => {
+  it('hideFromAria sets aria-hidden', () => {
     const el = document.createElement('div')
-    ariaHidden(el, true)
+    hideFromAria(el)
     expect(el.getAttribute('aria-hidden')).toBe('true')
   })
 
-  it('removes aria-hidden when revealing', () => {
+  it('exposeToAria removes aria-hidden', () => {
     const el = document.createElement('div')
     el.setAttribute('aria-hidden', 'true')
-    ariaHidden(el, false)
+    exposeToAria(el)
     expect(el.hasAttribute('aria-hidden')).toBe(false)
   })
 })
@@ -167,6 +167,14 @@ describe('ModalManager — aria-hidden siblings', () => {
     expect(modal.modalRef.getAttribute('aria-hidden')).toBe('true')
   })
 
+  it('leaves the modal root visible on removal when aria-hidden is declined', () => {
+    const manager = new ModalManager()
+    const modal = makeModal()
+    manager.add(modal, container)
+    manager.remove(modal, false)
+    expect(modal.modalRef.hasAttribute('aria-hidden')).toBe(false)
+  })
+
   it('re-hides the removed modal and reveals the next when a modal remains', () => {
     const manager = new ModalManager()
     const lower = makeModal()
@@ -178,6 +186,18 @@ describe('ModalManager — aria-hidden siblings', () => {
     // The removed modal is hidden (it may linger via shouldKeepMounted)…
     expect(upper.modalRef.getAttribute('aria-hidden')).toBe('true')
     // …and the modal below is revealed to assistive tech.
+    expect(lower.modalRef.hasAttribute('aria-hidden')).toBe(false)
+  })
+
+  it('leaves the removed modal visible when aria-hidden is declined and a modal remains', () => {
+    const manager = new ModalManager()
+    const lower = makeModal()
+    const upper = makeModal()
+    manager.add(lower, container)
+    manager.add(upper, container)
+
+    manager.remove(upper, false)
+    expect(upper.modalRef.hasAttribute('aria-hidden')).toBe(false)
     expect(lower.modalRef.hasAttribute('aria-hidden')).toBe(false)
   })
 })

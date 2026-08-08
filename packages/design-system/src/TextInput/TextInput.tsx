@@ -370,6 +370,17 @@ export function TextInput({
     'aria-describedby': inputProps?.['aria-describedby'] ?? fc['aria-describedby'],
   }
 
+  let inputElement = (
+    <StyledInput inputComponent={resolvedInputComponent} inputSize={inputSize} {...inputElProps} />
+  )
+  if (isTextarea) {
+    inputElement = isAutoResize ? (
+      <StyledAutoResizeTextarea {...inputElProps} minRows={minRows ?? rows} maxRows={maxRows} />
+    ) : (
+      <StyledTextarea {...inputElProps} />
+    )
+  }
+
   return (
     <TextInputRoot
       as={components?.Root}
@@ -384,17 +395,7 @@ export function TextInput({
       data-testid={dataTestid}
       {...spaceProps}
     >
-      {isTextarea && isAutoResize ? (
-        <StyledAutoResizeTextarea {...inputElProps} minRows={minRows ?? rows} maxRows={maxRows} />
-      ) : isTextarea ? (
-        <StyledTextarea {...inputElProps} />
-      ) : (
-        <StyledInput
-          inputComponent={resolvedInputComponent}
-          inputSize={inputSize}
-          {...inputElProps}
-        />
-      )}
+      {inputElement}
     </TextInputRoot>
   )
 }
