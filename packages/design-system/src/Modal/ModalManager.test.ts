@@ -167,10 +167,13 @@ describe('ModalManager — aria-hidden siblings', () => {
     expect(modal.modalRef.getAttribute('aria-hidden')).toBe('true')
   })
 
-  it('leaves the modal root visible on removal when aria-hidden is declined', () => {
+  it('exposes the modal root on removal when aria-hidden is declined', () => {
     const manager = new ModalManager()
     const modal = makeModal()
     manager.add(modal, container)
+    // Seed the hidden state so the assertion proves removal exposed the root
+    // rather than passing vacuously on a never-hidden element.
+    hideFromAria(modal.modalRef)
     manager.remove(modal, false)
     expect(modal.modalRef.hasAttribute('aria-hidden')).toBe(false)
   })
@@ -189,13 +192,17 @@ describe('ModalManager — aria-hidden siblings', () => {
     expect(lower.modalRef.hasAttribute('aria-hidden')).toBe(false)
   })
 
-  it('leaves the removed modal visible when aria-hidden is declined and a modal remains', () => {
+  it('exposes the removed modal when aria-hidden is declined and a modal remains', () => {
     const manager = new ModalManager()
     const lower = makeModal()
     const upper = makeModal()
     manager.add(lower, container)
     manager.add(upper, container)
 
+    // Seed both hidden so the assertions prove removal exposed each root
+    // rather than passing vacuously on never-hidden elements.
+    hideFromAria(lower.modalRef)
+    hideFromAria(upper.modalRef)
     manager.remove(upper, false)
     expect(upper.modalRef.hasAttribute('aria-hidden')).toBe(false)
     expect(lower.modalRef.hasAttribute('aria-hidden')).toBe(false)
