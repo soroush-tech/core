@@ -37,27 +37,21 @@ jobs:
           fetch-depth: 0 # full history for Codecov base detection
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
+      # After the install rather than before it: nothing writes this path during install,
+      # and the restore only has to precede the browser-install and save steps below.
       - name: Restore cache - Playwright binaries
         uses: actions/cache/restore@v5
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
 
       # Only Chromium is needed here — the unit-browser and storybook tiers run headless Chromium.
       - name: Install Playwright browsers
@@ -186,27 +180,21 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
+      # As in the `web` job: restoring after the install is equivalent, and it leaves the
+      # shared setup in one piece.
       - name: Restore cache - Playwright binaries
         uses: actions/cache/restore@v5
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
 
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'

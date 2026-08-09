@@ -33,29 +33,22 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
       # Electron's postinstall downloads its binary to ~/.cache/electron, outside the store
       # setup-node caches. Both jobs install, so both want it. Keyed on the manifest, so an
-      # upgrade fetches and nothing else does.
+      # upgrade fetches and nothing else does. It sits after the install because the install
+      # runs --ignore-scripts: the binary is fetched by the explicit rebuild step below.
       - name: Restore cache - Electron binary
         uses: actions/cache@v5
         with:
           path: ~/.cache/electron
           key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
 
       # The shared install command runs --ignore-scripts, which also skips
       # Electron's postinstall — the binary download. Rebuild runs just that one
@@ -104,26 +97,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
       - name: Restore cache - Electron binary
         uses: actions/cache@v5
         with:
           path: ~/.cache/electron
           key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
 
       # Same as the unit job: the install skipped Electron's postinstall, so run
       # just that one script — this tier launches the real binary. Same fixed

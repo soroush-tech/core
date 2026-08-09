@@ -23,6 +23,12 @@ raw `push`; package publishing (`cd-packages`) and the editor release (`cd-edito
 | [`chromatic.yml`](./chromatic.yml)             | Chromatic                 | `push` to `main` (paths) + `workflow_dispatch`               |
 | [`label-area.yml`](./label-area.yml)           | Label Affected Area       | `issues` `opened`                                            |
 
+Everything shared by the jobs that install — pnpm, Node, the install itself — is the composite
+action [`.github/actions/setup`](../actions/setup/action.yml), called by every one of them.
+**A new job starts from a checkout and a call to it**, so bumping the `pnpm/action-setup` pin
+or changing the store cache is an edit to one file: see
+[the setup action](./ci.md#the-setup-action).
+
 **Per-workflow deep dives** (every step + caching):
 [`ci.md`](./ci.md) · [`ci-packages.md`](./ci-packages.md) · [`ci-worker.md`](./ci-worker.md) · [`ci-app.md`](./ci-app.md) · [`ci-web.md`](./ci-web.md) · [`ci-editor.md`](./ci-editor.md) · [`cd-web.md`](./cd-web.md) · [`cd-worker-api.md`](./cd-worker-api.md) · [`cd-worker-bench.md`](./cd-worker-bench.md) · [`cd-packages.md`](./cd-packages.md) · [`cd-editor.md`](./cd-editor.md) · [`chromatic.md`](./chromatic.md) · [`label-area.md`](./label-area.md)
 

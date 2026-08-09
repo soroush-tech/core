@@ -58,17 +58,17 @@ and a one-line change to how the editor runs its tests re-runs the editor. See
 `runs-on: ubuntu-latest` · `timeout-minutes: 15`. Produces every output the other
 jobs consume via `needs.prepare.outputs.*`.
 
-| #   | Step                          | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                                                                                      |
-| --- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout Repository           | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                                                                                 |
-| 2   | Read Node.js version          | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                                                                                    |
-| 3   | Detect package manager        | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile --ignore-scripts` — no lifecycle script runs at install anywhere in CI), `runner`. Fails if none found.                                                                                                                                                                                         |
-| 4   | Read Playwright version       | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                                                                                  |
-| 5   | Discover workspace entities   | `node scripts/assemble-changes.mjs filters`                                                                            | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), workflow file (`wf__<name>`), and **one per root file** (`root__lock`, `root__workspace`, `root__package`, `root__nvmrc`, `root__tsconfig`) — a whitelist, so root docs/tooling dotfiles trigger nothing.                                         |
-| 6   | Detect changed entities       | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                                                                                      |
-| 7   | Copy base manifest + lockfile | `git show "$BASE_SHA:…"` into `$RUNNER_TEMP/base`, fetching one commit deep first if the shallow clone lacks it        | Hands the next step the two files it compares against. Every command may fail without failing the job — a missing or empty copy reads as "cannot be compared", which validates everything.                                                                                                                                                                                        |
-| 8   | Assemble `changes.json`       | `node scripts/assemble-changes.mjs assemble`                                                                           | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `editor` / `has_packages` / `changed_packages` / `has_workers` / `changed_workers`. Root files are attributed first — see [What a root change means](#what-a-root-change-means). A whole-workspace root file, or a change to `ci.yml` itself, means every job runs. |
-| 9   | Upload `changes.json`         | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                                                                                        |
+| #   | Step                          | Run / Action                                                                                                           | What it does                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| --- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Checkout Repository           | `actions/checkout@v5` (`persist-credentials: false`)                                                                   | Clone the repo without leaving the token on disk.                                                                                                                                                                                                                                                                                                                                                                                   |
+| 2   | Read Node.js version          | `cat .nvmrc` → `$GITHUB_OUTPUT`                                                                                        | Single source of truth for the Node version; never hard-coded.                                                                                                                                                                                                                                                                                                                                                                      |
+| 3   | Detect package manager        | shell `if` on lockfile presence                                                                                        | Emits `manager` (`pnpm`/`yarn`/`npm`), `command` (e.g. `install --frozen-lockfile --ignore-scripts` — no lifecycle script runs at install anywhere in CI), `runner`. Fails if none found.                                                                                                                                                                                                                                           |
+| 4   | Read Playwright version       | `node -p "...devDependencies?.['@playwright/test'] \|\| ...dependencies?.['@playwright/test']"` then strip leading `^` | Feeds the Playwright binary cache key. **Must read `@playwright/test`** — the project has no bare `playwright` dep, so reading `playwright` yields the string `"undefined"` and freezes the cache key (see [Caching](#caching)).                                                                                                                                                                                                    |
+| 5   | Discover workspace entities   | `node scripts/assemble-changes.mjs filters`                                                                            | Builds a per-entity `paths-filter` config: one key per app (`app__<name>`), worker (`worker__<name>`), package (`pkg__<name>`), CI definition file (`wf__<name>` — every workflow, plus `wf__actions-setup` for the [setup action](#the-setup-action)), and **one per root file** (`root__lock`, `root__workspace`, `root__package`, `root__nvmrc`, `root__tsconfig`) — a whitelist, so root docs/tooling dotfiles trigger nothing. |
+| 6   | Detect changed entities       | `dorny/paths-filter@v4`                                                                                                | Consumes the generated `filters` (JSON is valid YAML) and outputs a `changes` list of the keys that matched.                                                                                                                                                                                                                                                                                                                        |
+| 7   | Copy base manifest + lockfile | `git show "$BASE_SHA:…"` into `$RUNNER_TEMP/base`, fetching one commit deep first if the shallow clone lacks it        | Hands the next step the two files it compares against. Every command may fail without failing the job — a missing or empty copy reads as "cannot be compared", which validates everything.                                                                                                                                                                                                                                          |
+| 8   | Assemble `changes.json`       | `node scripts/assemble-changes.mjs assemble`                                                                           | Writes [`changes.json`](#changesjson) (the lists + `root`), and derives this run's own gating outputs `web` / `editor` / `has_packages` / `changed_packages` / `has_workers` / `changed_workers`. Root files are attributed first — see [What a root change means](#what-a-root-change-means). A whole-workspace root file, or a change to `ci.yml` itself, means every job runs.                                                   |
+| 9   | Upload `changes.json`         | `actions/upload-artifact@v7` (name `changes`)                                                                          | Hands the single file to the CD workflows, which run on `workflow_run` and have no diff base of their own.                                                                                                                                                                                                                                                                                                                          |
 
 ### Outputs
 
@@ -155,14 +155,12 @@ the resolved graph, and getting it wrong means skipping a package the bump did b
 `needs: prepare` · ubuntu · 15 min. Lint + typecheck the whole workspace once
 (`pnpm -r` skips workspaces without the script). Not change-gated — it's cheap.
 
-| #   | Step       | Detail                                                                                                               |
-| --- | ---------- | -------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout   | `actions/checkout@v5`, no persisted creds                                                                            |
-| 2   | Setup pnpm | `pnpm/action-setup@v5`, only `if manager == 'pnpm'`                                                                  |
-| 3   | Setup Node | `actions/setup-node@v5` with `node-version: <prepare>` and `cache: <manager>` (deps cache — see [Caching](#caching)) |
-| 4   | Install    | `${manager} ${command}` with `CI: true`                                                                              |
-| 5   | Lint       | `${runner} run lint` (`--max-warnings 0`)                                                                            |
-| 6   | Typecheck  | `${runner} run typecheck`                                                                                            |
+| #   | Step      | Detail                                                                                   |
+| --- | --------- | ---------------------------------------------------------------------------------------- |
+| 1   | Checkout  | `actions/checkout@v5`, no persisted creds                                                |
+| 2   | Setup     | [`./.github/actions/setup`](#the-setup-action) — pnpm, Node and the install, in one step |
+| 3   | Lint      | `${runner} run lint` (`--max-warnings 0`)                                                |
+| 4   | Typecheck | `${runner} run typecheck`                                                                |
 
 ---
 
@@ -191,9 +189,43 @@ Three things about a caller job that are easy to get wrong:
 - Check names become `caller / called-job` (`web / e2e (chromium)`). Only `ci-ok` is required, and
   it stays a top-level job here, so branch protection is unaffected.
 
+### The setup action
+
+Every job that installs starts the same way, so the shared part lives in one composite action —
+[`.github/actions/setup`](../actions/setup/action.yml):
+
+```yaml
+- name: Checkout Repository
+  uses: actions/checkout@v5
+  with:
+    persist-credentials: false
+
+- name: Setup pnpm, Node and dependencies
+  uses: ./.github/actions/setup
+  with:
+    node_version: ${{ inputs.node_version }}
+    manager: ${{ inputs.manager }}
+    command: ${{ inputs.command }}
+```
+
+**Start a new job from that block.** Bumping the `pnpm/action-setup` pin or changing the store
+cache is then an edit to one file, rather than one per job with a file left behind.
+
+Two things it deliberately does not do:
+
+- **It does not check out.** A local action is resolved from the working tree, so the checkout that
+  puts it there cannot live inside it. The job keeps its own — which is also the step that varies:
+  `ci-web.yml`'s `web` job needs `fetch-depth: 0` for Codecov base detection.
+- **It does not cache per area.** Playwright binaries and the Electron binary stay in the jobs that
+  want them, restored just after the call — nothing writes those paths during an install, and the
+  restores only have to precede the steps that read them.
+
+It carries a `# ci:validates all` marker of its own, so editing it re-runs every job. That is the
+CI-side `all` and not a root change: `changes.root` stays false, and nothing deploys.
+
 ### What a workflow validates
 
-Every workflow declares its own scope on line 1, read by
+Every workflow — and the setup action — declares its own scope on line 1, read by
 [`scripts/assemble-changes.mjs`](../../scripts/assemble-changes.mjs):
 
 ```yaml
@@ -240,23 +272,23 @@ Two independent caches; both are keyed so a real change busts them.
 
 ### 1. Dependency store (`actions/setup-node`)
 
-Every job that installs uses `setup-node@v5` with `cache: ${{ … manager }}`. For
-pnpm this caches the **pnpm store**, keyed automatically off the `pnpm-lock.yaml`
-hash. A lockfile change → new key → fresh install; otherwise the store is restored
-and `--frozen-lockfile` just links.
+Set once, in [the setup action](#the-setup-action): `setup-node@v5` with
+`cache: ${{ inputs.manager }}`. For pnpm this caches the **pnpm store**, keyed
+automatically off the `pnpm-lock.yaml` hash. A lockfile change → new key → fresh
+install; otherwise the store is restored and `--frozen-lockfile` just links.
 
 ### 2. Playwright browser binaries (browser-tier package rows, `web`, `e2e`)
 
 ```yaml
 env:
   PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
-# restore (before install)
+# restore (after the setup action installed — nothing writes this path during an install)
 - uses: actions/cache/restore@v5
   id: playwright-cache
   with:
     path: ${{ github.workspace }}/ms-playwright
     key: ${{ runner.os }}-playwright-${{ needs.prepare.outputs.playwright_version }}
-# … install deps, then on a miss `playwright install --with-deps`,
+# … then on a miss `playwright install --with-deps`,
 #   on a hit `playwright install-deps` (Linux only) …
 # save (only on a miss, even if later steps fail)
 - uses: actions/cache/save@v5

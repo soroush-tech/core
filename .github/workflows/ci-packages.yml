@@ -35,16 +35,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
+      # As in ci-web.yml: after the install, which touches nothing on this path.
       - name: Restore cache - Playwright binaries
         if: matrix.browsers
         uses: actions/cache/restore@v5
@@ -52,11 +50,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
 
       # Only Chromium is needed — the browser test tier runs headless Chromium.
       - name: Install Playwright browsers
@@ -128,20 +121,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
       # The bench file imports this package's built dist so the comparison
       # against the npm release's prebuilt dist is like-for-like.
