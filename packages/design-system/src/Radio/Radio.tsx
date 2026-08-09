@@ -1,5 +1,6 @@
 import { type ChangeEvent, type InputHTMLAttributes, type ReactNode } from 'react'
 import { useFormControl } from '../FormControl'
+import type { SpaceProps } from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -7,7 +8,6 @@ import {
   createShouldForwardProp,
   props,
   space,
-  type SpaceProps,
 } from '../index'
 import { themeDefault } from '../theme/utils/themeDefault'
 

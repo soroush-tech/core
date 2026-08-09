@@ -1,6 +1,12 @@
 import { useContext, type ReactNode, type ButtonHTMLAttributes } from 'react'
 import { CircularProgress } from '../CircularProgress'
 import { ButtonGroupContext } from '../ButtonGroup/ButtonGroupContext'
+import type {
+  SpaceProps,
+  LayoutProps,
+  BorderProps,
+  TypographyProps,
+} from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -11,10 +17,6 @@ import {
   layout,
   border,
   typography,
-  type SpaceProps,
-  type LayoutProps,
-  type BorderProps,
-  type TypographyProps,
 } from '../index'
 import { alpha } from '../utils'
 import { themeDefault } from '../theme/utils/themeDefault'

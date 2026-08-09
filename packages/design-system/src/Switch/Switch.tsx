@@ -1,12 +1,6 @@
 import { type ChangeEvent, type KeyboardEvent, type ReactNode } from 'react'
-import {
-  styled,
-  type Theme,
-  createShouldForwardProp,
-  props,
-  space,
-  type SpaceProps,
-} from '../index'
+import type { SpaceProps } from '@soroush.tech/styled-system'
+import { styled, type Theme, createShouldForwardProp, props, space } from '../index'
 import { useTheme } from '../theme'
 import { alpha } from '../utils'
 import { themeDefault } from '../theme/utils/themeDefault'

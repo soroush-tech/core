@@ -1,6 +1,7 @@
 import { type ButtonHTMLAttributes, type ElementType, type ReactNode } from 'react'
 import { Icon, type IconName } from '@soroush.tech/design-system/Icon'
 import { type PaginationItemType } from '../hooks/usePagination'
+import type { SpaceProps } from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -9,7 +10,6 @@ import {
   props,
   space,
   get,
-  type SpaceProps,
 } from '@soroush.tech/design-system'
 import { alpha } from '@soroush.tech/design-system/utils'
 import { themeDefault } from '@soroush.tech/design-system/theme'

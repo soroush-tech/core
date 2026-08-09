@@ -122,6 +122,9 @@ export default defineConfig({
                 browser: 'chromium',
               },
             ],
+            // Vitest's default API port (63315) can land in a Windows
+            // Hyper-V excluded port range, failing with listen EACCES.
+            api: { port: 51316 },
           },
         },
       },
@@ -148,6 +151,8 @@ export default defineConfig({
                 browser: 'chromium',
               },
             ],
+            // See unit-browser: avoid the Windows excluded port range.
+            api: { port: 51317 },
           },
         },
       },

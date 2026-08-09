@@ -1,5 +1,6 @@
 import { useContext, type ElementType, type HTMLAttributes } from 'react'
 import { TableContext } from '../TableContext'
+import type { SpaceProps, BorderProps } from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -9,8 +10,6 @@ import {
   space,
   border,
   system,
-  type SpaceProps,
-  type BorderProps,
 } from '@soroush.tech/design-system'
 import { themeDefault } from '@soroush.tech/design-system/theme'
 

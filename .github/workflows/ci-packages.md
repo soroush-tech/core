@@ -33,6 +33,11 @@ One row per changed package, `fail-fast: false` so one failure doesn't cancel it
 under `matrix.flag`. The flag is the unscoped package name — `packages/bench` is `bench`, and
 `workers/bench` is `bench-api`, which is why the directory alone won't do.
 
+Then `pnpm --filter <name> run --if-present test:types`: the package builds `dist` and typechecks
+an isolated consumer-shaped program against the emitted `.d.mts`. It runs separately from the test
+tiers because those compile `src/`, where a type the d.ts bundler later drops still resolves.
+Packages without the script are skipped.
+
 `matrix.browsers` rows install Chromium first, sharing the `Linux-playwright-<version>` cache with
 the web app's jobs. A member sets it by declaring `playwright` **and** having no `test:e2e` script
 of its own — that's what separates `design-system`'s browser tier from the editor's Electron suite.

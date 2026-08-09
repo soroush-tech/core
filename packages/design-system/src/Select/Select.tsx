@@ -13,17 +13,8 @@ import { Icon, type IconName, type IconProps } from '../Icon'
 import { Popover } from '../Popover'
 import { NativeSelect, type NativeSelectOption } from '../NativeSelect'
 import { type MenuItemProps } from '../MenuItem'
-import {
-  styled,
-  type Theme,
-  createShouldForwardProp,
-  props,
-  space,
-  get,
-  system,
-  type SpaceProps,
-  type LayoutProps,
-} from '../index'
+import type { SpaceProps, LayoutProps } from '@soroush.tech/styled-system'
+import { styled, type Theme, createShouldForwardProp, props, space, get, system } from '../index'
 import { useTheme } from '../theme'
 import { inputVariantStyles } from '../utils/inputVariantStyles'
 import { useSelectPopover } from './hooks/useSelectPopover'

@@ -35,6 +35,9 @@ export default defineConfig({
             headless: true,
             provider: playwright(),
             instances: [{ browser: 'chromium' }],
+            // Vitest's default API port (63315) can land in a Windows
+            // Hyper-V excluded port range, failing with listen EACCES.
+            api: { port: 51315 },
           },
         },
       },

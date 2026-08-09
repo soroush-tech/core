@@ -1,5 +1,6 @@
 import { type ElementType, type HTMLAttributes } from 'react'
 import { TableSectionContext } from '../TableSectionContext'
+import type { SpaceProps, BorderProps } from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -8,8 +9,6 @@ import {
   space,
   border,
   system,
-  type SpaceProps,
-  type BorderProps,
 } from '@soroush.tech/design-system'
 
 /** Valid values for the color prop — derived from theme.text keys. */

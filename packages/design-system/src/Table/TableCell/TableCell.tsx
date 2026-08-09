@@ -1,6 +1,11 @@
 import { useContext, type ElementType, type ThHTMLAttributes } from 'react'
 import { TableContext, type TableCellPadding } from '../TableContext'
 import { TableSectionContext, type TableSection } from '../TableSectionContext'
+import type {
+  SpaceProps,
+  TypographyProps as SystemTypographyProps,
+  BorderProps,
+} from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -11,9 +16,6 @@ import {
   border,
   system,
   get,
-  type SpaceProps,
-  type TypographyProps as SystemTypographyProps,
-  type BorderProps,
 } from '@soroush.tech/design-system'
 import { themeDefault } from '@soroush.tech/design-system/theme'
 

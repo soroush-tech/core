@@ -1,13 +1,5 @@
-import {
-  styled,
-  type Theme,
-  createShouldForwardProp,
-  props,
-  grid,
-  flexbox,
-  type GridProps as SystemGridProps,
-  type FlexboxProps,
-} from '../index'
+import type { GridProps as SystemGridProps, FlexboxProps } from '@soroush.tech/styled-system'
+import { styled, type Theme, createShouldForwardProp, props, grid, flexbox } from '../index'
 import { View, type ViewProps } from '../View'
 
 /** Valid values for the gap / columnGap / rowGap props — derived from theme.space keys. */
