@@ -54,13 +54,21 @@ const declarationsFor = (specifier) => {
   return [`${base}.d.mts`, `${base}.d.cts`].filter((candidate) => declaredIn.has(candidate))
 }
 
+const IDENTIFIER_CHAR = /[\w$]/
+const SUFFIX = '_d_exports'
+
 const dangling = new Set()
 for (const [file, source] of sources) {
   const scope = [file, ...importsOf.get(file).flatMap(declarationsFor)]
-  // Match every `a.b` and filter after: pinning the suffix inside the pattern would make the
-  // preceding `\w+` backtrack at each position, since `_` is a word character itself.
-  for (const [, namespace, name] of source.matchAll(/([\w$]+)\.([\w$]+)/g)) {
-    if (!namespace.endsWith('_d_exports')) continue
+  // Anchored on the literal suffix so matching is only ever attempted where it occurs. Leading
+  // with a quantifier instead — `([\w$]+)\.` — would retry every shorter run at every position,
+  // since the class cannot match the dot it has to find.
+  for (const match of source.matchAll(/_d_exports\.([\w$]+)/g)) {
+    // The namespace is that suffix plus the identifier characters running back from it.
+    let start = match.index
+    while (start > 0 && IDENTIFIER_CHAR.test(source[start - 1])) start -= 1
+    const namespace = source.slice(start, match.index) + SUFFIX
+    const [, name] = match
     const inScope = scope.some((candidate) => declaredIn.get(candidate)?.get(namespace)?.has(name))
     if (!inScope) dangling.add(`${file}: ${namespace}.${name}`)
   }
