@@ -48,10 +48,13 @@ for (const [file, source] of sources) {
   )
 }
 
-/** The declaration file an import specifier resolves to: `./index-A.mjs` → `index-A.d.mts`. */
-const declarationsFor = (specifier) => {
-  const base = specifier.replace(/\.[cm]?js$/, '')
-  return [`${base}.d.mts`, `${base}.d.cts`].filter((candidate) => declaredIn.has(candidate))
+// The declaration file an import specifier resolves to, staying in its own module format:
+// `./index-A.mjs` → `index-A.d.mts`, `./index-A.cjs` → `index-A.d.cts`. Accepting either format
+// would let a name declared in the CJS build satisfy a reference in the ESM one, or the reverse —
+// they are separate modules, and chunks that share a base name (`themes-…`) emit both.
+const declarationFor = (specifier) => {
+  const declaration = specifier.replace(/\.mjs$/, '.d.mts').replace(/\.cjs$/, '.d.cts')
+  return declaredIn.has(declaration) ? [declaration] : []
 }
 
 const IDENTIFIER_CHAR = /[\w$]/
@@ -59,7 +62,7 @@ const SUFFIX = '_d_exports'
 
 const dangling = new Set()
 for (const [file, source] of sources) {
-  const scope = [file, ...importsOf.get(file).flatMap(declarationsFor)]
+  const scope = [file, ...importsOf.get(file).flatMap(declarationFor)]
   // Anchored on the literal suffix so matching is only ever attempted where it occurs. Leading
   // with a quantifier instead — `([\w$]+)\.` — would retry every shorter run at every position,
   // since the class cannot match the dot it has to find.
