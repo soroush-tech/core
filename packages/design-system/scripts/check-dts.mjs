@@ -25,7 +25,11 @@ const declared = new Map()
 for (const file of files) {
   const source = readFileSync(join(distDir, file), 'utf8')
   for (const [, namespace, body] of source.matchAll(/declare namespace (\w+) \{([^}]*)\}/g)) {
-    const names = [...body.matchAll(/(?:\w+ as )?(\w+)[,;\s]/g)].map(([, name]) => name)
+    // `export { A$1 as A, B }` — the exported name is the last token of each entry.
+    const names = body
+      .split(',')
+      .map((entry) => entry.trim().split(/\s+/).pop())
+      .filter(Boolean)
     declared.set(namespace, new Set([...(declared.get(namespace) ?? []), ...names]))
   }
 }
@@ -33,14 +37,19 @@ for (const file of files) {
 const dangling = new Set()
 for (const file of files) {
   const source = readFileSync(join(distDir, file), 'utf8')
-  for (const [, namespace, name] of source.matchAll(/(\w+_d_exports)\.(\w+)/g)) {
+  // Match every `a.b` and filter after: pinning the suffix inside the pattern would make the
+  // preceding `\w+` backtrack at each position, since `_` is a word character itself.
+  for (const [, namespace, name] of source.matchAll(/([\w$]+)\.([\w$]+)/g)) {
+    if (!namespace.endsWith('_d_exports')) continue
     if (!declared.get(namespace)?.has(name)) dangling.add(`${file}: ${namespace}.${name}`)
   }
 }
 
 if (dangling.size > 0) {
   console.error('Declaration files reference names the build never declares:')
-  for (const reference of [...dangling].sort()) console.error(`  - ${reference}`)
+  for (const reference of [...dangling].sort((a, b) => a.localeCompare(b))) {
+    console.error(`  - ${reference}`)
+  }
   console.error(
     '\nThese resolve to `any` for consumers instead of erroring. Import the type straight from\n' +
       'the package that declares it rather than through the barrel, then rebuild.'
