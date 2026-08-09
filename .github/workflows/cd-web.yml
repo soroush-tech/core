@@ -1,10 +1,10 @@
 # ci:validates nothing
 # CI never runs this workflow, so no job here could prove anything about it.
-name: Continuous Deployment to GitHub Pages
+name: CD · Web (Pages + Storybook)
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ['Continuous Integration']
+    workflows: ['CI']
     types:
       - completed
     branches:

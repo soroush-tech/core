@@ -1,6 +1,6 @@
 [← Workflows overview](./README.md)
 
-# `cd-packages.yml` — Publish Packages (npm)
+# `cd-packages.yml` — CD · Packages (npm)
 
 Publishes `@soroush.tech/*` packages to npm via **Trusted Publishing (OIDC)** —
 no long-lived `NPM_TOKEN`. The dispatch picks either a single package or **`all`**: every
@@ -153,7 +153,7 @@ catch drift that publishing can't act on.
 1. In one PR to `main` (CI runs): bump the package `version` in `package.json` **and** add
    `packages/<dir>/release-notes/<version>.md` with that version's notes — for as many
    packages as the PR releases.
-2. Actions → **Publish Packages (npm)** → **Run workflow** → pick the `package` (or `all`
+2. Actions → **CD · Packages (npm)** → **Run workflow** → pick the `package` (or `all`
    to release every package with a pending bump), **Run**.
    CLI equivalent: `gh workflow run cd-packages.yml -f package=<dir|all>`.
 3. The job publishes each resolved package to npm (skipping any version already there) and

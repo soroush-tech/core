@@ -9,22 +9,24 @@ Each workflow has a per-file deep-dive doc next to it (`ci.md`, `cd-*.md`, `chro
 
 ## Workflow files
 
-| File                | Name                     | Trigger                                                                      |
-| ------------------- | ------------------------ | ---------------------------------------------------------------------------- |
-| `ci.yml`            | `Continuous Integration` | `push` to `main`, all `pull_request`                                         |
-| `ci-packages.yml`   | CI · Packages            | `workflow_call` from `ci.yml`                                                |
-| `ci-worker.yml`     | CI · Workers             | `workflow_call` from `ci.yml`                                                |
-| `ci-app.yml`        | CI · Apps                | `workflow_call` from `ci.yml`                                                |
-| `ci-web.yml`        | CI · Web                 | `workflow_call` from `ci-app.yml`                                            |
-| `ci-editor.yml`     | CI · Editor              | `workflow_call` from `ci-app.yml`                                            |
-| `cd-web.yml`        | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + dispatch                            |
-| `cd-worker-api.yml` | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + dispatch                            |
-| `cd-packages.yml`   | Publish Packages (npm)   | manual `workflow_dispatch` only — see the `release-notes` skill              |
-| `cd-editor.yml`     | CD · Editor              | manual `workflow_dispatch` only — draft GitHub Release of the installers     |
-| `chromatic.yml`     | Chromatic                | `pull_request` + `push` to `main` + `workflow_dispatch` (main), non-blocking |
-| `label-area.yml`    | Label Affected Area      | `issues: opened`                                                             |
+| File                | Name                           | Trigger                                                                      |
+| ------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| `ci.yml`            | `CI`                           | `push` to `main`, all `pull_request`                                         |
+| `ci-packages.yml`   | `CI · Packages`                | `workflow_call` from `ci.yml`                                                |
+| `ci-worker.yml`     | `CI · Workers`                 | `workflow_call` from `ci.yml`                                                |
+| `ci-app.yml`        | `CI · Apps`                    | `workflow_call` from `ci.yml`                                                |
+| `ci-web.yml`        | `CI · Web`                     | `workflow_call` from `ci-app.yml`                                            |
+| `ci-editor.yml`     | `CI · Editor`                  | `workflow_call` from `ci-app.yml`                                            |
+| `cd-web.yml`        | `CD · Web (Pages + Storybook)` | `workflow_run` of CI (success, `main`) + dispatch                            |
+| `cd-worker-api.yml` | `CD · Worker (api)`            | `workflow_run` of CI (success, `main`) + dispatch                            |
+| `cd-packages.yml`   | `CD · Packages (npm)`          | manual `workflow_dispatch` only — see the `release-notes` skill              |
+| `cd-editor.yml`     | `CD · Editor (release)`        | manual `workflow_dispatch` only — draft GitHub Release of the installers     |
+| `chromatic.yml`     | `Chromatic`                    | `pull_request` + `push` to `main` + `workflow_dispatch` (main), non-blocking |
+| `label-area.yml`    | `Label Affected Area`          | `issues: opened`                                                             |
 
 One CI entry workflow calling one per area; CD is separate and **gated on CI success** — never deploy on a raw `push`.
+
+**Naming.** Every workflow is `CI · <Area>` or `CD · <Area> (<detail>)`, so the Actions sidebar groups into two blocks; the entry workflow is plain `CI`. Chromatic and the labeller stay **unprefixed on purpose** — neither is part of `ci-ok`, and prefixing them would say they gate PRs. **Renaming a workflow is never a one-file edit**: `workflow_run` matches on the workflow's `name:`, not its filename, so `cd-web` / `cd-worker-api` / `cd-worker-bench` all pin `workflows: ['CI']` and a rename that misses one silently stops that deploy for good. Branch protection is unaffected — it matches the **job** name `ci-ok`.
 
 ## Action pinning convention — the load-bearing rule
 

@@ -1,17 +1,17 @@
 [← Workflows overview](./README.md)
 
-# `cd-web.yml` — Continuous Deployment to GitHub Pages
+# `cd-web.yml` — CD · Web (Pages + Storybook)
 
 Builds the web app and deploys it to GitHub Pages, and in parallel builds Storybook and
 deploys it to a Cloudflare Pages site at
 [storybook.soroush.tech](https://storybook.soroush.tech). **Gated on CI success** — it
-starts from a `workflow_run` of `Continuous Integration`, never from a raw `push`.
+starts from a `workflow_run` of `CI`, never from a raw `push`.
 
 ```yaml
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ['Continuous Integration']
+    workflows: ['CI']
     types: [completed]
     branches: [main]
 permissions: { contents: read, pages: write, id-token: write }

@@ -1,6 +1,6 @@
 [← Workflows overview](./README.md)
 
-# `ci.yml` — Continuous Integration
+# `ci.yml` — CI
 
 Entry workflow for the monorepo. A `prepare` job detects everything once, `lint` covers the
 workspace, and each area's jobs run through a called workflow of its own. `ci-ok` is the single

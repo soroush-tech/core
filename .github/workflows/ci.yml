@@ -1,6 +1,6 @@
 # ci:validates all
 # ci.yml holds prepare, lint and ci-ok — it decides how every job runs, so every job proves it.
-name: Continuous Integration
+name: CI
 
 on:
   push:
