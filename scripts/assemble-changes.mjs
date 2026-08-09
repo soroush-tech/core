@@ -66,8 +66,15 @@ export function ciFiles() {
 }
 
 /**
+ * One key over every CI definition path, matched against the per-file keys to catch a file that
+ * `ciFiles()` cannot see — see `hasUnattributedCiFile`.
+ */
+const CI_ANY = 'ci__any'
+
+/**
  * The paths-filter config: one key per workspace member, per CI definition file, and per root
- * file. JSON is valid YAML, so the action takes this as its `filters` input verbatim.
+ * file, plus the catch-all. JSON is valid YAML, so the action takes this as its `filters` input
+ * verbatim.
  */
 export function buildFilters() {
   const filters = {}
@@ -75,9 +82,24 @@ export function buildFilters() {
     for (const name of dirsWithPackageJson(dir)) filters[`${prefix}${name}`] = [`${dir}/${name}/**`]
   }
   for (const [name, file] of Object.entries(ciFiles())) filters[`wf__${name}`] = [file]
+  filters[CI_ANY] = ['.github/workflows/**', '.github/actions/**']
   for (const [key, file] of Object.entries(ROOT_FILES)) filters[key] = [file]
   return filters
 }
+
+/**
+ * True when a CI definition file changed that no `wf__` key claimed. `ciFiles()` reads the working
+ * tree, so a **deleted** workflow or action generates no key of its own: without this, a change
+ * that removes one is a change nothing matched, and a pull request deleting CI files alone runs no
+ * job at all and reports green. The catch-all sees the path either way, so a CI change no per-file
+ * key accounts for validates everything — the same answer an unreadable marker gets, for the same
+ * reason: this must over-run, never quietly under-run.
+ *
+ * Deliberately coarse. It cannot tell which file went, only that one did, so it says "all" rather
+ * than guessing. A deletion alongside an edit is already covered by the edit's own claim.
+ */
+export const hasUnattributedCiFile = (changed) =>
+  changed.includes(CI_ANY) && !changed.some((key) => key.startsWith('wf__'))
 
 /**
  * The importer blocks of a pnpm lockfile, keyed by workspace path. Sectioned by indentation
@@ -433,14 +455,17 @@ function main() {
   const workflows = attributeWorkflows(
     changed.filter((key) => key.startsWith('wf__')).map((key) => key.slice('wf__'.length))
   )
-  for (const reason of [...root.reasons, ...workflows.reasons]) console.error(`changes: ${reason}`)
+  const removedCiFile = hasUnattributedCiFile(changed)
+  const reasons = [...root.reasons, ...workflows.reasons]
+  if (removedCiFile) reasons.push('a CI file changed that no per-file key claimed — it is gone')
+  for (const reason of reasons) console.error(`changes: ${reason}`)
 
   const { changes, outputs } = assembleChanges({
     changed,
     members,
     attributed: root.attributed,
     revalidate: workflows.keys,
-    revalidateAll: workflows.wholeWorkspace,
+    revalidateAll: workflows.wholeWorkspace || removedCiFile,
     wholeWorkspace: root.wholeWorkspace,
   })
 
