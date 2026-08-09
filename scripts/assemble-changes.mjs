@@ -219,14 +219,16 @@ export function workflowValidates(name) {
 export function attributeWorkflows(workflows) {
   const files = ciFiles()
   const claims = workflows.map((name) => ({ name, ...workflowValidates(name) }))
+  // By path rather than by name: not every one of these is `<name>.yml` any more.
+  const pathOf = (name) => files[name] ?? `${name}.yml`
+  const meaning = ({ keys, wholeWorkspace }) => {
+    if (wholeWorkspace) return 'it decides how every job runs'
+    return keys.join(', ') || 'CI never runs it'
+  }
   return {
     keys: claims.flatMap(({ keys }) => keys),
     wholeWorkspace: claims.some((claim) => claim.wholeWorkspace),
-    // By path rather than by name: not every one of these is `<name>.yml` any more.
-    reasons: claims.map(
-      ({ name, keys, wholeWorkspace }) =>
-        `${files[name] ?? `${name}.yml`} changed — ${wholeWorkspace ? 'it decides how every job runs' : keys.join(', ') || 'CI never runs it'}`
-    ),
+    reasons: claims.map((claim) => `${pathOf(claim.name)} changed — ${meaning(claim)}`),
   }
 }
 

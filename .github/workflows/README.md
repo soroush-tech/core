@@ -223,7 +223,8 @@ flowchart TD
 ## `cd-worker-bench.yml` — CD · Worker (bench)
 
 Structural mirror of `cd-worker-api.yml` for `workers/bench` (the bench-action comment
-relay at `api.bench.soroush.tech`): deploys when `worker∋bench ∥ root`, in its own
+relay at `api.bench.soroush.tech`): deploys when
+`worker∋bench ∥ packages∋wrangler-tools ∥ root`, in its own
 `cd-worker-bench` environment — see [`cd-worker-bench.md`](./cd-worker-bench.md).
 
 ## `cd-packages.yml` — CD · Packages (npm)
