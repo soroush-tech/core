@@ -1,5 +1,13 @@
 import { type CSSProperties, type ElementType, type HTMLAttributes } from 'react'
 import { useTheme } from '../theme'
+import type {
+  SpaceProps,
+  LayoutProps,
+  TypographyProps as SystemTypographyProps,
+  FlexboxProps,
+  BorderProps,
+  PositionProps,
+} from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -12,12 +20,6 @@ import {
   border,
   position,
   system,
-  type SpaceProps,
-  type LayoutProps,
-  type TypographyProps as SystemTypographyProps,
-  type FlexboxProps,
-  type BorderProps,
-  type PositionProps,
 } from '../index'
 
 import type { TypographyVariant } from '../theme/themes'

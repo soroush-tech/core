@@ -540,7 +540,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:types": "pnpm build && tsc -p type-tests/tsconfig.json",
+    "test:types": "pnpm build && node scripts/check-dts.mjs && tsc -p type-tests/tsconfig.json",
+    "check:dts": "node scripts/check-dts.mjs",
     "audit:styled": "node scripts/audit-styled.mjs",
     "prepublishOnly": "pnpm build"
   },

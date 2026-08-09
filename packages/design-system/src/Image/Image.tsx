@@ -1,4 +1,10 @@
 import { useState, type ComponentType, type ImgHTMLAttributes, type CSSProperties } from 'react'
+import type {
+  LayoutProps,
+  SpaceProps,
+  BackgroundProps,
+  PositionProps,
+} from '@soroush.tech/styled-system'
 import {
   styled,
   createShouldForwardProp,
@@ -9,10 +15,6 @@ import {
   position,
   system,
   type Theme,
-  type LayoutProps,
-  type SpaceProps,
-  type BackgroundProps,
-  type PositionProps,
 } from '../index'
 
 type Phase = 'initial' | 'without-srcset' | 'fallback' | 'failed'

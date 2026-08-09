@@ -2,15 +2,8 @@ import { useMemo, type ElementType, type HTMLAttributes } from 'react'
 import type { ButtonVariant, ButtonColor, ButtonSize } from '../Button'
 import { alpha } from '../utils'
 import { ButtonGroupContext } from './ButtonGroupContext'
-import {
-  styled,
-  type Theme,
-  createShouldForwardProp,
-  props,
-  space,
-  get,
-  type SpaceProps,
-} from '../index'
+import type { SpaceProps } from '@soroush.tech/styled-system'
+import { styled, type Theme, createShouldForwardProp, props, space, get } from '../index'
 import { themeDefault } from '../theme/utils/themeDefault'
 
 export type ButtonGroupOrientation = 'horizontal' | 'vertical'

@@ -1,4 +1,12 @@
 import { type CSSProperties, type HTMLAttributes } from 'react'
+import type {
+  SpaceProps,
+  LayoutProps,
+  TypographyProps as SystemTypographyProps,
+  BorderProps,
+  PositionProps,
+  FlexboxProps,
+} from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -10,12 +18,6 @@ import {
   border,
   position,
   system,
-  type SpaceProps,
-  type LayoutProps,
-  type TypographyProps as SystemTypographyProps,
-  type BorderProps,
-  type PositionProps,
-  type FlexboxProps,
 } from '../index'
 
 /** Valid values for the color prop — derived from theme.text keys. */

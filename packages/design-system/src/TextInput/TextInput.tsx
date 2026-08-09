@@ -7,17 +7,8 @@ import {
 } from 'react'
 import { TextAreaAutoResize } from './TextAreaAutoResize'
 import { useFormControl } from '../FormControl'
-import {
-  styled,
-  type Theme,
-  createShouldForwardProp,
-  props,
-  space,
-  system,
-  get,
-  type SpaceProps,
-  type LayoutProps,
-} from '../index'
+import type { SpaceProps, LayoutProps } from '@soroush.tech/styled-system'
+import { styled, type Theme, createShouldForwardProp, props, space, system, get } from '../index'
 import { useTheme } from '../theme'
 import { inputVariantStyles } from '../utils/inputVariantStyles'
 import { themeDefault } from '../theme/utils/themeDefault'

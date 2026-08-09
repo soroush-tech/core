@@ -1,6 +1,7 @@
 import { useContext, type ButtonHTMLAttributes } from 'react'
 import { TableContext } from '../TableContext'
 import { Icon, type IconName, type IconProps } from '@soroush.tech/design-system/Icon'
+import type { SpaceProps } from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -8,7 +9,6 @@ import {
   props,
   space,
   get,
-  type SpaceProps,
 } from '@soroush.tech/design-system'
 
 export type TableSortLabelDirection = 'asc' | 'desc'

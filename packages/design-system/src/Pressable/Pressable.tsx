@@ -4,6 +4,12 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from 'react'
+import type {
+  SpaceProps,
+  LayoutProps,
+  BorderProps,
+  TypographyProps,
+} from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -14,10 +20,6 @@ import {
   layout,
   border,
   typography,
-  type SpaceProps,
-  type LayoutProps,
-  type BorderProps,
-  type TypographyProps,
 } from '../index'
 import { alpha } from '../utils'
 import { themeDefault } from '../theme/utils/themeDefault'

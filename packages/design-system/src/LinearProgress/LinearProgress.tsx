@@ -1,4 +1,5 @@
 import { type HTMLAttributes } from 'react'
+import type { SpaceProps, LayoutProps, PaddingProps } from '@soroush.tech/styled-system'
 import {
   styled,
   type Theme,
@@ -7,9 +8,6 @@ import {
   props,
   space,
   layout,
-  type SpaceProps,
-  type LayoutProps,
-  type PaddingProps,
 } from '../index'
 import type { ButtonColor } from '../Button'
 import { clamp } from '../utils'

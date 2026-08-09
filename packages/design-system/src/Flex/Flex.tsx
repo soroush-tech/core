@@ -1,11 +1,5 @@
-import {
-  styled,
-  type Theme,
-  createShouldForwardProp,
-  props,
-  flexbox,
-  type FlexboxProps,
-} from '../index'
+import type { FlexboxProps } from '@soroush.tech/styled-system'
+import { styled, type Theme, createShouldForwardProp, props, flexbox } from '../index'
 import { View, type ViewProps } from '../View'
 
 /** Valid values for the gap prop — derived from theme.space keys. */
