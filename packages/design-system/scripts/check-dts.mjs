@@ -20,28 +20,49 @@ import { fileURLToPath } from 'node:url'
 const distDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist')
 const files = readdirSync(distDir).filter((file) => /\.d\.[cm]ts$/.test(file))
 
-/** Every name each `declare namespace` in the build actually declares, keyed by namespace. */
-const declared = new Map()
-for (const file of files) {
-  const source = readFileSync(join(distDir, file), 'utf8')
+const sources = new Map(files.map((file) => [file, readFileSync(join(distDir, file), 'utf8')]))
+
+// Each declaration file is its own module, so a namespace is only in scope where it is declared
+// or imported — two files declaring the same name are unrelated. Keep both maps per file rather
+// than merging them build-wide, which would let one file's declaration satisfy another's
+// reference.
+/** Per file: the names each `declare namespace` block in it declares, keyed by namespace. */
+const declaredIn = new Map()
+/** Per file: the sibling modules it imports, where a namespace it uses may be declared. */
+const importsOf = new Map()
+
+for (const [file, source] of sources) {
+  const namespaces = new Map()
   for (const [, namespace, body] of source.matchAll(/declare namespace (\w+) \{([^}]*)\}/g)) {
     // `export { A$1 as A, B }` — the exported name is the last token of each entry.
     const names = body
       .split(',')
       .map((entry) => entry.trim().split(/\s+/).pop())
       .filter(Boolean)
-    declared.set(namespace, new Set([...(declared.get(namespace) ?? []), ...names]))
+    namespaces.set(namespace, new Set([...(namespaces.get(namespace) ?? []), ...names]))
   }
+  declaredIn.set(file, namespaces)
+  importsOf.set(
+    file,
+    [...source.matchAll(/from "\.\/([^"]+)"/g)].map(([, specifier]) => specifier)
+  )
+}
+
+/** The declaration file an import specifier resolves to: `./index-A.mjs` → `index-A.d.mts`. */
+const declarationsFor = (specifier) => {
+  const base = specifier.replace(/\.[cm]?js$/, '')
+  return [`${base}.d.mts`, `${base}.d.cts`].filter((candidate) => declaredIn.has(candidate))
 }
 
 const dangling = new Set()
-for (const file of files) {
-  const source = readFileSync(join(distDir, file), 'utf8')
+for (const [file, source] of sources) {
+  const scope = [file, ...importsOf.get(file).flatMap(declarationsFor)]
   // Match every `a.b` and filter after: pinning the suffix inside the pattern would make the
   // preceding `\w+` backtrack at each position, since `_` is a word character itself.
   for (const [, namespace, name] of source.matchAll(/([\w$]+)\.([\w$]+)/g)) {
     if (!namespace.endsWith('_d_exports')) continue
-    if (!declared.get(namespace)?.has(name)) dangling.add(`${file}: ${namespace}.${name}`)
+    const inScope = scope.some((candidate) => declaredIn.get(candidate)?.get(namespace)?.has(name))
+    if (!inScope) dangling.add(`${file}: ${namespace}.${name}`)
   }
 }
 
