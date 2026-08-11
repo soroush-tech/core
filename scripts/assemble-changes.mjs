@@ -72,9 +72,17 @@ export function ciFiles() {
 const CI_ANY = 'ci__any'
 
 /**
+ * Matches only when a CI definition file was **deleted** — a paths-filter status predicate over
+ * the same two globs as `CI_ANY`, so it fires on the deletion itself, no matter what else changed
+ * alongside it. This is the signal no key heuristic can reconstruct: matched keys cannot tell a
+ * deletion beside an edit from the edit alone.
+ */
+const CI_DELETED = 'ci__deleted'
+
+/**
  * The paths-filter config: one key per workspace member, per CI definition file, and per root
- * file, plus the catch-all. JSON is valid YAML, so the action takes this as its `filters` input
- * verbatim.
+ * file, plus the two catch-alls. JSON is valid YAML, so the action takes this as its `filters`
+ * input verbatim.
  */
 export function buildFilters() {
   const filters = {}
@@ -83,20 +91,23 @@ export function buildFilters() {
   }
   for (const [name, file] of Object.entries(ciFiles())) filters[`wf__${name}`] = [file]
   filters[CI_ANY] = ['.github/workflows/**', '.github/actions/**']
+  filters[CI_DELETED] = [{ deleted: '.github/workflows/**' }, { deleted: '.github/actions/**' }]
   for (const [key, file] of Object.entries(ROOT_FILES)) filters[key] = [file]
   return filters
 }
 
 /**
- * True when a CI definition file changed that no `wf__` key claimed. `ciFiles()` reads the working
- * tree, so a **deleted** workflow or action generates no key of its own: without this, a change
- * that removes one is a change nothing matched, and a pull request deleting CI files alone runs no
- * job at all and reports green. The catch-all sees the path either way, so a CI change no per-file
- * key accounts for validates everything — the same answer an unreadable marker gets, for the same
- * reason: this must over-run, never quietly under-run.
+ * True when a CI definition file changed that no `wf__` key claimed. The per-file keys only cover
+ * what `ciFiles()` names, so a CI file outside that set matches the catch-all and nothing else:
+ * without this, a pull request changing only such files runs no job at all and reports green. It
+ * validates everything — the same answer an unreadable marker gets, for the same reason: this
+ * must over-run, never quietly under-run.
  *
- * Deliberately coarse. It cannot tell which file went, only that one did, so it says "all" rather
- * than guessing. A deletion alongside an edit is already covered by the edit's own claim.
+ * Blind past the first claim, though: from matched keys alone, a deletion beside an edit looks
+ * exactly like the edit by itself, and the edit's claim can be far narrower than what the deleted
+ * file validated. Deletions are therefore caught by `CI_DELETED` — a status predicate, not a key
+ * heuristic — and this covers only what that cannot: a changed file that still exists but carries
+ * no key.
  */
 export const hasUnattributedCiFile = (changed) =>
   changed.includes(CI_ANY) && !changed.some((key) => key.startsWith('wf__'))
@@ -455,9 +466,10 @@ function main() {
   const workflows = attributeWorkflows(
     changed.filter((key) => key.startsWith('wf__')).map((key) => key.slice('wf__'.length))
   )
-  const removedCiFile = hasUnattributedCiFile(changed)
+  const removedCiFile = changed.includes(CI_DELETED) || hasUnattributedCiFile(changed)
   const reasons = [...root.reasons, ...workflows.reasons]
-  if (removedCiFile) reasons.push('a CI file changed that no per-file key claimed — it is gone')
+  if (changed.includes(CI_DELETED)) reasons.push('a CI file was deleted — nothing left to claim it')
+  else if (removedCiFile) reasons.push('a CI file changed that no per-file key claimed')
   for (const reason of reasons) console.error(`changes: ${reason}`)
 
   const { changes, outputs } = assembleChanges({
