@@ -87,6 +87,8 @@ jobs:
         id: filter
         with:
           filters: ${{ steps.discover.outputs.filters }} # JSON is valid YAML
+          # Assemble reads ci__any's matched paths to spot CI files no per-file key claims.
+          list-files: json
 
       # The root manifest and the lockfile are attributed by comparing them against the
       # base — the target branch for a pull request, the previous tip for a push — so both
@@ -111,6 +113,7 @@ jobs:
         id: assemble
         env:
           CHANGES: ${{ steps.filter.outputs.changes }}
+          CI_ANY_FILES: ${{ steps.filter.outputs.ci__any_files }}
           BASE_PACKAGE_JSON: ${{ runner.temp }}/base/package.json
           BASE_LOCKFILE: ${{ runner.temp }}/base/pnpm-lock.yaml
         run: node scripts/assemble-changes.mjs assemble >> "$GITHUB_OUTPUT"
