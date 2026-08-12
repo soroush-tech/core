@@ -7,7 +7,7 @@ import base from '@soroush.tech/eslint-config/base'
 
 export default [
   ...base,
-  { ignores: ['dist', 'coverage'] },
+  { ignores: ['dist', 'coverage', 'storybook-static'] },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

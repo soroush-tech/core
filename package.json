@@ -25,7 +25,7 @@
     "build:storybook": "pnpm --filter @soroush/web build:storybook",
     "preview": "pnpm --filter @soroush/web preview",
     "preview:e2e": "pnpm --filter @soroush/web preview:e2e",
-    "storybook": "pnpm --filter @soroush/web storybook",
+    "storybook": "pnpm --parallel -r storybook",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "prebuild": "pnpm --filter @soroush/web prebuild",
