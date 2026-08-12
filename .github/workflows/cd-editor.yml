@@ -1,6 +1,6 @@
 # ci:validates nothing
 # Packages the desktop editor and publishes one GitHub Release.
-name: CD · Editor
+name: CD · Editor (release)
 
 # Manual only — a release is a decision, not a side effect of a merge, and
 # approving the dispatch is the release act. The two build legs upload their

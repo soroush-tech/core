@@ -50,21 +50,72 @@ const dirsWithPackageJson = (root) => {
 }
 
 /**
- * The paths-filter config: one key per workspace member, per workflow file, and per root file.
- * JSON is valid YAML, so the action takes this as its `filters` input verbatim.
+ * Every CI definition file that carries a `# ci:validates` marker, by the name its `wf__` filter
+ * key uses. The workflows are discovered; the composite setup action is named, being the one such
+ * file outside `.github/workflows/`. It belongs here rather than in `ROOT_FILES`: every job
+ * installs through it, so editing it must re-run all of them — but it is a CI file, and a root
+ * file additionally sets `changes.root`, which is what the CD workflows deploy on.
+ */
+export function ciFiles() {
+  const files = {}
+  for (const file of readdirSync(join(repoRoot, '.github/workflows'))) {
+    if (/\.ya?ml$/.test(file)) files[file.replace(/\.ya?ml$/, '')] = `.github/workflows/${file}`
+  }
+  files['actions-setup'] = '.github/actions/setup/action.yml'
+  return files
+}
+
+/**
+ * One key over every CI definition path, whose matched **paths** — not just the key — come back
+ * to `assemble` via `list-files: json`, to catch a file that `ciFiles()` cannot see — see
+ * `unclaimedCiPaths`.
+ */
+const CI_ANY = 'ci__any'
+
+/**
+ * Matches only when a CI definition file was **deleted** — a paths-filter status predicate over
+ * the same two globs as `CI_ANY`, firing on the deletion itself no matter what else changed
+ * alongside it. A deleted path also surfaces through `unclaimedCiPaths`, but that rests on the
+ * file list arriving intact; this fires from the filter match alone, so the deletion case never
+ * hangs on one mechanism.
+ */
+const CI_DELETED = 'ci__deleted'
+
+/**
+ * The paths-filter config: one key per workspace member, per CI definition file, and per root
+ * file, plus the two catch-alls. JSON is valid YAML, so the action takes this as its `filters`
+ * input verbatim.
  */
 export function buildFilters() {
   const filters = {}
   for (const { dir, prefix } of AREAS) {
     for (const name of dirsWithPackageJson(dir)) filters[`${prefix}${name}`] = [`${dir}/${name}/**`]
   }
-  for (const file of readdirSync(join(repoRoot, '.github/workflows'))) {
-    if (/\.ya?ml$/.test(file)) {
-      filters[`wf__${file.replace(/\.ya?ml$/, '')}`] = [`.github/workflows/${file}`]
-    }
-  }
+  for (const [name, file] of Object.entries(ciFiles())) filters[`wf__${name}`] = [file]
+  filters[CI_ANY] = ['.github/workflows/**', '.github/actions/**']
+  filters[CI_DELETED] = [{ deleted: '.github/workflows/**' }, { deleted: '.github/actions/**' }]
   for (const [key, file] of Object.entries(ROOT_FILES)) filters[key] = [file]
   return filters
+}
+
+/**
+ * The changed CI paths that no per-file key claims: `ci__any`'s matches, minus `ciFiles()` and
+ * minus the `.md` companions, which are documentation no job reads. Anything left is a CI file
+ * the attribution cannot see — a deleted workflow (the keys are built from the working tree), an
+ * aux file inside an action — and the caller validates everything for it: the same answer an
+ * unreadable marker gets, for the same reason: this must over-run, never quietly under-run.
+ *
+ * Paths rather than keys, because keys cannot say this. A deletion or an unkeyed file beside an
+ * ordinary edit produces the same matched keys as the edit alone, so any key heuristic goes blind
+ * past the first claim — while the edit's claim can be far narrower than what the masked file
+ * validated. `null` means `ci__any` matched but the file list itself is missing: nothing can be
+ * ruled out, and the caller treats it as "everything" too.
+ */
+export function unclaimedCiPaths(changed, files) {
+  if (!changed.includes(CI_ANY)) return []
+  if (files === null) return null
+  const claimed = new Set(Object.values(ciFiles()))
+  return files.filter((path) => !claimed.has(path) && !path.endsWith('.md'))
 }
 
 /**
@@ -163,7 +214,12 @@ const MARKER = '# ci:validates '
 export function workflowValidates(name) {
   let source
   try {
-    source = readFileSync(join(repoRoot, '.github/workflows', `${name}.yml`), 'utf8')
+    // Deleted files are gone from `ciFiles()`, so fall back to where a workflow would have been:
+    // the read then fails, which is the answer either way.
+    source = readFileSync(
+      join(repoRoot, ciFiles()[name] ?? `.github/workflows/${name}.yml`),
+      'utf8'
+    )
   } catch {
     // Deleted in this very change: there is nothing left to read, so nothing is claimed.
     return { keys: [], wholeWorkspace: false }
@@ -200,14 +256,18 @@ export function workflowValidates(name) {
  * whether any of them means the lot.
  */
 export function attributeWorkflows(workflows) {
+  const files = ciFiles()
   const claims = workflows.map((name) => ({ name, ...workflowValidates(name) }))
+  // By path rather than by name: not every one of these is `<name>.yml` any more.
+  const pathOf = (name) => files[name] ?? `${name}.yml`
+  const meaning = ({ keys, wholeWorkspace }) => {
+    if (wholeWorkspace) return 'it decides how every job runs'
+    return keys.join(', ') || 'CI never runs it'
+  }
   return {
     keys: claims.flatMap(({ keys }) => keys),
     wholeWorkspace: claims.some((claim) => claim.wholeWorkspace),
-    reasons: claims.map(
-      ({ name, keys, wholeWorkspace }) =>
-        `${name}.yml changed — ${wholeWorkspace ? 'it decides how every job runs' : keys.join(', ') || 'CI never runs it'}`
-    ),
+    reasons: claims.map((claim) => `${pathOf(claim.name)} changed — ${meaning(claim)}`),
   }
 }
 
@@ -412,14 +472,32 @@ function main() {
   const workflows = attributeWorkflows(
     changed.filter((key) => key.startsWith('wf__')).map((key) => key.slice('wf__'.length))
   )
-  for (const reason of [...root.reasons, ...workflows.reasons]) console.error(`changes: ${reason}`)
+  // `ci__any`'s matched paths, laid alongside CHANGES by the same paths-filter step. Missing or
+  // unreadable stays null: `unclaimedCiPaths` then rules nothing out.
+  let ciAnyFiles = null
+  try {
+    const parsed = JSON.parse(process.env.CI_ANY_FILES)
+    if (Array.isArray(parsed)) ciAnyFiles = parsed
+  } catch {
+    /* null already says it */
+  }
+  const unclaimed = unclaimedCiPaths(changed, ciAnyFiles)
+  const unattributedCi = changed.includes(CI_DELETED) || unclaimed === null || unclaimed.length > 0
+  const reasons = [...root.reasons, ...workflows.reasons]
+  if (changed.includes(CI_DELETED)) reasons.push('a CI file was deleted — nothing left to claim it')
+  if (unclaimed === null) {
+    reasons.push('a CI file changed and the matched paths could not be read')
+  } else if (unclaimed.length > 0) {
+    reasons.push(`CI files changed that no per-file key claims — ${unclaimed.join(', ')}`)
+  }
+  for (const reason of reasons) console.error(`changes: ${reason}`)
 
   const { changes, outputs } = assembleChanges({
     changed,
     members,
     attributed: root.attributed,
     revalidate: workflows.keys,
-    revalidateAll: workflows.wholeWorkspace,
+    revalidateAll: workflows.wholeWorkspace || unattributedCi,
     wholeWorkspace: root.wholeWorkspace,
   })
 

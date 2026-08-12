@@ -30,20 +30,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: inputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: ${{ inputs.manager }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ inputs.manager }} ${{ inputs.command }}
+          node_version: ${{ inputs.node_version }}
+          manager: ${{ inputs.manager }}
+          command: ${{ inputs.command }}
 
       - name: Run Tests with Coverage
         run: ${{ inputs.runner }} --filter ${{ matrix.filter }} test:coverage

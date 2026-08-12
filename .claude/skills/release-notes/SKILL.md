@@ -133,7 +133,7 @@ Maintenance release — dependency refresh only. No public API or behavior chang
    step fails again before publishing. That same check also fails a commit whose **staged**
    package isn't ahead of the version already on npm, so an edit can't land without its bump. A
    package you didn't touch may stay at its published version.
-2. Dispatch — Actions → **Publish Packages (npm)** → pick `package`, **Run**. CLI:
+2. Dispatch — Actions → **CD · Packages (npm)** → pick `package`, **Run**. CLI:
    `gh workflow run cd-packages.yml -f package=<dir>`.
 3. The job publishes to npm (skips if that version already exists) and cuts a GitHub Release
    tagged/titled `<name>@<version>` from the notes file. Re-running repairs a missing Release

@@ -1,6 +1,6 @@
 [← Workflows overview](./README.md)
 
-# `cd-editor.yml` — Package and release the desktop editor
+# `cd-editor.yml` — CD · Editor (release)
 
 Builds the editor's installers on both platforms and assembles them into **one
 published GitHub Release** with a title and the notes from

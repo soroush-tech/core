@@ -1,11 +1,11 @@
 # ci:validates nothing
 # CI never runs this workflow, so no job here could prove anything about it.
-name: Deploy Worker (@soroush/api)
+name: CD · Worker (api)
 
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ['Continuous Integration']
+    workflows: ['CI']
     types:
       - completed
     branches:

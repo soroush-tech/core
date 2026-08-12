@@ -9,22 +9,24 @@ Each workflow has a per-file deep-dive doc next to it (`ci.md`, `cd-*.md`, `chro
 
 ## Workflow files
 
-| File                | Name                     | Trigger                                                                      |
-| ------------------- | ------------------------ | ---------------------------------------------------------------------------- |
-| `ci.yml`            | `Continuous Integration` | `push` to `main`, all `pull_request`                                         |
-| `ci-packages.yml`   | CI · Packages            | `workflow_call` from `ci.yml`                                                |
-| `ci-worker.yml`     | CI · Workers             | `workflow_call` from `ci.yml`                                                |
-| `ci-app.yml`        | CI · Apps                | `workflow_call` from `ci.yml`                                                |
-| `ci-web.yml`        | CI · Web                 | `workflow_call` from `ci-app.yml`                                            |
-| `ci-editor.yml`     | CI · Editor              | `workflow_call` from `ci-app.yml`                                            |
-| `cd-web.yml`        | Pages + Storybook deploy | `workflow_run` of CI (success, `main`) + dispatch                            |
-| `cd-worker-api.yml` | Cloudflare Worker deploy | `workflow_run` of CI (success, `main`) + dispatch                            |
-| `cd-packages.yml`   | Publish Packages (npm)   | manual `workflow_dispatch` only — see the `release-notes` skill              |
-| `cd-editor.yml`     | CD · Editor              | manual `workflow_dispatch` only — draft GitHub Release of the installers     |
-| `chromatic.yml`     | Chromatic                | `pull_request` + `push` to `main` + `workflow_dispatch` (main), non-blocking |
-| `label-area.yml`    | Label Affected Area      | `issues: opened`                                                             |
+| File                | Name                           | Trigger                                                                      |
+| ------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| `ci.yml`            | `CI`                           | `push` to `main`, all `pull_request`                                         |
+| `ci-packages.yml`   | `CI · Packages`                | `workflow_call` from `ci.yml`                                                |
+| `ci-worker.yml`     | `CI · Workers`                 | `workflow_call` from `ci.yml`                                                |
+| `ci-app.yml`        | `CI · Apps`                    | `workflow_call` from `ci.yml`                                                |
+| `ci-web.yml`        | `CI · Web`                     | `workflow_call` from `ci-app.yml`                                            |
+| `ci-editor.yml`     | `CI · Editor`                  | `workflow_call` from `ci-app.yml`                                            |
+| `cd-web.yml`        | `CD · Web (Pages + Storybook)` | `workflow_run` of CI (success, `main`) + dispatch                            |
+| `cd-worker-api.yml` | `CD · Worker (api)`            | `workflow_run` of CI (success, `main`) + dispatch                            |
+| `cd-packages.yml`   | `CD · Packages (npm)`          | manual `workflow_dispatch` only — see the `release-notes` skill              |
+| `cd-editor.yml`     | `CD · Editor (release)`        | manual `workflow_dispatch` only — draft GitHub Release of the installers     |
+| `chromatic.yml`     | `Chromatic`                    | `pull_request` + `push` to `main` + `workflow_dispatch` (main), non-blocking |
+| `label-area.yml`    | `Label Affected Area`          | `issues: opened`                                                             |
 
 One CI entry workflow calling one per area; CD is separate and **gated on CI success** — never deploy on a raw `push`.
+
+**Naming.** Every workflow is `CI · <Area>` or `CD · <Area> (<detail>)`, so the Actions sidebar groups into two blocks; the entry workflow is plain `CI`. Chromatic and the labeller stay **unprefixed on purpose** — neither is part of `ci-ok`, and prefixing them would say they gate PRs. **Renaming a workflow is never a one-file edit**: `workflow_run` matches on the workflow's `name:`, not its filename, so `cd-web` / `cd-worker-api` / `cd-worker-bench` all pin `workflows: ['CI']` and a rename that misses one silently stops that deploy for good. Branch protection is unaffected — it matches the **job** name `ci-ok`.
 
 ## Action pinning convention — the load-bearing rule
 
@@ -40,6 +42,7 @@ Own-org used to sit with `actions/*` on a tag. It does not any more: what SHA-pi
 `prepare` → `lint` → three **caller jobs** (`packages`, `worker`, `app`) → `ci-ok`. Each caller `uses:` an area workflow; `ci-app.yml` calls one workflow per app in turn, so adding an app never touches the entry file. Nesting is three of the four levels GitHub allows, and it stays one run with one `ci-ok`.
 
 - **Detect once in `prepare`** (node version from `.nvmrc`, package manager, runner, changed areas), reuse via `needs.prepare.outputs.*`. Never hard-code the node version.
+- **Every job that installs starts from `./.github/actions/setup`** — the composite action holding pnpm, Node and the install. **Never re-inline those steps**: the whole point is that the `pnpm/action-setup` pin and the store cache are a one-file edit. A new job is a checkout (the action cannot carry it — a local action is resolved from the working tree it checks out) plus a call with `node_version`/`manager`/`command`. Per-area caches (Playwright binaries, the Electron binary) stay in the job, just after the call. The action carries its own `# ci:validates all` marker, so editing it re-runs every job without setting `changes.root` — nothing deploys off a CI edit.
 - **A file per area, so the gate can be narrower than everything.** Each workflow declares its scope on line 1 (`# ci:validates pkg__*`), read by `scripts/assemble-changes.mjs`; unmarked or unparseable means the whole workspace. A caller job cannot set `environment:`/`timeout-minutes:`/`runs-on:` (those belong to the inner jobs), and **`secrets: inherit` is mandatory, per hop** — naming an environment-scoped secret at the call site passes an empty string, and a middle layer that omits it starves the workflow below.
 - **One job per shape, not per member.** Packages, workers and the editor's unit tier are the same job — install, `test:coverage`, upload the lcov — so packages are one matrix and workers another, both built from the tree in `scripts/assemble-changes.mjs`. **Adding a workspace member must need no edit to `ci.yml`**: if a new area needs a job, ask first whether it is really a different shape (`web` builds; `editor-e2e` drives Electron) or just another row.
 - Heavy jobs are **change-gated** (`dorny/paths-filter`, no Nx/Turbo) so a package-only PR stays cheap. Dependency edges are **derived, never listed**: a member runs when it changed or when a package it declares as a `workspace:` dependency changed. Do not add a hand-written consumer list — it is a list to forget the day a dependency moves.

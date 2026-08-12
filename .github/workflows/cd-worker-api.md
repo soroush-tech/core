@@ -1,15 +1,15 @@
 [← Workflows overview](./README.md)
 
-# `cd-worker-api.yml` — Deploy Worker (`@soroush/api`)
+# `cd-worker-api.yml` — CD · Worker (api)
 
 Deploys the Cloudflare Worker API. **Gated on CI success** — starts from a
-`workflow_run` of `Continuous Integration`, never from a raw `push`.
+`workflow_run` of `CI`, never from a raw `push`.
 
 ```yaml
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ['Continuous Integration']
+    workflows: ['CI']
     types: [completed]
     branches: [main]
 concurrency:

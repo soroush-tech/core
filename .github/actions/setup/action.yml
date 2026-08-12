@@ -1,0 +1,52 @@
+# ci:validates all
+# Every job installs through this action, so editing it re-runs every one of them — and, being a
+# CI file rather than a root file, ships nothing.
+#
+# The four steps every CI job used to repeat, minus the checkout: a local action is
+# resolved from the working tree, so `uses: ./.github/actions/setup` cannot carry the
+# checkout that puts it there. Jobs keep their own — which is also the step that varies
+# (ci-web.yml's `web` job needs `fetch-depth: 0` for Codecov base detection).
+#
+# Per-area caches stay in the jobs that need them. This holds only what every job shares,
+# so bumping the pnpm pin or changing the store cache is an edit to this file alone.
+name: Setup
+description: Set up pnpm and Node, then install the workspace's dependencies.
+
+inputs:
+  node_version:
+    description: Node.js version to install — ci.yml's `prepare` job reads it from .nvmrc.
+    required: true
+  manager:
+    description: Detected package manager — pnpm, yarn or npm.
+    required: true
+  command:
+    description: The manager's install command, with its flags.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      if: inputs.manager == 'pnpm'
+      uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+    - name: Setup Node
+      uses: actions/setup-node@v5
+      with:
+        node-version: ${{ inputs.node_version }}
+        cache: ${{ inputs.manager }}
+
+    # Both inputs reach the shell through env and a fixed dispatch, never spliced into
+    # the run body — zizmor: template-injection. `$COMMAND` is deliberately unquoted: it
+    # is a flag list ("install --frozen-lockfile --ignore-scripts"), not a single word.
+    - name: Install dependencies
+      shell: bash
+      env:
+        CI: true
+        MANAGER: ${{ inputs.manager }}
+        COMMAND: ${{ inputs.command }}
+      run: |
+        case "$MANAGER" in
+          pnpm|yarn|npm) "$MANAGER" $COMMAND ;;
+          *) echo "Unsupported package manager: $MANAGER" >&2; exit 1 ;;
+        esac

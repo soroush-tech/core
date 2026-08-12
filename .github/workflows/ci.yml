@@ -1,6 +1,6 @@
 # ci:validates all
 # ci.yml holds prepare, lint and ci-ok — it decides how every job runs, so every job proves it.
-name: Continuous Integration
+name: CI
 
 on:
   push:
@@ -87,6 +87,8 @@ jobs:
         id: filter
         with:
           filters: ${{ steps.discover.outputs.filters }} # JSON is valid YAML
+          # Assemble reads ci__any's matched paths to spot CI files no per-file key claims.
+          list-files: json
 
       # The root manifest and the lockfile are attributed by comparing them against the
       # base — the target branch for a pull request, the previous tip for a push — so both
@@ -111,6 +113,7 @@ jobs:
         id: assemble
         env:
           CHANGES: ${{ steps.filter.outputs.changes }}
+          CI_ANY_FILES: ${{ steps.filter.outputs.ci__any_files }}
           BASE_PACKAGE_JSON: ${{ runner.temp }}/base/package.json
           BASE_LOCKFILE: ${{ runner.temp }}/base/pnpm-lock.yaml
         run: node scripts/assemble-changes.mjs assemble >> "$GITHUB_OUTPUT"
@@ -137,20 +140,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup pnpm
-        if: needs.prepare.outputs.manager == 'pnpm'
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ needs.prepare.outputs.node_version }}
-          cache: ${{ needs.prepare.outputs.manager }}
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: ${{ needs.prepare.outputs.manager }} ${{ needs.prepare.outputs.command }}
+          node_version: ${{ needs.prepare.outputs.node_version }}
+          manager: ${{ needs.prepare.outputs.manager }}
+          command: ${{ needs.prepare.outputs.command }}
 
       - name: Run Lint
         run: ${{ needs.prepare.outputs.runner }} run lint
