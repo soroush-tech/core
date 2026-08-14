@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/markdown",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Headless, composable markdown editor + renderer for @soroush.tech/design-system — Control, Toolbar, Editor, and Preview built on react-markdown, remark-gfm, and rehype-highlight.",
   "keywords": [
     "markdown",
@@ -70,7 +70,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -103,13 +103,8 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.8.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.3",
-    "eslint-plugin-storybook": "^10.5.6",
-    "globals": "^17.9.0",
     "jsdom": "^29.1.1",
+    "oxlint": "^1.78.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "storybook": "^10.5.6",

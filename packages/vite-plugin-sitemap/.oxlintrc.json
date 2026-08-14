@@ -1,0 +1,6 @@
+{
+  "extends": ["../eslint-config/.oxlintrc.json"],
+  "env": {
+    "node": true
+  }
+}

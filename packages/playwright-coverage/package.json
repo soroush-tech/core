@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/playwright-coverage",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Collect per-test V8 code coverage from Playwright e2e runs and aggregate it to lcov via monocart-coverage-reports.",
   "keywords": [
     "playwright",
@@ -52,7 +52,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -71,9 +71,8 @@
     "@types/node": "^26.1.2",
     "@types/picomatch": "^4.0.3",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0",
     "monocart-coverage-reports": "^2.12.12",
+    "oxlint": "^1.78.0",
     "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"

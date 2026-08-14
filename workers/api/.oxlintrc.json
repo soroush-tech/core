@@ -1,0 +1,8 @@
+{
+  "extends": ["../../packages/eslint-config/.oxlintrc.json"],
+  "env": {
+    "node": true,
+    "serviceworker": true
+  },
+  "ignorePatterns": [".wrangler"]
+}

@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -27,8 +27,7 @@
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/wrangler-tools": "workspace:*",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.8.1",
-    "globals": "^17.9.0",
+    "oxlint": "^1.78.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10",
     "wrangler": "^4.120.0"

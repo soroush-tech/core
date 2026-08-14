@@ -1,0 +1,15 @@
+{
+  "extends": ["../../packages/eslint-config/.oxlintrc.react.json"],
+  "env": {
+    "browser": true
+  },
+  "ignorePatterns": ["out", "dist", "coverage"],
+  "overrides": [
+    {
+      "files": ["src/main/**", "src/test/**", "**/*.e2e.ts", "*.config.ts", "vitest.setup.ts"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

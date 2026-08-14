@@ -296,7 +296,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -323,8 +323,7 @@
     "@soroush.tech/eslint-config": "workspace:*",
     "@types/prop-types": "^15.7.15",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0",
+    "oxlint": "^1.78.0",
     "prop-types": "^15.8.1",
     "tsdown": "^0.22.14",
     "typescript": "~6.0.3",

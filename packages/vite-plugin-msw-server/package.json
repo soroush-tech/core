@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/vite-plugin-msw-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Make server-side rendering deterministic in end-to-end tests: an msw/node mock server inside Vite, so SSR loaders and SSG prerendering resolve against your mocks instead of a live API.",
   "keywords": [
     "vite",
@@ -53,7 +53,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -65,8 +65,7 @@
   "devDependencies": {
     "@soroush.tech/eslint-config": "workspace:*",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0",
+    "oxlint": "^1.78.0",
     "tsdown": "^0.22.14",
     "typescript": "~6.0.3",
     "vite": "^8.2.0",
