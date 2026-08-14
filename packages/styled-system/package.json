@@ -326,7 +326,7 @@
     "oxlint": "^1.78.0",
     "prop-types": "^15.8.1",
     "tsdown": "^0.22.14",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "vitest": "^4.1.10"
   }
 }
