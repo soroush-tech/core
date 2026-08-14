@@ -147,6 +147,11 @@ jobs:
           manager: ${{ needs.prepare.outputs.manager }}
           command: ${{ needs.prepare.outputs.command }}
 
+      # Formatting is enforced here, not by a lint rule: oxfmt owns it, and `lint` no
+      # longer carries a formatting check of its own.
+      - name: Run Format Check
+        run: ${{ needs.prepare.outputs.runner }} run format:check
+
       - name: Run Lint
         run: ${{ needs.prepare.outputs.runner }} run lint
 

@@ -12,7 +12,8 @@
     "prepare": "husky",
     "postprepare": "pnpm -r run setup",
     "setup": "pnpm -r run setup",
-    "format": "prettier --write .",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "gen:publish-options": "node scripts/gen-publish-options.mjs",
     "check:release-notes": "node scripts/check-release-notes.mjs",
     "dev": "pnpm --parallel -r dev",
@@ -47,10 +48,8 @@
     "deploy": "pnpm --filter @soroush/web deploy"
   },
   "devDependencies": {
-    "@emotion/css-prettifier": "^1.2.0",
     "husky": "^9.1.7",
-    "prettier": "^3.9.6",
-    "pretty-quick": "^4.2.2"
+    "oxfmt": "^0.63.0"
   },
   "packageManager": "pnpm@10.13.1",
   "pnpm": {
