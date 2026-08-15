@@ -63,10 +63,10 @@ to `true`.
 
 | #   | Step                              | Detail                                                                                                                                                                                                                                                                                              |
 | --- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Checkout                          | `actions/checkout@v5`                                                                                                                                                                                                                                                                               |
+| 1   | Checkout                          | `actions/checkout@v7`                                                                                                                                                                                                                                                                               |
 | 2   | Read Node.js version              | `cat .nvmrc` → `$GITHUB_ENV` (`NODE_VERSION`)                                                                                                                                                                                                                                                       |
-| 3   | Setup pnpm                        | `pnpm/action-setup@v5`                                                                                                                                                                                                                                                                              |
-| 4   | Setup Node                        | `actions/setup-node@v5`, `node-version: $NODE_VERSION`, `cache: pnpm` (deps cache — see [Caching](#caching))                                                                                                                                                                                        |
+| 3   | Setup pnpm                        | `pnpm/action-setup@v6`                                                                                                                                                                                                                                                                              |
+| 4   | Setup Node                        | `actions/setup-node@v7`, `node-version: $NODE_VERSION`, `cache: pnpm` (deps cache — see [Caching](#caching))                                                                                                                                                                                        |
 | 5   | Install                           | `pnpm install --frozen-lockfile --ignore-scripts`                                                                                                                                                                                                                                                   |
 | 6   | Generate `wrangler.json` from env | `pnpm --filter @soroush/api config:gen` — renders the wrangler config from repo `vars`                                                                                                                                                                                                              |
 | 7   | Deploy                            | `cloudflare/wrangler-action@v4.0.0` with `command: deploy`, `workingDirectory: workers/api`, `wranglerVersion: '4.119.0'`, `packageManager: pnpm` (same action as the Storybook Pages deploy; the root-level lockfile means detection would fall back to npm, which cannot read `workspace:*` deps) |
@@ -89,7 +89,7 @@ it's rendered fresh instead of committed.
 
 ## Caching
 
-Only the **dependency store**, via `setup-node@v5` with `cache: pnpm` — keyed off the
+Only the **dependency store**, via `setup-node@v7` with `cache: pnpm` — keyed off the
 `pnpm-lock.yaml` hash, same mechanism as CI. No browser or build-artifact caches.
 
 ---
