@@ -101,8 +101,10 @@ on `pnpm install`; re-run it any time with `pnpm prepare` (or `pnpm run setup`).
 
 ## ✅ Quality & CI/CD
 
-- **Pre-commit** — a husky hook runs lint, format, and tests before each commit.
-- **Lint** — `pnpm lint` uses `--max-warnings 0`; any warning fails.
+- **Pre-commit** — a husky hook formats the staged files, then runs the release and
+  build checks and the tests before each commit.
+- **Lint** — `pnpm lint` runs `oxlint --deny-warnings`; any warning fails.
+- **Format** — `pnpm format` runs `oxfmt`; CI enforces it with `pnpm format:check`.
 - **Coverage** — touched files reach **100%**, and **every `packages/*` package
   is held at 100%** as a hard threshold.
 - **One workflow per area** — CI is an entry workflow calling one file per area
@@ -166,7 +168,7 @@ Globs live in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) (`apps/*`,
 | **UI docs**       | **Storybook** + **Chromatic**         | Component catalogue with visual-regression review on every PR.                                          |
 | **Monorepo**      | **pnpm** workspaces                   | Cheap internal packages with `workspace:*` links and no publish step for internal use.                  |
 | **Packaging**     | **tsdown**                            | Builds publishable packages (ESM/CJS + types) without the deprecated config that breaks under TS 6.     |
-| **Lint & format** | **ESLint** 10 + **Prettier** + husky  | `--max-warnings 0` and a pre-commit gate keep the tree always-green.                                    |
+| **Lint & format** | **oxlint** + **oxfmt** + husky        | `--deny-warnings` and a pre-commit gate keep the tree always-green.                                     |
 | **Styling**       | `@soroush.tech/design-system`         | Token-driven, prop-based styling with a typed design system and its own styling engine — no ad-hoc CSS. |
 | **Data**          | **TanStack Query**                    | Declarative server-state with caching.                                                                  |
 | **Forms**         | **TanStack Form** + **zod**           | Headless, type-safe form state and schema-validated (used by the contact form).                         |

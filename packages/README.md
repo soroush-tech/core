@@ -8,7 +8,7 @@ All packages are scoped **`@soroush.tech/*`**, and the directory name matches th
 
 | Package                                | Published | What it does                                                                                            |
 | -------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
-| `@soroush.tech/eslint-config`          | private   | Shared, framework-agnostic ESLint base (`./base`) that every member extends.                            |
+| `@soroush.tech/eslint-config`          | private   | Shared oxlint config (`.oxlintrc.json`, plus `.react`/`.storybook` layers) every member extends.        |
 | `@soroush.tech/vite-plugin-watch`      | private   | Dev-only Vite plugin: re-runs a codegen script on dev start and whenever a watched source file changes. |
 | `@soroush.tech/vite-plugin-sitemap`    | private   | Build-only Vite plugin: emits `sitemap.xml` from Vike's prerendered HTML.                               |
 | `@soroush.tech/vite-plugin-msw-server` | published | Runs an `msw`/node mock server inside Vite for server-side rendering and SSG prerendering.              |

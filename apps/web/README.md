@@ -83,30 +83,30 @@ apps/web/
 
 ## 🛠️ Scripts
 
-| Category            | Command                        | Description                                         |
-| ------------------- | ------------------------------ | --------------------------------------------------- |
-| **Develop**         | `pnpm dev`                     | Start the Vite dev server.                          |
-| **Quality**         | `pnpm lint`                    | ESLint with `--max-warnings 0` (any warning fails). |
-|                     | `pnpm format`                  | Format the codebase with Prettier.                  |
-| **Test**            | `pnpm test`                    | Run Vitest in watch mode.                           |
-|                     | `pnpm test:unit`               | Run only the unit project.                          |
-|                     | `pnpm test:storybook`          | Run only the Storybook project.                     |
-|                     | `pnpm test:ui`                 | Vitest interactive UI.                              |
-| **Coverage**        | `pnpm test:coverage`           | Full coverage run.                                  |
-|                     | `pnpm test:coverage:unit`      | Coverage for the unit project.                      |
-|                     | `pnpm test:coverage:storybook` | Coverage for the Storybook project.                 |
-|                     | `pnpm test:coverage:e2e`       | E2E coverage (Chromium, `E2E_COVERAGE=true`).       |
-| **E2E**             | `pnpm test:e2e`                | Run Playwright end-to-end tests.                    |
-|                     | `pnpm test:e2e:firefox`        | Run e2e in the Firefox project.                     |
-|                     | `pnpm test:e2e:webkit`         | Run e2e in the WebKit project.                      |
-|                     | `pnpm test:e2e:ui`             | Playwright interactive UI.                          |
-| **Build & Preview** | `pnpm build`                   | Type-check then build for production.               |
-|                     | `pnpm build:compress`          | Production build with gzip/brotli precompression.   |
-|                     | `pnpm preview`                 | Preview the production build locally.               |
-|                     | `pnpm preview:e2e`             | Serve `build/client` on port 3000 for e2e runs.     |
-| **Storybook**       | `pnpm storybook`               | Run Storybook dev server on port 6006.              |
-|                     | `pnpm build:storybook`         | Build static Storybook.                             |
-| **Deploy**          | `pnpm deploy`                  | Publish `build/` to GitHub Pages (gh-pages).        |
+| Category            | Command                        | Description                                        |
+| ------------------- | ------------------------------ | -------------------------------------------------- |
+| **Develop**         | `pnpm dev`                     | Start the Vite dev server.                         |
+| **Quality**         | `pnpm lint`                    | oxlint with `--deny-warnings` (any warning fails). |
+|                     | `pnpm format`                  | Format the codebase with oxfmt.                    |
+| **Test**            | `pnpm test`                    | Run Vitest in watch mode.                          |
+|                     | `pnpm test:unit`               | Run only the unit project.                         |
+|                     | `pnpm test:storybook`          | Run only the Storybook project.                    |
+|                     | `pnpm test:ui`                 | Vitest interactive UI.                             |
+| **Coverage**        | `pnpm test:coverage`           | Full coverage run.                                 |
+|                     | `pnpm test:coverage:unit`      | Coverage for the unit project.                     |
+|                     | `pnpm test:coverage:storybook` | Coverage for the Storybook project.                |
+|                     | `pnpm test:coverage:e2e`       | E2E coverage (Chromium, `E2E_COVERAGE=true`).      |
+| **E2E**             | `pnpm test:e2e`                | Run Playwright end-to-end tests.                   |
+|                     | `pnpm test:e2e:firefox`        | Run e2e in the Firefox project.                    |
+|                     | `pnpm test:e2e:webkit`         | Run e2e in the WebKit project.                     |
+|                     | `pnpm test:e2e:ui`             | Playwright interactive UI.                         |
+| **Build & Preview** | `pnpm build`                   | Type-check then build for production.              |
+|                     | `pnpm build:compress`          | Production build with gzip/brotli precompression.  |
+|                     | `pnpm preview`                 | Preview the production build locally.              |
+|                     | `pnpm preview:e2e`             | Serve `build/client` on port 3000 for e2e runs.    |
+| **Storybook**       | `pnpm storybook`               | Run Storybook dev server on port 6006.             |
+|                     | `pnpm build:storybook`         | Build static Storybook.                            |
+| **Deploy**          | `pnpm deploy`                  | Publish `build/` to GitHub Pages (gh-pages).       |
 
 ---
 

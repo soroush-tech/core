@@ -160,7 +160,7 @@ the resolved graph, and getting it wrong means skipping a package the bump did b
 | 1   | Checkout     | `actions/checkout@v5`, no persisted creds                                                |
 | 2   | Setup        | [`./.github/actions/setup`](#the-setup-action) — pnpm, Node and the install, in one step |
 | 3   | Format Check | `${runner} run format:check` (`oxfmt --check`)                                           |
-| 4   | Lint         | `${runner} run lint` (`--max-warnings 0`)                                                |
+| 4   | Lint         | `${runner} run lint` (`oxlint --deny-warnings`)                                          |
 | 5   | Typecheck    | `${runner} run typecheck`                                                                |
 
 ---
