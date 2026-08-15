@@ -18,8 +18,8 @@ importers:
         specifier: ^0.63.0
         version: 0.63.0
       oxfmt-quick:
-        specifier: ^0.1.0
-        version: 0.1.0(oxfmt@0.63.0)
+        specifier: ^1.0.0
+        version: 1.0.0(oxfmt@0.63.0)
       oxlint:
         specifier: ^1.78.0
         version: 1.78.0
@@ -283,8 +283,8 @@ importers:
         specifier: ^0.63.0
         version: 0.63.0
       oxfmt-quick:
-        specifier: ^0.1.0
-        version: 0.1.0(oxfmt@0.63.0)
+        specifier: ^1.0.0
+        version: 1.0.0(oxfmt@0.63.0)
       oxlint:
         specifier: ^1.78.0
         version: 1.78.0
@@ -6160,8 +6160,8 @@ packages:
   oxc-resolver@11.24.2:
     resolution: {integrity: sha512-FY91FiDBj7ls5MsFS9jN3tjz2o0/zsdSsymlakySaBwVJZorHhkWyICLZMKxlu1R9vYo+sd3z1jwb4J8x7bNDw==}
 
-  oxfmt-quick@0.1.0:
-    resolution: {integrity: sha512-Kb0N456XOXrmEnkt4kA3d/N+eCD5nb81GCglZUFReJa1wpDnBkwn2ugzYY8OFVIjlq57iSQCUhZ04LZNsByHHg==}
+  oxfmt-quick@1.0.0:
+    resolution: {integrity: sha512-kslJ5OSJIa2WnICFtc3ZAHHQbU8CVqY6kbxTiEmtPbGwHL3EIjV8oVuWKi29AIHZ62qOtusCp1nd3/IWwh+a4Q==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24}
     hasBin: true
     peerDependencies:
@@ -13105,7 +13105,7 @@ snapshots:
       '@oxc-resolver/binding-win32-arm64-msvc': 11.24.2
       '@oxc-resolver/binding-win32-x64-msvc': 11.24.2
 
-  oxfmt-quick@0.1.0(oxfmt@0.63.0):
+  oxfmt-quick@1.0.0(oxfmt@0.63.0):
     dependencies:
       mri: 1.2.0
       oxfmt: 0.63.0

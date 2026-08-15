@@ -50,7 +50,7 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "oxfmt": "^0.63.0",
-    "oxfmt-quick": "^0.1.0",
+    "oxfmt-quick": "^1.0.0",
     "oxlint": "^1.78.0"
   },
   "packageManager": "pnpm@10.13.1",
