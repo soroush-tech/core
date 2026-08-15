@@ -30,7 +30,7 @@ interface PackageJson {
  * The route segment for a package: its name without the scope. Unscoped names (packages
  * published outside the `@soroush.tech` scope) have no scope to strip.
  */
-export const slugOf = (name: string): string => name.split('/').at(-1) ?? name
+export const slugOf = (name: string): string => name.slice(name.lastIndexOf('/') + 1)
 
 /**
  * Builds a card entry from a package.json. Links to the internal detail page when one exists
