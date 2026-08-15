@@ -1,0 +1,30 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["./.oxlintrc.react.json"],
+  "jsPlugins": [
+    "./plugins/no-import-extensions.js",
+    {
+      "name": "react-hooks-js",
+      "specifier": "eslint-plugin-react-hooks"
+    },
+    "eslint-plugin-react-refresh",
+    "eslint-plugin-storybook"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.stories.ts", "**/*.stories.tsx"],
+      "rules": {
+        "storybook/await-interactions": "error",
+        "storybook/context-in-play-function": "error",
+        "storybook/default-exports": "error",
+        "storybook/hierarchy-separator": "error",
+        "storybook/no-redundant-story-name": "error",
+        "storybook/no-renderer-packages": "error",
+        "storybook/prefer-pascal-case": "error",
+        "storybook/story-exports": "error",
+        "storybook/use-storybook-expect": "error",
+        "storybook/use-storybook-testing-library": "error"
+      }
+    }
+  ]
+}

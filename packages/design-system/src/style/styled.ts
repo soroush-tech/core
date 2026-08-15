@@ -121,7 +121,8 @@ const createThemedStyled = (
   // `systemProps` (per-instance props win over the theme).
   const themeStyles = (props: Record<string, unknown> & { theme: Theme }) => {
     const components = props.theme.components as
-      Record<string, ComponentThemeConfig | undefined> | undefined
+      | Record<string, ComponentThemeConfig | undefined>
+      | undefined
     const config = components?.[name]
     if (!config) {
       return null

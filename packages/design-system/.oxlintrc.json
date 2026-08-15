@@ -1,0 +1,11 @@
+{
+  "extends": ["../eslint-config/.oxlintrc.storybook.json"],
+  "env": { "browser": true },
+  "ignorePatterns": ["dist", "coverage", "storybook-static", ".design-sync"],
+  "overrides": [
+    {
+      "files": ["*.config.ts", "vitest.setup.ts", "scripts/**", ".storybook/**"],
+      "env": { "node": true }
+    }
+  ]
+}

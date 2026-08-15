@@ -1,0 +1,15 @@
+{
+  "extends": ["../../packages/eslint-config/.oxlintrc.storybook.json"],
+  "env": {
+    "browser": true
+  },
+  "ignorePatterns": ["public", ".claude", "storybook-static", "dist", "coverage"],
+  "overrides": [
+    {
+      "files": ["scripts/**"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

@@ -155,12 +155,13 @@ the resolved graph, and getting it wrong means skipping a package the bump did b
 `needs: prepare` · ubuntu · 15 min. Lint + typecheck the whole workspace once
 (`pnpm -r` skips workspaces without the script). Not change-gated — it's cheap.
 
-| #   | Step      | Detail                                                                                   |
-| --- | --------- | ---------------------------------------------------------------------------------------- |
-| 1   | Checkout  | `actions/checkout@v5`, no persisted creds                                                |
-| 2   | Setup     | [`./.github/actions/setup`](#the-setup-action) — pnpm, Node and the install, in one step |
-| 3   | Lint      | `${runner} run lint` (`--max-warnings 0`)                                                |
-| 4   | Typecheck | `${runner} run typecheck`                                                                |
+| #   | Step         | Detail                                                                                   |
+| --- | ------------ | ---------------------------------------------------------------------------------------- |
+| 1   | Checkout     | `actions/checkout@v5`, no persisted creds                                                |
+| 2   | Setup        | [`./.github/actions/setup`](#the-setup-action) — pnpm, Node and the install, in one step |
+| 3   | Format Check | `${runner} run format:check` (`oxfmt --check`)                                           |
+| 4   | Lint         | `${runner} run lint` (`oxlint --deny-warnings`)                                          |
+| 5   | Typecheck    | `${runner} run typecheck`                                                                |
 
 ---
 

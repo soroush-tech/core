@@ -265,6 +265,23 @@ Minimum coverage:
 
 ---
 
+## Running Storybook
+
+Two Storybooks render these same story files, for two different jobs.
+
+|         | Config                              | Themes               | Run                                              |
+| ------- | ----------------------------------- | -------------------- | ------------------------------------------------ |
+| Package | `packages/design-system/.storybook` | `baseTheme` only     | `pnpm storybook` from this directory (port 6007) |
+| Site    | `apps/web/.storybook`               | brand `light`/`dark` | `pnpm storybook` from the repo root (port 6006)  |
+
+The package Storybook is the consumer's-eye view: `baseTheme`, the package's own `globalStyles` reset, and no webfonts — so text falls back to the generic stack in `theme.fonts`, exactly as it does for a consumer who hasn't loaded them. Demo images resolve from `.storybook/public/`. It runs no brand code, so it stays usable if the app is broken or absent.
+
+The site Storybook globs these files too and decorates them with the brand themes and fonts. That build is the Chromatic surface — visual baselines come from there, not from here.
+
+Story play functions and a11y checks run in both: `pnpm test:storybook` here (the `storybook` project in `vitest.config.ts`, against `baseTheme`), and in the app's own `storybook` project against the brand themes.
+
+---
+
 ## Storybook Options (`@soroush.tech/design-system/utils/test/storiesOptions.ts`)
 
 For props shared across components (`bg`, `opacity`, `p`, `m`, all border props, etc.), `@soroush.tech/design-system/utils/test/storiesArgs.ts` exports pre-built argType objects — import and spread directly into `argTypes` instead of composing from option arrays.

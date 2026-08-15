@@ -1,5 +1,10 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
+import storybookTest from '@storybook/addon-vitest/vitest-plugin'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   test: {
@@ -38,6 +43,24 @@ export default defineConfig({
             // Vitest's default API port (63315) can land in a Windows
             // Hyper-V excluded port range, failing with listen EACCES.
             api: { port: 51315 },
+          },
+        },
+      },
+      {
+        // Story tier: every story's play function and a11y check, run against the
+        // package's own Storybook (`baseTheme`). The site's Storybook runs these
+        // same stories in the brand themes from its own vitest project.
+        plugins: [storybookTest({ configDir: resolve(__dirname, '.storybook') })],
+        test: {
+          name: 'storybook',
+          setupFiles: ['./.storybook/vitest.setup.ts'],
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }],
+            // See the `browser` project: avoid the Windows excluded port range.
+            api: { port: 51318 },
           },
         },
       },

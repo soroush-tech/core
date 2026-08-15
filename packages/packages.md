@@ -8,12 +8,12 @@ For a plain-English overview of what currently lives here, see [`README.md`](./R
 
 ## What belongs here
 
-`packages/` is for **shared, app-agnostic code** — framework-agnostic tooling (ESLint config, Vite plugins), shared schemas, generic utilities.
+`packages/` is for **shared, app-agnostic code** — framework-agnostic tooling (lint config, Vite plugins), shared schemas, generic utilities.
 
 | Belongs in `packages/`                           | Belongs elsewhere                                             |
 | ------------------------------------------------ | ------------------------------------------------------------- |
 | A Vite plugin reusable across builds             | App-specific sections/pages/hooks → `apps/web/src/`           |
-| The shared ESLint base                           | App-specific composed UI → `apps/web/src/common\|section`     |
+| The shared oxlint base                           | App-specific composed UI → `apps/web/src/common\|section`     |
 | UI primitives (`Flex`, `View`) → `design-system` | A single-consumer, app-coupled component → keep it in the app |
 | A schema/util shared by two members or published | A single-consumer, app-coupled helper → keep it in the app    |
 
@@ -33,7 +33,7 @@ packages/
       index.test.ts       ← co-located unit tests (100% coverage — required)
     package.json
     tsconfig.json         ← bundler resolution, noEmit; NOT in the root solution
-    eslint.config.js      ← spreads @soroush.tech/eslint-config/base + env globals
+    .oxlintrc.json        ← extends @soroush.tech/eslint-config's base + env
     vitest.config.ts      ← v8 coverage, reporter ['text', 'lcov'], 100% thresholds
     tsdown.config.ts      ← publishable packages only
     README.md             ← usage docs (publishable packages)
@@ -148,5 +148,5 @@ npm deprecate '@soroush.tech/<name>@<badrange>' 'Broken exports; use >=<fixed>.'
 
 ## Linting & types
 
-- Each package gets a minimal `eslint.config.js` spreading `@soroush.tech/eslint-config/base` plus its environment globals (node, etc.). Tooling packages stay React-free; React-shipping packages (`design-system`) add the react/react-hooks/react-refresh/storybook plugins like the app does.
+- Each package gets a minimal `.oxlintrc.json` extending one of the three configs in `packages/eslint-config/` — `.oxlintrc.json` (base), `.oxlintrc.react.json`, or `.oxlintrc.storybook.json` — plus its own `env` (node, browser, serviceworker). Tooling packages stay React-free and extend the base; React-shipping packages (`design-system`, `markdown`) extend the storybook layer. The React and Storybook plugins are declared once in `eslint-config`, not per package.
 - `tsconfig.json` uses bundler resolution and `noEmit`. It is **not** referenced by the root solution `tsconfig.json`: packages are typechecked in isolation via `pnpm -r typecheck` and never pulled into the app's TS graph (so a backend/tooling package's types can't leak into the React/DOM build).

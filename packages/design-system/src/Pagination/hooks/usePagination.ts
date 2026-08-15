@@ -1,7 +1,13 @@
 import { useState } from 'react'
 
 export type PaginationItemType =
-  'page' | 'first' | 'previous' | 'next' | 'last' | 'start-ellipsis' | 'end-ellipsis'
+  | 'page'
+  | 'first'
+  | 'previous'
+  | 'next'
+  | 'last'
+  | 'start-ellipsis'
+  | 'end-ellipsis'
 
 /** One renderable pagination item — `Pagination` maps these onto `PaginationItem`s. */
 export interface UsePaginationItem {

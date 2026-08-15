@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { toEntry, packages } from './PackageIndex.data'
+import { slugOf, toEntry, packages } from './PackageIndex.data'
 
 const pkg = {
   name: '@soroush.tech/example',
@@ -9,6 +9,16 @@ const pkg = {
 }
 
 describe('PackageIndex.data', () => {
+  describe('slugOf', () => {
+    it('strips the scope from a scoped name', () => {
+      expect(slugOf('@soroush.tech/design-system')).toBe('design-system')
+    })
+
+    it('leaves an unscoped name alone', () => {
+      expect(slugOf('oxfmt-quick')).toBe('oxfmt-quick')
+    })
+  })
+
   describe('toEntry', () => {
     it('links to the internal detail route, same tab, when a page exists', () => {
       const entry = toEntry(pkg, true)
@@ -32,9 +42,24 @@ describe('PackageIndex.data', () => {
     })
   })
 
-  it('discovers published @soroush.tech packages, excluding private ones', () => {
+  it('discovers published workspace packages, excluding private ones', () => {
     expect(packages.length).toBeGreaterThan(0)
     expect(packages.some((p) => p.name === '@soroush.tech/vite-plugin-msw-server')).toBe(true)
-    expect(packages.every((p) => p.name.startsWith('@soroush.tech/'))).toBe(true)
+    expect(packages.some((p) => p.name === '@soroush.tech/eslint-config')).toBe(false)
+  })
+
+  it('includes packages published from their own repository', () => {
+    const entry = packages.find((p) => p.name === 'oxfmt-quick')
+    expect(entry).toBeDefined()
+    // Metadata comes from the installed package, so these are whatever it actually publishes.
+    expect(entry?.description).toBeTruthy()
+    expect(entry?.version).toMatch(/^\d+\.\d+\.\d+/)
+    expect(entry?.keywords.length).toBeGreaterThan(0)
+  })
+
+  it('links an unscoped package to its own detail page, not to npm', () => {
+    const entry = packages.find((p) => p.name === 'oxfmt-quick')
+    expect(entry?.href).toBe('/oxfmt-quick/')
+    expect(entry?.target).toBeUndefined()
   })
 })

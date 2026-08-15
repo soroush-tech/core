@@ -12,7 +12,8 @@
     "prepare": "husky",
     "postprepare": "pnpm -r run setup",
     "setup": "pnpm -r run setup",
-    "format": "prettier --write .",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "gen:publish-options": "node scripts/gen-publish-options.mjs",
     "check:release-notes": "node scripts/check-release-notes.mjs",
     "dev": "pnpm --parallel -r dev",
@@ -24,7 +25,7 @@
     "build:storybook": "pnpm --filter @soroush/web build:storybook",
     "preview": "pnpm --filter @soroush/web preview",
     "preview:e2e": "pnpm --filter @soroush/web preview:e2e",
-    "storybook": "pnpm --filter @soroush/web storybook",
+    "storybook": "pnpm --parallel -r storybook",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "prebuild": "pnpm --filter @soroush/web prebuild",
@@ -47,16 +48,15 @@
     "deploy": "pnpm --filter @soroush/web deploy"
   },
   "devDependencies": {
-    "@emotion/css-prettifier": "^1.2.0",
     "husky": "^9.1.7",
-    "prettier": "^3.9.6",
-    "pretty-quick": "^4.2.2"
+    "oxfmt": "^0.63.0",
+    "oxfmt-quick": "^1.0.0",
+    "oxlint": "^1.78.0"
   },
   "packageManager": "pnpm@10.13.1",
   "pnpm": {
     "overrides": {
-      "webpack": ">=5",
-      "eslint-plugin-import": ">=2.32.0"
+      "webpack": ">=5"
     }
   }
 }

@@ -273,7 +273,8 @@ export interface ThemeDefaults {
  * (`ownerState`) for conditional styling.
  */
 export type ComponentStyle<OwnerState> =
-  CSSObject | ((args: { theme: Theme; ownerState: OwnerState }) => CSSObject)
+  | CSSObject
+  | ((args: { theme: Theme; ownerState: OwnerState }) => CSSObject)
 
 /** One theme-contributed variant: applied when every key in `props` matches the render props. */
 export interface ComponentVariant<OwnerState> {

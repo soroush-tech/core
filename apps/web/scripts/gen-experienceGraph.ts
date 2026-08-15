@@ -9,10 +9,10 @@
  * Run with: `pnpm gen:experienceGraph` (re-run after editing ExperienceGraph.data.ts).
  * The `ExperienceGraph.data.generated.test.ts` drift guard fails if it goes stale.
  */
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { format, resolveConfig } from 'prettier'
+import { format } from 'oxfmt'
 
 // Dynamic imports with explicit .ts so node's native TS runner can resolve them.
 // (A static `import … from '….ts'` is rejected by the repo's no-restricted-syntax
@@ -53,7 +53,12 @@ export const experienceGraphData: GraphData = {
 }
 `
 
-const prettierOptions = await resolveConfig(outFile)
-const formatted = await format(source, { ...prettierOptions, parser: 'typescript' })
+// oxfmt's Node API takes options directly — it has no `resolveConfig` equivalent — so
+// read the repo config and hand it over, keeping the generated file `format:check`-clean.
+// `$schema` is an editor hint, not a format option.
+const { $schema: _schema, ...oxfmtOptions } = JSON.parse(
+  readFileSync(resolve(here, '../../../.oxfmtrc.json'), 'utf8')
+)
+const { code } = await format(outFile, source, oxfmtOptions)
 
-writeFileSync(outFile, formatted)
+writeFileSync(outFile, code)

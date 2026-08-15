@@ -92,7 +92,8 @@ export interface GistContents {
  * content; `deleted` needs none.
  */
 export type GistDraftEntry =
-  { status: 'added' | 'modified'; content: string } | { status: 'deleted' }
+  | { status: 'added' | 'modified'; content: string }
+  | { status: 'deleted' }
 
 /** Staged file changes, by filename. */
 export type GistDraftFiles = Record<string, GistDraftEntry>

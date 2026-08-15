@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/bench",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Run A/B function and package-version benchmarks inside a CPU/RAM-pinned Docker sandbox for stable, low-noise numbers. Built on mitata.",
   "keywords": [
     "benchmark",
@@ -59,7 +59,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -69,11 +69,10 @@
     "@soroush.tech/eslint-config": "workspace:*",
     "@types/node": "^26.1.2",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0",
     "mitata": "^1.0.34",
+    "oxlint": "^1.78.0",
     "tsdown": "^0.22.14",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "vitest": "^4.1.10"
   }
 }
