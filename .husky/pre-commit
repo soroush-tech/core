@@ -1,7 +1,7 @@
 # Format the staged files and re-stage them, so a commit cannot introduce unformatted
 # code. A file staged and then edited again is formatted but left unstaged, and the
 # commit aborts — staging it would sweep those unstaged edits in.
-pnpm exec oxfmt-quick
+pnpm exec oxfmt-quick --staged
 pnpm gen:publish-options --check
 pnpm check:release-notes
 pnpm prebuild
