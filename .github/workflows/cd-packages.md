@@ -90,7 +90,7 @@ publisher (repo `soroush-tech/core`, workflow `cd-packages.yml`, environment
   then OIDC takes over.
 - **pnpm version:** publish on **pnpm 10.x** (the repo pins `pnpm@10.13.1`) — OIDC is
   currently broken on pnpm 11 ([pnpm#11513](https://github.com/pnpm/pnpm/issues/11513)).
-  Needs a modern Node runtime; the repo runs **Node 25** (`.nvmrc`).
+  Needs a modern Node runtime; the repo runs **Node 26** (`.nvmrc`).
 - **Never set `NODE_AUTH_TOKEN`:** an empty value makes pnpm attempt token auth instead
   of falling back to OIDC.
 - **Release = version bump:** the publish step skips versions already on the registry,
@@ -163,7 +163,7 @@ catch drift that publishing can't act on.
 
 ## Caching
 
-Only the **dependency store**, via `setup-node@v5` with `cache: pnpm` — keyed off the
+Only the **dependency store**, via `setup-node@v7` with `cache: pnpm` — keyed off the
 `pnpm-lock.yaml` hash, same mechanism as CI.
 
 ---

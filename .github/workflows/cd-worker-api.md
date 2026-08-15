@@ -89,7 +89,7 @@ it's rendered fresh instead of committed.
 
 ## Caching
 
-Only the **dependency store**, via `setup-node@v5` with `cache: pnpm` — keyed off the
+Only the **dependency store**, via `setup-node@v7` with `cache: pnpm` — keyed off the
 `pnpm-lock.yaml` hash, same mechanism as CI. No browser or build-artifact caches.
 
 ---

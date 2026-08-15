@@ -142,8 +142,9 @@ provisioned out-of-band in Cloudflare, not by this workflow.
 
 ## Caching
 
-Only the **dependency store** is cached, via `setup-node@v6` with `cache: <manager>`
-in the `build` job — keyed off the `pnpm-lock.yaml` hash, same mechanism as CI. There
+Only the **dependency store** is cached, via `setup-node@v7` with `cache: <manager>`
+in the `build` job and `cache: pnpm` in `storybook` — keyed off the `pnpm-lock.yaml`
+hash, same mechanism as CI. There
 is no Playwright cache here (no browser tests run during deploy), and the Pages
 artifact is a one-shot upload, not a cache.
 

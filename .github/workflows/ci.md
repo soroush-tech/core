@@ -283,7 +283,7 @@ Two independent caches; both are keyed so a real change busts them.
 
 ### 1. Dependency store (`actions/setup-node`)
 
-Set once, in [the setup action](#the-setup-action): `setup-node@v5` with
+Set once, in [the setup action](#the-setup-action): `setup-node@v7` with
 `cache: ${{ inputs.manager }}`. For pnpm this caches the **pnpm store**, keyed
 automatically off the `pnpm-lock.yaml` hash. A lockfile change → new key → fresh
 install; otherwise the store is restored and `--frozen-lockfile` just links.
