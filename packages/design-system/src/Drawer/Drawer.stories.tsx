@@ -25,7 +25,7 @@ const meta: Meta<typeof Drawer> = {
     },
     elevation: {
       control: { type: 'range', min: 0, max: 24, step: 1 },
-      description: 'Shadow depth of the panel (0–24), forwarded to Paper.',
+      description: 'Shadow depth of the panel (0-24), forwarded to Paper.',
       table: { category: 'Visual', defaultValue: { summary: '16' } },
     },
     hasBackdrop: {
@@ -57,7 +57,7 @@ const DrawerDemo = (args: DrawerArgs) => {
             Drawer
           </Typography>
           <Typography variant="body2" color="secondary" m={0}>
-            Slides in from the “{args.anchor}” edge. Press Escape or click the backdrop to close.
+            Slides in from the "{args.anchor}" edge. Press Escape or click the backdrop to close.
           </Typography>
           <Button onClick={() => setIsOpen(false)}>Close</Button>
         </Flex>

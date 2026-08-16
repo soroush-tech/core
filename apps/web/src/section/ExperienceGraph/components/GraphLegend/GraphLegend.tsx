@@ -8,7 +8,7 @@ import { Switch } from '@soroush.tech/design-system/Switch'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { View } from '@soroush.tech/design-system/View'
 
-// backdrop-filter and media query require CSS — can't be expressed as props.
+// backdrop-filter and media query require CSS - can't be expressed as props.
 const LegendPanel = styled(View)`
   position: absolute;
   right: 0;
@@ -47,7 +47,7 @@ const Pulse = styled.span`
 `
 /** Stagger between consecutive child rows as they cascade in (ms). */
 const STAGGER_MS = 40
-// A Pressable so the row is a real button — keyboard-reachable and announced as
+// A Pressable so the row is a real button - keyboard-reachable and announced as
 // the disclosure it is. It brings no layout, so the flex row is set here.
 const CategoryRow = styled(Pressable)`
   display: flex;
@@ -148,9 +148,9 @@ const BranchRow = styled(Pressable)`
 
 interface LegendChildProps {
   id: string
-  /** The area this subtree hangs under — children are kept only if they gate to it. */
+  /** The area this subtree hangs under - children are kept only if they gate to it. */
   areaId: string
-  /** Position within its sibling list — drives the cascade-in stagger. */
+  /** Position within its sibling list - drives the cascade-in stagger. */
   index: number
   titleById: Map<string, string>
   expandedNodes: Set<string>
@@ -202,7 +202,7 @@ function LegendChild({
         <span>{titleById.get(id)}</span>
         <Flex flexGrow={1} />
         <Typography as="span" color="primary">
-          {isExpanded ? '−' : '+'}
+          {isExpanded ? '-' : '+'}
         </Typography>
       </BranchRow>
 
@@ -242,7 +242,7 @@ export function GraphLegend({
 
   // A node's children under a given area: legacy items drop while the switch is off, and
   // a shared child (e.g. React Native under React) stays only beneath the area it gates
-  // to — so it shows under Mobile, not Web. Nodes with no gate (empty map) aren't filtered.
+  // to - so it shows under Mobile, not Web. Nodes with no gate (empty map) aren't filtered.
   const childrenOf = (id: string, areaId: string) =>
     (childrenByParent.get(id) ?? []).filter((child) => {
       if (!showOptional && optionalIds.has(child)) return false
@@ -308,7 +308,7 @@ export function GraphLegend({
                   <span>{titleById.get(category)}</span>
                   <Flex flexGrow={1} />
                   <Typography as="span" color="primary">
-                    {isExpanded ? '−' : '+'}
+                    {isExpanded ? '-' : '+'}
                   </Typography>
                 </CategoryRow>
 

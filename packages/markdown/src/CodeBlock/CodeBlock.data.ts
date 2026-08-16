@@ -1,12 +1,12 @@
 /**
- * Syntax-highlighting tokens for `CodeBlock` — mapped onto highlight.js token classes.
+ * Syntax-highlighting tokens for `CodeBlock` - mapped onto highlight.js token classes.
  * Not part of design-system's own scales; `../index.ts` augments
  * `@soroush.tech/design-system/theme` so `theme.syntax` is available wherever this
  * package is imported. Merge one of the presets below into your theme via
  * `createTheme(baseTheme, { syntax: syntaxDark })`, or supply your own.
  */
 export interface ThemeSyntax {
-  /** Default code text — plain identifiers, operators, punctuation. */
+  /** Default code text - plain identifiers, operators, punctuation. */
   base: string
   /** Keywords, built-ins, types, literals, selector tags. */
   keyword: string
@@ -20,11 +20,11 @@ export interface ThemeSyntax {
   constant: string
   /** Type and class names. */
   type: string
-  /** Comments and quotes — rendered dimmed and italic. */
+  /** Comments and quotes - rendered dimmed and italic. */
   comment: string
   /** Markup tags/names, meta, variables, deletions. */
   tag: string
-  /** Font family for the code surface — independent of `theme.fonts.mono`. */
+  /** Font family for the code surface - independent of `theme.fonts.mono`. */
   font: string
 }
 

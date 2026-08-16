@@ -25,7 +25,7 @@ export interface ModalProps {
   portalContainer?: HTMLElement | (() => HTMLElement | null) | null
   /** Lock body scroll while open. Default: true. */
   shouldLockScroll?: boolean
-  /** Skip `aria-hidden` on background content — for non-modal popovers whose trigger stays focused. Default: false. */
+  /** Skip `aria-hidden` on background content - for non-modal popovers whose trigger stays focused. Default: false. */
   disableAriaHidden?: boolean
   /** Move focus into the modal on open. Default: true. */
   shouldAutoFocus?: boolean

@@ -1,6 +1,6 @@
 # Eyebrow
 
-A decorative label row — a 2px horizontal rule followed by a caption-style text label. Used to introduce sections or headings with a visual accent.
+A decorative label row - a 2px horizontal rule followed by a caption-style text label. Used to introduce sections or headings with a visual accent.
 
 ## Usage
 
@@ -15,14 +15,14 @@ All `TypographyProps` are accepted and forwarded to the inner `Typography` eleme
 
 | Prop                              | Type                             | Default       | Description                                                  |
 | --------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------ |
-| `children`                        | `ReactNode`                      | —             | Label text                                                   |
+| `children`                        | `ReactNode`                      | -             | Label text                                                   |
 | `variant`                         | `TypographyVariant`              | `'caption'`   | Typography variant                                           |
 | `color`                           | `keyof Theme['text']`            | `'primary'`   | Text color token                                             |
 | `fontFamily`                      | `keyof Theme['fonts']`           | `'mono'`      | Font family token                                            |
 | `letterSpacing`                   | `keyof Theme['letterSpacings']`  | `'widest'`    | Letter spacing token                                         |
 | `textTransform`                   | `CSSProperties['textTransform']` | `'uppercase'` | CSS text-transform                                           |
 | `gap`                             | `GapToken`                       | `2`           | Space between rule and text (resolves against `theme.space`) |
-| `m / mb / mt / mx / my / mr / ml` | `SpaceToken`                     | —             | Outer container spacing                                      |
+| `m / mb / mt / mx / my / mr / ml` | `SpaceToken`                     | -             | Outer container spacing                                      |
 
 ## Custom CSS
 

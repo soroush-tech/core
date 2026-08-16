@@ -27,7 +27,7 @@ describe('View', () => {
     })
   })
 
-  describe('space props — theme.space scale', () => {
+  describe('space props - theme.space scale', () => {
     it.each([
       [1, '8px'],
       [2, '16px'],

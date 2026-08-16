@@ -1,7 +1,7 @@
-// First-class TypeScript types — the public surface that replaces @types/styled-system.
+// First-class TypeScript types - the public surface that replaces @types/styled-system.
 // Foundation types (Theme, ResponsiveValue, ThemeValue, ObjectOrArray) and the
 // generic, theme-scale-aware prop interfaces mirror @types/styled-system@5.1.25 so this
-// package is a drop-in replacement — including upstream's deliberately loose `any` on the
+// package is a drop-in replacement - including upstream's deliberately loose `any` on the
 // props-facing surface, so consumers hit no strict-type friction.
 //
 // Structure mirrors upstream: one atomic interface per CSS property, with each grouped
@@ -9,7 +9,7 @@
 // (`LayoutProps`) or a single property (`WidthProps`), from the main entry or the
 // matching subpath. Three intentional widenings over upstream are preserved:
 // `boxShadow`/`textShadow` and `fontWeight` additionally accept `string` theme keys.
-// Two props are additions rather than widenings — upstream has neither: `gap`/`rowGap`/
+// Two props are additions rather than widenings - upstream has neither: `gap`/`rowGap`/
 // `columnGap` on `SpaceProps` (upstream only grid-prefixed them) and `aspectRatio` on
 // `LayoutProps` (upstream's last release predates the CSS property).
 import type * as CSS from 'csstype'
@@ -105,7 +105,7 @@ export interface PaddingProps<
   paddingY?: ResponsiveValue<TVal, ThemeType>
 }
 
-/** Not in upstream styled-system — it only ever scaled the grid-prefixed gaps. */
+/** Not in upstream styled-system - it only ever scaled the grid-prefixed gaps. */
 export interface GapProps<
   ThemeType extends Theme = RequiredTheme,
   TVal = ThemeValue<'space', ThemeType>,
@@ -113,7 +113,7 @@ export interface GapProps<
   gap?: ResponsiveValue<TVal, ThemeType>
 }
 
-/** Not in upstream styled-system — it only ever scaled the grid-prefixed gaps. */
+/** Not in upstream styled-system - it only ever scaled the grid-prefixed gaps. */
 export interface RowGapProps<
   ThemeType extends Theme = RequiredTheme,
   TVal = ThemeValue<'space', ThemeType>,
@@ -121,7 +121,7 @@ export interface RowGapProps<
   rowGap?: ResponsiveValue<TVal, ThemeType>
 }
 
-/** Not in upstream styled-system — it only ever scaled the grid-prefixed gaps. */
+/** Not in upstream styled-system - it only ever scaled the grid-prefixed gaps. */
 export interface ColumnGapProps<
   ThemeType extends Theme = RequiredTheme,
   TVal = ThemeValue<'space', ThemeType>,
@@ -210,7 +210,7 @@ export interface VerticalAlignProps<
   verticalAlign?: ResponsiveValue<TVal, ThemeType>
 }
 
-/** Not in upstream styled-system — its last release predates CSS `aspect-ratio`. */
+/** Not in upstream styled-system - its last release predates CSS `aspect-ratio`. */
 export interface AspectRatioProps<ThemeType extends Theme = RequiredTheme> {
   aspectRatio?: ResponsiveValue<CSS.Property.AspectRatio, ThemeType>
 }
@@ -718,7 +718,7 @@ export interface GridProps<ThemeType extends Theme = RequiredTheme>
 // ---------------------------------------------------------------------------
 
 // `string | number` so it resolves against both object-keyed (`{ sm, md }`) and
-// array-indexed (`[…]`) theme.shadows scales, plus raw CSS values.
+// array-indexed (`[...]`) theme.shadows scales, plus raw CSS values.
 export interface BoxShadowProps<ThemeType extends Theme = RequiredTheme> {
   boxShadow?: ResponsiveValue<CSS.Property.BoxShadow | string | number, ThemeType>
 }

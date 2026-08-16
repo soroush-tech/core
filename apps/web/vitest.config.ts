@@ -27,7 +27,7 @@ const mockPlugins = [
   },
   {
     // vite-imagetools isn't run in unit tests, so mock its `as=picture` output
-    // ({ sources, img }) — otherwise the import resolves to a bare URL string.
+    // ({ sources, img }) - otherwise the import resolves to a bare URL string.
     name: 'imagetools-mock',
     enforce: 'pre' as const,
     resolveId(id: string) {

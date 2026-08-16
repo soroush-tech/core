@@ -1,7 +1,7 @@
 import { test, expect } from 'src/test/e2e/fixtures'
 import type { Page } from '@playwright/test'
 
-// Navigate to the contact page and wait for hydration — the blur-validation
+// Navigate to the contact page and wait for hydration - the blur-validation
 // handlers the tests below drive only exist once React has attached. The
 // embedded Turnstile widget keeps the network busy, so `networkidle` never
 // settles; instead observe hydration itself: `hydrateRoot` marks the container
@@ -49,7 +49,7 @@ test('contact form flags required fields on blur', async ({ page }) => {
   await expect(page.getByText('A valid e-mail is required')).toBeVisible()
   await expect(page.getByText('Message is required')).toBeVisible()
 
-  // Still on the contact route — the form did not submit or navigate.
+  // Still on the contact route - the form did not submit or navigate.
   await expect(page).toHaveURL(/\/contact$/)
 })
 

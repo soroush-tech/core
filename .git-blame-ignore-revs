@@ -4,7 +4,7 @@
 #   git config blame.ignoreRevsFile .git-blame-ignore-revs
 #
 # GitHub reads this file automatically. Only add commits that change formatting
-# and nothing else — a commit listed here becomes invisible in blame output.
+# and nothing else - a commit listed here becomes invisible in blame output.
 
 # style: reformat the workspace with oxfmt (#328)
 5b511edd0e50f61f083eafd909752f6709650574

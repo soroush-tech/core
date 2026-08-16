@@ -44,7 +44,7 @@ describe('PaginationItem', () => {
       renderWithTheme(<PaginationItem type={type} data-testid="item" />)
       const item = screen.getByTestId('item')
       expect(item.tagName).toBe('SPAN')
-      expect(item).toHaveTextContent('…')
+      expect(item).toHaveTextContent('...')
       expect(screen.queryByRole('button')).not.toBeInTheDocument()
     }
   )

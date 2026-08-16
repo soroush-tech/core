@@ -196,7 +196,7 @@ export const alignTokens = [
   'inherit',
 ] satisfies TypographyAlign[]
 
-// HTML element names — arbitrary set chosen for the as prop
+// HTML element names - arbitrary set chosen for the as prop
 export const asTokens = [
   'p',
   'span',
@@ -214,7 +214,7 @@ export const asTokens = [
 // AvatarVariant has no runtime mapping object in Avatar.tsx
 export const avatarVariantTokens = ['circular', 'rounded', 'square'] satisfies AvatarVariant[]
 
-// Raw CSS values — not backed by any theme scale
+// Raw CSS values - not backed by any theme scale
 export const objectFitTokens = [
   'cover',
   'contain',

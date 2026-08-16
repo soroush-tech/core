@@ -3,7 +3,7 @@ import type { GraphNode } from '../NetworkGraph.types'
 export interface AreaSeparationOptions {
   /** Circle radius of an area with no visible children. */
   radiusBase: number
-  /** Extra radius per visible child — more children ⇒ a wider disk. */
+  /** Extra radius per visible child - more children ⇒ a wider disk. */
   radiusPerChild: number
   /** How far one shared node lets two circles overlap (shrinks the gap they keep). */
   sharedAllowance: number
@@ -37,7 +37,7 @@ export function forceAreaSeparation(opts: AreaSeparationOptions) {
         let dy = b.y! - a.y!
         let dist = Math.hypot(dx, dy)
         if (dist === 0) {
-          dx = 1 // coincident centres — separate along an arbitrary axis
+          dx = 1 // coincident centres - separate along an arbitrary axis
           dy = 0
           dist = 1
         }

@@ -72,7 +72,7 @@ describe('formatDeltas', () => {
         { label: 'a', avg: 100 },
         { label: 'b', avg: 250 },
       ])
-    ).toBe(['delta vs fastest:', '  a — fastest', '  b — +150.0% slower'].join('\n'))
+    ).toBe(['delta vs fastest:', '  a - fastest', '  b - +150.0% slower'].join('\n'))
   })
 
   it('picks the fastest regardless of order and rounds to one decimal', () => {
@@ -81,7 +81,7 @@ describe('formatDeltas', () => {
         { label: 'slow', avg: 163 },
         { label: 'fast', avg: 60 },
       ])
-    ).toBe(['delta vs fastest:', '  slow — +171.7% slower', '  fast — fastest'].join('\n'))
+    ).toBe(['delta vs fastest:', '  slow - +171.7% slower', '  fast - fastest'].join('\n'))
   })
 })
 
@@ -103,7 +103,7 @@ describe('formatMarkdown', () => {
         '| case | avg | p75 | alloc/iter | vs fastest |',
         '| --- | ---: | ---: | ---: | :--- |',
         '| ns | 500 ns | 600 ns | 500 B (least) | fastest |',
-        '| noalloc | 500 ns | 500 ns | — | fastest |',
+        '| noalloc | 500 ns | 500 ns | - | fastest |',
         '| us | 2.00 µs | 2.50 µs | 5.00 KB (+900.0%) | +300.0% |',
         '| ms | 2.00 ms | 2.10 ms | 2.00 MB (+399900.0%) | +399900.0% |',
       ].join('\n')
@@ -121,7 +121,7 @@ describe('formatMarkdown', () => {
         '| case | avg | p75 | alloc/iter | gc/iter | vs fastest |',
         '| --- | ---: | ---: | ---: | ---: | :--- |',
         '| a | 1.00 µs | 1.10 µs | 2.00 KB (least) | 500.00 µs | fastest |',
-        '| b | 3.00 µs | 3.10 µs | 4.00 KB (+100.0%) | — | +200.0% |',
+        '| b | 3.00 µs | 3.10 µs | 4.00 KB (+100.0%) | - | +200.0% |',
       ].join('\n')
     )
   })
@@ -134,7 +134,7 @@ describe('checkRatio', () => {
   ]
 
   it('matches the baseline by case key and reports cases below the target', () => {
-    // local runs at 100/125 = 80% of the baseline's speed — fails a 90% target.
+    // local runs at 100/125 = 80% of the baseline's speed - fails a 90% target.
     expect(checkRatio(rows, 'upstream', 90)).toEqual([{ label: 'color() :: local', ratioPct: 80 }])
   })
 
@@ -177,7 +177,7 @@ describe('checkRatio', () => {
     )
   })
 
-  it('throws when only the baseline survived — a crashed case must not pass', () => {
+  it('throws when only the baseline survived - a crashed case must not pass', () => {
     expect(() => checkRatio([{ label: 'n :: base', avg: 100, p75: 100 }], 'base', 80)).toThrow(
       /no case besides the baseline "base" produced results/
     )
@@ -201,8 +201,8 @@ describe('formatRatioFailure', () => {
     ).toBe(
       [
         'bench: performance target failed (min ratio 80%):',
-        '  n :: a — 72.3% of baseline speed',
-        '  n :: b — 55.0% of baseline speed',
+        '  n :: a - 72.3% of baseline speed',
+        '  n :: b - 55.0% of baseline speed',
       ].join('\n')
     )
   })

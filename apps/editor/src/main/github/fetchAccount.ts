@@ -9,7 +9,7 @@ export interface GitHubAccount {
 
 /**
  * Inlines the avatar as a data URI rather than handing the renderer a URL.
- * The renderer's CSP is `img-src 'self' data:` — keeping it that way means no
+ * The renderer's CSP is `img-src 'self' data:` - keeping it that way means no
  * remote image host has to be allowed, and no request leaves the app when the
  * sidebar paints.
  */
@@ -25,7 +25,7 @@ async function fetchAvatar(avatarUrl: string, fetchFn: typeof fetch): Promise<st
     const bytes = Buffer.from(await response.arrayBuffer())
     return `data:${contentType};base64,${bytes.toString('base64')}`
   } catch {
-    // A missing avatar is cosmetic — the account is still perfectly usable.
+    // A missing avatar is cosmetic - the account is still perfectly usable.
     return null
   }
 }
@@ -45,7 +45,7 @@ export async function fetchAccount(
     if (response.status === 401) {
       return {
         success: false,
-        error: `GitHub rejected that token — check it was copied whole, has not expired, and grants "${REQUIRED_PERMISSION}"`,
+        error: `GitHub rejected that token - check it was copied whole, has not expired, and grants "${REQUIRED_PERMISSION}"`,
       }
     }
     if (!response.ok) {

@@ -5,7 +5,7 @@ import { appBarSizeTokens, backgroundTokens } from '../utils/test/storiesOptions
 import { ThemeProvider } from '../theme'
 import { baseTheme, createTheme } from '../theme/themes'
 
-// Story-local light variant — the package ships only `baseTheme`; consumers
+// Story-local light variant - the package ships only `baseTheme`; consumers
 // build their own light themes the same way.
 const light = createTheme(baseTheme, {
   name: 'light',
@@ -28,7 +28,7 @@ import { Switch } from '../Switch'
 import { View } from '../View'
 import { AppBar } from './AppBar'
 
-// Story-local copies of the app's sun/moon assets — the package has no svgr pipeline.
+// Story-local copies of the app's sun/moon assets - the package has no svgr pipeline.
 const SunIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
@@ -85,18 +85,18 @@ const meta: Meta<typeof AppBar> = {
     color: {
       control: { type: 'select' },
       options: backgroundTokens,
-      description: 'Background color — resolves from theme.background.',
+      description: 'Background color - resolves from theme.background.',
       table: { category: 'Visual' },
     },
     size: {
       control: { type: 'select' },
       options: appBarSizeTokens,
-      description: 'Padding preset — resolves from theme.sizes. Default: "md".',
+      description: 'Padding preset - resolves from theme.sizes. Default: "md".',
       table: { category: 'Visual', defaultValue: { summary: 'md' } },
     },
     elevation: {
       control: { type: 'number', min: 0, max: 24 },
-      description: 'Box-shadow elevation — resolves from theme.shadows[n]. Omit for no shadow.',
+      description: 'Box-shadow elevation - resolves from theme.shadows[n]. Omit for no shadow.',
       table: { category: 'Visual' },
     },
     position,

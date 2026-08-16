@@ -32,7 +32,7 @@ const meta = {
     },
     color: {
       description:
-        'Controlled by active state — not configurable. Active: `primary`, Inactive: `secondary`.',
+        'Controlled by active state - not configurable. Active: `primary`, Inactive: `secondary`.',
       table: { category: 'Visual', disable: true },
     },
     m,

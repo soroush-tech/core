@@ -4,7 +4,7 @@ import { Pressable } from '@soroush.tech/design-system/Pressable'
 import { SidebarContext } from '@soroush.tech/design-system/Sidebar'
 
 export interface SidebarPanelItemProps {
-  /** Row content in the rail — any node, which is the reason this is not a `SidebarItem`. */
+  /** Row content in the rail - any node, which is the reason this is not a `SidebarItem`. */
   icon: ReactNode
   /** Accessible name of the row, and the name given to the panel while it is open. */
   label: string

@@ -32,7 +32,7 @@ const meta: Meta<typeof Form> = {
       control: { type: 'select' },
       options: textColorTokens,
       description:
-        'Default text color for every field’s label/helper/input — resolves against `theme.text`.',
+        "Default text color for every field's label/helper/input - resolves against `theme.text`.",
       table: { category: 'Visual' },
     },
     disabled: {

@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { createTheme, baseTheme } from './themes'
 import { ThemeProvider } from './ThemeProvider'
 
-// A second theme with a distinct name — proves the theme prop replaces the default.
+// A second theme with a distinct name - proves the theme prop replaces the default.
 const light = createTheme(baseTheme, { name: 'light' })
 
 const wrapper = ({ children }: { children: ReactNode }) => <ThemeProvider>{children}</ThemeProvider>

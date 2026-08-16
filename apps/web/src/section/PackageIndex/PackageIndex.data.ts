@@ -63,7 +63,7 @@ const pagedSlugs = new Set(
 /**
  * Packages published from their own repository rather than from `packages/`, so the glob above
  * cannot find them. Their metadata is read from the installed package rather than restated here,
- * so the card cannot drift from what was published — the version shown is the one this site is
+ * so the card cannot drift from what was published - the version shown is the one this site is
  * built against, which moves when the dependency is bumped.
  */
 const external: PackageJson[] = [oxfmtQuick]

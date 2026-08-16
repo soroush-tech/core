@@ -31,7 +31,7 @@ const meta = {
     variant: {
       control: { type: 'inline-radio' },
       options: blueprintVariantTokens,
-      description: 'Background pattern — intersecting lines or a radial dot grid.',
+      description: 'Background pattern - intersecting lines or a radial dot grid.',
       table: { category: 'Visual', defaultValue: { summary: 'line' } },
     },
     scanline: {

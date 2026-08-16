@@ -39,7 +39,7 @@ describe('Pagination', () => {
     const { container } = renderWithTheme(<Pagination count={11} defaultPage={6} />)
     const hiddenItems = container.querySelectorAll('li[aria-hidden="true"]')
     expect(hiddenItems).toHaveLength(2)
-    expect(hiddenItems[0]).toHaveTextContent('…')
+    expect(hiddenItems[0]).toHaveTextContent('...')
   })
 
   it('pages uncontrolled and fires onChange with the 1-based page', () => {

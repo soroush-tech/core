@@ -10,7 +10,7 @@ import type { PackageHeroProps } from 'src/section/PackageHero'
 export const hero: PackageHeroProps = {
   name: 'oxfmt-quick',
   tagline:
-    'Run oxfmt on the files you actually changed, and re-stage them — so unformatted code cannot reach a commit. What pretty-quick is to Prettier, for the oxc formatter.',
+    'Run oxfmt on the files you actually changed, and re-stage them - so unformatted code cannot reach a commit. What pretty-quick is to Prettier, for the oxc formatter.',
   install: 'npm i -D oxfmt oxfmt-quick',
   npmUrl: 'https://www.npmjs.com/package/oxfmt-quick',
   repoUrl: 'https://github.com/soroush-tech/oxfmt-quick',

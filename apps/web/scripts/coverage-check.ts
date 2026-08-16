@@ -1,5 +1,5 @@
 /**
- * coverage-check — assert per-file coverage from an lcov report.
+ * coverage-check - assert per-file coverage from an lcov report.
  *
  * Parses the same `coverage/lcov.info` that CI uploads to Codecov
  * (see .github/workflows/ci-web.yml) and exits non-zero if any matched source
@@ -88,7 +88,7 @@ const rows = matched.map((file) => {
 })
 
 const width = Math.max(4, ...rows.map((row) => row.file.length))
-console.log(`Coverage check — threshold ${threshold}% — ${lcovPath}\n`)
+console.log(`Coverage check - threshold ${threshold}% - ${lcovPath}\n`)
 console.log(
   `  ${'FILE'.padEnd(width)}  ${'LINES'.padEnd(13)}${'BRANCH'.padEnd(13)}${'FUNCS'.padEnd(13)}`
 )

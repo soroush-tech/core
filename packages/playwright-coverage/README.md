@@ -13,7 +13,7 @@ aggregate it into an **lcov** report (source-mapped back to your original source
 
 It wires three things together:
 
-- an **auto fixture** that starts/stops `page.coverage` around every test (Chromium only — V8
+- an **auto fixture** that starts/stops `page.coverage` around every test (Chromium only - V8
   JS coverage is Chromium-specific) and writes each test's raw dump to disk,
 - a **`globalSetup`** that clears stale raw coverage before the run, and
 - a **`globalTeardown`** that merges every raw dump into one report.
@@ -38,21 +38,21 @@ pnpm add -D @soroush.tech/playwright-coverage @playwright/test monocart-coverage
 yarn add -D @soroush.tech/playwright-coverage @playwright/test monocart-coverage-reports
 ```
 
-`@playwright/test` (`^1`) and `monocart-coverage-reports` (`^2`) are **peer dependencies** — you
+`@playwright/test` (`^1`) and `monocart-coverage-reports` (`^2`) are **peer dependencies** - you
 install them, the package carries neither at runtime.
 
 ## Usage
 
 Gate it on an env flag so normal runs skip the (slower) instrumented build.
 
-**1. One shared instance** — `src/test/e2e/coverage.ts`:
+**1. One shared instance** - `src/test/e2e/coverage.ts`:
 
 ```ts
 import playwrightCoverage from '@soroush.tech/playwright-coverage'
 
 export const e2eCoverage = playwrightCoverage({
   enabled: process.env.E2E_COVERAGE === 'true',
-  // Scope the report to whatever you want measured by e2e — globs, like vitest's `include`:
+  // Scope the report to whatever you want measured by e2e - globs, like vitest's `include`:
   include: ['src/pages/**/*.{ts,tsx}'],
   exclude: ['**/*.stories.tsx'],
   report: {
@@ -107,10 +107,10 @@ Run it: `E2E_COVERAGE=true playwright test --project=chromium` → `coverage/e2e
 
 | Option    | Type                    | Default             | Description                                                        |
 | --------- | ----------------------- | ------------------- | ------------------------------------------------------------------ |
-| `enabled` | `boolean`               | —                   | Collect only when `true`; otherwise every piece is an inert no-op. |
-| `report`  | `CoverageReportOptions` | —                   | monocart config (`name`, `outputDir`, `lcov`, …).                  |
-| `include` | `string \| string[]`    | —                   | Glob(s) of source paths to include in the report (repo-relative).  |
-| `exclude` | `string \| string[]`    | —                   | Glob(s) to exclude; takes priority over `include`.                 |
+| `enabled` | `boolean`               | -                   | Collect only when `true`; otherwise every piece is an inert no-op. |
+| `report`  | `CoverageReportOptions` | -                   | monocart config (`name`, `outputDir`, `lcov`, ...).                |
+| `include` | `string \| string[]`    | -                   | Glob(s) of source paths to include in the report (repo-relative).  |
+| `exclude` | `string \| string[]`    | -                   | Glob(s) to exclude; takes priority over `include`.                 |
 | `rawDir`  | `string`                | `${outputDir}/.raw` | Where per-test raw V8 dumps are written before aggregation.        |
 | `browser` | `string`                | `'chromium'`        | The only Playwright browser that gets instrumented.                |
 
@@ -135,25 +135,25 @@ runs fast and uninstrumented.
 
 [`monocart-reporter`](https://github.com/cenfun/monocart-reporter) is a full Playwright reporter
 that can also collect coverage. This package is intentionally smaller: a single auto fixture plus
-two global hooks, with no reporter to register and no opinion about how you report test results —
+two global hooks, with no reporter to register and no opinion about how you report test results -
 just raw V8 → lcov. Reach for the reporter if you want its richer reporting; reach for this if you
 only want coverage.
 
 ## Uploading to Codecov in CI
 
-Getting e2e coverage into [Codecov](https://about.codecov.io) is a **full pipeline** — collect,
+Getting e2e coverage into [Codecov](https://about.codecov.io) is a **full pipeline** - collect,
 emit lcov, then upload. Three things have to line up:
 
 1. **Emit lcov with repo-relative paths.** Set `lcov: true` and an `outputDir` so the teardown
    writes `<outputDir>/lcov.info`. The default `sourcePath` (repo-relative) is what lets Codecov
-   map each `SF:` entry back to a file in your repo — without it, absolute CI paths won't match and
+   map each `SF:` entry back to a file in your repo - without it, absolute CI paths won't match and
    the flag silently shows no coverage.
 2. **Run the instrumented pass in CI.** Coverage needs the source-mapped (preview/production) build
-   and the gate flag — e.g. a script
+   and the gate flag - e.g. a script
    `"test:coverage:e2e": "cross-env E2E_COVERAGE=true playwright test --project=chromium"`.
 3. **Upload the lcov under a flag.**
 
-A GitHub Actions job — the steps that matter:
+A GitHub Actions job - the steps that matter:
 
 ```yaml
 jobs:
@@ -176,14 +176,14 @@ jobs:
       - name: Upload e2e coverage to Codecov
         uses: codecov/codecov-action@v7
         with:
-          # Public repos upload tokenlessly — drop token line. Private repos need the secret.
+          # Public repos upload tokenlessly - drop token line. Private repos need the secret.
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/e2e/lcov.info
           flags: e2e
           name: E2E
 ```
 
-The token is **optional for public repositories** — Codecov accepts tokenless uploads through its
+The token is **optional for public repositories** - Codecov accepts tokenless uploads through its
 GitHub integration, so you can omit `token:` entirely. For a **private** repo, add `CODECOV_TOKEN`
 as a repository secret. The `flags: e2e` keeps this report separate from your unit/browser
 coverage. If the job is change-gated (doesn't run on every commit), add a matching
@@ -206,13 +206,13 @@ configured `browser` (Chromium). Your everyday cross-browser runs stay uninstrum
 
 **Why Chromium only?**
 V8 JS coverage is exposed through Chromium's `page.coverage` API; Firefox and WebKit don't provide
-it. The fixture is a no-op on those browsers, so a multi-browser run won't error — it just collects
+it. The fixture is a no-op on those browsers, so a multi-browser run won't error - it just collects
 nothing there.
 
-**My report is empty or missing files — what should I check?**
+**My report is empty or missing files - what should I check?**
 Confirm `enabled` is `true`, that you ran the instrumented project (`--project=chromium`), that the
 app is served from `localhost` (the default `entryFilter`), and that your `include` globs match the
-**repo-relative** path (cwd-stripped, forward slashes) — `src/**`, not `/abs/.../src/**`.
+**repo-relative** path (cwd-stripped, forward slashes) - `src/**`, not `/abs/.../src/**`.
 
 **Why is coverage mapped back to my original `.ts`/`.tsx` and not the bundled chunks?**
 Coverage is collected on the served JS chunks, then monocart unpacks each chunk through its
@@ -225,7 +225,7 @@ used as-is; if you set both, the globs win.
 
 **Why are both peers required?**
 `@playwright/test` provides `test` and `page.coverage`; `monocart-coverage-reports` does the
-V8 → lcov aggregation and source mapping. The package carries neither at runtime — you install and
+V8 → lcov aggregation and source mapping. The package carries neither at runtime - you install and
 version them.
 
 ## Release notes

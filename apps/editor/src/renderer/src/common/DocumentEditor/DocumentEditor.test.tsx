@@ -86,7 +86,7 @@ describe('DocumentEditor', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Preview' }))
     await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     expect(screen.getByLabelText('Markdown source')).toBeInTheDocument()
-    // Re-clicking the active mode toggles it "off" (null) — the surface stays put.
+    // Re-clicking the active mode toggles it "off" (null) - the surface stays put.
     await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     expect(screen.getByLabelText('Markdown source')).toBeInTheDocument()
   })

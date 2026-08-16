@@ -79,45 +79,45 @@ const meta: Meta<typeof Select> = {
     autoWidth: {
       control: 'boolean',
       description:
-        'Size the trigger to the current selection. When `false` (default) it reserves the widest option’s width, avoiding layout shift on selection.',
+        "Size the trigger to the current selection. When `false` (default) it reserves the widest option's width, avoiding layout shift on selection.",
       table: { category: 'Layout', defaultValue: { summary: 'false' } },
     },
     variant: {
       control: { type: 'select' },
       options: selectVariantTokens,
       description:
-        '`outlined`/`default` — full border box · `underline` — bottom border only · `text` — no border.',
+        '`outlined`/`default` - full border box · `underline` - bottom border only · `text` - no border.',
       table: { category: 'Visual', defaultValue: { summary: 'default' } },
     },
     color: {
       control: { type: 'select' },
       options: selectColorTokens,
-      description: 'Focus/active border color — resolves to `theme.palette[color]`.',
+      description: 'Focus/active border color - resolves to `theme.palette[color]`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     textColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color of the trigger value — resolves against `theme.text`.',
+      description: 'Text color of the trigger value - resolves against `theme.text`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     bg: {
       control: { type: 'select' },
       options: backgroundTokens,
-      description: 'Background color — resolves against `theme.background`.',
+      description: 'Background color - resolves against `theme.background`.',
       table: { category: 'Visual', defaultValue: { summary: 'terminal' } },
     },
     size: {
       control: { type: 'select' },
       options: selectSizeTokens,
-      description: 'Controls padding and font size — resolves against `theme.sizes`.',
+      description: 'Controls padding and font size - resolves against `theme.sizes`.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     borderRadius: {
       control: { type: 'select' },
       options: borderRadiiTokens,
       description:
-        'Corner radius — applies only to `default`/`outlined` variants. Resolves against `theme.radii`.',
+        'Corner radius - applies only to `default`/`outlined` variants. Resolves against `theme.radii`.',
       table: { category: 'Layout' },
     },
     disabled: {
@@ -127,7 +127,7 @@ const meta: Meta<typeof Select> = {
     },
     error: {
       control: 'boolean',
-      description: 'Marks the field as invalid — applies the error border color.',
+      description: 'Marks the field as invalid - applies the error border color.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     required: {

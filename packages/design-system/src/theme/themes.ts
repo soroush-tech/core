@@ -3,11 +3,11 @@ import type { CSSObject as EmotionCSSObject } from '@emotion/react'
 import { alpha, generateBoxShadow } from '../utils'
 import { spacing } from './utils/spacing'
 
-/** Design-system's own style-object shape — Emotion stays an internal implementation detail. */
+/** Design-system's own style-object shape - Emotion stays an internal implementation detail. */
 export type CSSObject = EmotionCSSObject
 
 // ---------------------------------------------------------------------------
-// Theme type layer — this package OWNS `Theme` and every scale interface below
+// Theme type layer - this package OWNS `Theme` and every scale interface below
 // (Emotion is not the augmentation surface; it is only the CSS-in-JS engine
 // used internally). Consumers extend every scale by declaration merging
 // against THIS module:
@@ -25,7 +25,7 @@ export type CSSObject = EmotionCSSObject
 /**
  * Re-opens a named scale interface as an anonymous mapped type. Named
  * interfaces have no implicit index signature, which styled-system's
- * Record-based `Theme` constraint requires — the mapped copy restores it
+ * Record-based `Theme` constraint requires - the mapped copy restores it
  * while keeping the literal keys (and any consumer-augmented keys).
  */
 export type OpenScale<T> = { [K in keyof T]: T[K] }
@@ -92,7 +92,7 @@ export interface ThemeSwitch {
   thumb: string
 }
 /**
- * Shadow tokens — the single base color every shadow composites from
+ * Shadow tokens - the single base color every shadow composites from
  * (the `theme.shadows` elevation array and component shadows alike).
  */
 export interface ThemeShadow {
@@ -101,7 +101,7 @@ export interface ThemeShadow {
   /** Alpha applied per elevation step in the default `theme.shadows` array. */
   opacity: number
 }
-/** Stacking order for layered UI — ascending: appBar < drawer < modal. */
+/** Stacking order for layered UI - ascending: appBar < drawer < modal. */
 export interface ThemeZOrder {
   appBar: number
   drawer: number
@@ -183,7 +183,7 @@ export interface ThemeSizes {
   lg: SizeEntry
 }
 /**
- * Square glyph dimension per density key — Icon token sizes and the
+ * Square glyph dimension per density key - Icon token sizes and the
  * Checkbox/Radio glyphs. Mapped over `ThemeSizes` so augmenting a size key
  * forces the matching icon size to be supplied.
  */
@@ -214,8 +214,8 @@ export interface ThemeTypographyVariants {
 }
 /**
  * Optional theme-driven component defaults. Components carry their own
- * literal fallbacks (`size = 'md'`, `variant = 'outside'`, …) and resolve
- * them through `themeDefault(theme, key, fallback)` — set any key here (or
+ * literal fallbacks (`size = 'md'`, `variant = 'outside'`, ...) and resolve
+ * them through `themeDefault(theme, key, fallback)` - set any key here (or
  * via `ThemeProvider`'s `defaults` prop) to override that fallback globally,
  * e.g. when your theme uses entirely different size or palette keys.
  */
@@ -224,9 +224,9 @@ export interface ThemeDefaults {
   size?: keyof ThemeSizes
   /** Compact density for dense secondary UI (table pagination actions). Fallback: `'sm'`. */
   compactSize?: keyof ThemeSizes
-  /** Accent palette color (buttons, links, progress, pagination…). Fallback: `'primary'`. */
+  /** Accent palette color (buttons, links, progress, pagination...). Fallback: `'primary'`. */
   color?: keyof ThemePalette
-  /** Neutral palette color for toggle controls (checkbox, radio, switch…). Fallback: `'default'`. */
+  /** Neutral palette color for toggle controls (checkbox, radio, switch...). Fallback: `'default'`. */
   neutralColor?: keyof ThemePalette
   /** Body text color. Fallback: `'initial'`. */
   textColor?: keyof ThemeText
@@ -268,7 +268,7 @@ export interface ThemeDefaults {
   paginationShape?: 'circular' | 'rounded'
 }
 /**
- * A style contributed from `theme.components` — a plain CSS object, or a
+ * A style contributed from `theme.components` - a plain CSS object, or a
  * callback receiving the theme and the styled root's resolved props
  * (`ownerState`) for conditional styling.
  */
@@ -287,7 +287,7 @@ export interface ComponentConfig<
   OwnerState = Record<string, unknown>,
   Slot extends string = 'root',
 > {
-  /** Default prop values — explicit props and group context always win. */
+  /** Default prop values - explicit props and group context always win. */
   defaultProps?: Partial<OwnerState>
   /** Per-slot CSS merged after the component's own styles (theme wins). */
   styleOverrides?: Partial<Record<Slot, ComponentStyle<OwnerState>>>
@@ -295,14 +295,14 @@ export interface ComponentConfig<
   variants?: ReadonlyArray<ComponentVariant<OwnerState>>
 }
 
-/** Button's variant values — augment to register new ones (then style them via `variants`). */
+/** Button's variant values - augment to register new ones (then style them via `variants`). */
 export interface ButtonVariants {
   contained: true
   outlined: true
   text: true
 }
 
-/** The resolved props Button's styled roots receive — what `ownerState` exposes. */
+/** The resolved props Button's styled roots receive - what `ownerState` exposes. */
 export interface ButtonOwnerState {
   variant?: keyof ButtonVariants
   color?: keyof ThemePalette
@@ -339,7 +339,7 @@ export interface CardOwnerState {
 
 /**
  * Pressable's resolved props / theme-settable defaults. Only the three keys it
- * actually resolves through `useDefaultProps` — the disabled state reaches the
+ * actually resolves through `useDefaultProps` - the disabled state reaches the
  * styled root as `isDisabled` and is never read from here, so exposing it would
  * promise theme authors an override that does nothing.
  */
@@ -416,9 +416,9 @@ export interface ThemeComponents {
 
 export interface Theme {
   name: string
-  /** Optional overrides for component default token/variant keys — see `ThemeDefaults`. */
+  /** Optional overrides for component default token/variant keys - see `ThemeDefaults`. */
   defaults?: OpenScale<ThemeDefaults>
-  /** Optional per-component customization — see `ThemeComponents`. */
+  /** Optional per-component customization - see `ThemeComponents`. */
   components?: OpenScale<ThemeComponents>
   space: OpenScale<ThemeSpace>
   border: OpenScale<ThemeBorder>
@@ -440,7 +440,7 @@ export interface Theme {
   colorScheme: 'light' | 'dark'
   blur: string
   logoFilter: string
-  /** mix-blend-mode for the AboutHero portrait — screen on dark, multiply on light. */
+  /** mix-blend-mode for the AboutHero portrait - screen on dark, multiply on light. */
   portraitBlend: string
   /** opacity for the AboutHero portrait. */
   portraitOpacity: number
@@ -458,7 +458,7 @@ export type PaletteColor = keyof ThemePalette
 /** The variant keys of `theme.typography`. */
 export type TypographyVariant = keyof ThemeTypographyVariants
 
-// One base color for every shadow — the elevation array and component shadows
+// One base color for every shadow - the elevation array and component shadows
 // (e.g. the Switch thumb) all composite from `shadow.color`.
 const shadow = { color: '#000000', opacity: 0.4 }
 
@@ -507,7 +507,7 @@ export const letterSpacings = {
 }
 
 export const fonts = {
-  // 'X Variable' is the @fontsource-variable family name — the consumer's global styles load
+  // 'X Variable' is the @fontsource-variable family name - the consumer's global styles load
   // the font files; the plain name is a fallback for local installs, then the generic family.
   body: "'Space Grotesk Variable', 'Space Grotesk', sans-serif",
   heading: "'Space Grotesk Variable', 'Space Grotesk', sans-serif",
@@ -591,8 +591,8 @@ export const typography: ThemeTypographyVariants = {
 }
 
 /**
- * The package's complete default theme (dark-schemed). Raw hex only — palettes
- * belong to the consumer, who builds brand themes with `createTheme(baseTheme, …)`.
+ * The package's complete default theme (dark-schemed). Raw hex only - palettes
+ * belong to the consumer, who builds brand themes with `createTheme(baseTheme, ...)`.
  */
 export const baseTheme: Theme = {
   name: 'base',

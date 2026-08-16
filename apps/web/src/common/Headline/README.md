@@ -12,7 +12,7 @@ A section heading with a full-width decorative divider line. Used at the top of 
 
 | Prop    | Type     | Default | Description          |
 | ------- | -------- | ------- | -------------------- |
-| `title` | `string` | —       | Section heading text |
+| `title` | `string` | -       | Section heading text |
 
 ---
 

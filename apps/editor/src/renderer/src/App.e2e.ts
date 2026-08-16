@@ -3,7 +3,7 @@ import { expect, type Page } from '@playwright/test'
 import type { ElectronApplication } from 'playwright'
 import { CLAUDE_STUB_ANSWER, CLAUDE_STUB_DELTA, test } from 'src/test/e2e/fixtures'
 
-const getEditor = (page: Page) => page.getByPlaceholder('Write your article in Markdown…')
+const getEditor = (page: Page) => page.getByPlaceholder('Write your article in Markdown...')
 
 /** Clicks a native application-menu item by its template id (see src/main/menu.ts). */
 const clickMenuItem = (electronApp: ElectronApplication, id: string) =>
@@ -30,7 +30,7 @@ test('saves, resets, and reopens a document from the File menu', async ({
   const filePath = testInfo.outputPath('note.md')
   const editor = getEditor(page)
   // Save writes to disk only for a document that is not a gist file, and the
-  // app opens on a sandbox — so start a plain document first. Waiting for the
+  // app opens on a sandbox - so start a plain document first. Waiting for the
   // sandbox to have settled first, or the menu action lands before it does.
   await expect(page.getByText('en.md', { exact: true })).toBeVisible()
   await clickMenuItem(electronApp, 'file-new')
@@ -66,7 +66,7 @@ test('recovers typed markdown through the Edit menu and keyboard undo', async ({
   await editor.fill('one')
 
   // Undo commits whatever is pending before stepping back, so this pair leaves
-  // 'one' as a committed step — no waiting out the coalescing window for it.
+  // 'one' as a committed step - no waiting out the coalescing window for it.
   await clickMenuItem(electronApp, 'edit-undo')
   await expect(editor).toHaveValue('')
   await clickMenuItem(electronApp, 'edit-redo')
@@ -74,7 +74,7 @@ test('recovers typed markdown through the Edit menu and keyboard undo', async ({
 
   await editor.fill('one two')
 
-  // A single Ctrl+Z must undo exactly one step — guards against the menu
+  // A single Ctrl+Z must undo exactly one step - guards against the menu
   // accelerator double-handling the key alongside the renderer binding.
   await editor.press('Control+z')
   await expect(editor).toHaveValue('one')
@@ -94,7 +94,7 @@ test('switches between edit, preview, and live edit modes', async ({ page }) => 
   await expect(editor).toBeHidden()
   await expect(page.getByRole('heading', { level: 1, name: 'Modes' })).toBeVisible()
 
-  // Live edit: type directly on the rendered heading — no textarea anywhere.
+  // Live edit: type directly on the rendered heading - no textarea anywhere.
   await page.getByRole('button', { name: 'Live edit' }).click()
   const block = page.getByLabel('Edit block')
   await expect(block).toHaveAttribute('contenteditable', 'true')
@@ -112,7 +112,7 @@ test('streams a Claude rewrite into the document', async ({ page }) => {
   await page.getByLabel('Edit instruction').fill('write something')
   await page.getByRole('button', { name: 'Ask Claude' }).click()
 
-  // In the document while the run is still going — the point of streaming.
+  // In the document while the run is still going - the point of streaming.
   await expect(getEditor(page)).toHaveValue(CLAUDE_STUB_DELTA)
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
 
@@ -130,14 +130,14 @@ test('cancels a Claude run, putting the document back', async ({ page }) => {
   await page.getByRole('button', { name: 'Cancel' }).click()
 
   // The button is back, so the run is over and the document is its own again. That a killed
-  // run cannot write afterwards is main's to guarantee — events carry the run they belong to,
+  // run cannot write afterwards is main's to guarantee - events carry the run they belong to,
   // and the renderer drops any for a run it is no longer waiting on (see useClaudeEdit).
   await expect(page.getByRole('button', { name: 'Ask Claude' })).toBeVisible()
   await expect(getEditor(page)).toHaveValue('# Mine')
 })
 
 test('prompts before closing a window with unsaved changes', async ({ page, electronApp }) => {
-  // The app opens on a gist file, which is kept by staging it in the sandbox —
+  // The app opens on a gist file, which is kept by staging it in the sandbox -
   // silently, with nothing to observe. Start a plain document, where keeping the
   // work means a save dialog. Waiting for the sandbox to have settled first, or
   // the menu action lands before it does.
@@ -153,7 +153,7 @@ test('prompts before closing a window with unsaved changes', async ({ page, elec
   await page.evaluate(() => window.editorAPI.file.setDirty(true, false))
 
   // Button 0 keeps the work: main asks the renderer to save, which opens the
-  // save dialog — the dialog opening is what proves the window survived to act.
+  // save dialog - the dialog opening is what proves the window survived to act.
   await electronApp.evaluate(({ dialog }) => {
     const counts = globalThis as unknown as { saveDialogs: number }
     counts.saveDialogs = 0

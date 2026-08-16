@@ -4,7 +4,7 @@ A `ButtonGroup` of `ToggleButton`s with single (exclusive) or multiple selection
 Built on `ButtonGroup`: joined corners, merged borders, orientation, `borderRadius`, and the
 color / size / disabled / fullWidth broadcast are all inherited; this component adds the
 selection state (via `ToggleButtonGroupContext`) and restores the active-color border edge on
-selected children. Renders `role="group"` (give it an accessible label). **Controlled** — the
+selected children. Renders `role="group"` (give it an accessible label). **Controlled** - the
 consumer owns `value`.
 
 ```tsx
@@ -21,8 +21,8 @@ const [platform, setPlatform] = useState('web')
 
 | Prop           | Type                                                  | Default        | Description                                                                         |
 | -------------- | ----------------------------------------------------- | -------------- | ----------------------------------------------------------------------------------- |
-| `value`        | `string \| number \| Array<string \| number> \| null` | `null`         | Selected value(s) — single when `isExclusive`, array otherwise.                     |
-| `onChange`     | `(value) => void`                                     | —              | Next selection: single value or `null` (exclusive), array possibly empty otherwise. |
+| `value`        | `string \| number \| Array<string \| number> \| null` | `null`         | Selected value(s) - single when `isExclusive`, array otherwise.                     |
+| `onChange`     | `(value) => void`                                     | -              | Next selection: single value or `null` (exclusive), array possibly empty otherwise. |
 | `isExclusive`  | `boolean`                                             | `false`        | Only one child value can be selected at a time.                                     |
 | `color`        | `keyof Theme['palette']`                              | `'default'`    | Selected-state color for all children.                                              |
 | `size`         | `keyof Theme['sizes']`                                | `'md'`         | Density for all children.                                                           |
@@ -46,5 +46,5 @@ const handleChange = (next) => {
 
 ## Accessibility
 
-- The group renders `role="group"` — always provide `aria-label` or `aria-labelledby`.
+- The group renders `role="group"` - always provide `aria-label` or `aria-labelledby`.
 - Each `ToggleButton` reflects its state via `aria-pressed` and sits in DOM/tab order.

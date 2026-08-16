@@ -3,7 +3,7 @@ import type { Env } from 'src/env'
 
 export const GITHUB_API = 'https://api.github.com'
 
-/** The bench GitHub App is not installed on the caller's repo — the route maps it to 404. */
+/** The bench GitHub App is not installed on the caller's repo - the route maps it to 404. */
 export class AppNotInstalledError extends Error {}
 
 /** Headers GitHub's REST API requires on every call. */

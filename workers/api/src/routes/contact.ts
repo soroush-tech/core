@@ -8,7 +8,7 @@ import { monthTableName, createTableStatement } from 'src/utils/tables'
 import { sanitizeContact } from 'src/utils/sanitize'
 import { formatRequestId } from 'src/utils/requestId'
 
-/** Reject bodies larger than this many bytes before parsing — a cheap abuse guard. */
+/** Reject bodies larger than this many bytes before parsing - a cheap abuse guard. */
 const MAX_BODY_BYTES = 16 * 1024
 
 /** Honeypot: a filled hidden field (named by env, never in the repo) means a bot. */
@@ -112,7 +112,7 @@ contactRoute.post('/contact', async (c) => {
   try {
     await notify(c.env, v)
   } catch {
-    // swallow — the row is stored; the notification can be recovered from D1 if needed.
+    // swallow - the row is stored; the notification can be recovered from D1 if needed.
   }
 
   // Return a short reference derived from the stored id so the user can quote it in follow-ups.

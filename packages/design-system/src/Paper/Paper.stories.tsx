@@ -36,14 +36,14 @@ const meta: Meta<typeof Paper> = {
     },
     elevation: {
       control: { type: 'range', min: 0, max: 24, step: 1 },
-      description: 'Shadow depth — 0 (flat) to 24 (highest). Resolves to theme.shadows[n].',
+      description: 'Shadow depth - 0 (flat) to 24 (highest). Resolves to theme.shadows[n].',
       table: { category: 'Visual', defaultValue: { summary: '1' } },
     },
     bg,
     borderRadius: {
       control: { type: 'inline-radio' },
       options: borderRadiiTokens,
-      description: 'Border radius — resolves from theme.radii.',
+      description: 'Border radius - resolves from theme.radii.',
       table: { category: 'Visual', defaultValue: { summary: 'md' } },
     },
     aspectRatio: {

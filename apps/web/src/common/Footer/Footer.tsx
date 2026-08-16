@@ -27,7 +27,7 @@ const CONNECTIVITY = [
   // { href: '/wiki/', label: 'Technical Wiki' },
 ]
 
-// single-side top border — View's borderColor applies to all four sides
+// single-side top border - View's borderColor applies to all four sides
 const FooterRoot = styled(View, { label: 'FooterRoot' })`
   border-top: 1px solid ${({ theme }) => alpha(theme.border.primary, 0.1)};
 `
@@ -55,7 +55,7 @@ export function Footer() {
           gridTemplateColumns={['1fr', 'repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(4, 1fr)']}
           gap={6}
         >
-          {/* Col 1 — Logo + tagline (drops to the bottom in the 2-col tablet view) */}
+          {/* Col 1 - Logo + tagline (drops to the bottom in the 2-col tablet view) */}
           <View order={[0, 1, 1, 0]}>
             <Flex flexDirection="row" alignItems="center" gap={2} mb={3}>
               <Logo size={72} />
@@ -80,7 +80,7 @@ export function Footer() {
             </Typography>
           </View>
 
-          {/* Col 2 — Directories (internal NavLinks) */}
+          {/* Col 2 - Directories (internal NavLinks) */}
           <View>
             <Typography
               variant="caption"
@@ -103,7 +103,7 @@ export function Footer() {
             />
           </View>
 
-          {/* Col 3 — Connectivity (external links) */}
+          {/* Col 3 - Connectivity (external links) */}
           <View>
             <Typography
               variant="caption"
@@ -126,7 +126,7 @@ export function Footer() {
             />
           </View>
 
-          {/* Col 4 — Terminal readout + copyright (stays after the logo in tablet) */}
+          {/* Col 4 - Terminal readout + copyright (stays after the logo in tablet) */}
           <View order={[0, 2, 2, 0]}>
             <Quote bg="primary" p={3} mb={4} display={['none', 'block']}>
               <Typography

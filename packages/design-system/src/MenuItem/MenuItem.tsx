@@ -17,13 +17,13 @@ export type MenuItemSize = keyof Theme['sizes']
 export type MenuItemTextColor = keyof Theme['text']
 
 export interface MenuItemProps {
-  /** The value this option represents — reported to `Select`'s `onChange`. */
+  /** The value this option represents - reported to `Select`'s `onChange`. */
   value: string | number
   /** The option label. */
   children: ReactNode
-  /** The element used for the root node — a tag name or a component. Default: `'li'`. */
+  /** The element used for the root node - a tag name or a component. Default: `'li'`. */
   as?: ElementType
-  /** Disables the option — it cannot be highlighted or selected. */
+  /** Disables the option - it cannot be highlighted or selected. */
   disabled?: boolean
   /** Marks the option as the current selection. Injected by `Select`. */
   selected?: boolean
@@ -31,11 +31,11 @@ export interface MenuItemProps {
   highlighted?: boolean
   /** Reserves a leading checkmark slot for multi-select menus. Injected by `Select`. */
   multiple?: boolean
-  /** Accent color — resolves to `theme.palette[color]`. Injected by `Select`; the item's own value wins. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Accent color - resolves to `theme.palette[color]`. Injected by `Select`; the item's own value wins. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: MenuItemColor
-  /** Base text color of the row — resolves against `theme.text`. When unset, falls back to the accent color's `main`. Injected by `Select`; the item's own value wins. */
+  /** Base text color of the row - resolves against `theme.text`. When unset, falls back to the accent color's `main`. Injected by `Select`; the item's own value wins. */
   textColor?: MenuItemTextColor
-  /** Density token — resolves against `theme.sizes`. Injected by `Select`. Default: 'md', overridable via `theme.defaults.size`. */
+  /** Density token - resolves against `theme.sizes`. Injected by `Select`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: MenuItemSize
   /** Compact vertical padding, independent of `size`. Default: `false`. */
   dense?: boolean
@@ -45,7 +45,7 @@ export interface MenuItemProps {
   divider?: boolean
   /** Focus the row on first mount, and whenever `autoFocus` flips from `false` to `true`. Default: `false`. */
   autoFocus?: boolean
-  /** Class applied only while the row has keyboard focus — a `:focus-visible` hook. */
+  /** Class applied only while the row has keyboard focus - a `:focus-visible` hook. */
   focusVisibleClassName?: string
   /** Fired with `value` when the option is chosen. Injected by `Select`. */
   onSelect?: (value: string | number) => void

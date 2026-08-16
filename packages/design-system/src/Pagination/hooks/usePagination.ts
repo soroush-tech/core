@@ -9,7 +9,7 @@ export type PaginationItemType =
   | 'start-ellipsis'
   | 'end-ellipsis'
 
-/** One renderable pagination item — `Pagination` maps these onto `PaginationItem`s. */
+/** One renderable pagination item - `Pagination` maps these onto `PaginationItem`s. */
 export interface UsePaginationItem {
   type: PaginationItemType
   /** Target page for actionable items; `null` for ellipses. */
@@ -44,7 +44,7 @@ const range = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => start + i)
 
 /**
- * Headless pagination model — computes the item list (nav buttons, page numbers,
+ * Headless pagination model - computes the item list (nav buttons, page numbers,
  * ellipses) with selection, boundary disabling, and controlled/uncontrolled paging.
  */
 export function usePagination({
@@ -81,7 +81,7 @@ export function usePagination({
   )
 
   // Page items are raw numbers here; the string members are only nav/ellipsis
-  // types, so `'page'` never appears — excluding it lets `navTargets[item]` narrow.
+  // types, so `'page'` never appears - excluding it lets `navTargets[item]` narrow.
   const startEllipsisFallback: Array<Exclude<PaginationItemType, 'page'> | number> =
     boundaryCount + 1 < count - boundaryCount ? [boundaryCount + 1] : []
   const endEllipsisFallback: Array<Exclude<PaginationItemType, 'page'> | number> =

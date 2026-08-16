@@ -50,7 +50,7 @@ describe('draftStore.read', () => {
   })
 
   it('reads a draft written before descriptions could be staged', async () => {
-    // The old shape was a bare file map — that work should not be thrown away.
+    // The old shape was a bare file map - that work should not be thrown away.
     onDisk({ abc123: { 'notes.md': { status: 'modified', content: 'edited' } } })
     await expect(store.read('abc123')).resolves.toEqual(DRAFT)
   })
@@ -149,7 +149,7 @@ describe('draftStore.update', () => {
 
   it('takes turns, so two changes at once cannot drop each other', async () => {
     // Both start from the same file, but the second only reads once the first
-    // has written — otherwise its write would carry none of the first's work.
+    // has written - otherwise its write would carry none of the first's work.
     let stored: Record<string, unknown> = {}
     io.readFile.mockImplementation(() => Promise.resolve(JSON.stringify(stored)))
     io.writeFile.mockImplementation((_path: string, content: string) => {

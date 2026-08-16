@@ -39,11 +39,11 @@ export default defineConfig({
   ],
   webServer: {
     // Dedicated e2e port (via E2E_PORT below) so we never reuse a developer's
-    // `pnpm dev` on 3000 (MSW off) — that server lacks VITE_APP_MSW_ACTIVE and
+    // `pnpm dev` on 3000 (MSW off) - that server lacks VITE_APP_MSW_ACTIVE and
     // the mocks never load. The port is applied in vite.config.ts.
     command: coverage ? 'pnpm build && pnpm preview:e2e' : 'pnpm dev',
     port: 9999,
-    // Never reuse a running dev server for coverage — it must hit the sourcemapped build.
+    // Never reuse a running dev server for coverage - it must hit the sourcemapped build.
     reuseExistingServer: coverage ? false : !process.env.CI,
     timeout: coverage ? 180_000 : 60_000,
     // Mock server-side GitHub fetches for e2e (dev SSR + prerender) via the gated

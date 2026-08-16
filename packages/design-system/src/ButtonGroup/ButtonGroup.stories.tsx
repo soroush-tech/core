@@ -32,13 +32,13 @@ const meta: Meta<typeof ButtonGroup> = {
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
-      description: 'Color palette for all child buttons — resolves against `theme.palette`.',
+      description: 'Color palette for all child buttons - resolves against `theme.palette`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     size: {
       control: { type: 'select' },
       options: buttonSizeTokens,
-      description: 'Density for all child buttons — resolves against `theme.sizes`.',
+      description: 'Density for all child buttons - resolves against `theme.sizes`.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     orientation: {
@@ -50,7 +50,7 @@ const meta: Meta<typeof ButtonGroup> = {
     borderRadius: {
       control: { type: 'select' },
       options: borderRadiiTokens,
-      description: "Group corner radius — rounds the group's outer corners only.",
+      description: "Group corner radius - rounds the group's outer corners only.",
       table: { category: 'Visual', defaultValue: { summary: 'md' } },
     },
     disabled: {
@@ -69,7 +69,7 @@ const meta: Meta<typeof ButtonGroup> = {
 export default meta
 type Story = StoryObj<typeof ButtonGroup>
 
-// ButtonGroup accepts multiple children directly — no fragment wrapper needed.
+// ButtonGroup accepts multiple children directly - no fragment wrapper needed.
 const buttons = [
   <Button key="one">One</Button>,
   <Button key="two">Two</Button>,

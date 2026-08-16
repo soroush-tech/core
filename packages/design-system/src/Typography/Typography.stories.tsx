@@ -83,7 +83,7 @@ const meta: Meta<typeof Typography> = {
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Semantic text color — resolves from theme.text.',
+      description: 'Semantic text color - resolves from theme.text.',
       table: { category: 'Visual' },
     },
     bg,
@@ -100,7 +100,7 @@ const meta: Meta<typeof Typography> = {
       control: { type: 'select' },
       options: fontSizeIndices,
       description:
-        'theme.fontSizes index — 0=12px · 1=14px · 2=16px · 3=20px · 4=24px · 5=32px · 6=48px',
+        'theme.fontSizes index - 0=12px · 1=14px · 2=16px · 3=20px · 4=24px · 5=32px · 6=48px',
       table: { category: 'Typography' },
     },
     fontWeight: {
@@ -119,7 +119,7 @@ const meta: Meta<typeof Typography> = {
       control: { type: 'select' },
       options: lineHeightTokens,
       description:
-        'theme.lineHeights key — none=1 · tight=1.2 · snug=1.35 · base=1.5 · relaxed=1.625 · loose=2',
+        'theme.lineHeights key - none=1 · tight=1.2 · snug=1.35 · base=1.5 · relaxed=1.625 · loose=2',
       table: { category: 'Typography' },
     },
     letterSpacing: {
@@ -179,7 +179,7 @@ const ALIGN_TEXT: Record<string, string> = {
   center: 'The quick brown fox jumps over the lazy dog.',
   right: 'The quick brown fox jumps over the lazy dog.',
   justify:
-    'Justify only stretches lines that wrap — the last line stays left. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump.',
+    'Justify only stretches lines that wrap - the last line stays left. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump.',
 }
 
 export const Alignment: Story = {

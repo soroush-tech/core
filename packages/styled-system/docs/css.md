@@ -7,7 +7,7 @@ import { css } from '@soroush.tech/styled-system/css'
 The `css` utility converts a theme-aware style object into a plain CSS-in-JS style
 object. It resolves values against the [theme specification](./theme-specification.md)
 scales (e.g. `color: 'primary'` → `theme.colors.primary`), supports the shorthand
-prop aliases (`m`, `px`, `bg`, …), and expands [responsive](./responsive-styles.md)
+prop aliases (`m`, `px`, `bg`, ...), and expands [responsive](./responsive-styles.md)
 array / object values into media queries.
 
 It returns a function of `theme` (or `props.theme`), so it slots directly into any
@@ -65,7 +65,7 @@ const Button = styled('button')`
 import { pick, omit } from '@soroush.tech/styled-system/props'
 ```
 
-`pick` and `omit` split a props object by whether each key is a known style prop —
+`pick` and `omit` split a props object by whether each key is a known style prop -
 useful for forwarding only valid HTML attributes to the DOM. See also
 [Removing props from HTML](./guides/removing-props-from-html.md) and
 `@soroush.tech/styled-system/should-forward-prop`.

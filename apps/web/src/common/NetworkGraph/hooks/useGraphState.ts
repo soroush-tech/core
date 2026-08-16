@@ -7,7 +7,7 @@ import { toggleSet } from '../utils/toggleSet'
  * Group and relation-anchored (floating) nodes sit outside the expand tree, so
  * `computeVisibleIds` never reaches them. A group node rides along whenever a member it
  * links to is visible; a relation-anchored node rides along whenever a node it relates to
- * is visible — so their group/relation edge then renders. Mutates `visible` in place.
+ * is visible - so their group/relation edge then renders. Mutates `visible` in place.
  */
 function addOutsideTreeNodes(visible: Set<string>, data: GraphData): void {
   for (const link of data.links) {

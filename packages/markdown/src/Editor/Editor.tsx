@@ -11,7 +11,7 @@ import { styled } from '@soroush.tech/design-system'
 import { useTheme, themeDefault } from '@soroush.tech/design-system/theme'
 import { Typography } from '@soroush.tech/design-system/Typography'
 
-// Named styled root — theme-customizable via
+// Named styled root - theme-customizable via
 // `theme.components.MarkdownEditor.styleOverrides.root`.
 const EditorRoot = styled(Flex, { name: 'MarkdownEditor', label: 'MarkdownEditor' })()
 import {
@@ -37,9 +37,9 @@ const INDENT_ACTION: LinePrefixAction = {
 const noop = () => {}
 
 export interface EditorProps {
-  /** Standalone source value — used when rendered outside a `Control`. Ignored inside one. */
+  /** Standalone source value - used when rendered outside a `Control`. Ignored inside one. */
   value?: string
-  /** Standalone change handler — used when rendered outside a `Control`. Ignored inside one. */
+  /** Standalone change handler - used when rendered outside a `Control`. Ignored inside one. */
   onChange?: (value: string) => void
   /** Placeholder shown while the source is empty. */
   placeholder?: string
@@ -47,18 +47,18 @@ export interface EditorProps {
   minRows?: number
   /**
    * Maximum rows before the auto-grow textarea stops growing and scrolls
-   * internally — keeps its border box visible inside height-bound panes.
+   * internally - keeps its border box visible inside height-bound panes.
    */
   maxRows?: number
-  /** Visual style of the source input — forwarded to `TextInput`. Default: `'default'`. */
+  /** Visual style of the source input - forwarded to `TextInput`. Default: `'default'`. */
   variant?: TextInputVariant
-  /** Focus/active border colour — forwarded to `TextInput`. */
+  /** Focus/active border colour - forwarded to `TextInput`. */
   color?: TextInputColor
-  /** Text colour of the typed source — forwarded to `TextInput`. Default: `'initial'`. */
+  /** Text colour of the typed source - forwarded to `TextInput`. Default: `'initial'`. */
   textColor?: TextInputTextColor
-  /** Padding/font-size density — forwarded to `TextInput`. */
+  /** Padding/font-size density - forwarded to `TextInput`. */
   size?: TextInputSize
-  /** Native `name` on the textarea — set it for native `<form>` submission / FormData. */
+  /** Native `name` on the textarea - set it for native `<form>` submission / FormData. */
   name?: string
   /** `id` for label association. Falls back to the enclosing `FormControl`. */
   id?: string
@@ -80,7 +80,7 @@ export interface EditorProps {
 export function Editor({
   value: valueProp,
   onChange: onChangeProp,
-  placeholder = 'Write your article in Markdown…',
+  placeholder = 'Write your article in Markdown...',
   minRows = 16,
   maxRows,
   variant,
@@ -99,7 +99,7 @@ export function Editor({
   const textColor = textColorProp ?? themeDefault(theme, 'textColor', 'initial')
   // Links the shortcut hint to the textarea so assistive tech announces the escape routes on focus.
   const hintId = useId()
-  // Standalone (no Control) keeps its own pending-selection here — there is no Toolbar to share it.
+  // Standalone (no Control) keeps its own pending-selection here - there is no Toolbar to share it.
   const localPendingRef = useRef<MarkdownSelection | null>(null)
 
   // Prefer the Control context when present; otherwise fall back to standalone props.
@@ -121,7 +121,7 @@ export function Editor({
     return selection
   }
 
-  // Report the caret to the Control (so the Toolbar acts on it). No-op standalone — no Toolbar.
+  // Report the caret to the Control (so the Toolbar acts on it). No-op standalone - no Toolbar.
   const rememberSelection = (event: SyntheticEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!context) return
     const { selectionStart, selectionEnd } = event.currentTarget as HTMLTextAreaElement

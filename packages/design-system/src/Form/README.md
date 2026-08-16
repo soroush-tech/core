@@ -1,11 +1,11 @@
 # Form
 
 Renders a `<form>` and provides form-wide field defaults through `FormContext`. It is the **lowest
-priority** in the override chain — a [`FormControl`](../FormControl/README.md) or an explicit prop on
+priority** in the override chain - a [`FormControl`](../FormControl/README.md) or an explicit prop on
 a control always wins.
 
 **Architecture:** `Form` is purely presentational + context. It holds no form state, runs no
-validation, and is not tied to any form library — bridging to a specific one (e.g. TanStack Form's
+validation, and is not tied to any form library - bridging to a specific one (e.g. TanStack Form's
 `Field`) is left to the consuming app. Pass `onSubmit` straight through; wire it to your form
 library's submit handler (e.g. `form.handleSubmit()`).
 
@@ -15,28 +15,28 @@ library's submit handler (e.g. `form.handleSubmit()`).
 
 ### `onSubmit`
 
-`(event: FormEvent<HTMLFormElement>) => void` — native submit handler. Call `event.preventDefault()`
+`(event: FormEvent<HTMLFormElement>) => void` - native submit handler. Call `event.preventDefault()`
 and delegate to your form library.
 
 ### `size`
 
-`keyof Theme['sizes']` — `"sm" | "md" | "lg"`. Default control size for every field.
+`keyof Theme['sizes']` - `"sm" | "md" | "lg"`. Default control size for every field.
 
 ### `color`
 
-`keyof Theme['palette']` — default accent color for every field.
+`keyof Theme['palette']` - default accent color for every field.
 
 ### `textColor`
 
-`keyof Theme['text']` — default text color for every field's label, helper, and input content.
+`keyof Theme['text']` - default text color for every field's label, helper, and input content.
 
 ### `disabled`
 
-`boolean` — disables every field.
+`boolean` - disables every field.
 
 ### `fullWidth`
 
-`boolean` — stretches every field to fill its container.
+`boolean` - stretches every field to fill its container.
 
 ### `id` / `className` / `noValidate` / `data-testid`
 

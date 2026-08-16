@@ -1,5 +1,5 @@
 ---
-description: How to write and cut a GitHub Release for an @soroush.tech/* package published by cd-packages.yml — notes live in an in-repo file `packages/<pkg>/release-notes/<version>.md`, the semver bump rule, a linked PR/issue reference as an absolute URL (required for feature/fix releases, waived for dependency-bump-only ones which instead list every bump), and the breaking-change, new-API-doc-link, and packaging side-note sections. Use when releasing a package or drafting its release notes.
+description: How to write and cut a GitHub Release for an @soroush.tech/* package published by cd-packages.yml - notes live in an in-repo file `packages/<pkg>/release-notes/<version>.md`, the semver bump rule, a linked PR/issue reference as an absolute URL (required for feature/fix releases, waived for dependency-bump-only ones which instead list every bump), and the breaking-change, new-API-doc-link, and packaging side-note sections. Use when releasing a package or drafting its release notes.
 paths: packages/**
 ---
 
@@ -7,27 +7,27 @@ paths: packages/**
 
 Publishing is **manual**, and notes live in a **versioned file committed to the package**:
 `packages/<pkg>/release-notes/<version>.md`, where `<version>` matches `package.json`. The
-workflow requires that file to exist before it publishes — a package can never ship with empty
+workflow requires that file to exist before it publishes - a package can never ship with empty
 notes. See [`cd-packages.md`](../../../.github/workflows/cd-packages.md) for the workflow. This
 skill is about writing that file.
 
-The file is plain multi-line markdown — **no `\n` escaping** (that was the old dispatch-input
+The file is plain multi-line markdown - **no `\n` escaping** (that was the old dispatch-input
 flow; it's gone). Notes files never ship to npm: every package uses a `files: ["dist"]`
 allowlist, so `release-notes/` is excluded from the tarball automatically.
 
-Every file **starts with a `## <name>@<version>` heading** — it's the only title the file
+Every file **starts with a `## <name>@<version>` heading** - it's the only title the file
 carries (a GitHub Release shows the tag separately; the standalone file doesn't). The directory
-is the package's full per-version history — one file per released version, browsable and linked
+is the package's full per-version history - one file per released version, browsable and linked
 from the package README.
 
-**Repo links** use `soroush-tech/core`: `blob/main/…` for a file, `tree/main/…` for a
+**Repo links** use `soroush-tech/core`: `blob/main/...` for a file, `tree/main/...` for a
 directory. Never the old `soroush-tech/soroush.tech`.
 
 ## Before you write notes: bump the version (semver)
 
 A release is bumping `version` in the package's `package.json` on `main` **and** adding the
 matching `release-notes/<version>.md`, in the same PR. The publish step skips a version already
-on npm, so the **version number is the release**. Follow [semver](https://semver.org) — the
+on npm, so the **version number is the release**. Follow [semver](https://semver.org) - the
 bump decides which sections the notes need.
 
 | Bump      | `x.y.z` → | Use for                                                                  |
@@ -37,36 +37,36 @@ bump decides which sections the notes need.
 | **MAJOR** | `X+1.0.0` | **Any change that breaks backward compatibility** (reset minor+patch)    |
 
 > Breaking a **dependency contract** (raising a peer-dependency floor consumers must meet,
-> dropping a supported runtime) is a breaking change — bump **MAJOR**, even if your own code
+> dropping a supported runtime) is a breaking change - bump **MAJOR**, even if your own code
 > is untouched. A backward-compatible dep bump is PATCH.
 
 ## Required contents
 
 Every release body **must** have:
 
-1. **A PR or issue reference, as a full link** — `[#<number>](https://github.com/soroush-tech/core/issues/<number>)`
+1. **A PR or issue reference, as a full link** - `[#<number>](https://github.com/soroush-tech/core/issues/<number>)`
    somewhere in the notes (lead line or a bullet). Ties a **feature or fix** release to its
    change history. Required for any release that changes behavior or API.
 
    Write the **absolute URL**, never a bare `#<number>`. A bare reference only autolinks in
-   GitHub's issue/PR/Release UI — these files are also browsed in-repo at `blob/main/…`, where
+   GitHub's issue/PR/Release UI - these files are also browsed in-repo at `blob/main/...`, where
    it renders as plain text. Same reason the doc links in rule 3 are absolute. (Note this is the
    opposite of the [`github-issues`](../github-issues/SKILL.md) rule: inside an _issue or PR
    body_, reference issues bare so GitHub renders the title.)
 
    **Exception:** a maintenance / dependency-bump-only release (a PATCH that only refreshes
-   dependencies) may have no owning issue — the reference is **not required** there; instead
+   dependencies) may have no owning issue - the reference is **not required** there; instead
    **list exactly what was bumped** (see rule 4).
 
-2. **Breaking changes**, if any — a `### BREAKING CHANGES` section spelling out what broke and
+2. **Breaking changes**, if any - a `### BREAKING CHANGES` section spelling out what broke and
    the migration. Its presence means the bump must be MAJOR.
-3. **New public API**, if any — name each new export **and link its doc**. API docs live under
+3. **New public API**, if any - name each new export **and link its doc**. API docs live under
    `packages/<name>/docs/*.md`. Link the repo-hosted file (a `blob/main` URL) so it resolves
    from the GitHub Release page, where relative links don't:
    `https://github.com/soroush-tech/core/blob/main/packages/<name>/docs/<file>.md#<anchor>`.
-4. **A packaging side note** — a `### Packaging` section for packaging-level changes:
+4. **A packaging side note** - a `### Packaging` section for packaging-level changes:
    dependency-floor raises, peer/optional-peer changes, engine/runtime requirements, repo moves.
-   For a dependency-bump-only release this section **is** the release notes — **name every
+   For a dependency-bump-only release this section **is** the release notes - **name every
    package bumped with its `old → new` version**, don't just say "dependency bumps". Omit the
    section only when there were genuinely no packaging changes.
 
@@ -82,7 +82,7 @@ Every release body **must** have:
 
 ### Added
 
-- **`newExport`** — one line on what it does.
+- **`newExport`** - one line on what it does.
   [docs](https://github.com/soroush-tech/core/blob/main/packages/<name>/docs/<file>.md#anchor)
 
 ### Changed
@@ -95,7 +95,7 @@ Every release body **must** have:
 
 ### BREAKING CHANGES
 
-- <what broke> — <how to migrate>.
+- <what broke> - <how to migrate>.
 
 ### Packaging
 
@@ -109,13 +109,13 @@ release: read the previous `release-notes/*.md`, or `gh release view "<name>@<la
 
 ### Maintenance (dependency-bump-only) release
 
-When a package ships only because its dependencies were refreshed — no code, no API change —
+When a package ships only because its dependencies were refreshed - no code, no API change -
 skip the issue link and let `### Packaging` carry the notes, naming each bump explicitly:
 
 ```markdown
 ## <name>@<version>
 
-Maintenance release — dependency refresh only. No public API or behavior changes.
+Maintenance release - dependency refresh only. No public API or behavior changes.
 
 ### Packaging
 
@@ -128,18 +128,18 @@ Maintenance release — dependency refresh only. No public API or behavior chang
 
 1. In **one PR to `main`** (CI must pass): bump `version` in `package.json` **and** add
    `packages/<dir>/release-notes/<version>.md` with the notes. The filename must equal the new
-   version — `pnpm check:release-notes` (pre-commit hook + CI lint job) fails the commit/build
+   version - `pnpm check:release-notes` (pre-commit hook + CI lint job) fails the commit/build
    if a publishable package's version has no matching notes file, and the workflow's Validate
    step fails again before publishing. That same check also fails a commit whose **staged**
    package isn't ahead of the version already on npm, so an edit can't land without its bump. A
    package you didn't touch may stay at its published version.
-2. Dispatch — Actions → **CD · Packages (npm)** → pick `package`, **Run**. CLI:
+2. Dispatch - Actions → **CD · Packages (npm)** → pick `package`, **Run**. CLI:
    `gh workflow run cd-packages.yml -f package=<dir>`.
 3. The job publishes to npm (skips if that version already exists) and cuts a GitHub Release
    tagged/titled `<name>@<version>` from the notes file. Re-running repairs a missing Release
    without republishing.
 
-> This machine can't `git push` and has no `gh` CLI — commit the version bump + notes file
+> This machine can't `git push` and has no `gh` CLI - commit the version bump + notes file
 > locally, then ask the user to push and to run the dispatch.
 
 ## Backfilling notes for past releases
@@ -148,4 +148,4 @@ To seed `release-notes/` for versions already published, copy each GitHub Releas
 `release-notes/<version>.md` (read them with the `mcp__github__list_releases` tool, or
 `gh release view "<name>@<version>"`). Add the `## <name>@<version>` heading if the body lacks
 one, and normalize any links to `soroush-tech/core`. The guards only look at each package's
-current version, so backfilling is optional — but it makes the directory a complete history.
+current version, so backfilling is optional - but it makes the directory a complete history.

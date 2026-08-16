@@ -45,7 +45,7 @@ const MERMAID = [
   '```',
 ].join('\n')
 
-// A diagram can carry its own `config` frontmatter — mermaid applies these `themeVariables`
+// A diagram can carry its own `config` frontmatter - mermaid applies these `themeVariables`
 // per-diagram, overriding the theme-derived defaults the Mermaid component supplies.
 const MERMAID_CONFIG = [
   '```mermaid',
@@ -98,7 +98,7 @@ const meta: Meta<typeof Preview> = {
     slotProps: {
       control: 'object',
       description:
-        'Per-element prop overrides, merged over the defaults. Keyed by markdown tag (h1–h6, p, a, li, code, blockquote, table, …).',
+        'Per-element prop overrides, merged over the defaults. Keyed by markdown tag (h1-h6, p, a, li, code, blockquote, table, ...).',
       table: { category: 'Behavior' },
     },
   },
@@ -109,7 +109,7 @@ type Story = StoryObj<typeof Preview>
 
 export const Default: Story = {}
 
-// `slotProps` overrides any element's props (merged over the defaults — the override wins).
+// `slotProps` overrides any element's props (merged over the defaults - the override wins).
 export const WithOverrides: Story = {
   args: {
     children: SAMPLE,

@@ -14,7 +14,7 @@ const HairlineGrid = styled(Grid, { label: 'HairlineGrid' })`
   background-color: ${({ theme }) => theme.border.light};
 `
 
-// :hover background change — no styled-system hover prop
+// :hover background change - no styled-system hover prop
 const EngineTile = styled(Paper, { label: 'EngineTile' })`
   &:hover {
     background-color: ${({ theme }) => theme.background.paper};

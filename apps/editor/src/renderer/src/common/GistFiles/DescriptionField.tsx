@@ -16,7 +16,7 @@ export interface DescriptionFieldProps {
 
 /**
  * The gist's description: read-only until Edit is pressed, then a multiline
- * field with explicit Save and Cancel — a description can run to several
+ * field with explicit Save and Cancel - a description can run to several
  * lines, so Enter belongs to the text rather than to submitting.
  *
  * Saving stages it, so it joins the other unpublished changes rather than
@@ -60,7 +60,7 @@ export function DescriptionField({
         </Flex>
         {isStaged && (
           <Typography variant="caption" color="secondary" m={0}>
-            Description edited — publish to apply it.
+            Description edited - publish to apply it.
           </Typography>
         )}
       </Flex>
@@ -74,7 +74,7 @@ export function DescriptionField({
         minRows={2}
         fullWidth
         value={typed}
-        placeholder="Describe this gist…"
+        placeholder="Describe this gist..."
         onChange={(event) => setTyped(event.target.value)}
         inputProps={{ 'aria-label': 'Gist description' }}
       />

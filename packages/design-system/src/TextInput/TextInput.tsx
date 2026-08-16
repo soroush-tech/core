@@ -25,7 +25,7 @@ export interface TextInputClasses {
 
 export interface TextInputProps
   extends SpaceProps<Theme>, Pick<LayoutProps<Theme>, 'width' | 'minWidth' | 'maxWidth'> {
-  /** Corner radius — applies only to `default` and `outlined` variants. Resolves against `theme.radii`. */
+  /** Corner radius - applies only to `default` and `outlined` variants. Resolves against `theme.radii`. */
   borderRadius?: keyof Theme['radii']
   autoComplete?: string
   autoFocus?: boolean
@@ -33,20 +33,20 @@ export interface TextInputProps
   classes?: TextInputClasses
   /** Override components for the Root and Input slots. */
   components?: { Input?: ElementType; Root?: ElementType }
-  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Focus/active border color - resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: TextInputColor
-  /** Text color of the typed value — resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
+  /** Text color of the typed value - resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
   textColor?: TextInputTextColor
   /** Disables the input. */
   disabled?: boolean
-  /** Marks the field as invalid — applies error border color. */
+  /** Marks the field as invalid - applies error border color. */
   error?: boolean
   /** Stretches the root to fill its container. */
   fullWidth?: boolean
   id?: string
   /** Custom component for the input element. Takes priority over `components.Input`. Default: `'input'`. */
   inputComponent?: ElementType
-  /** Native HTML `size` attribute — visible width in character widths. Has no effect with `multiline` or `resize`. */
+  /** Native HTML `size` attribute - visible width in character widths. Has no effect with `multiline` or `resize`. */
   inputSize?: number
   /** Extra props spread onto the native element. Explicit top-level props take priority. */
   inputProps?: InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>
@@ -77,9 +77,9 @@ export interface TextInputProps
   type?: string
   /**
    * Visual style of the input.
-   * - `outlined` / `default` — full border box (default)
-   * - `underline` — border on bottom only
-   * - `text` — no border, transparent background
+   * - `outlined` / `default` - full border box (default)
+   * - `underline` - border on bottom only
+   * - `text` - no border, transparent background
    */
   variant?: TextInputVariant
   value?: string | number | readonly string[]
@@ -119,7 +119,7 @@ const baseStyle = {
   transition: 'border-color 0.15s ease',
 }
 
-// Plain function — get() for safe dot-notation traversal.
+// Plain function - get() for safe dot-notation traversal.
 // system() raw function skipped here: createParser iterates props with for...in which
 // doesn't see 'variant' reliably in this styled context. Destructuring is reliable.
 const backgroundStyle = ({
@@ -213,7 +213,7 @@ const textAreaBaseStyles = {
   overflow: 'auto' as const,
 }
 
-// Native <input size> (character width) conflicts with our visual size token —
+// Native <input size> (character width) conflicts with our visual size token -
 // `size` drives styles via sizeVariant; `inputSize` forwards as the native attribute.
 interface InputBaseProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   size?: TextInputSize
@@ -265,7 +265,7 @@ const StyledInput = styled(InputBase, {
 
 const shouldForwardInputProps = (prop: string) => prop !== 'size'
 
-// Fixed-rows only — scrolls when content overflows.
+// Fixed-rows only - scrolls when content overflows.
 const StyledTextarea = styled('textarea', {
   name: 'TextInput',
   slot: 'input',
@@ -273,7 +273,7 @@ const StyledTextarea = styled('textarea', {
   shouldForwardProp: shouldForwardInputProps,
 })<StyledInputProps>(nativeBaseStyles, textAreaBaseStyles, sizeVariants)
 
-// Auto-grow — TextAreaAutoResize owns the resize behavior; style applied here.
+// Auto-grow - TextAreaAutoResize owns the resize behavior; style applied here.
 const StyledAutoResizeTextarea = styled(TextAreaAutoResize, {
   name: 'TextInput',
   slot: 'input',

@@ -51,6 +51,12 @@ describe('CLAUDE_COMMAND', () => {
     expect(CLAUDE_COMMAND).toContain('--allowedTools ""')
     expect(CLAUDE_COMMAND).not.toContain('--bare')
   })
+
+  it('is printable ASCII throughout, so the shell reads it as written', () => {
+    // The prompt is interpolated into this string. A curly quote or an em dash
+    // in it would depend on the console code page to survive the trip.
+    expect(CLAUDE_COMMAND).toMatch(/^[\x20-\x7E]+$/)
+  })
 })
 
 describe('buildStdin', () => {
@@ -90,7 +96,7 @@ describe('createClaudeRunner', () => {
     expect(child.stdin.end).toHaveBeenCalledWith(buildStdin(request))
   })
 
-  it('reports the text as it is written, then the run’s own result', () => {
+  it("reports the text as it is written, then the run's own result", () => {
     const { child, events, runner } = createRunner()
 
     runner.start('run-1', request)
@@ -276,7 +282,7 @@ describe('createClaudeRunner', () => {
     runner.start('run-1', request)
     runner.cancel('run-1')
     child.emit('error', new Error('kill ESRCH'))
-    // The run is over twice by now — stopped, then ended. What the child had
+    // The run is over twice by now - stopped, then ended. What the child had
     // already written is still on its way, and none of it is an answer.
     child.stdout.emit('data', delta('too late'))
     child.stdout.emit('data', result('later still'))

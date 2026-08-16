@@ -1,6 +1,6 @@
 import { type Images } from 'src/common/DomainCard'
 
-// Featured cards render a 480px box, regular cards 360px — widths cover 1x–4x DPR.
+// Featured cards render a 480px box, regular cards 360px - widths cover 1x-4x DPR.
 import detective from 'src/assets/soroush_mascot_detective.png?w=480;720;960;1440;1920&format=avif;webp;png&as=picture'
 import orchestraConductor from 'src/assets/soroush_mascot_orchestra_conductor.png?w=480;720;960;1440;1920&format=avif;webp;png&as=picture'
 import signalData from 'src/assets/soroush_mascot_signal_data.png?w=360;540;720;1080&format=avif;webp;png&as=picture'
@@ -28,7 +28,7 @@ export const domains: DomainData[] = [
     index: 1,
     title: 'FULL-STACK SYSTEMS\nARCHITECTURE',
     description:
-      'Designing end-to-end systems from data model to deployment pipeline — that scale under load while remaining maintainable across distributed teams.',
+      'Designing end-to-end systems from data model to deployment pipeline - that scale under load while remaining maintainable across distributed teams.',
     tags: ['API_DESIGN', 'DATA_MODELING', 'DISTRIBUTED_SYS', 'MONOREPO_OPS'],
     images: detective,
     imageAlt: 'Soroush Mascot Full-Stack Systems Architect',

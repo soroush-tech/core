@@ -103,7 +103,7 @@ describe('patchGist', () => {
     fetchMock.mockResolvedValue(response(false, 401))
     await expect(patchGist('abc123', DRAFT, 'stale', fetchFn)).resolves.toEqual({
       success: false,
-      error: 'GitHub rejected the stored token — connect the account again',
+      error: 'GitHub rejected the stored token - connect the account again',
     })
   })
 

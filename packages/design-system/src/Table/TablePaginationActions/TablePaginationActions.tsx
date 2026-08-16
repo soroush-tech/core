@@ -14,13 +14,13 @@ export interface TablePaginationActionsProps extends HTMLAttributes<HTMLDivEleme
   rowsPerPage: number
   /** Fired with the target zero-based page. */
   onPageChange: (page: number) => void
-  /** Accessible name per nav button — important for screen readers. */
+  /** Accessible name per nav button - important for screen readers. */
   getItemAriaLabel: (type: TablePaginationActionType) => string
   /** Disables all buttons. Default: `false`. */
   disabled?: boolean
   shouldShowFirstButton?: boolean
   shouldShowLastButton?: boolean
-  /** Button density — resolves against `theme.sizes`. Default: `'sm'`. */
+  /** Button density - resolves against `theme.sizes`. Default: `'sm'`. */
   size?: PaginationItemSize
 }
 

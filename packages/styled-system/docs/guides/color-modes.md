@@ -89,7 +89,7 @@ Next you'll want to add the UI controls for changing between color modes.
 With this basic approach, you should be able to add as many different color modes to your site as you wish.
 Be sure that _all_ components within your application are using color values from the theme (not hard-coded values) in order for this to work as expected.
 
-There are other ways to achieve a similar effect – this just demonstrates one approach.
+There are other ways to achieve a similar effect - this just demonstrates one approach.
 For a different approach to persisting data, you may want to look into the [`prefers-color-scheme`][] media query, but it only handles binary `light` or `dark` modes.
 You might also want to look into [CSS Custom Properties][],
 which can be defined as inline styles, but be aware that they are not supported in IE11.

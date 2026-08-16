@@ -15,7 +15,7 @@ describe('anchorExpandedNodes', () => {
     expect(anchors.has('A')).toBe(false)
   })
 
-  it('captures once — keeps the original spot even after the node moves', () => {
+  it('captures once - keeps the original spot even after the node moves', () => {
     const positions = new Map([['A', { x: 5, y: 6 }]])
     const anchors = new Map<string, { x: number; y: number }>()
     anchorExpandedNodes(new Set(['A']), positions, anchors)

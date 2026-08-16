@@ -79,7 +79,7 @@ describe('registerClaudeHandlers', () => {
     expect(runner.start).not.toHaveBeenCalled()
   })
 
-  it('accepts an empty selection — writing new content into an empty document', async () => {
+  it('accepts an empty selection - writing new content into an empty document', async () => {
     expect(start('', 'write an article')).toEqual({ success: true, data: 'run-1' })
     expect(runner.start).toHaveBeenCalledWith('run-1', {
       selectedText: '',
@@ -87,7 +87,7 @@ describe('registerClaudeHandlers', () => {
     })
   })
 
-  it('sends a run’s events to the window that started it', async () => {
+  it("sends a run's events to the window that started it", async () => {
     await start('old', 'improve')
 
     emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'Hel' })

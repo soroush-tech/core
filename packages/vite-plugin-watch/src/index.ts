@@ -13,7 +13,7 @@ export type WatchOptions = {
 }
 
 /**
- * Dev-only convenience: regenerates a codegen `script`'s output while you work — once when
+ * Dev-only convenience: regenerates a codegen `script`'s output while you work - once when
  * the dev server starts, and again whenever a `watch` file is edited. Scoped to
  * `apply: 'serve'`; the build and tests consume the committed generated file (kept honest by
  * a drift-guard test), so the plugin never runs there. Run `pnpm <script>` to regenerate

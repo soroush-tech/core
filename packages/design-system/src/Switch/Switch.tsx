@@ -16,7 +16,7 @@ export interface SwitchProps extends SpaceProps<Theme> {
   checked?: boolean
   defaultChecked?: boolean
   disabled?: boolean
-  /** Accepted for API parity — the design system does not implement ripple. */
+  /** Accepted for API parity - the design system does not implement ripple. */
   disableRipple?: boolean
   color?: SwitchColor
   size?: SwitchSize
@@ -24,8 +24,8 @@ export interface SwitchProps extends SpaceProps<Theme> {
   bg?: keyof Theme['background']
   /**
    * Shows ✓/✕ indicators.
-   * - `"outside"` — marks appear as SVG icons inside the thumb.
-   * - `"inside"` — marks appear as CSS pseudo-elements in the track.
+   * - `"outside"` - marks appear as SVG icons inside the thumb.
+   * - `"inside"` - marks appear as CSS pseudo-elements in the track.
    * Custom `icon`/`checkedIcon` override the defaults when `marked` is true.
    */
   marked?: boolean
@@ -70,7 +70,7 @@ const INSIDE_THUMB_START: Record<SwitchSize, string> = { sm: '2px', md: '2px', l
 const INSIDE_TRANSLATE: Record<SwitchSize, string> = { sm: '16px', md: '20px', lg: '24px' }
 
 // Resolves the effective size (prop → theme.defaults.size → 'md') to a metric key.
-// Sizes added by theme augmentation have no metrics here — fall back to md.
+// Sizes added by theme augmentation have no metrics here - fall back to md.
 const knownSize = (size: SwitchSize | undefined, theme: Theme): 'sm' | 'md' | 'lg' => {
   const resolved = size ?? themeDefault(theme, 'size', 'md')
   return resolved === 'sm' || resolved === 'lg' ? resolved : 'md'

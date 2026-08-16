@@ -4,13 +4,13 @@ import type { Locator, Page } from '@playwright/test'
 // The experience page is the interactive D3 technology graph plus its legend sidebar.
 // The legend is hidden below 1024px; the e2e desktop viewports (1280) show it. Driving
 // the legend (stable HTML) also toggles the graph, so we assert through it rather than
-// clicking moving SVG nodes. We scope to the legend — and to each area's own child list —
+// clicking moving SVG nodes. We scope to the legend - and to each area's own child list -
 // because area/tech labels also appear as SVG node text, and a shared tech is listed
 // under every area it belongs to.
 const legend = (page: Page): Locator =>
   page.getByText('CATEGORIES', { exact: true }).locator('xpath=..')
 const nodeGroups = (page: Page): Locator => page.locator('.node-group')
-// The child list that immediately follows an area's row — that area's subtree.
+// The child list that immediately follows an area's row - that area's subtree.
 const areaSubtree = (page: Page, area: string): Locator =>
   legend(page).getByText(area, { exact: true }).locator('xpath=../following-sibling::div[1]')
 
@@ -75,10 +75,10 @@ test('the legacy switch reveals and hides legacy tech in the legend', async ({ p
   await expect(nodeGroups(page).first()).toBeVisible()
   await legend(page).getByText('Web', { exact: true }).click()
 
-  // jQuery is legacy Web tech — absent from the menu while the switch is off.
+  // jQuery is legacy Web tech - absent from the menu while the switch is off.
   await expect(page.getByText('jQuery', { exact: true })).toHaveCount(0)
 
-  // Scope to the legend — the page header carries its own "Toggle theme" switch.
+  // Scope to the legend - the page header carries its own "Toggle theme" switch.
   const legacySwitch = legend(page).getByRole('switch')
   await legacySwitch.dispatchEvent('click') // Show legacy → on
   await expect(page.getByText('jQuery', { exact: true })).toHaveCount(2)

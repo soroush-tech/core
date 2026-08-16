@@ -12,7 +12,7 @@ export interface DraftRow {
  *
  * A staged description wins, since it is what the gist is about to be called.
  * Otherwise the gist's published description, and only failing both the staged
- * filenames — which still say more about unfinished work than an id does.
+ * filenames - which still say more about unfinished work than an id does.
  */
 export function describeDraft(
   gistId: string,
@@ -27,7 +27,7 @@ export function describeDraft(
 
   return {
     gistId,
-    title: isNewGist(gistId) ? `New gist — ${title}` : title,
+    title: isNewGist(gistId) ? `New gist - ${title}` : title,
     changeCount,
   }
 }

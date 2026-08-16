@@ -6,7 +6,7 @@ export const AUTOSAVE_INTERVAL_MS = 2000
 /**
  * Saves a dirty gist document into its sandbox draft on its own, at most once
  * every couple of seconds. Only gist documents: they have a draft to save
- * into, and staging there is invisible — no dialog, nothing written over a
+ * into, and staging there is invisible - no dialog, nothing written over a
  * file of the user's. A crash or reload then costs at most the last two
  * seconds of typing instead of the whole article.
  *

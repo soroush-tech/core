@@ -90,7 +90,7 @@ export const openApiDocument = {
               example: {
                 repository: 'soroush-tech/core',
                 prNumber: 307,
-                body: `${BENCH_MARKER}\n\n## Benchmark results\n\n…`,
+                body: `${BENCH_MARKER}\n\n## Benchmark results\n\n...`,
               },
             },
           },

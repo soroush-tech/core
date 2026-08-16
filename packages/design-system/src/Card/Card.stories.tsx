@@ -69,7 +69,7 @@ const meta: Meta<typeof Card> = {
     },
     elevation: {
       control: { type: 'range', min: 0, max: 24, step: 1 },
-      description: 'Shadow depth — 0 (flat) to 24 (highest). Resolves to theme.shadows[n].',
+      description: 'Shadow depth - 0 (flat) to 24 (highest). Resolves to theme.shadows[n].',
       table: { category: 'Visual', defaultValue: { summary: '1' } },
     },
     bg,
@@ -164,7 +164,7 @@ export const TitleOnly: Story = {
 }
 
 export const SubtitleOnly: Story = {
-  render: () => <Card p={3} caption="Subtitle only — no title above it." />,
+  render: () => <Card p={3} caption="Subtitle only - no title above it." />,
 }
 
 export const WithChildren: Story = {

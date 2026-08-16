@@ -10,11 +10,11 @@ import { openApiDocument } from './openapi'
  */
 const RATE_EXEMPT = new Set(['/v1/health', '/v1/docs', '/v1/openapi.json'])
 
-/** Docs (Swagger UI + OpenAPI) are served only when `DOCS_ENABLED` is set — never in production. */
+/** Docs (Swagger UI + OpenAPI) are served only when `DOCS_ENABLED` is set - never in production. */
 const docsEnabled = (c: { env: Env }) => c.env.DOCS_ENABLED === 'true'
 
 /**
- * Builds the `@soroush/bench-api` Hono app — the bench-action comment relay. All routes live
+ * Builds the `@soroush/bench-api` Hono app - the bench-action comment relay. All routes live
  * under `/v1`. Unlike `@soroush/api` there is no CORS/origin guard: the callers are CI runners,
  * not browsers, and every report request authenticates with a GitHub Actions OIDC JWT instead.
  */
@@ -36,7 +36,7 @@ export const createApp = () => {
   app.get('/health', (c) => c.json({ ok: true }))
   app.route('/', reportRoute)
 
-  // API docs — gated so production (where DOCS_ENABLED is unset) returns 404.
+  // API docs - gated so production (where DOCS_ENABLED is unset) returns 404.
   app.use('/openapi.json', async (c, next) => {
     if (!docsEnabled(c)) return c.notFound()
     await next()

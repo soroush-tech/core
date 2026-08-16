@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 - State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them — don't pick silently.
+- If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 
 ### 2. Propose before implementing
@@ -36,7 +36,7 @@ Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, sim
 - Don't refactor, reformat, or "improve" adjacent code.
 - Remove imports/variables/functions that YOUR changes made unused.
 - Match existing style.
-- If you notice unrelated dead code, mention it — don't delete it.
+- If you notice unrelated dead code, mention it - don't delete it.
 
 ### 5. Goal-driven execution
 
@@ -64,17 +64,17 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Critical conventions
 
-- **Design-system imports:** UI primitives and styling come from the workspace package — `import { X } from '@soroush.tech/design-system/X'` (barrel `@soroush.tech/design-system` for `styled`, `css`, `Theme`, etc.). App-internal imports use the `src/` alias (`import { X } from 'src/hooks/useX'`), never relative `../../`.
-- **Brand layer:** The site's color palettes, `light`/`dark` themes, mode toggling (`ThemeModeProvider`/`useThemeMode`), and global styles/fonts live in `apps/web/src/theme/`; both brand themes are built with `createTheme(baseTheme, …)`. The design-system `ThemeProvider` receives exactly one active theme (see `src/theme/ThemeModeProvider.tsx`); the package ships a single hex-inlined `baseTheme` (the only place hex values are allowed in the package) for its tests, stories, and npm consumers.
-- **SSR guard:** Never import browser-only APIs at module top level — guard with `typeof window !== 'undefined'` or move into effects.
+- **Design-system imports:** UI primitives and styling come from the workspace package - `import { X } from '@soroush.tech/design-system/X'` (barrel `@soroush.tech/design-system` for `styled`, `css`, `Theme`, etc.). App-internal imports use the `src/` alias (`import { X } from 'src/hooks/useX'`), never relative `../../`.
+- **Brand layer:** The site's color palettes, `light`/`dark` themes, mode toggling (`ThemeModeProvider`/`useThemeMode`), and global styles/fonts live in `apps/web/src/theme/`; both brand themes are built with `createTheme(baseTheme, ...)`. The design-system `ThemeProvider` receives exactly one active theme (see `src/theme/ThemeModeProvider.tsx`); the package ships a single hex-inlined `baseTheme` (the only place hex values are allowed in the package) for its tests, stories, and npm consumers.
+- **SSR guard:** Never import browser-only APIs at module top level - guard with `typeof window !== 'undefined'` or move into effects.
 - **Styled-system:** Use `Flex`, `View`, `Typography` from `@soroush.tech/design-system` over raw `div`/`p` for layout.
-- **Hook co-location:** Shared data hooks → `src/hooks/useX.ts`. Component-specific hooks → `src/common|section|pages/ComponentName/hooks/useX.ts`. Flat files — `useX.ts` + co-located `useX.test.ts`; no per-hook subfolder, no `index.ts`.
-- **Logic & data co-location:** In `common`/`section`/`pages` components, extract pure helpers to `ComponentName/utils.ts` — or a flat `ComponentName/utils/` folder with one file per helper (`utils/helperName.ts` + `utils/helperName.test.ts`) when there are several — constants to `const.ts`, and static data to `ComponentName/ComponentName.data.ts`, co-located with the component. Promote a helper, hook, or data set to `src/utils/` or `src/hooks/` only once it is generic (used by more than one component).
+- **Hook co-location:** Shared data hooks → `src/hooks/useX.ts`. Component-specific hooks → `src/common|section|pages/ComponentName/hooks/useX.ts`. Flat files - `useX.ts` + co-located `useX.test.ts`; no per-hook subfolder, no `index.ts`.
+- **Logic & data co-location:** In `common`/`section`/`pages` components, extract pure helpers to `ComponentName/utils.ts` - or a flat `ComponentName/utils/` folder with one file per helper (`utils/helperName.ts` + `utils/helperName.test.ts`) when there are several - constants to `const.ts`, and static data to `ComponentName/ComponentName.data.ts`, co-located with the component. Promote a helper, hook, or data set to `src/utils/` or `src/hooks/` only once it is generic (used by more than one component).
 - **Test placement:** Three tiers, all co-located next to source. Unit → `*.test.ts(x)` (vitest). Integration → `*.spec.ts(x)` (vitest). E2E → `*.e2e.ts` (Playwright), next to its page; shared e2e infra (fixtures, coverage hooks) in `src/test/e2e/`.
-- **Lint:** `pnpm lint` runs `oxlint --deny-warnings` — any warning fails. Formatting is not
+- **Lint:** `pnpm lint` runs `oxlint --deny-warnings` - any warning fails. Formatting is not
   linted; `oxfmt` owns it, via `pnpm format` and the `format:check` gate in CI.
-- **Packages:** Everything under `packages/` is a scoped `@soroush.tech/*` workspace package — read `packages/packages.md` first. Every package must have **100% test coverage**, and any publishable (non-`private`) package must declare a license and ship a `LICENSE` file.
-- **Issue artifacts:** Any epic, task, RFC, bug report, user story, feature request, or documentation-feedback item you draft — whether as a `docs/` file or for GitHub — must follow the matching template in `.github/ISSUE_TEMPLATE/` (`4.epic.yml`, `6.task.yml`, `3.rfc.yml`, `1.bug_report.yml`, `5.user_story.yml`, `2.feature_request.yml`, `7.documentation_feedback.yml`). Use that template's exact section headings, order, and title prefix (e.g. `[Epic]`, `[Task]`). Read the template before drafting.
+- **Packages:** Everything under `packages/` is a scoped `@soroush.tech/*` workspace package - read `packages/packages.md` first. Every package must have **100% test coverage**, and any publishable (non-`private`) package must declare a license and ship a `LICENSE` file.
+- **Issue artifacts:** Any epic, task, RFC, bug report, user story, feature request, or documentation-feedback item you draft - whether as a `docs/` file or for GitHub - must follow the matching template in `.github/ISSUE_TEMPLATE/` (`4.epic.yml`, `6.task.yml`, `3.rfc.yml`, `1.bug_report.yml`, `5.user_story.yml`, `2.feature_request.yml`, `7.documentation_feedback.yml`). Use that template's exact section headings, order, and title prefix (e.g. `[Epic]`, `[Task]`). Read the template before drafting.
 
 ## Layer conventions
 
@@ -83,7 +83,7 @@ Read the relevant doc before working in that area:
 | Layer                 | Convention doc                            | What it covers                                                                                                              |
 | --------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Design system         | `packages/design-system/design-system.md` | Styled components, `system()`, `shouldForwardProp`, Storybook argTypes, token rules                                         |
-| Markdown package      | `packages/markdown/markdown.md`           | Companion component library — **follows design-system.md verbatim** + packages.md; theme-slot augmentation, lazy mermaid    |
+| Markdown package      | `packages/markdown/markdown.md`           | Companion component library - **follows design-system.md verbatim** + packages.md; theme-slot augmentation, lazy mermaid    |
 | Theming/customization | `packages/design-system/docs/`            | `theming.md` (createTheme, defaults, augmentation) · `customization.md` (`theme.components`)                                |
 | Common components     | `src/common/common.md`                    | Folder structure, composition rules, custom CSS, testing with `renderWithTheme`                                             |
 | Sections              | `src/section/section.md`                  | Page-specific composed sections: folder structure, co-located data/logic, testing                                           |
@@ -95,6 +95,6 @@ Read the relevant doc before working in that area:
 ## Quick checklist before pushing
 
 1. `pnpm lint`
-2. `pnpm test:coverage` — verify 100% on all touched files
+2. `pnpm test:coverage` - verify 100% on all touched files
 3. `pnpm test:e2e` if UI-facing changes
 4. `pnpm build`

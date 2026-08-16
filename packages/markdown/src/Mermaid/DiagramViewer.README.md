@@ -6,7 +6,7 @@ Wraps a rendered diagram SVG in a zoom/pan viewport. Used internally by
 - **Controls (bottom-right):** a pan d-pad (up/down/left/right) around a reset, plus zoom in/out.
 - **Expand (top-right):** opens the diagram in a fullscreen dialog (a design-system `Modal`).
 - **Drag to pan.** The diagram is not text-selectable, so a pan-drag never flickers a selection.
-- **Wheel to zoom — fullscreen only.** Inline, the wheel scrolls the page rather than the diagram
+- **Wheel to zoom - fullscreen only.** Inline, the wheel scrolls the page rather than the diagram
   hijacking it.
 - Every glyph is a design-system [`Icon`](../../../design-system/src/Icon); no inline SVG.
 
@@ -18,6 +18,6 @@ hides it.
 
 | Prop         | Type      | Default | Description                                                         |
 | ------------ | --------- | ------- | ------------------------------------------------------------------- |
-| `svg`        | `string`  | —       | The rendered SVG markup to display. Required.                       |
+| `svg`        | `string`  | -       | The rendered SVG markup to display. Required.                       |
 | `expandable` | `boolean` | `true`  | Show the expand-to-fullscreen control and dialog.                   |
-| `fill`       | `boolean` | `false` | Fill the parent's height — used by the nested viewer in the dialog. |
+| `fill`       | `boolean` | `false` | Fill the parent's height - used by the nested viewer in the dialog. |

@@ -67,7 +67,7 @@ const meta: Meta<typeof TableCell> = {
       control: { type: 'select' },
       options: tableCellVariantTokens,
       description:
-        'Cell type — inherited from the enclosing section (`TableHead`/`TableBody`/`TableFooter`), overridable per cell. `head` renders `<th scope="col">`.',
+        'Cell type - inherited from the enclosing section (`TableHead`/`TableBody`/`TableFooter`), overridable per cell. `head` renders `<th scope="col">`.',
       table: { category: 'Behavior' },
     },
     align: {
@@ -79,37 +79,37 @@ const meta: Meta<typeof TableCell> = {
     size: {
       control: { type: 'select' },
       options: tableSizeTokens,
-      description: 'Cell density — inherited from the `Table`, overridable per cell.',
+      description: 'Cell density - inherited from the `Table`, overridable per cell.',
       table: { category: 'Layout' },
     },
     cellPadding: {
       control: { type: 'select' },
       options: tableCellPaddingTokens,
-      description: 'Padding mode — inherited from the `Table`. `none` zeroes padding.',
+      description: 'Padding mode - inherited from the `Table`. `none` zeroes padding.',
       table: { category: 'Layout' },
     },
     sortDirection: {
       control: { type: 'select' },
       options: ['asc', 'desc'],
-      description: 'Sets `aria-sort` on the cell — pair with `TableSortLabel` for the control.',
+      description: 'Sets `aria-sort` on the cell - pair with `TableSortLabel` for the control.',
       table: { category: 'Behavior' },
     },
     hasEllipsis: {
       control: 'boolean',
       description:
-        "Truncates overflowing text with an ellipsis — inherits the `Table`'s `hasEllipsis`. Needs a constrained width (e.g. `maxWidth`) to kick in.",
+        "Truncates overflowing text with an ellipsis - inherits the `Table`'s `hasEllipsis`. Needs a constrained width (e.g. `maxWidth`) to kick in.",
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     scope: {
       control: 'text',
       description:
-        'Native scope attribute — defaults to `col` on header cells for screen-reader navigation.',
+        'Native scope attribute - defaults to `col` on header cells for screen-reader navigation.',
       table: { category: 'Behavior' },
     },
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color — resolves against `theme.text`.',
+      description: 'Text color - resolves against `theme.text`.',
       table: { category: 'Visual' },
     },
     bg,
@@ -117,31 +117,31 @@ const meta: Meta<typeof TableCell> = {
     fontFamily: {
       control: { type: 'select' },
       options: fontFamilyTokens,
-      description: 'Font family — resolves against `theme.fonts`.',
+      description: 'Font family - resolves against `theme.fonts`.',
       table: { category: 'Typography' },
     },
     fontSize: {
       control: { type: 'select' },
       options: fontSizeIndices,
-      description: 'Font size index — resolves against `theme.fontSizes`.',
+      description: 'Font size index - resolves against `theme.fontSizes`.',
       table: { category: 'Typography' },
     },
     fontWeight: {
       control: { type: 'select' },
       options: fontWeightTokens,
-      description: 'Font weight — resolves against `theme.fontWeights`.',
+      description: 'Font weight - resolves against `theme.fontWeights`.',
       table: { category: 'Typography' },
     },
     lineHeight: {
       control: { type: 'select' },
       options: lineHeightTokens,
-      description: 'Line height — resolves against `theme.lineHeights`.',
+      description: 'Line height - resolves against `theme.lineHeights`.',
       table: { category: 'Typography' },
     },
     letterSpacing: {
       control: { type: 'select' },
       options: letterSpacingTokens,
-      description: 'Letter spacing — resolves against `theme.letterSpacings`.',
+      description: 'Letter spacing - resolves against `theme.letterSpacings`.',
       table: { category: 'Typography' },
     },
     p,
@@ -161,7 +161,7 @@ const deployments = [
   { service: 'worker', region: 'iad1', latency: 213 },
 ]
 
-// Controls apply to every cell — head and body — so the effect is visible table-wide.
+// Controls apply to every cell - head and body - so the effect is visible table-wide.
 export const Default: Story = {
   render: (args) => (
     <Table>

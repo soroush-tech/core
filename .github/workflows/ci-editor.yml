@@ -2,7 +2,7 @@
 # Editing this file re-runs the editor and nothing outside it.
 name: CI · Editor
 
-# Called by ci-app.yml. Two tiers, two jobs — the same shape as the web app, where `web` and `e2e`
+# Called by ci-app.yml. Two tiers, two jobs - the same shape as the web app, where `web` and `e2e`
 # are separate. They run in parallel rather than one after the other: the editor's e2e is a single
 # job, so there is nothing to save by holding it behind the unit suite the way the web app holds
 # three operating systems behind its own.
@@ -19,7 +19,7 @@ on:
       runner: { required: true, type: string }
 
 jobs:
-  # The jsdom unit and integration suites. No display, no Electron — just the renderer and main
+  # The jsdom unit and integration suites. No display, no Electron - just the renderer and main
   # process under test.
   unit:
     runs-on: ubuntu-latest
@@ -51,10 +51,10 @@ jobs:
           key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
 
       # The shared install command runs --ignore-scripts, which also skips
-      # Electron's postinstall — the binary download. Rebuild runs just that one
+      # Electron's postinstall - the binary download. Rebuild runs just that one
       # script, explicitly: into ~/.cache/electron (restored above), unpacked to
       # node_modules/electron/dist. The runner input goes through env and a
-      # fixed dispatch, never into shell source — zizmor: template-injection.
+      # fixed dispatch, never into shell source - zizmor: template-injection.
       - name: Download Electron binary
         env:
           RUNNER: ${{ inputs.runner }}
@@ -67,7 +67,7 @@ jobs:
       - name: Run Editor Unit Tests with Coverage
         shell: bash
         run: |
-          echo "### 🧪 Editor — \`test:coverage:editor\` (jsdom unit)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 🧪 Editor - \`test:coverage:editor\` (jsdom unit)" >> "$GITHUB_STEP_SUMMARY"
           ${{ inputs.runner }} run test:coverage:editor
 
       # vitest writes lcov paths relative to the app (SF:src/main/menu.ts). Prefix them so Codecov
@@ -111,7 +111,7 @@ jobs:
           key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
 
       # Same as the unit job: the install skipped Electron's postinstall, so run
-      # just that one script — this tier launches the real binary. Same fixed
+      # just that one script - this tier launches the real binary. Same fixed
       # dispatch as there, keeping the input out of shell source.
       - name: Download Electron binary
         env:
@@ -122,7 +122,7 @@ jobs:
             *) echo "Unsupported runner: $RUNNER" >&2; exit 1 ;;
           esac
 
-      # Electron bundles its own Chromium, so nothing is downloaded here — this installs only the
+      # Electron bundles its own Chromium, so nothing is downloaded here - this installs only the
       # shared libraries it needs, through the editor's own Playwright rather than a hand-kept apt
       # list. xvfb is the display: the runner is headless and Electron is not.
       - name: Install Electron system dependencies
@@ -134,7 +134,7 @@ jobs:
       - name: Run Editor E2E with Coverage
         shell: bash
         run: |
-          echo "### 🧪 Editor E2E — \`test:coverage:e2e:editor\` (Playwright + Electron)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 🧪 Editor E2E - \`test:coverage:e2e:editor\` (Playwright + Electron)" >> "$GITHUB_STEP_SUMMARY"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
             ${{ inputs.runner }} run test:coverage:e2e:editor
 

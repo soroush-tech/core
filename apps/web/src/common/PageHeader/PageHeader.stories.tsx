@@ -39,7 +39,7 @@ export const WithChildren: Story = {
         Custom children
       </Typography>
       <Typography variant="body1" color="secondary" m={0}>
-        Pass any composition as children — the Hero does exactly this.
+        Pass any composition as children - the Hero does exactly this.
       </Typography>
     </PageHeader>
   ),

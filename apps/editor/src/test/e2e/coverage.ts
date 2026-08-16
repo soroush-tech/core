@@ -11,7 +11,7 @@ export const rawCoverageDir = resolve('./coverage/e2e/.raw')
 /**
  * E2E coverage instance, scoped to the two entry files excluded from unit
  * coverage (see vitest.config.ts): the renderer entry collected through
- * `page.coverage` and the main entry through NODE_V8_COVERAGE — both wired in
+ * `page.coverage` and the main entry through NODE_V8_COVERAGE - both wired in
  * fixtures.ts. Electron serves the built app from file:// rather than
  * localhost, so the package's default entryFilter is replaced with one that
  * keeps the out/ bundles. Written to coverage/e2e/lcov.info.

@@ -154,7 +154,7 @@ const meta: Meta<PopoverStoryArgs> = {
     },
     slotProps: {
       control: false,
-      description: 'Props for the paper slot (the surface) — e.g. `bg`, `p`, `style`.',
+      description: 'Props for the paper slot (the surface) - e.g. `bg`, `p`, `style`.',
       table: { category: 'Visual' },
     },
     // ── Positioning ──
@@ -198,7 +198,7 @@ const meta: Meta<PopoverStoryArgs> = {
     // ── Visual ──
     elevation: {
       control: { type: 'range', min: 0, max: 24, step: 1 },
-      description: 'Shadow depth of the surface — resolves against `theme.shadows`.',
+      description: 'Shadow depth of the surface - resolves against `theme.shadows`.',
       table: { category: 'Visual', defaultValue: { summary: '8' } },
     },
     // ── Behavior ──

@@ -2,11 +2,11 @@
 # Packages the desktop editor and publishes one GitHub Release.
 name: CD · Editor (release)
 
-# Manual only — a release is a decision, not a side effect of a merge, and
+# Manual only - a release is a decision, not a side effect of a merge, and
 # approving the dispatch is the release act. The two build legs upload their
 # installers as workflow artifacts; a final job assembles them into a single
 # release tagged v<version> (from apps/editor's package.json), titled and with
-# notes read from apps/editor/release-notes/<version>.md, and publishes it —
+# notes read from apps/editor/release-notes/<version>.md, and publishes it -
 # the moment running apps start seeing the update.
 on:
   workflow_dispatch:
@@ -53,7 +53,7 @@ jobs:
           cache: pnpm
 
       # --ignore-scripts, as in the bench deploy: no lifecycle script runs at
-      # install. Nothing here needs one — electron-builder downloads its own
+      # install. Nothing here needs one - electron-builder downloads its own
       # Electron for packaging, and esbuild's binary ships as a platform package.
       - name: Install dependencies
         env:
@@ -62,7 +62,7 @@ jobs:
 
       # Both legs build unsigned for now: Windows by choice (SmartScreen warns
       # until a signature or reputation arrives), macOS because there is no
-      # Apple Developer account yet — see electron-builder.yml's `identity` /
+      # Apple Developer account yet - see electron-builder.yml's `identity` /
       # `notarize` and the runbook's "when the Apple account exists" section
       # for what returns here with one.
       - name: Build installers
@@ -102,10 +102,10 @@ jobs:
           merge-multiple: true
 
       # One release for both platforms. Created as a draft and flipped to
-      # published only once every asset is attached — electron-updater reads
+      # published only once every asset is attached - electron-updater reads
       # the newest published release, and it must never see one whose
       # latest*.yml or installers are still uploading. Re-run safe: a leftover
-      # draft from a failed run is replaced; a published tag is never touched —
+      # draft from a failed run is replaced; a published tag is never touched -
       # that version has shipped, so bump the version instead.
       - name: Create and publish release
         env:
@@ -115,7 +115,7 @@ jobs:
           tag="v${version}"
           notes="apps/editor/release-notes/${version}.md"
 
-          # Notes come from an in-repo file, like package releases — a release
+          # Notes come from an in-repo file, like package releases - a release
           # can never ship without them. pnpm check:release-notes guards this
           # earlier, at commit time.
           test -f "$notes" || { echo "::error::Missing release notes: $notes"; exit 1; }
@@ -124,7 +124,7 @@ jobs:
             if [ "$is_draft" = "true" ]; then
               gh release delete "$tag" --yes
             else
-              echo "::error::$tag is already published — bump apps/editor/package.json"
+              echo "::error::$tag is already published - bump apps/editor/package.json"
               exit 1
             fi
           fi
@@ -132,7 +132,7 @@ jobs:
           # A draft carries no tag, but a stray one can be left behind (made
           # by hand, or by a published release that was later deleted).
           # gh release create reuses an existing tag and ignores --target, so
-          # clear it — safe here, the published-release check above has passed.
+          # clear it - safe here, the published-release check above has passed.
           gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag}" 2>/dev/null || true
 
           gh release create "$tag" dist/* \

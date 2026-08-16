@@ -31,7 +31,7 @@ export interface EditorSidebarProps {
 /**
  * The left rail: files of the selected gist, the gist list, unfinished drafts,
  * and the GitHub account pinned to the bottom. One panel column serves them
- * all, so selecting a row closes the others — and selecting the open row
+ * all, so selecting a row closes the others - and selecting the open row
  * closes it.
  *
  * Only the gist's id is held here: the Files panel reads the description from
@@ -69,7 +69,7 @@ export function EditorSidebar({
     onOpenFile('', { gistId: id, filename: DEFAULT_FILE })
   }
 
-  // The sandbox the app opened on needs the same treatment — otherwise the
+  // The sandbox the app opened on needs the same treatment - otherwise the
   // document it starts with belongs to nothing and cannot be published. Both
   // dependencies are stable, so this happens once.
   useEffect(() => {
@@ -78,7 +78,7 @@ export function EditorSidebar({
 
   return (
     <Sidebar aria-label="Editor panels" isOpen={false} hasPanel panelWidth="20rem">
-      {/* Not a panel of its own — it opens Files on a gist that exists only
+      {/* Not a panel of its own - it opens Files on a gist that exists only
           locally, so the same panel does the work. */}
       <Pressable
         as="button"
@@ -105,7 +105,7 @@ export function EditorSidebar({
           gistId={gistId}
           onOpenFile={onOpenFile}
           onRenamed={onRenameFile}
-          // Once created, the sandbox is gone — its draft with it. The panel
+          // Once created, the sandbox is gone - its draft with it. The panel
           // follows the work to the gist that now holds it rather than opening
           // an empty one: what was just published is the thing to be looking at,
           // and the document would otherwise be left on an address that no

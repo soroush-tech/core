@@ -2,7 +2,7 @@ import type { SVGProps } from 'react'
 
 /**
  * A pen. Lives here rather than in the design system only because its icon set
- * has no "edit" — drawn on the same `0 -960 960 960` grid as the Material
+ * has no "edit" - drawn on the same `0 -960 960 960` grid as the Material
  * Symbols it sits beside, so it lines up with them.
  */
 export function PenMark(props: Readonly<SVGProps<SVGSVGElement>>) {

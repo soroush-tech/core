@@ -1,6 +1,6 @@
 # Pages
 
-Conventions for everything in `src/pages/`. Pages are Vike file-based routes — each subfolder maps directly to a URL segment.
+Conventions for everything in `src/pages/`. Pages are Vike file-based routes - each subfolder maps directly to a URL segment.
 
 ---
 
@@ -10,10 +10,10 @@ Conventions for everything in `src/pages/`. Pages are Vike file-based routes —
 
 | Belongs in `src/pages/`                                | Belongs elsewhere                                  |
 | ------------------------------------------------------ | -------------------------------------------------- |
-| `+Page.tsx` — the rendered page component              | Reusable UI → `src/common/`                        |
-| `+route.ts` — custom route matching logic              | Design primitives → `@soroush.tech/design-system/` |
-| `+onBeforeRender.ts` — SSR data prefetch               | Shared data / helpers → `src/utils/`               |
-| `+onBeforePrerenderStart.ts` — static path enumeration | Shared hooks → `src/hooks/`                        |
+| `+Page.tsx` - the rendered page component              | Reusable UI → `src/common/`                        |
+| `+route.ts` - custom route matching logic              | Design primitives → `@soroush.tech/design-system/` |
+| `+onBeforeRender.ts` - SSR data prefetch               | Shared data / helpers → `src/utils/`               |
+| `+onBeforePrerenderStart.ts` - static path enumeration | Shared hooks → `src/hooks/`                        |
 
 ---
 
@@ -41,7 +41,7 @@ import { Articles } from 'src/section/Articles'
 export default function ArticlesPage() {
   return (
     <Layout>
-      <Suspense fallback={<div>Loading…</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         <Articles />
       </Suspense>
     </Layout>
@@ -51,10 +51,10 @@ export default function ArticlesPage() {
 
 Rules:
 
-- **Always `export default`** — Vike requires a default export; no named exports alongside it
-- **Always wrap in `<Layout>`** — never render page content outside `Layout`
-- **Function name matches the route** — `ArticlesPage`, `DomainPage`, `AboutPage`; not `Page`, `App`, or anonymous
-- **Compose, don't build** — assemble from `src/section/`, `src/common/`, and `@soroush.tech/design-system/` components; keep `+Page.tsx` thin. Page-specific regions belong in `src/section/`, not inline in `+Page.tsx`
+- **Always `export default`** - Vike requires a default export; no named exports alongside it
+- **Always wrap in `<Layout>`** - never render page content outside `Layout`
+- **Function name matches the route** - `ArticlesPage`, `DomainPage`, `AboutPage`; not `Page`, `App`, or anonymous
+- **Compose, don't build** - assemble from `src/section/`, `src/common/`, and `@soroush.tech/design-system/` components; keep `+Page.tsx` thin. Page-specific regions belong in `src/section/`, not inline in `+Page.tsx`
 
 ---
 
@@ -66,7 +66,7 @@ Rules:
 
 - Label every `styled()` call with `{ label: 'ComponentName' }` for readable Emotion class names
 - Include a comment explaining why custom CSS is required
-- All colours reference theme tokens — no hardcoded hex values
+- All colours reference theme tokens - no hardcoded hex values
 - Opacity uses the hex-suffix pattern: `${({ theme }) => theme.text.primary}80`
 
 ---
@@ -90,15 +90,15 @@ If data is fetched at runtime, use a hook from `src/hooks/`. If static data is s
 Vike renders pages on the server. Never access browser-only APIs at module top level:
 
 ```tsx
-// ❌ — crashes during SSR
+// ❌ - crashes during SSR
 const width = window.innerWidth
 
-// ✅ — safe in an effect
+// ✅ - safe in an effect
 useEffect(() => {
   const width = window.innerWidth
 }, [])
 
-// ✅ — safe guard
+// ✅ - safe guard
 if (typeof window !== 'undefined') { ... }
 ```
 
@@ -108,7 +108,7 @@ if (typeof window !== 'undefined') { ... }
 
 Pages are **not unit tested**. Their correctness is validated by Playwright e2e specs co-located next to the page as `*.e2e.ts`.
 
-- Unit test the components pages compose (`src/common/`, `src/hooks/`) — not the page itself
+- Unit test the components pages compose (`src/common/`, `src/hooks/`) - not the page itself
 - Write one e2e spec per route covering the happy path and critical user interactions
 - E2e specs live next to their page as `*.e2e.ts` (e.g. `src/pages/domain/domain.e2e.ts`) and run against the full dev server via `pnpm test:e2e`. Shared infra (`fixtures.ts`, coverage hooks) stays in `src/test/e2e/`
 

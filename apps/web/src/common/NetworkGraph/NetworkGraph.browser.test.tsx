@@ -7,8 +7,8 @@ import { NetworkGraph } from './NetworkGraph'
 import { VIEW_SIZE } from './const'
 
 // Runs in real Chromium (vitest `unit-browser` project), not jsdom. The imperative
-// D3 layer in useGraphSimulation — force simulation + tick, zoom transitions, the
-// ctrl-wheel filter/wheelDelta, and pointer drag — needs a real layout engine and
+// D3 layer in useGraphSimulation - force simulation + tick, zoom transitions, the
+// ctrl-wheel filter/wheelDelta, and pointer drag - needs a real layout engine and
 // real pointer events that jsdom cannot provide. This is the coverage for the
 // blocks that were previously /* v8 ignore */-d.
 
@@ -84,7 +84,7 @@ describe('NetworkGraph (browser)', () => {
         new WheelEvent('wheel', { deltaY, ctrlKey, bubbles: true, cancelable: true })
       )
 
-    // plain wheel is rejected by the zoom filter — no transform applied
+    // plain wheel is rejected by the zoom filter - no transform applied
     wheel(-100, false)
     expect(transformOf(group())).toBe('')
 
@@ -112,11 +112,11 @@ describe('NetworkGraph (browser)', () => {
     await vi.waitFor(() => expect(transformOf(node())).not.toBe(before), { timeout: 3000 })
   })
 
-  it('sizes a visible group node’s rect to its label via getBBox', async () => {
+  it("sizes a visible group node's rect to its label via getBBox", async () => {
     const { container } = renderGraph()
     // Area A is a branch; revealing it shows child A1, whose group node 'Grp' rides
     // along and renders. getBBox works in real Chromium (it throws in jsdom), so the
-    // group rect is sized to the label — the branch the jsdom suite can't reach.
+    // group rect is sized to the label - the branch the jsdom suite can't reach.
     const categories = () => [...container.querySelectorAll<SVGGElement>('.node-group.is-category')]
     const areaA = () =>
       categories().find((g) => g.querySelector('.node-label')?.textContent === 'Area A')!

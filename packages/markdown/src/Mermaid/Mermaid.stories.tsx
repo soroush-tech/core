@@ -18,7 +18,7 @@ const meta: Meta<typeof Mermaid> = {
   argTypes: {
     chart: {
       control: 'text',
-      description: 'The mermaid diagram source — the body of a ` ```mermaid ` fence.',
+      description: 'The mermaid diagram source - the body of a ` ```mermaid ` fence.',
       table: { category: 'Content' },
     },
   },

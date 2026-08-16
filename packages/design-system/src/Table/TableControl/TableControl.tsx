@@ -3,19 +3,19 @@ import { type TableSortEntry, type TableSortMap } from '../hooks/useTableSort'
 import { type TablePaginationState } from '../hooks/useTablePagination'
 
 export interface TableControlProps<T, K extends string = string> {
-  /** The full dataset — `TableControl` derives the visible rows from it. */
+  /** The full dataset - `TableControl` derives the visible rows from it. */
   data: readonly T[]
-  /** Sort map from `useTableSort` — the active entry drives the ordering. */
+  /** Sort map from `useTableSort` - the active entry drives the ordering. */
   sort?: TableSortMap<K>
-  /** Paging state from `useTablePagination` — drives the visible slice. */
+  /** Paging state from `useTablePagination` - drives the visible slice. */
   pagination?: Pick<TablePaginationState, 'page' | 'rowsPerPage'>
   /**
-   * Custom sort — overrides the default string/number comparison. Receives the
+   * Custom sort - overrides the default string/number comparison. Receives the
    * active column key, so different columns can use different logic:
    * `(a, b, orderBy) => orderBy === 'name' ? a.name.localeCompare(b.name) : a[orderBy] - b[orderBy]`
    */
   sortFunction?: (a: T, b: T, orderBy: K) => number
-  /** Row renderer — invoked for each visible row. */
+  /** Row renderer - invoked for each visible row. */
   children: (row: T, index: number) => ReactNode
 }
 
@@ -29,7 +29,7 @@ const defaultSortFunction = <T,>(a: T, b: T, orderBy: string): number => {
 }
 
 /**
- * Renders the visible rows of a dataset inside `TableBody` — sorted by the
+ * Renders the visible rows of a dataset inside `TableBody` - sorted by the
  * active `useTableSort` column and sliced by the `useTablePagination` state.
  * Emits the rows directly (no wrapper element), so its output are valid
  * `<tr>` children of `<tbody>`. Both `sort` and `pagination` are optional.

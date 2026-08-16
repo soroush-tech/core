@@ -14,8 +14,8 @@ declare module '*format=avif' {
   export default src
 }
 
-// vite-imagetools: an `as=picture` import resolves to a multi-format picture object —
-// `sources` keyed by format (avif, webp, …) and an `img` fallback descriptor.
+// vite-imagetools: an `as=picture` import resolves to a multi-format picture object -
+// `sources` keyed by format (avif, webp, ...) and an `img` fallback descriptor.
 declare module '*as=picture' {
   const picture: {
     sources: Record<string, string>

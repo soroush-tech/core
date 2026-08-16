@@ -6,7 +6,7 @@ import { type IconName } from '@soroush.tech/design-system/Icon'
 export interface IconCardProps {
   /** Icon registry name shown at the top of the card. */
   icon: IconName
-  /** Card heading — rendered as an uppercase level-3 heading. */
+  /** Card heading - rendered as an uppercase level-3 heading. */
   title: string
   /** Body copy rendered under the title. */
   body: string

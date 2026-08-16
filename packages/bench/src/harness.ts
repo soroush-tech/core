@@ -23,11 +23,11 @@ const INSTALL_DIR = '/bench'
 
 // Resolve npm by absolute path (it ships beside node in the sandbox image) rather
 // than looking it up on PATH, so the command can't be shadowed by a writable-dir
-// entry planting a fake `npm`. — S4036
+// entry planting a fake `npm`. - S4036
 const npm = `${dirname(process.execPath)}/npm`
 
 // Accept both forms of default export: a plain object (no `@soroush.tech/bench`
-// import — truly install-free with `npx`), or `defineBench({ … })`. Validate the
+// import - truly install-free with `npx`), or `defineBench({ ... })`. Validate the
 // plain object here; pass an already-defined config through untouched.
 const benchFile = process.argv[2]
 const loaded = ((await import(pathToFileURL(benchFile).href)) as { default: BenchConfig }).default
@@ -75,9 +75,9 @@ const extract = (results: RunResults): Row[] =>
     }))
     .filter((r): r is Row => {
       if (typeof r.avg === 'number' && typeof r.p75 === 'number') return true
-      // A case with no stats means mitata produced none (e.g. it threw) — surface
+      // A case with no stats means mitata produced none (e.g. it threw) - surface
       // it so a missing row isn't mistaken for a case that was never registered.
-      console.warn(`bench: no timing stats for "${r.label}" — omitted from the report`)
+      console.warn(`bench: no timing stats for "${r.label}" - omitted from the report`)
       return false
     })
 
@@ -118,7 +118,7 @@ if (warmup > 0) {
 
 let finalRows: CaseRow[]
 if (rounds > 1) {
-  // Repeat the whole suite (re-registering each round — run() consumes the
+  // Repeat the whole suite (re-registering each round - run() consumes the
   // registered cases). Each round's mitata output is suppressed; we print a
   // one-line progress update per round to stderr (keeping stdout clean for the
   // final table), then report the median per case to cancel cross-run noise.
@@ -126,9 +126,9 @@ if (rounds > 1) {
     label.includes('::') ? label.slice(label.lastIndexOf('::') + 2).trim() : label
   const perRound: Row[][] = []
   for (let i = 0; i < rounds; i++) {
-    // Show a "running…" line, then overwrite it in place with the round's result
+    // Show a "running..." line, then overwrite it in place with the round's result
     // (\r returns to line start, \x1b[K clears the leftover text).
-    process.stderr.write(`round ${i + 1}/${rounds} running…`)
+    process.stderr.write(`round ${i + 1}/${rounds} running...`)
     register()
     const roundRows = extract((await run(silent)) as RunResults)
     perRound.push(roundRows)
@@ -139,9 +139,9 @@ if (rounds > 1) {
   console.log(`\n# median of ${rounds} rounds\n`)
   console.log(formatMarkdown(finalRows))
 } else {
-  // boxplot draws a comparative chart; summary adds the "Nx faster …" line.
+  // boxplot draws a comparative chart; summary adds the "Nx faster ..." line.
   // mitata always prints its full report (chart + per-case histograms incl. the
-  // GC/heap rows + summary); we then append our own summary — a markdown table
+  // GC/heap rows + summary); we then append our own summary - a markdown table
   // under `--md`, or the plain "% slower" lines otherwise.
   boxplot(() => {
     summary(() => {

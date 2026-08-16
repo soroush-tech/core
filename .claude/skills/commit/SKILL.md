@@ -1,5 +1,5 @@
 ---
-description: How to write git commits in this repo that auto-close their GitHub task — a conventional-commits header with the closing keyword appended to the end of the subject line. Use when committing work that resolves a task or issue.
+description: How to write git commits in this repo that auto-close their GitHub task - a conventional-commits header with the closing keyword appended to the end of the subject line. Use when committing work that resolves a task or issue.
 ---
 
 # Commit
@@ -17,7 +17,7 @@ structure:
 [optional footer]
 ```
 
-### Types — use only these
+### Types - use only these
 
 `fix`, `feat`, `chore`, `docs`, `style`, `refactor`, `perf`, `test`.
 
@@ -25,12 +25,12 @@ structure:
 | ---------- | ------------------------------------------------------- | ------ |
 | `feat`     | A new feature                                           | MINOR  |
 | `fix`      | A bug fix                                               | PATCH  |
-| `docs`     | Documentation only                                      | —      |
-| `style`    | Formatting, whitespace — no code-behavior change        | —      |
-| `refactor` | Code change that neither fixes a bug nor adds a feature | —      |
-| `perf`     | Performance improvement                                 | —      |
-| `test`     | Adding or correcting tests                              | —      |
-| `chore`    | Maintenance that fits no other type                     | —      |
+| `docs`     | Documentation only                                      | -      |
+| `style`    | Formatting, whitespace - no code-behavior change        | -      |
+| `refactor` | Code change that neither fixes a bug nor adds a feature | -      |
+| `perf`     | Performance improvement                                 | -      |
+| `test`     | Adding or correcting tests                              | -      |
+| `chore`    | Maintenance that fits no other type                     | -      |
 
 No other types. Things like CI, build, or deps are expressed as a **scope** on one
 of these types, never as the type itself.
@@ -38,7 +38,7 @@ of these types, never as the type itself.
 ### Scope
 
 A scope in parentheses adds context: `feat(parser): add ability to parse arrays`.
-Use a scope for the area touched — e.g. CI/CD changes are `fix(CI):` /
+Use a scope for the area touched - e.g. CI/CD changes are `fix(CI):` /
 `chore(CI):`, **not** `ci:`.
 
 ### Breaking changes
@@ -65,7 +65,7 @@ chore(CI): gate lint, packages, and worker jobs behind the CI environment review
 
 ## One commit per task; closing keyword at the end of the header
 
-A commit that completes a GitHub task ends its **subject line** (the header — the
+A commit that completes a GitHub task ends its **subject line** (the header - the
 first line) with the closing keyword and the task number:
 
 ```text
@@ -80,7 +80,7 @@ feat(schema): extract contact validation into shared @soroush.tech/schema - clos
 
 - One task → one commit. Commit tasks separately, in dependency order.
 - The keyword goes at the **end of the header**, never in a footer line.
-- `close` / `closes` / `closed` all work — keep `#<number>` immediately after.
+- `close` / `closes` / `closed` all work - keep `#<number>` immediately after.
 - Several tasks in one commit: `... - close #155, close #156`.
 
 ## Don't close issues by hand

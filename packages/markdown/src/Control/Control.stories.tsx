@@ -9,7 +9,7 @@ import { Preview } from '../Preview'
 import { Toolbar } from '../Toolbar'
 import { Control } from './Control'
 
-const SAMPLE = '# Compose the parts\n\n`Control` is headless — it wires the parts together.\n'
+const SAMPLE = '# Compose the parts\n\n`Control` is headless - it wires the parts together.\n'
 
 // Control renders no UI on its own; the meaningful demo is the composed compound.
 function Composition() {

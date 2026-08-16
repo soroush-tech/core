@@ -12,7 +12,7 @@ export interface ToggleButtonProps extends Omit<
 > {
   /** The value associated with the button inside a `ToggleButtonGroup`. */
   value: ToggleButtonValue
-  /** Active state — inferred from the group's value when omitted. Drives `aria-pressed`. */
+  /** Active state - inferred from the group's value when omitted. Drives `aria-pressed`. */
   isSelected?: boolean
   /** Fired with the button's `value` when toggled. */
   onChange?: (value: ToggleButtonValue) => void
@@ -24,7 +24,7 @@ interface ToggleButtonRootProps {
 }
 
 // Layered over Button's `outlined` styles (the wrapper's styles win). Selected:
-// translucent fill in the active color. Unselected: neutral text and border —
+// translucent fill in the active color. Unselected: neutral text and border -
 // only the colors change, so Button keeps the border width and hover/active fades.
 const stateStyles = ({
   theme,

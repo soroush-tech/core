@@ -19,7 +19,7 @@ Compare:
 > **What pinning does and does not buy you.** Pinning to a single core
 > (`--cpuset-cpus`), a hard CPU quota (`--cpus`), and fixed memory with swap off
 > (`--memory` + `--memory-swap`) removes the noise from background load, turbo
-> boost variance, and paging — so repeated runs **on the same host** agree. It
+> boost variance, and paging - so repeated runs **on the same host** agree. It
 > does **not** make results identical across different physical CPUs (a
 > container shares the host kernel and silicon). For numbers that are identical
 > on any machine, count operations instead of measuring time.
@@ -41,7 +41,7 @@ pnpm add -D @soroush.tech/bench
 yarn add -D @soroush.tech/bench
 ```
 
-Requires **Node ≥ 18** on the host (Node 23.6+ unlocks `options.sandbox` — see below).
+Requires **Node ≥ 18** on the host (Node 23.6+ unlocks `options.sandbox` - see below).
 
 Installing exposes the **`soroush-bench`** CLI (in `node_modules/.bin`, or on your
 `PATH` with a global install). You can also run it without installing (use the package
@@ -69,7 +69,7 @@ Benchmarks run inside Docker, so install and start it before your first run:
    `sudo systemctl start docker` on Linux) and wait until it reports ready.
 
 3. **First run builds the sandbox image** (`node:24-slim` + `tsx`) once. It's content-stable
-   and **cached**, so subsequent runs skip straight to the container — no rebuild.
+   and **cached**, so subsequent runs skip straight to the container - no rebuild.
 
 Nothing else to prepare: your bench file, the packages it compares, and the harness are all
 mounted or installed at run time. On **Docker Desktop (Windows/WSL2)** no extra config is
@@ -103,12 +103,12 @@ soroush-bench ./clone.bench.ts
 
 ### Install-free: `export default` a plain object
 
-`defineBench` is optional — the CLI validates the config itself. A plain-object export
+`defineBench` is optional - the CLI validates the config itself. A plain-object export
 runs with plain `npx` and **nothing installed at runtime** (any `import type` is erased),
 so you keep type checking while staying install-free:
 
 ```ts
-// clone.bench.ts — `import type` is erased at runtime, so this still runs
+// clone.bench.ts - `import type` is erased at runtime, so this still runs
 // install-free; `satisfies BenchConfig` type-checks it without a runtime wrapper.
 import type { BenchConfig } from '@soroush.tech/bench'
 
@@ -130,16 +130,16 @@ npx '@soroush.tech/bench' ./clone.bench.ts
 
 Three ways to author, all validated identically inside the sandbox:
 
-- **`defineBench({ … })`** — types **and** authoring-time validation (throws on a bad config).
-- **plain object `satisfies BenchConfig`** — type checking with **no runtime wrapper**; the
+- **`defineBench({ ... })`** - types **and** authoring-time validation (throws on a bad config).
+- **plain object `satisfies BenchConfig`** - type checking with **no runtime wrapper**; the
   `import type` is erased, so `npx` still needs nothing installed.
-- **bare object** (drop the `import type`/`satisfies`) — zero setup, no types.
+- **bare object** (drop the `import type`/`satisfies`) - zero setup, no types.
 
 ### Comparing versions of one package
 
 Declare each version under an alias in `packages`; the harness installs them side
 by side (via npm alias installs) and injects the resolved modules into every case
-via `ctx.modules` — so you can hold two versions of one package in one run:
+via `ctx.modules` - so you can hold two versions of one package in one run:
 
 ```ts
 // lodash.bench.ts
@@ -187,7 +187,7 @@ its `node_modules` link:
 soroush-bench ./examples/bench/styled-system-hardest.bench.ts
 ```
 
-> The same shape compares **two-or-more versions of one npm package** — give
+> The same shape compares **two-or-more versions of one npm package** - give
 > several aliases the same name at different versions (e.g.
 > `{ v4: 'lodash@4.17.21', v5: 'lodash@5.0.0' }`) and read each off `ctx.modules`.
 
@@ -199,13 +199,13 @@ soroush-bench ./examples/bench/styled-system-hardest.bench.ts
 | `--cpuset`        | `0`                    | Logical CPU(s) to pin to (`--cpuset-cpus`, e.g. `0,2`).                                                                                                                                                                                   |
 | `--memory`        | `512m`                 | Memory cap; swap is pinned to the same.                                                                                                                                                                                                   |
 | `--tag`           | `soroush-bench:latest` | Sandbox image tag.                                                                                                                                                                                                                        |
-| `--mount`         | —                      | Extra `host:container[:ro]` volume, passed through to `docker -v`. Repeatable.                                                                                                                                                            |
-| `--md`            | —                      | **Append** a markdown results table after the normal report — for pasting into reports/PRs. Columns: case · avg · p75 · alloc/iter (with **% vs least**) · [gc/iter] · % vs fastest. The `gc/iter` column appears only with `--gc-inner`. |
-| `--md-file`       | —                      | Also **write** the markdown results table to this container path. Point it inside a writable `--mount` (`/repo`/`/app` are read-only and `/bench` dies with the container) so a CI driver can read results back out of the sandbox.       |
-| `--rounds`        | `1`                    | Repeat the whole suite N times and report the **median per case** (as a table) — cancels cross-run noise for a more reliable comparison.                                                                                                  |
-| `--gc-inner`      | —                      | Run GC **before each iteration** (mitata `gc('inner')`) so the report includes a per-iteration **GC-timing** row. Default is `gc('once')` after warmup.                                                                                   |
-| `--baseline-case` | —                      | Case key (the part after `name ::`, or a full label) the **ratio gate** treats as the reference. Requires `--min-ratio`.                                                                                                                  |
-| `--min-ratio`     | —                      | Minimum speed vs the baseline, in **percent**: any case whose `baseline.avg / case.avg` falls below it fails the run with a non-zero exit — e.g. `80` fails anything slower than 1.25× the baseline. Requires `--baseline-case`.          |
+| `--mount`         | -                      | Extra `host:container[:ro]` volume, passed through to `docker -v`. Repeatable.                                                                                                                                                            |
+| `--md`            | -                      | **Append** a markdown results table after the normal report - for pasting into reports/PRs. Columns: case · avg · p75 · alloc/iter (with **% vs least**) · [gc/iter] · % vs fastest. The `gc/iter` column appears only with `--gc-inner`. |
+| `--md-file`       | -                      | Also **write** the markdown results table to this container path. Point it inside a writable `--mount` (`/repo`/`/app` are read-only and `/bench` dies with the container) so a CI driver can read results back out of the sandbox.       |
+| `--rounds`        | `1`                    | Repeat the whole suite N times and report the **median per case** (as a table) - cancels cross-run noise for a more reliable comparison.                                                                                                  |
+| `--gc-inner`      | -                      | Run GC **before each iteration** (mitata `gc('inner')`) so the report includes a per-iteration **GC-timing** row. Default is `gc('once')` after warmup.                                                                                   |
+| `--baseline-case` | -                      | Case key (the part after `name ::`, or a full label) the **ratio gate** treats as the reference. Requires `--min-ratio`.                                                                                                                  |
+| `--min-ratio`     | -                      | Minimum speed vs the baseline, in **percent**: any case whose `baseline.avg / case.avg` falls below it fails the run with a non-zero exit - e.g. `80` fails anything slower than 1.25× the baseline. Requires `--baseline-case`.          |
 
 ### Gating CI on a performance target
 
@@ -231,13 +231,13 @@ The default output is rendered by [mitata](https://github.com/evanwashere/mitata
 - a **per-case histogram** with min/avg/p75/max timing and a **heap-allocation** row
   (bytes allocated per iteration);
 - a **boxplot chart** comparing the cases;
-- a **summary** (`N× faster …`) plus this package's **`delta vs fastest`** percentages.
+- a **summary** (`N× faster ...`) plus this package's **`delta vs fastest`** percentages.
 
 The sandbox runs Node with **`--expose-gc`**, so mitata performs a collection after
 warmup for steadier samples and can report GC/heap-usage rows.
 
 Add `--md` to **append** a compact markdown table (time · p75 · alloc/iter · % vs
-fastest, plus `gc/iter` under `--gc-inner`) after that report — handy for reports/PRs.
+fastest, plus `gc/iter` under `--gc-inner`) after that report - handy for reports/PRs.
 `--rounds N` instead replaces the report with a median-of-N table.
 
 ### Reading the columns
@@ -245,37 +245,37 @@ fastest, plus `gc/iter` under `--gc-inner`) after that report — handy for repo
 | Column       | Meaning                                                                                     |
 | ------------ | ------------------------------------------------------------------------------------------- |
 | `avg`        | Mean time per call, over all samples.                                                       |
-| `p75`        | 75th-percentile time — robust to the slow tail (GC/JIT spikes); often the number to trust.  |
-| `alloc/iter` | Mean bytes allocated per call, with **`% vs least`** — the memory analogue of `vs fastest`. |
+| `p75`        | 75th-percentile time - robust to the slow tail (GC/JIT spikes); often the number to trust.  |
+| `alloc/iter` | Mean bytes allocated per call, with **`% vs least`** - the memory analogue of `vs fastest`. |
 | `gc/iter`    | Mean GC time per iteration (only under `--gc-inner`).                                       |
 | `vs fastest` | Each case's `avg` relative to the fastest case.                                             |
 
-If `avg ≫ p75`, the mean is skewed by rare slow samples — trust `p75`. Rows are
+If `avg ≫ p75`, the mean is skewed by rare slow samples - trust `p75`. Rows are
 sorted fastest-first.
 
 ### Memory is only meaningful above ~1 KB/iter
 
 `alloc/iter` is estimated from a **heap-size delta**, so for workloads that
-allocate only tens–hundreds of bytes per call it's **below the measurement floor**
+allocate only tens-hundreds of bytes per call it's **below the measurement floor**
 and swings wildly run-to-run (the same code can report `9 B` and `16 KB` on
 different runs). Only compare allocation when it's **well above ~1 KB/iter**; for
 tiny workloads, read the time columns and ignore `alloc/iter`. `--gc-inner`'s
 `gc/iter` is likewise dominated by the fixed cost of a forced full GC on
 low-allocation benches, so it only discriminates on allocation-heavy ones.
 
-### Hardware counters (IPC, cycles, cache) — native Linux only
+### Hardware counters (IPC, cycles, cache) - native Linux only
 
 mitata can show CPU counters via [`@mitata/counters`](https://github.com/evanwashere/mitata#hardware-counters),
 but they require **direct PMU access**. Under **Docker Desktop (WSL2)** the PMU is
-virtualized away by the hypervisor — counters render as `NaN`/`0.00` even with
-`--privileged` — so they only work when the sandbox runs on **native Linux Docker**
+virtualized away by the hypervisor - counters render as `NaN`/`0.00` even with
+`--privileged` - so they only work when the sandbox runs on **native Linux Docker**
 (bare metal, `perf_event_paranoid ≤ 2`). This build does not enable them by default.
 
 ## pnpm workspaces
 
 pnpm links workspace packages with **absolute** symlinks. Inside the sandbox
 those only resolve if the repo is also mounted at its host-visible path. With
-Docker Desktop that path is `/mnt/host/<drive>/…`, so to benchmark a local
+Docker Desktop that path is `/mnt/host/<drive>/...`, so to benchmark a local
 workspace package add:
 
 ```sh
@@ -284,19 +284,19 @@ soroush-bench ./examples/bench/styled-system-color.bench.ts \
   --mount "$PWD:/mnt/host/c/Users/you/your-repo:ro"
 ```
 
-(npm/yarn flat `node_modules` need no extra mount — the package is copied, not
+(npm/yarn flat `node_modules` need no extra mount - the package is copied, not
 symlinked out of the repo.)
 
 ## Pinning on hybrid CPUs (P/E cores) & Docker Desktop
 
-On Intel 12th–14th gen (P-cores + E-cores), prefer a pin that avoids SMT
-siblings: `--cpuset 0` (a single thread — most reproducible, and enough since a
+On Intel 12th-14th gen (P-cores + E-cores), prefer a pin that avoids SMT
+siblings: `--cpuset 0` (a single thread - most reproducible, and enough since a
 mitata run is single-threaded) or `--cpuset 0,2` (two **distinct** physical
 cores), not `0-1` (which is the two hyperthreads of one core → SMT contention).
 Confirm a pin with `cat /sys/devices/system/cpu/cpu<N>/topology/thread_siblings_list`.
 
-Under **Docker Desktop (WSL2)** the hybrid topology is virtualized — `lscpu`
-reports a flat layout with no P/E distinction — so `--cpuset` selects VM vCPUs
+Under **Docker Desktop (WSL2)** the hybrid topology is virtualized - `lscpu`
+reports a flat layout with no P/E distinction - so `--cpuset` selects VM vCPUs
 and the Windows scheduler/Thread Director decides their physical placement.
 Physical P-core residency is therefore **not** guaranteed here; for that, use
 native Linux Docker, or pin at the `.wslconfig`/Windows-affinity layer.
@@ -321,11 +321,11 @@ The default export is `defineBench`; everything else is a named export.
 
 | Export                | Kind               | What it is                                                                                                         |
 | --------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `defineBench(config)` | function (default) | Validates and freezes a `BenchConfig` (non-empty `name`, ≥ 2 `cases`). Optional — a plain-object export works too. |
-| `isBenchConfig(x)`    | function           | Type guard — `true` if `x` was produced by `defineBench` (used internally to skip re-validating).                  |
+| `defineBench(config)` | function (default) | Validates and freezes a `BenchConfig` (non-empty `name`, ≥ 2 `cases`). Optional - a plain-object export works too. |
+| `isBenchConfig(x)`    | function           | Type guard - `true` if `x` was produced by `defineBench` (used internally to skip re-validating).                  |
 | `BenchConfig`         | type               | The bench definition: `name`, optional `packages`, `cases`, optional `options`.                                    |
 | `BenchCase`           | type               | One function under test (sync or async): `(ctx: BenchContext) => unknown`.                                         |
-| `BenchContext`        | type               | The `{ modules }` object every case receives — each `packages` alias resolved to its module namespace.             |
+| `BenchContext`        | type               | The `{ modules }` object every case receives - each `packages` alias resolved to its module namespace.             |
 | `BenchOptions`        | type               | Run defaults: `gc`, `rounds`, `warmup`, and `sandbox` (see below). Each is overridden by the matching CLI flag.    |
 
 `BenchConfig` shape:
@@ -347,13 +347,13 @@ Bake run defaults into the bench file via `options`; the matching CLI flag
 ```ts
 export default defineBench({
   name: 'deep clone',
-  cases: { … },
+  cases: { ... },
   options: {
-    gc: 'inner', // 'once' (default) | 'inner' | false   — overridden by --gc-inner
-    rounds: 5, //   median-of-N                          — overridden by --rounds
+    gc: 'inner', // 'once' (default) | 'inner' | false   - overridden by --gc-inner
+    rounds: 5, //   median-of-N                          - overridden by --rounds
     warmup: 1000, // warmup iterations per case before measuring
     sandbox: {
-      // pinning defaults — overridden by --cpuset / --cpus / --memory / --tag / --mount
+      // pinning defaults - overridden by --cpuset / --cpus / --memory / --tag / --mount
       cpuset: '0',
       cpus: 1,
       memory: '512m',
@@ -368,17 +368,17 @@ Every option and its accepted values:
 | ---------------- | ----------------------------------- | ---------------------- | ---------------------- |
 | `gc`             | `false` \| `'once'` \| `'inner'`    | `'once'`               | `--gc-inner` (→ inner) |
 | `rounds`         | positive integer                    | `1`                    | `--rounds <n>`         |
-| `warmup`         | non-negative integer                | `0`                    | — (file only)          |
+| `warmup`         | non-negative integer                | `0`                    | - (file only)          |
 | `sandbox.cpuset` | string, e.g. `'0'`, `'0,2'`, `'18'` | `'0'`                  | `--cpuset`             |
 | `sandbox.cpus`   | positive number                     | `1`                    | `--cpus`               |
 | `sandbox.memory` | string, e.g. `'512m'`, `'1g'`       | `'512m'`               | `--memory`             |
 | `sandbox.tag`    | string                              | `soroush-bench:latest` | `--tag`                |
-| `sandbox.mount`  | `string[]` (`host:container[:ro]`)  | —                      | `--mount` (appended)   |
+| `sandbox.mount`  | `string[]` (`host:container[:ro]`)  | -                      | `--mount` (appended)   |
 
 `gc` / `rounds` / `warmup` are read **inside** the sandbox. `sandbox.*` is read **on
 the host** before `docker run`: the CLI imports the bench file (Node 23.6+ runs `.ts`
 natively; older Node needs a TS loader) to pick up these defaults. If the file can't be
-loaded on the host — e.g. it top-level-imports an in-container-only module — the host
+loaded on the host - e.g. it top-level-imports an in-container-only module - the host
 pre-load is skipped and you pass the pinning flags on the CLI instead. **CLI flags always
 win**, and `--mount` values are appended to `sandbox.mount`.
 
@@ -389,7 +389,7 @@ Follows [SemVer](https://semver.org). The **public surface** the version covers:
 - the default export `defineBench` and the named export `isBenchConfig`;
 - the exported types `BenchConfig`, `BenchOptions`, `BenchCase`, `BenchContext`;
 - the `soroush-bench` bin and its documented CLI flags;
-- the bench-file contract — a default-exported config (via `defineBench` or a plain object),
+- the bench-file contract - a default-exported config (via `defineBench` or a plain object),
   `packages:` alias installs, and `ctx.modules`.
 
 Breaking changes to any of those ship as a **major** bump, so **pin a caret range** to stay
@@ -400,31 +400,31 @@ compatible:
 ```
 
 The `0.x` line predates this guarantee (0.1 → 1.0 renamed the bin `bench` → `soroush-bench`
-and moved `warmup` under `options`); upgrade to `>=1`. Not part of the contract — and free
-to change in a minor — are the **report layout/formatting**, mitata internals, and the
+and moved `warmup` under `options`); upgrade to `>=1`. Not part of the contract - and free
+to change in a minor - are the **report layout/formatting**, mitata internals, and the
 Docker base image.
 
 ## FAQ
 
 **Why Docker?**
 Isolation plus CPU/RAM pinning (`--cpuset-cpus`, `--cpus`, `--memory` with swap off) is
-what makes numbers stable run-to-run — background load, turbo variance, and paging are
+what makes numbers stable run-to-run - background load, turbo variance, and paging are
 removed. The sandbox image is generic and built once, then cached; each run only re-runs
 the container.
 
 **Do I need to import `defineBench`?**
-No. A bench file can `export default { … }` a plain object — the CLI validates it for you,
-so the file needs no dependency (great for `npx`). Use `defineBench({ … })` when you want
+No. A bench file can `export default { ... }` a plain object - the CLI validates it for you,
+so the file needs no dependency (great for `npx`). Use `defineBench({ ... })` when you want
 **TypeScript types and authoring-time validation**; both are validated identically at run.
 
-**`npx soroush-bench ./file` can't find it — why?**
+**`npx soroush-bench ./file` can't find it - why?**
 Run it by **package name**: `npx '@soroush.tech/bench' ./file`. `npx soroush-bench` only
 resolves once the package is installed locally (then `soroush-bench` is a local bin);
 otherwise npx looks for a registry package literally named `soroush-bench`. In **PowerShell**
-quote the `@…` — a leading `@` is the splat operator.
+quote the `@...` - a leading `@` is the splat operator.
 
 **Does it need internet?**
-Only if a bench declares `packages:` — those are npm-installed **inside the sandbox** on
+Only if a bench declares `packages:` - those are npm-installed **inside the sandbox** on
 each run (that's the `added N packages` line). A bench with no `packages` runs offline.
 
 **My library reports more memory, and the number changes every run.**
@@ -435,7 +435,7 @@ memory on **allocation-heavy** benches; for tiny workloads read the time columns
 
 **Why is `--gc-inner` so much slower?**
 It forces a full GC **before every iteration**, so the per-iteration time absorbs that
-cost. It exists to surface the `gc/iter` row on allocation-heavy benches — not for headline
+cost. It exists to surface the `gc/iter` row on allocation-heavy benches - not for headline
 timing. Default GC mode is `once` (after warmup).
 
 **Can I see IPC / cycles / cache counters?**
@@ -444,7 +444,7 @@ and PMU access. Under Docker Desktop (WSL2) the PMU is virtualized away, so coun
 `NaN`/`0` even with `--privileged`.
 
 **Can pinning flags live in the bench file?**
-Yes — `options.sandbox` (`cpuset`/`cpus`/`memory`/`tag`/`mount`) is read on the host before
+Yes - `options.sandbox` (`cpuset`/`cpus`/`memory`/`tag`/`mount`) is read on the host before
 `docker run`. CLI flags still override, and the file must be host-loadable (see above).
 
 ## Release notes

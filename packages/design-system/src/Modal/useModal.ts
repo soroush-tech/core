@@ -100,7 +100,7 @@ export function useModal(parameters: UseModalParameters): UseModalReturnValue {
     (otherHandlers: EventHandlers) => (event: ReactKeyboardEvent<Element>) => {
       otherHandlers.onKeyDown?.(event)
 
-      // `which === 229` means an IME is still composing — wait for it to settle.
+      // `which === 229` means an IME is still composing - wait for it to settle.
       if (event.key !== 'Escape' || event.which === 229 || !isTopModal()) {
         return
       }

@@ -6,7 +6,7 @@ import { SERVICES } from './TableCard.data'
 
 const getBodyRows = () => {
   const rowgroups = screen.getAllByRole('rowgroup')
-  // thead / tbody / tfoot — tbody is the second rowgroup
+  // thead / tbody / tfoot - tbody is the second rowgroup
   return within(rowgroups[1]).getAllByRole('row')
 }
 
@@ -40,7 +40,7 @@ describe('TableCard', () => {
   it('sorts by latency when its header control is clicked', () => {
     renderWithTheme(<TableCard />)
     fireEvent.click(screen.getByRole('button', { name: 'Latency (ms)' }))
-    // first click sorts descending — highest latency first
+    // first click sorts descending - highest latency first
     expect(within(getBodyRows()[0]).getByText('worker')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Latency (ms)' }))
     expect(within(getBodyRows()[0]).getByText('cdn')).toBeInTheDocument()
@@ -49,7 +49,7 @@ describe('TableCard', () => {
   it('pages through the data', () => {
     renderWithTheme(<TableCard />)
     fireEvent.click(screen.getByRole('button', { name: 'Go to next page' }))
-    expect(screen.getByText(`6–10 of ${SERVICES.length}`)).toBeInTheDocument()
+    expect(screen.getByText(`6-10 of ${SERVICES.length}`)).toBeInTheDocument()
   })
 
   it('changes rows per page and resets to the first page', () => {
@@ -59,6 +59,6 @@ describe('TableCard', () => {
       target: { value: '10' },
     })
     expect(getBodyRows()).toHaveLength(10)
-    expect(screen.getByText(`1–10 of ${SERVICES.length}`)).toBeInTheDocument()
+    expect(screen.getByText(`1-10 of ${SERVICES.length}`)).toBeInTheDocument()
   })
 })

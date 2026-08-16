@@ -23,7 +23,7 @@ describe('LinearProgress', () => {
   // ─── variant ─────────────────────────────────────────────────────────────────
 
   describe('variant', () => {
-    it('indeterminate (default) — produces a different root class than query', () => {
+    it('indeterminate (default) - produces a different root class than query', () => {
       const { rerender } = renderWithTheme(
         <LinearProgress variant="indeterminate" data-testid="lp" />
       )
@@ -78,7 +78,7 @@ describe('LinearProgress', () => {
       expect(el).toHaveAttribute('aria-valuemax', '100')
     })
 
-    it('guards against max=0 — no NaN transform, clamped aria-valuenow', () => {
+    it('guards against max=0 - no NaN transform, clamped aria-valuenow', () => {
       renderWithTheme(
         <LinearProgress variant="determinate" value={50} min={0} max={0} data-testid="lp" />
       )
@@ -170,7 +170,7 @@ describe('LinearProgress', () => {
   // ─── spinning ────────────────────────────────────────────────────────────────
 
   describe('spinning', () => {
-    it('determinate + spinning — renders two travelling segments sized by value', () => {
+    it('determinate + spinning - renders two travelling segments sized by value', () => {
       renderWithTheme(<LinearProgress variant="determinate" value={50} spinning data-testid="lp" />)
       const traveler = screen.getByTestId('lp').children[1]
       expect(traveler.children).toHaveLength(2)
@@ -274,7 +274,7 @@ describe('LinearProgress', () => {
       })
     })
 
-    it('inherit — produces a different root class than primary', () => {
+    it('inherit - produces a different root class than primary', () => {
       const { rerender } = renderWithTheme(<LinearProgress color="primary" data-testid="lp" />)
       const primaryClass = screen.getByTestId('lp').getAttribute('class')
       rerender(<LinearProgress color="inherit" data-testid="lp" />)

@@ -1,6 +1,6 @@
 # Packages
 
-Conventions for everything under `packages/` — the workspace's shared code. Most packages are framework-agnostic tooling; `design-system` is the React component library, and `markdown` is a companion React library that builds on it (a headless markdown editor/renderer). Both React packages follow [`design-system/design-system.md`](./design-system/design-system.md) for component conventions — the `markdown` package's specifics are in [`markdown/markdown.md`](./markdown/markdown.md). Each folder is its own pnpm package, globbed by `packages/*` in `pnpm-workspace.yaml` and consumed by apps (and by each other) via `workspace:*`.
+Conventions for everything under `packages/` - the workspace's shared code. Most packages are framework-agnostic tooling; `design-system` is the React component library, and `markdown` is a companion React library that builds on it (a headless markdown editor/renderer). Both React packages follow [`design-system/design-system.md`](./design-system/design-system.md) for component conventions - the `markdown` package's specifics are in [`markdown/markdown.md`](./markdown/markdown.md). Each folder is its own pnpm package, globbed by `packages/*` in `pnpm-workspace.yaml` and consumed by apps (and by each other) via `workspace:*`.
 
 For a plain-English overview of what currently lives here, see [`README.md`](./README.md).
 
@@ -8,7 +8,7 @@ For a plain-English overview of what currently lives here, see [`README.md`](./R
 
 ## What belongs here
 
-`packages/` is for **shared, app-agnostic code** — framework-agnostic tooling (lint config, Vite plugins), shared schemas, generic utilities.
+`packages/` is for **shared, app-agnostic code** - framework-agnostic tooling (lint config, Vite plugins), shared schemas, generic utilities.
 
 | Belongs in `packages/`                           | Belongs elsewhere                                             |
 | ------------------------------------------------ | ------------------------------------------------------------- |
@@ -17,7 +17,7 @@ For a plain-English overview of what currently lives here, see [`README.md`](./R
 | UI primitives (`Flex`, `View`) → `design-system` | A single-consumer, app-coupled component → keep it in the app |
 | A schema/util shared by two members or published | A single-consumer, app-coupled helper → keep it in the app    |
 
-**A package is justified only when** it is (a) reused by more than one member, or (b) intended to be published on its own. Until then, keep the code in the app — don't pre-extract.
+**A package is justified only when** it is (a) reused by more than one member, or (b) intended to be published on its own. Until then, keep the code in the app - don't pre-extract.
 
 ---
 
@@ -30,7 +30,7 @@ packages/
   package-name/
     src/
       index.ts            ← single entry: the plugin/util + its exported types
-      index.test.ts       ← co-located unit tests (100% coverage — required)
+      index.test.ts       ← co-located unit tests (100% coverage - required)
     package.json
     tsconfig.json         ← bundler resolution, noEmit; NOT in the root solution
     .oxlintrc.json        ← extends @soroush.tech/eslint-config's base + env
@@ -40,13 +40,13 @@ packages/
     LICENSE               ← publishable packages
 ```
 
-Keep the **public API in `index.ts`** (the single entry); extract internal helpers into sibling modules (`filters.ts`, `collector.ts`, …) with co-located `*.test.ts` only once the entry file grows unwieldy — don't pre-split a small, well-factored file. The app-level "one file per helper" rule (CLAUDE.md "Logic & data co-location") is scoped to `common`/`section`/`pages` components, not packages: a package's job is to present one clear entry, so internal structure is an optimization for size, not a default. When `index.ts` does re-export a sibling barrel-style, follow the `export *` rule in the `code-style` skill.
+Keep the **public API in `index.ts`** (the single entry); extract internal helpers into sibling modules (`filters.ts`, `collector.ts`, ...) with co-located `*.test.ts` only once the entry file grows unwieldy - don't pre-split a small, well-factored file. The app-level "one file per helper" rule (CLAUDE.md "Logic & data co-location") is scoped to `common`/`section`/`pages` components, not packages: a package's job is to present one clear entry, so internal structure is an optimization for size, not a default. When `index.ts` does re-export a sibling barrel-style, follow the `export *` rule in the `code-style` skill.
 
 ---
 
 ## Naming & scope
 
-- Every package is scoped **`@soroush.tech/*`** (apps are not — `apps/web` stays `@soroush/web`).
+- Every package is scoped **`@soroush.tech/*`** (apps are not - `apps/web` stays `@soroush/web`).
 - A Vite plugin's internal `name` field **must equal its package name minus the scope** (`vite-plugin-watch`), so build logs read `[vite-plugin-watch]`. Keep the directory, package name, and plugin `name` in sync.
 
 ---
@@ -80,7 +80,7 @@ Internal-only packages stay `"private": true` and consume source directly. To ma
 
 - Drop `private`; add `version`, `description`, `keywords`, `license`, `author`, `repository.directory`, `homepage`, `files: ["dist"]`.
 - Build with **tsdown** (`format: ['esm', 'cjs']`, `dts: true`) → `dist/`. tsdown is preferred over tsup here: it emits declarations via Oxc/Rolldown and does **not** inject the deprecated `baseUrl` that breaks `.d.ts` under TypeScript 6.
-- Keep `exports → ./src/index.ts` for the monorepo, and use **`publishConfig`** to swap `exports`/`main`/`module`/`types` to `dist/` **only on publish** — so the app keeps consuming source while npm gets compiled output:
+- Keep `exports → ./src/index.ts` for the monorepo, and use **`publishConfig`** to swap `exports`/`main`/`module`/`types` to `dist/` **only on publish** - so the app keeps consuming source while npm gets compiled output:
 
   ```jsonc
   "exports": { ".": "./src/index.ts" },
@@ -95,21 +95,21 @@ Internal-only packages stay `"private": true` and consume source directly. To ma
 - Declare the host framework as a **`peerDependency`** (e.g. `vite`); never bundle the peer.
 - `prepublishOnly: pnpm build`; verify the tarball with `pnpm pack` before publishing.
 
-### Releasing to npm — always via pnpm, never `npm publish`
+### Releasing to npm - always via pnpm, never `npm publish`
 
-The `publishConfig` → `dist` swap above is a **pnpm feature**. `pnpm pack` / `pnpm publish` rewrite the top-level `exports`/`main`/`module`/`types` to the `dist` targets before packing. **`npm publish` does not** — it ships the raw `exports: "./src/index.ts"`, but the tarball only contains `dist` (`files: ["dist"]`), so **every consumer's `import` fails with `MODULE_NOT_FOUND`** (`.../src/index.ts` not found). A package published this way looks fine in `npm view` metadata but is dead on install.
+The `publishConfig` → `dist` swap above is a **pnpm feature**. `pnpm pack` / `pnpm publish` rewrite the top-level `exports`/`main`/`module`/`types` to the `dist` targets before packing. **`npm publish` does not** - it ships the raw `exports: "./src/index.ts"`, but the tarball only contains `dist` (`files: ["dist"]`), so **every consumer's `import` fails with `MODULE_NOT_FOUND`** (`.../src/index.ts` not found). A package published this way looks fine in `npm view` metadata but is dead on install.
 
 So release **only** one of these two ways:
 
-1. **CI (preferred)** — dispatch the [`cd-packages.yml`](../.github/workflows/cd-packages.yml) workflow (manual `workflow_dispatch`, main-only, npm Trusted Publishing via OIDC). It runs `pnpm publish`, so the swap is always applied and there is no long-lived token. Add the package to the workflow's `package` choice list first.
-2. **Local, only if you must** — from the repo root:
+1. **CI (preferred)** - dispatch the [`cd-packages.yml`](../.github/workflows/cd-packages.yml) workflow (manual `workflow_dispatch`, main-only, npm Trusted Publishing via OIDC). It runs `pnpm publish`, so the swap is always applied and there is no long-lived token. Add the package to the workflow's `package` choice list first.
+2. **Local, only if you must** - from the repo root:
 
    ```sh
    # bump the version in packages/<name>/package.json first (a version can't be republished)
    pnpm --filter '@soroush.tech/<name>' publish --no-git-checks --otp=<code>
    ```
 
-   `--no-git-checks` is needed off a clean/main branch; quote the `@scope/name` in PowerShell (a bare `@` is the splat operator). **Do not** `cd packages/<name> && npm publish` — that is the exact thing that ships the broken `./src` exports.
+   `--no-git-checks` is needed off a clean/main branch; quote the `@scope/name` in PowerShell (a bare `@` is the splat operator). **Do not** `cd packages/<name> && npm publish` - that is the exact thing that ships the broken `./src` exports.
 
 **Verify the published artifact, not just the metadata.** Download the real tarball and confirm `exports` resolves to `dist`:
 
@@ -119,7 +119,7 @@ tar -xzf soroush.tech-<name>-<version>.tgz -O package/package.json | grep -A3 '"
 # exports must point at ./dist/*, and the tarball must NOT rely on any ./src file
 ```
 
-If a broken version already went out, you can't overwrite it — **bump, republish with pnpm, then deprecate** the bad ones:
+If a broken version already went out, you can't overwrite it - **bump, republish with pnpm, then deprecate** the bad ones:
 
 ```sh
 npm deprecate '@soroush.tech/<name>@<badrange>' 'Broken exports; use >=<fixed>.' --otp=<code>
@@ -127,12 +127,12 @@ npm deprecate '@soroush.tech/<name>@<badrange>' 'Broken exports; use >=<fixed>.'
 
 ---
 
-## Testing — 100% coverage, no exceptions
+## Testing - 100% coverage, no exceptions
 
-**Every package must have 100% test coverage.** No package ships internally or publishes below 100% — this extends the repo-wide rule (CLAUDE.md §6) to the package layer.
+**Every package must have 100% test coverage.** No package ships internally or publishes below 100% - this extends the repo-wide rule (CLAUDE.md §6) to the package layer.
 
 - Co-locate `index.test.ts` next to `src/index.ts`; vitest with v8 coverage.
-- Every package ships a `vitest.config.ts` with `coverage.reporter: ['text', 'lcov']` (v8 provider, `thresholds: { 100: true }`). The `lcov` reporter is **required** — CI reads each package's `coverage/lcov.info` to rewrite `SF:` paths and upload to Codecov, so a package without it (or relying on vitest's default reporters) breaks the coverage step.
+- Every package ships a `vitest.config.ts` with `coverage.reporter: ['text', 'lcov']` (v8 provider, `thresholds: { 100: true }`). The `lcov` reporter is **required** - CI reads each package's `coverage/lcov.info` to rewrite `SF:` paths and upload to Codecov, so a package without it (or relying on vitest's default reporters) breaks the coverage step.
 - Each package exposes `test` and `test:coverage` scripts; the root aggregates with `pnpm -r test:coverage`.
 - **Register the package with Codecov** so its coverage surfaces and doesn't regress to "No report uploaded". Run `pnpm gen:publish-options` to sync [`.codecov.yml`](../.codecov.yml): it regenerates every package's entry under **both** `flag_management.individual_flags` (which inherits `carryforward: true`, so the badge keeps its last report on commits that don't re-upload the flag) **and** `component_management.individual_components` (`packages/<name>/` for the flag, the `/**` glob for the component). The pre-commit `--check` fails if these drift. Then add a row to the **Coverage** table in the root [`README.md`](../README.md), reusing the existing badge URL shape (`?flag=<name>&label=<name>`). Flag name == component id == directory name.
 - Plugin code that depends on the Vite/Rollup runtime is exercised by invoking the exported factory and asserting the returned plugin object's hooks; environment-dependent calls jsdom/node can't run are isolated behind injectable inputs (e.g. the msw server is passed in) so they stay unit-testable.
@@ -148,5 +148,5 @@ npm deprecate '@soroush.tech/<name>@<badrange>' 'Broken exports; use >=<fixed>.'
 
 ## Linting & types
 
-- Each package gets a minimal `.oxlintrc.json` extending one of the three configs in `packages/eslint-config/` — `.oxlintrc.json` (base), `.oxlintrc.react.json`, or `.oxlintrc.storybook.json` — plus its own `env` (node, browser, serviceworker). Tooling packages stay React-free and extend the base; React-shipping packages (`design-system`, `markdown`) extend the storybook layer. The React and Storybook plugins are declared once in `eslint-config`, not per package.
+- Each package gets a minimal `.oxlintrc.json` extending one of the three configs in `packages/eslint-config/` - `.oxlintrc.json` (base), `.oxlintrc.react.json`, or `.oxlintrc.storybook.json` - plus its own `env` (node, browser, serviceworker). Tooling packages stay React-free and extend the base; React-shipping packages (`design-system`, `markdown`) extend the storybook layer. The React and Storybook plugins are declared once in `eslint-config`, not per package.
 - `tsconfig.json` uses bundler resolution and `noEmit`. It is **not** referenced by the root solution `tsconfig.json`: packages are typechecked in isolation via `pnpm -r typecheck` and never pulled into the app's TS graph (so a backend/tooling package's types can't leak into the React/DOM build).

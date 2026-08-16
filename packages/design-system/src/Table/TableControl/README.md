@@ -3,7 +3,7 @@
 Kills the sortable/paginated-table boilerplate: consumer-called hooks own the state
 (`useTableSort`, `useTablePagination`, `useTableSelection`), and `TableControl` takes the `data`
 plus the hook outputs and renders the visible rows inside `TableBody`. No context, no changes to
-any other component — every wire is explicit and spreadable.
+any other component - every wire is explicit and spreadable.
 
 ```tsx
 const sort = useTableSort(['name', 'latency'])
@@ -41,27 +41,27 @@ const pagination = useTablePagination({ defaultRowsPerPage: 10 })
 ## The hooks
 
 `useTableSort`, `useTablePagination`, and `useTableSelection` live in
-[`@soroush.tech/design-system/Table/hooks/`](../hooks/README.md) — see that README for their full APIs. In short:
+[`@soroush.tech/design-system/Table/hooks/`](../hooks/README.md) - see that README for their full APIs. In short:
 
-- **`useTableSort(keys, onChange?)`** — column-keyed entries that spread onto `TableSortLabel`;
+- **`useTableSort(keys, onChange?)`** - column-keyed entries that spread onto `TableSortLabel`;
   per-column direction memory, always-flip toggle (first click sorts `'desc'`)
-- **`useTablePagination({ defaultPage?, defaultRowsPerPage? })`** — mirrors `TablePagination`'s
+- **`useTablePagination({ defaultPage?, defaultRowsPerPage? })`** - mirrors `TablePagination`'s
   props for one-spread wiring; page-size change resets to page 0
-- **`useTableSelection(keys, onChange?)`** — key-based selection that survives paging and
+- **`useTableSelection(keys, onChange?)`** - key-based selection that survives paging and
   re-sorting; `all`/`row(key)` entries spread onto `Checkbox`
 
 ## TableControl
 
 | Prop           | Type                                   | Default  | Description                                                                                                                        |
 | -------------- | -------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `data`         | `readonly T[]`                         | —        | The full dataset. **Required.**                                                                                                    |
-| `sort`         | `TableSortMap`                         | —        | Sort map from `useTableSort` — the `isActive` entry drives the ordering.                                                           |
-| `pagination`   | `{ page, rowsPerPage }`                | —        | Paging state from `useTablePagination` — drives the visible slice.                                                                 |
+| `data`         | `readonly T[]`                         | -        | The full dataset. **Required.**                                                                                                    |
+| `sort`         | `TableSortMap`                         | -        | Sort map from `useTableSort` - the `isActive` entry drives the ordering.                                                           |
+| `pagination`   | `{ page, rowsPerPage }`                | -        | Paging state from `useTablePagination` - drives the visible slice.                                                                 |
 | `sortFunction` | `(a: T, b: T, orderBy: K) => number`   | built-in | Custom sort (ascending; the direction flips it). Receives the **active column key**, so different columns can use different logic. |
-| `children`     | `(row: T, index: number) => ReactNode` | —        | Row renderer. **Required.**                                                                                                        |
+| `children`     | `(row: T, index: number) => ReactNode` | -        | Row renderer. **Required.**                                                                                                        |
 
 - Default comparator handles strings and numbers; no active column → data order untouched.
-- Per-column custom sorting — branch on the key `sortFunction` receives:
+- Per-column custom sorting - branch on the key `sortFunction` receives:
 
   ```tsx
   <TableControl
@@ -75,5 +75,5 @@ const pagination = useTablePagination({ defaultRowsPerPage: 10 })
 
 - `rowsPerPage: -1` disables slicing; the page is clamped so a shrinking dataset never strands
   the view on an empty page.
-- Renders the rows in a fragment — no wrapper element, so the output stays valid `<tr>` children
+- Renders the rows in a fragment - no wrapper element, so the output stays valid `<tr>` children
   of `<tbody>`. Both `sort` and `pagination` are optional (sort-only / paging-only tables work).

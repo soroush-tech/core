@@ -179,7 +179,7 @@ describe('ContactInquire', () => {
         fireEvent.blur(screen.getByRole('textbox', { name: accessibleName(fieldByName(name)) }))
       )
 
-      // Then fill them via change only (as browser autofill does) — without re-blurring.
+      // Then fill them via change only (as browser autofill does) - without re-blurring.
       fillRequired()
 
       await waitFor(() => expect(submitButton()).toBeEnabled())

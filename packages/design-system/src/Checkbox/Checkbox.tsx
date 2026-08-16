@@ -49,7 +49,7 @@ export interface CheckboxProps extends SpaceProps<Theme> {
   'data-testid'?: string
 }
 
-// Glyph size comes from theme.icon — mapped over theme.sizes, so augmenting a
+// Glyph size comes from theme.icon - mapped over theme.sizes, so augmenting a
 // size key forces the matching icon size to be supplied by the theme.
 
 // ─── Default icons ────────────────────────────────────────────────────────────
@@ -108,7 +108,7 @@ const CheckboxIconWrapper = styled('span', {
   justifyContent: 'center',
   flexShrink: 0,
   fontSize: theme.icon[size],
-  // 0 (not 1) so the inline SVG's line box can't inflate the wrapper height —
+  // 0 (not 1) so the inline SVG's line box can't inflate the wrapper height -
   // keeps it square so the focus outline sits evenly on all sides.
   lineHeight: 0,
   transition: 'color 0.15s ease',
@@ -140,7 +140,7 @@ const baseStyle = ({ disabled, theme }: CheckboxRootProps & { theme: Theme }) =>
   userSelect: 'none' as const,
   ...(disabled && { opacity: 0.5 }),
   // All three icon spans are always in the DOM. CSS toggles visibility via
-  // native :checked / :indeterminate — no JS re-renders needed. Indeterminate
+  // native :checked / :indeterminate - no JS re-renders needed. Indeterminate
   // selectors come last so they override the :checked rules via cascade.
   '& input:not(:checked):not(:indeterminate) ~ span > .cb-checked': { display: 'none' },
   '& input:not(:checked):not(:indeterminate) ~ span > .cb-indeterminate': { display: 'none' },
@@ -209,7 +209,7 @@ export function Checkbox({
     fullWidth: fullWidthProp,
   })
   const { id, disabled, required, size, fullWidth } = fc
-  // Left unresolved when unset — the styled layer falls back to themeDefault(theme, 'neutralColor', 'default').
+  // Left unresolved when unset - the styled layer falls back to themeDefault(theme, 'neutralColor', 'default').
   const color = colorProp ?? fc.color
   const describedBy = ariaDescribedby ?? fc['aria-describedby']
 

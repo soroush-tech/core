@@ -30,12 +30,12 @@ const meta: Meta<typeof Icon> = {
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Icon color — resolves from `theme.text` and fills the SVG via `currentColor`.',
+      description: 'Icon color - resolves from `theme.text` and fills the SVG via `currentColor`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     size: {
       control: 'text',
-      description: 'Sets both width and height — any valid CSS length.',
+      description: 'Sets both width and height - any valid CSS length.',
       table: { category: 'Layout', defaultValue: { summary: '1.5rem' } },
     },
   },

@@ -3,7 +3,7 @@ const SITEVERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 /**
  * Verify a Cloudflare Turnstile token against the siteverify endpoint. Returns true only on an
  * explicit `success` and, when `allowedHostnames` is non-empty, only if the siteverify-attested
- * `hostname` (the domain the token was solved on — not client-supplied, so unspoofable) is in it.
+ * `hostname` (the domain the token was solved on - not client-supplied, so unspoofable) is in it.
  * `remoteip` is optional (the visitor's IP, when available).
  */
 export const verifyTurnstile = async (

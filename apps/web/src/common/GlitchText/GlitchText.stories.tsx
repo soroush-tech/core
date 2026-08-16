@@ -46,13 +46,13 @@ const meta = {
       control: { type: 'select' },
       options: textColorTokens,
       description:
-        'Glyph fill and first RGB-split layer (`--glitch-a`) — resolves from theme.text.',
+        'Glyph fill and first RGB-split layer (`--glitch-a`) - resolves from theme.text.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     secondaryColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Second RGB-split layer (`--glitch-b`) — resolves from theme.text.',
+      description: 'Second RGB-split layer (`--glitch-b`) - resolves from theme.text.',
       table: { category: 'Visual', defaultValue: { summary: 'error' } },
     },
     inverted: {
@@ -76,7 +76,7 @@ const meta = {
       control: { type: 'select' },
       options: fontSizeIndices,
       description:
-        'theme.fontSizes index — 0=12px · 1=14px · 2=16px · 3=20px · 4=24px · 5=32px · 6=48px',
+        'theme.fontSizes index - 0=12px · 1=14px · 2=16px · 3=20px · 4=24px · 5=32px · 6=48px',
       table: { category: 'Typography' },
     },
     fontWeight: {

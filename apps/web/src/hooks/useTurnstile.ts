@@ -23,7 +23,7 @@ declare global {
   var turnstile: TurnstileApi | undefined
 }
 
-/** Inject the Turnstile script once, resolving with the API when it loads — or `undefined` if
+/** Inject the Turnstile script once, resolving with the API when it loads - or `undefined` if
  *  the script fails to load (CSP, network, blockers) or loads without exposing the global. The
  *  promise always settles, so a failed load can never leave a caller waiting forever. */
 const loadTurnstile = (): Promise<TurnstileApi | undefined> =>

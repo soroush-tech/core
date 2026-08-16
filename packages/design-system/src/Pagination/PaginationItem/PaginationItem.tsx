@@ -21,19 +21,19 @@ export type PaginationItemSize = keyof Theme['sizes']
 
 export interface PaginationItemProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'type'>, SpaceProps<Theme> {
-  /** What the item renders — a page number, a nav control, or a non-interactive ellipsis. */
+  /** What the item renders - a page number, a nav control, or a non-interactive ellipsis. */
   type?: PaginationItemType
   /** The page number/content for `type="page"`. */
   page?: ReactNode
   /** Active styling for the current page. Default: `false`. */
   isSelected?: boolean
-  /** Selected-state color — resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Selected-state color - resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: PaginationItemColor
-  /** `text` — no border · `outlined` — stroked. Default: `'text'`. */
+  /** `text` - no border · `outlined` - stroked. Default: `'text'`. */
   variant?: PaginationItemVariant
   /** Corner shape. Default: `'circular'`. */
   shape?: PaginationItemShape
-  /** Item dimensions and font size — resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
+  /** Item dimensions and font size - resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: PaginationItemSize
   disabled?: boolean
   as?: ElementType
@@ -184,7 +184,7 @@ export function PaginationItem({
     const { disabled: _disabled, onClick: _onClick, ...ellipsisRest } = rest
     return (
       <Ellipsis as={as} size={size} {...ellipsisRest}>
-        …
+        ...
       </Ellipsis>
     )
   }

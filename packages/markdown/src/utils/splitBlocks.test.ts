@@ -25,7 +25,7 @@ describe('splitBlocks', () => {
       '```\ntilde block\n~~~\n\nstill inside\n```',
     ],
     [
-      // ```ts is an opening-style marker, so inside an open fence it is content —
+      // ```ts is an opening-style marker, so inside an open fence it is content -
       // closing there would let the blank line below split the block in two.
       'a marker carrying an info string does not close a fence',
       '```\ncode\n```ts\n\nstill inside\n```',

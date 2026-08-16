@@ -70,11 +70,11 @@ describe('preload editorAPI', () => {
     await api.github.signOut()
     expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.signOut)
 
-    // No URL argument — the browser target is main's constant, not the renderer's.
+    // No URL argument - the browser target is main's constant, not the renderer's.
     await api.github.openTokenSettings()
     expect(invoke).toHaveBeenLastCalledWith(GITHUB_CHANNELS.openTokenSettings)
 
-    // No token argument either — main reads the stored one.
+    // No token argument either - main reads the stored one.
     await api.gists.list()
     expect(invoke).toHaveBeenLastCalledWith(GIST_CHANNELS.list)
 

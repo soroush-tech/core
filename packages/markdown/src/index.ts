@@ -12,7 +12,7 @@ export * from './MarkdownContext'
 /**
  * Per-theme overrides for the `Mermaid` renderer, merged over (and winning against) its default
  * mermaid `themeVariables`. Common variables are listed for autocomplete; any other mermaid theme
- * variable is accepted. Set via `theme.mermaid` (e.g. `createTheme(baseTheme, { mermaid: … })`).
+ * variable is accepted. Set via `theme.mermaid` (e.g. `createTheme(baseTheme, { mermaid: ... })`).
  */
 export interface MermaidThemeVariables {
   darkMode?: boolean
@@ -34,10 +34,10 @@ export interface MermaidThemeVariables {
 
 // This package renders through design-system's `styled` engine, so its named roots
 // (`MarkdownEditor`, `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) resolve
-// `theme.components` at runtime. Registering the slots here — on
+// `theme.components` at runtime. Registering the slots here - on
 // `@soroush.tech/design-system/theme`, the module that owns `Theme`/`ThemeComponents`
-// and merges reliably across tsdown's d.ts chunks — lets consumers type
-// `theme.components.MarkdownPreview = { … }`. `ComponentConfig` is pulled in via an
+// and merges reliably across tsdown's d.ts chunks - lets consumers type
+// `theme.components.MarkdownPreview = { ... }`. `ComponentConfig` is pulled in via an
 // inline `import(...)` type (no top-level import) so nothing reads as unused under the
 // app's `noUnusedLocals`, which ignores usage inside `declare module`.
 declare module '@soroush.tech/design-system/theme' {
@@ -61,7 +61,7 @@ declare module '@soroush.tech/design-system/theme' {
     /** Per-theme overrides for the `Mermaid` renderer's mermaid `themeVariables`. */
     mermaid?: MermaidThemeVariables
     /**
-     * Syntax-highlighting tokens for `CodeBlock` — see `syntaxDark`/`syntaxLight`. Optional
+     * Syntax-highlighting tokens for `CodeBlock` - see `syntaxDark`/`syntaxLight`. Optional
      * only so `design-system`'s own `baseTheme` literal still satisfies `Theme` in this
      * monorepo's source-consuming builds; `CodeBlock` requires it in practice (no fallback).
      */

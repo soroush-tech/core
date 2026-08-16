@@ -100,7 +100,7 @@ describe('NativeSelect', () => {
       />
     )
     const root = container.querySelector('[data-testid="root"]')
-    // dark theme error main — neonRed[500]
+    // dark theme error main - neonRed[500]
     expect(root).toHaveStyle({ borderColor: 'rgb(255, 59, 48)' })
   })
 

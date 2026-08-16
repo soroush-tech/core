@@ -10,7 +10,7 @@ describe('toPreview', () => {
   })
 
   it('cuts off anything longer, marking that it goes on', () => {
-    expect(toPreview('x'.repeat(PREVIEW_LIMIT + 30))).toBe(`${'x'.repeat(PREVIEW_LIMIT)}…`)
+    expect(toPreview('x'.repeat(PREVIEW_LIMIT + 30))).toBe(`${'x'.repeat(PREVIEW_LIMIT)}...`)
   })
 
   it.each([

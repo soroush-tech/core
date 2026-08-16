@@ -82,7 +82,7 @@ const meta: Meta<typeof TablePagination> = {
     rowsPerPageOptions: {
       control: 'object',
       description:
-        'Selector options — numbers or `{ label, value }`; fewer than two hides the selector.',
+        'Selector options - numbers or `{ label, value }`; fewer than two hides the selector.',
       table: { category: 'Content', defaultValue: { summary: '[10, 25, 50, 100]' } },
     },
     colSpan: {
@@ -93,19 +93,19 @@ const meta: Meta<typeof TablePagination> = {
     size: {
       control: { type: 'select' },
       options: tableSizeTokens,
-      description: 'Cell density — inherited from the `Table`, overridable here.',
+      description: 'Cell density - inherited from the `Table`, overridable here.',
       table: { category: 'Layout' },
     },
     cellPadding: {
       control: { type: 'select' },
       options: tableCellPaddingTokens,
-      description: 'Padding mode — inherited from the `Table`. `none` zeroes padding.',
+      description: 'Padding mode - inherited from the `Table`. `none` zeroes padding.',
       table: { category: 'Layout' },
     },
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color — resolves against `theme.text`.',
+      description: 'Text color - resolves against `theme.text`.',
       table: { category: 'Visual' },
     },
     bg,

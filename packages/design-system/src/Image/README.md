@@ -8,13 +8,13 @@ Built-in source priority and error recovery: when a source fails to load the com
 
 ## Source priority
 
-**Initial render** — props map to `<img>` attributes as follows:
+**Initial render** - props map to `<img>` attributes as follows:
 
 - `src` → `src` attribute.
 - `srcSet` → `srcset` attribute (used alongside `src`, or as the primary source when `src` is absent).
 - `fallback` → `src` attribute when both `src` and `srcSet` are absent.
 
-**Error recovery** — when the browser fails to load, the component advances through phases:
+**Error recovery** - when the browser fails to load, the component advances through phases:
 
 ```
 src + srcSet  →  src (srcSet dropped)  →  fallback  →  onError
@@ -42,7 +42,7 @@ Forwarded to `<img srcset>` when `src` is present. Also used as the primary sour
 
 ### `alt`
 
-Alt text — required for accessibility when any image source is provided.
+Alt text - required for accessibility when any image source is provided.
 
 ---
 
@@ -72,7 +72,7 @@ CSS `object-position`. Accepts any valid CSS value, e.g. `center`, `top left`, `
 
 ### `borderRadius`
 
-Corner radius — resolves against `theme.radii`.
+Corner radius - resolves against `theme.radii`.
 
 | Token  | Value |
 | ------ | ----- |
@@ -97,7 +97,7 @@ Corner radius — resolves against `theme.radii`.
 
 ---
 
-### Space — `theme.space`
+### Space - `theme.space`
 
 | Prop                              | Shorthand for   |
 | --------------------------------- | --------------- |

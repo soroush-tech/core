@@ -55,7 +55,7 @@ const MARKER = { textIndent: '7px' }
 
 /**
  * Finds the rendered element whose emotion class carries the given styled
- * `label` — works across portals since it scans the whole document.
+ * `label` - works across portals since it scans the whole document.
  */
 function byLabel(label: string): HTMLElement {
   const matcher = new RegExp(`(^|\\s)css-[^ ]+-${label}(\\s|$)`)

@@ -18,9 +18,9 @@ from `count` / `page` / `rowsPerPage`.
 
 | Prop                                             | Type                     | Default | Description                                                       |
 | ------------------------------------------------ | ------------------------ | ------- | ----------------------------------------------------------------- |
-| `count` / `page` / `rowsPerPage`                 | `number`                 | —       | Pagination state used to derive boundary disabling. **Required.** |
-| `onPageChange`                                   | `(page: number) => void` | —       | Fired with the target zero-based page. **Required.**              |
-| `getItemAriaLabel`                               | `(type) => string`       | —       | Accessible name per button. **Required.**                         |
+| `count` / `page` / `rowsPerPage`                 | `number`                 | -       | Pagination state used to derive boundary disabling. **Required.** |
+| `onPageChange`                                   | `(page: number) => void` | -       | Fired with the target zero-based page. **Required.**              |
+| `getItemAriaLabel`                               | `(type) => string`       | -       | Accessible name per button. **Required.**                         |
 | `disabled`                                       | `boolean`                | `false` | Disables all buttons.                                             |
 | `shouldShowFirstButton` / `shouldShowLastButton` | `boolean`                | `false` | Adds first/last buttons.                                          |
 | `size`                                           | `keyof Theme['sizes']`   | `'sm'`  | Button density.                                                   |

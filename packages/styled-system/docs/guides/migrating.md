@@ -33,11 +33,11 @@ The following has been removed from v5 and you should make these changes to migr
 
 ## Prop types
 
-`@soroush.tech/styled-system` does not ship a `prop-types` package — the old
+`@soroush.tech/styled-system` does not ship a `prop-types` package - the old
 `@styled-system/prop-types` is out of scope for this rewrite, and React 19 removed
 `propTypes` for function components entirely. Use TypeScript for prop typing instead
 (see [TypeScript](../typescript.md)): every style function carries its own typed prop
-interface (`SpaceProps`, `ColorProps`, …).
+interface (`SpaceProps`, `ColorProps`, ...).
 
 ## New Features
 

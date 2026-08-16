@@ -10,15 +10,15 @@ A field label built on [`Typography`](../Typography/README.md), rendered as a `<
 
 ### `children`
 
-`ReactNode` — the label text.
+`ReactNode` - the label text.
 
 ### `required`
 
-`boolean` — appends a ` *` indicator. Falls back to the FormControl `required` value. Default: `false`.
+`boolean` - appends a ` *` indicator. Falls back to the FormControl `required` value. Default: `false`.
 
 ### `htmlFor`
 
-`string` — target control id. Falls back to the FormControl `id`.
+`string` - target control id. Falls back to the FormControl `id`.
 
 ---
 
@@ -34,7 +34,7 @@ All `Typography` props pass through (`variant`, `color`, `textTransform`, `lette
 // Standalone
 <FormLabel htmlFor="email">Email</FormLabel>
 
-// Inside FormControl — htmlFor and required come from context
+// Inside FormControl - htmlFor and required come from context
 <FormControl id="email" required>
   <FormLabel>Email</FormLabel>
 </FormControl>

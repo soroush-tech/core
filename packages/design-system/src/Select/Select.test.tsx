@@ -248,7 +248,7 @@ describe('Select (non-native)', () => {
   it('accumulates selections after multiple is turned on post-mount', () => {
     const onChange = vi.fn()
     const { rerender } = renderWithTheme(<Select onChange={onChange}>{options}</Select>)
-    // `multiple` toggled on after mount — the value ('' from single mode) must normalize to [].
+    // `multiple` toggled on after mount - the value ('' from single mode) must normalize to [].
     rerender(
       <Select multiple onChange={onChange}>
         {options}

@@ -13,7 +13,7 @@ A display card that showcases a single theme font family. Renders the variant to
 
 | Prop      | Type                   | Default | Description                      |
 | --------- | ---------------------- | ------- | -------------------------------- |
-| `variant` | `keyof Theme['fonts']` | —       | Font family token from the theme |
+| `variant` | `keyof Theme['fonts']` | -       | Font family token from the theme |
 
 ---
 

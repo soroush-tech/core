@@ -3,7 +3,7 @@ import type { ClaudeEvent } from '../../../shared/ipc'
 
 export interface UseClaudeEditOptions {
   /**
-   * Called with everything written so far, each time more arrives — so the
+   * Called with everything written so far, each time more arrives - so the
    * document can show the answer taking shape rather than appearing at the end.
    */
   onText: (text: string) => void
@@ -11,7 +11,7 @@ export interface UseClaudeEditOptions {
 
 /**
  * One streaming "rewrite this" run against the local Claude Code CLI. The text
- * arrives in deltas, but `editSelection` resolves with the run's own result — a
+ * arrives in deltas, but `editSelection` resolves with the run's own result - a
  * dropped delta must never corrupt what is finally kept.
  *
  * A cancelled run resolves to null and reports nothing: stopping it was the point.

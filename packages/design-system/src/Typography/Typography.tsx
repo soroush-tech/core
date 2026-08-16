@@ -28,10 +28,10 @@ export type { TypographyVariant }
 
 export type TypographyAlign = 'left' | 'right' | 'center' | 'justify' | 'inherit'
 
-/** Valid values for the color prop — derived from theme.text keys. */
+/** Valid values for the color prop - derived from theme.text keys. */
 export type TextColorToken = keyof Theme['text']
 
-/** Valid values for the bg prop — derived from theme.background keys. */
+/** Valid values for the bg prop - derived from theme.background keys. */
 export type BackgroundToken = keyof Theme['background']
 
 export interface TypographyProps
@@ -43,7 +43,7 @@ export interface TypographyProps
     FlexboxProps<Theme>,
     BorderProps<Theme>,
     PositionProps<Theme> {
-  /** Resolves against theme.text — inherit · initial · primary · secondary · error · success */
+  /** Resolves against theme.text - inherit · initial · primary · secondary · error · success */
   color?: TextColorToken
   /** Resolves against theme.background */
   bg?: BackgroundToken
@@ -53,7 +53,7 @@ export interface TypographyProps
   align?: TypographyAlign
   gutterBottom?: boolean
   noWrap?: boolean
-  /** Machine-readable timestamp — forwarded when rendering as `<time>` (`as="time"`). */
+  /** Machine-readable timestamp - forwarded when rendering as `<time>` (`as="time"`). */
   dateTime?: string
   as?: ElementType
 }

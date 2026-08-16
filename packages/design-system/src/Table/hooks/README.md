@@ -1,10 +1,10 @@
 # Table hooks
 
-Consumer-called hooks that own the state of interactive tables — sorting, pagination, and row
+Consumer-called hooks that own the state of interactive tables - sorting, pagination, and row
 selection. Each returns **spreadable entries** whose property names match the component they wire
 (`TableSortLabel`, `TablePagination`, `Checkbox`), and all three feed
 [`TableControl`](../TableControl/README.md), which derives the visible rows. No context, no
-component changes — every wire is explicit.
+component changes - every wire is explicit.
 
 ```tsx
 const sort = useTableSort(['service', 'latency'])
@@ -30,8 +30,8 @@ Column-keyed sort state. Each entry spreads directly onto `TableSortLabel`:
 ```
 
 - Every column remembers its own direction (initially `'asc'`). Clicking a column activates it
-  **and flips its stored direction** — the first click on a column sorts `'desc'`.
-- `onChange(key, direction)` fires on every toggle (server-side sorting, analytics, page resets…).
+  **and flips its stored direction** - the first click on a column sorts `'desc'`.
+- `onChange(key, direction)` fires on every toggle (server-side sorting, analytics, page resets...).
 - `keys` is read once on mount; entries are memoized with stable `onClick` identities.
 
 ## useTablePagination
@@ -66,38 +66,38 @@ useTableSelection<K extends string | number>(
 }
 ```
 
-Key-based row selection that survives paging and re-sorting — selection is stored as row
+Key-based row selection that survives paging and re-sorting - selection is stored as row
 identities, and select-all/indeterminate are computed against the full `keys` list, never the
 visible slice:
 
 ```tsx
 <Checkbox {...selection.all} aria-label="Select all deployments" />
-…
+...
 <TableRow isSelected={selection.isSelected(row.service)}>
   <TableCell>
     <Checkbox {...selection.row(row.service)} aria-label={`Select ${row.service}`} />
   </TableCell>
-  …
+  ...
 </TableRow>
-…
+...
 {selection.selected.length} of {services.length} selected
 ```
 
 - Select-all targets the **entire dataset**: checked when every key is selected, `indeterminate`
   when some-but-not-all, and clicking clears or selects all accordingly.
-- Deliberately key-based (no `data`/row coupling) — the consumer already holds the key at every
+- Deliberately key-based (no `data`/row coupling) - the consumer already holds the key at every
   call site, and the hook doubles as a generic keyed-selection primitive.
 
 ## All together
 
-The `RowSelection` story (`Theme/Table/Table`) shows the full kit — sortable headers, pagination,
+The `RowSelection` story (`Theme/Table/Table`) shows the full kit - sortable headers, pagination,
 and a checkbox column whose selection survives re-sorting and page flips:
 
 ```tsx
 <TableControl data={deployments} sort={sort} pagination={pagination}>
   {(row) => (
     <TableRow key={row.service} isHoverable isSelected={selection.isSelected(row.service)}>
-      …
+      ...
     </TableRow>
   )}
 </TableControl>

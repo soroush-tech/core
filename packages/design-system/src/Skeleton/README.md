@@ -8,7 +8,7 @@ Displays a low-fidelity placeholder while content loads, reducing layout shift a
 
 The two animations behave differently when several skeletons share a page:
 
-- **`pulse`** (default) fades opacity only, so it is **size-independent** — a small circle and a full-width bar fade identically and, when rendered together, stay in lockstep with no extra work.
+- **`pulse`** (default) fades opacity only, so it is **size-independent** - a small circle and a full-width bar fade identically and, when rendered together, stay in lockstep with no extra work.
 - **`wave`** anchors its shimmer gradient to the **viewport** (`background-attachment: fixed`) rather than to each element. One light band sweeps across the whole page and every skeleton reveals the slice under it, so differing widths and heights all stay visually in sync.
 
 Both animations are disabled automatically under `prefers-reduced-motion: reduce`.
@@ -33,7 +33,7 @@ Default: `"text"`. The `text` variant with no `height` takes one line's height v
 
 ### `borderRadius`
 
-Overrides the variant's default corner radius — resolves against `theme.radii`. The `circular` variant ignores it — a circle always stays `50%`.
+Overrides the variant's default corner radius - resolves against `theme.radii`. The `circular` variant ignores it - a circle always stays `50%`.
 
 | Token    | Value |
 | -------- | ----- |
@@ -69,7 +69,7 @@ Default: `"pulse"`.
 
 ### `children`
 
-Optional content used only to infer width and height — it is rendered invisibly (`visibility: hidden`) so the skeleton sizes to it.
+Optional content used only to infer width and height - it is rendered invisibly (`visibility: hidden`) so the skeleton sizes to it.
 
 ```tsx
 <Skeleton>
@@ -81,7 +81,7 @@ Optional content used only to infer width and height — it is rendered invisibl
 
 ## Styled-system props
 
-Skeleton accepts margin props (`m`, `mt`, `mr`, `mb`, `ml`, `mx`, `my`) — resolved against `theme.space`. Padding is intentionally excluded. The root element can be changed with `as`.
+Skeleton accepts margin props (`m`, `mt`, `mr`, `mb`, `ml`, `mx`, `my`) - resolved against `theme.space`. Padding is intentionally excluded. The root element can be changed with `as`.
 
 ---
 

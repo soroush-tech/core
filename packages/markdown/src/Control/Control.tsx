@@ -12,20 +12,20 @@ export interface ControlProps {
   value: string
   /** Called with the next source on edit or a toolbar action. */
   onChange: (value: string) => void
-  /** The composed parts — `Markdown.Toolbar`, `Markdown.Editor`, `Markdown.Preview`, … */
+  /** The composed parts - `Markdown.Toolbar`, `Markdown.Editor`, `Markdown.Preview`, ... */
   children: ReactNode
 }
 
 /**
  * The headless root of the Markdown compound: owns the shared value/selection state and exposes
- * it (plus a `dispatch` for toolbar actions) via context. It renders no UI of its own — the
+ * it (plus a `dispatch` for toolbar actions) via context. It renders no UI of its own - the
  * consumer arranges the parts and decides which panes to show.
  */
 export function Control({ value, onChange, children }: Readonly<ControlProps>) {
   const lastSelectionRef = useRef<MarkdownSelection | null>(null)
   const pendingSelectionRef = useRef<MarkdownSelection | null>(null)
 
-  // Memoised so consumers only re-render when the source (or its handler) actually changes —
+  // Memoised so consumers only re-render when the source (or its handler) actually changes -
   // the handlers close over `value`, so they are rebuilt inside the memo.
   const context = useMemo<MarkdownContextValue>(() => {
     const dispatch = (action: ToolbarAction) => {

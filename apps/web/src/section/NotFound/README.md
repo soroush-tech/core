@@ -1,6 +1,6 @@
 # NotFound
 
-The 404 / error section — a centered card with a glitched `404` hero and a recovery link.
+The 404 / error section - a centered card with a glitched `404` hero and a recovery link.
 Rendered by the Vike error page (`src/pages/_error/+Page.tsx`), which Vike pre-renders
 to `build/client/404.html` so GitHub Pages can serve it for any unmatched deep link.
 
@@ -17,7 +17,7 @@ No public props. Static content.
 - A recovery `Button` (wrapped in `Flicker`) linking to `/`.
 
 Rendered inside the standard `Layout` (header, footer, blueprint backdrop) like every
-other page — the grid, scanline, and cursor spotlight come from `Layout`'s `Blueprint`.
+other page - the grid, scanline, and cursor spotlight come from `Layout`'s `Blueprint`.
 
 ## Animations
 

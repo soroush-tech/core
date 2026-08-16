@@ -7,7 +7,7 @@
 [![types included](https://img.shields.io/npm/types/@soroush.tech/styled-system.svg?cacheSeconds=86400)](https://www.npmjs.com/package/@soroush.tech/styled-system)
 [![license](https://img.shields.io/npm/l/@soroush.tech/styled-system.svg?cacheSeconds=86400)](./LICENSE)
 
-A maintained, first-class-TypeScript rewrite of [styled-system](https://github.com/jxnblk/styled-system) v5 — responsive, theme-aware style props for CSS-in-JS.
+A maintained, first-class-TypeScript rewrite of [styled-system](https://github.com/jxnblk/styled-system) v5 - responsive, theme-aware style props for CSS-in-JS.
 
 It is a **drop-in replacement** for the `styled-system` runtime: the root export surface matches upstream verbatim, and the package ships its own types (replacing `@types/styled-system`).
 
@@ -19,7 +19,7 @@ It is a **drop-in replacement** for the `styled-system` runtime: the root export
 - Typographic scale, and a spacing scale for `margin`, `padding` and `gap`
 - Works with any color palette
 - Works with most CSS-in-JS libraries, including [Emotion](https://emotion.sh) and [styled-components](https://styled-components.com)
-- First-class TypeScript types — theme-scale-aware props, replacing `@types/styled-system`
+- First-class TypeScript types - theme-scale-aware props, replacing `@types/styled-system`
 
 ## Install
 
@@ -39,9 +39,9 @@ yarn add @soroush.tech/styled-system
 ```
 
 `@emotion/is-prop-valid` (`^1.4.0`, peer) and `prop-types` (`^15.8.1`, optional peer) are
-each used by a single [subpath](#subpath-imports) — `should-forward-prop` and `prop-types`
+each used by a single [subpath](#subpath-imports) - `should-forward-prop` and `prop-types`
 respectively. Install one only if you import that subpath. You bring your own CSS-in-JS
-library (Emotion, styled-components, …); the core carries neither at runtime.
+library (Emotion, styled-components, ...); the core carries neither at runtime.
 
 ## Usage
 
@@ -119,7 +119,7 @@ import shouldForwardProp, {
 
 ## Drop-in via alias
 
-Existing `styled-system` users can swap with a package-manager alias — no code changes:
+Existing `styled-system` users can swap with a package-manager alias - no code changes:
 
 ```jsonc
 "dependencies": {
@@ -127,7 +127,7 @@ Existing `styled-system` users can swap with a package-manager alias — no code
 }
 ```
 
-The satellite `@styled-system/*` packages don't need separate aliases — import them as
+The satellite `@styled-system/*` packages don't need separate aliases - import them as
 subpaths off the aliased `styled-system` name, and they resolve through this package's
 `exports`:
 
@@ -164,4 +164,4 @@ Per-version notes for every published release live in
 
 ## License
 
-MIT — a rewrite of styled-system (© 2017–2021 Brent Jackson), see [`LICENSE`](https://github.com/soroush-tech/core/tree/main/packages/styled-system/LICENSE).
+MIT - a rewrite of styled-system (© 2017-2021 Brent Jackson), see [`LICENSE`](https://github.com/soroush-tech/core/tree/main/packages/styled-system/LICENSE).

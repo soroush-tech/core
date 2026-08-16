@@ -10,7 +10,7 @@ describe('FormCard', () => {
     expect(screen.getByLabelText(/CALLSIGN/)).toBeInTheDocument()
     expect(screen.getByText('Visible on the public roster.')).toBeInTheDocument()
     expect(screen.getByText('ACCESS_CODE')).toBeInTheDocument()
-    expect(screen.getByText('ERR_INVALID_CODE — request a new code.')).toBeInTheDocument()
+    expect(screen.getByText('ERR_INVALID_CODE - request a new code.')).toBeInTheDocument()
   })
 
   it('renders the channel select inside the form context', () => {

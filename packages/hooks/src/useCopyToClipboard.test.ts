@@ -62,7 +62,7 @@ describe('useCopyToClipboard', () => {
       act(() => vi.advanceTimersByTime(COPIED_RESET_MS - 1))
       expect(result.current.copied).toBe(true)
 
-      // Re-copy just before the first reset — it must cancel that timer.
+      // Re-copy just before the first reset - it must cancel that timer.
       await act(async () => {
         result.current.copy('b')
       })

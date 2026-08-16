@@ -47,7 +47,7 @@ describe('registerGistHandlers', () => {
     await expect(invoke(GIST_CHANNELS.list)).resolves.toEqual({ success: true, data: [] })
   })
 
-  it('ignores anything the renderer sends to list — the token is main-side', async () => {
+  it('ignores anything the renderer sends to list - the token is main-side', async () => {
     service.list.mockResolvedValue({ success: true, data: [] })
 
     await invoke(GIST_CHANNELS.list, 'some-other-token')

@@ -4,7 +4,7 @@ const FILE = 'C:\\userData\\github-credentials.bin'
 const CREDENTIALS = { login: 'soroushm', token: 'gho_token', avatar: 'data:image/png;base64,AQID' }
 const CIPHERTEXT = Buffer.from('encrypted')
 
-// Only the async safeStorage API is mocked — a call to the synchronous pair
+// Only the async safeStorage API is mocked - a call to the synchronous pair
 // would be undefined here, so this doubles as a guard against reintroducing it.
 const { safeStorage } = vi.hoisted(() => ({
   safeStorage: {

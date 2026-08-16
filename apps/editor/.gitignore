@@ -2,7 +2,7 @@ out
 release
 coverage
 # The root ignore drops every `build` (the web app's output); this one is
-# electron-builder's buildResources — entitlements and icons — and is source.
+# electron-builder's buildResources - entitlements and icons - and is source.
 !build/
 test-results
 playwright-report

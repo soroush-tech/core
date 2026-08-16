@@ -11,7 +11,7 @@ import { onRenderClient } from './+onRenderClient'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { initMSW } from 'src/utils'
 
-// Tests run in declaration order — the module-level `root` variable in
+// Tests run in declaration order - the module-level `root` variable in
 // +onRenderClient progresses naturally: undefined → (hydrateRoot result) → createRoot result.
 // hydrateRoot is mocked as vi.fn() which returns undefined by default, so root
 // stays falsy after the hydration test, allowing the non-hydration test to

@@ -21,7 +21,7 @@ None. The section renders static content.
 
 ## Asset
 
-`src/assets/methodology-circuit.png` — the Methodology photo, imported as a Vite URL
+`src/assets/methodology-circuit.png` - the Methodology photo, imported as a Vite URL
 and rendered through the theme `Image`.
 
 ## Notes

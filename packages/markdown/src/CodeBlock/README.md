@@ -2,15 +2,15 @@
 
 A fenced-code surface: a horizontally scrollable, terminal-styled block with a copy-to-clipboard
 button that stays pinned to the top-right while the block is in view. Syntax highlighting is not
-applied here — it comes from the caller (e.g. `Markdown.Preview` runs `rehype-highlight`, which
+applied here - it comes from the caller (e.g. `Markdown.Preview` runs `rehype-highlight`, which
 emits `hljs-*` classes the surface themes to `theme.syntax`).
 
 ## Props
 
-| Prop       | Type        | Description                                                     |
-| ---------- | ----------- | --------------------------------------------------------------- |
-| `children` | `ReactNode` | The code content (typically a `<code>` element).                |
-| …`rest`    | `ViewProps` | Spacing/layout passthrough to the wrapper (`my`, `p`, `bg`, …). |
+| Prop       | Type        | Description                                                       |
+| ---------- | ----------- | ----------------------------------------------------------------- |
+| `children` | `ReactNode` | The code content (typically a `<code>` element).                  |
+| ...`rest`  | `ViewProps` | Spacing/layout passthrough to the wrapper (`my`, `p`, `bg`, ...). |
 
 ```tsx
 <CodeBlock my={3}>
@@ -26,7 +26,7 @@ emits `hljs-*` classes the surface themes to `theme.syntax`).
 
 ## Theming
 
-`theme.syntax` (typed `ThemeSyntax`) is not one of design-system's own scales — this package
+`theme.syntax` (typed `ThemeSyntax`) is not one of design-system's own scales - this package
 augments `@soroush.tech/design-system/theme` with it (see `src/index.ts`), since it exists solely
 for this component's highlight.js token mapping and its `font` (the code surface's font family,
 independent of `theme.fonts.mono`). It's required wherever `CodeBlock` renders, so merge one of the

@@ -5,7 +5,7 @@ import { SITE_NAME, pageTitle, pageDescription } from './seo'
 /** A single `<meta>` tag, keyed by either `name` or `property`. */
 export type MetaTag = { name: string; content: string } | { property: string; content: string }
 
-/** An imagetools `?as=picture` import — the bits needed for og:image + its dimensions. */
+/** An imagetools `?as=picture` import - the bits needed for og:image + its dimensions. */
 export interface Picture {
   img: { src: string; w: number; h: number }
 }
@@ -25,7 +25,7 @@ export interface HeadMeta {
 interface SocialMetaInput {
   title: string
   description?: string
-  /** imagetools `?as=picture` import — yields og:image (absolute) + og:image:width/height. */
+  /** imagetools `?as=picture` import - yields og:image (absolute) + og:image:width/height. */
   image?: Picture
   type?: 'website' | 'article'
 }

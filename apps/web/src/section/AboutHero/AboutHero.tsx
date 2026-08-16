@@ -13,7 +13,7 @@ import portrait from 'src/assets/masoud_soroush.png?w=320;480;640;768;960;1200&f
 // at the 52em (832px) breakpoint; full viewport width below that.
 const PORTRAIT_SIZES = '(min-width: 832px) min(40vw, 520px), 100vw'
 
-// Decorative corner glow — a 135° neon fade that no flat background token can express.
+// Decorative corner glow - a 135° neon fade that no flat background token can express.
 const MatrixGradient = styled(View, { label: 'MatrixGradient' })`
   position: absolute;
   top: 0;
@@ -36,7 +36,7 @@ const PortraitImage = styled(Image, { label: 'PortraitImage' })`
   opacity: ${({ theme }) => theme.portraitOpacity};
 `
 
-// Framed surface for the portrait — thin neon border + elevation per the source design.
+// Framed surface for the portrait - thin neon border + elevation per the source design.
 const ImageFrame = styled(View, { label: 'ImageFrame' })`
   position: relative;
   aspect-ratio: 4 / 5;

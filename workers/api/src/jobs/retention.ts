@@ -10,7 +10,7 @@ import {
 /** Months of submissions kept live before a month table is archived and dropped. */
 const DEFAULT_RETENTION_MONTHS = 6
 
-/** Create this month's and next month's tables if absent (idempotent — present ones are skipped). */
+/** Create this month's and next month's tables if absent (idempotent - present ones are skipped). */
 export const provisionMonthTables = async (env: Env, now: number): Promise<void> => {
   const d = new Date(now)
   const nextMonth = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1))

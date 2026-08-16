@@ -21,7 +21,7 @@ interface BoundControlProps {
 }
 
 // The generics mirror the form instance so `name` is checked against the value schema
-// via DeepKeys. They are inferred from the `form` prop — callers never spell them out.
+// via DeepKeys. They are inferred from the `form` prop - callers never spell them out.
 export interface FieldProps<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -51,11 +51,11 @@ export interface FieldProps<
     TOnServer,
     TSubmitMeta
   >
-  /** Type-safe field name — checked against the form's value schema. */
+  /** Type-safe field name - checked against the form's value schema. */
   name: TName
   /** Optional label; rendered as a FormLabel above the control. */
   label?: ReactNode
-  /** Typography props forwarded to the FormLabel — restyle the label without losing the wiring. */
+  /** Typography props forwarded to the FormLabel - restyle the label without losing the wiring. */
   labelProps?: Omit<FormLabelProps, 'children' | 'required' | 'htmlFor'>
   /** Optional helper text; replaced by the error message while the field is invalid. */
   helperText?: ReactNode
@@ -64,7 +64,7 @@ export interface FieldProps<
   fullWidth?: boolean
   /**
    * The control element, e.g. `<TextInput />`. Field clones it and injects the binding
-   * from the TanStack field — `name`, `value`, `onChange`, and `inputProps.onBlur` — so the
+   * from the TanStack field - `name`, `value`, `onChange`, and `inputProps.onBlur` - so the
    * call site stays declarative and the control never imports the form library.
    */
   children: ReactElement
@@ -75,8 +75,8 @@ export interface FieldProps<
  * Wraps `form.Field`, derives the error-display flag, and composes
  * FormControl / FormLabel / FormHelperText so id and aria wiring are automatic.
  *
- * Error UX: shown only once the field is touched or after a submit attempt — never on
- * initial render — and only the first error message is displayed.
+ * Error UX: shown only once the field is touched or after a submit attempt - never on
+ * initial render - and only the first error message is displayed.
  */
 export function Field<
   TFormData,
@@ -123,7 +123,7 @@ export function Field<
     <form.Field name={name}>
       {(field) => {
         // The form generics are abstract inside Field, so treat the field as the untyped
-        // AnyFieldApi at this boundary — the public `name` prop already enforced type safety.
+        // AnyFieldApi at this boundary - the public `name` prop already enforced type safety.
         const api = field as unknown as AnyFieldApi
         const message = api.state.meta.errors[0]?.message as ReactNode
         const hasError = (api.state.meta.isTouched || form.state.isSubmitted) && Boolean(message)

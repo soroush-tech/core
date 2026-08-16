@@ -117,5 +117,5 @@ export const icons = {
   zoom_out: ZoomOutIcon,
 } as const
 
-/** Valid values for the Icon `name` prop — derived from the registry keys. */
+/** Valid values for the Icon `name` prop - derived from the registry keys. */
 export type IconName = keyof typeof icons

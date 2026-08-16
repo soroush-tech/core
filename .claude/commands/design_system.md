@@ -1,5 +1,5 @@
 The component name is the first word of `$ARGUMENTS`.
-The remainder of `$ARGUMENTS` (if any) is the task spec — extract agreed props, behaviours, and constraints from it to inform Steps 2 and 3.
+The remainder of `$ARGUMENTS` (if any) is the task spec - extract agreed props, behaviours, and constraints from it to inform Steps 2 and 3.
 
 If the first word is not a valid PascalCase name, stop and say:
 
@@ -7,7 +7,7 @@ If the first word is not a valid PascalCase name, stop and say:
 
 ---
 
-## Step 0 — Detect mode
+## Step 0 - Detect mode
 
 Check whether `packages/design-system/src/<Name>/` already exists.
 
@@ -16,15 +16,15 @@ Check whether `packages/design-system/src/<Name>/` already exists.
 
 ---
 
-## Step 1 — Read reference files
+## Step 1 - Read reference files
 
 Read these files in order before doing anything else:
 
-1. `@soroush.tech/design-system/Typography/Typography.tsx` — canonical component implementation
-2. `@soroush.tech/design-system/Typography/README.md` — canonical documentation format
-3. `@soroush.tech/design-system/Typography/Typography.stories.tsx` — canonical story structure
-4. `@soroush.tech/design-system/storybookOptions.ts` — existing token arrays and import patterns
-5. `packages/design-system/design-system.md` — full architecture rules (authoritative source of truth)
+1. `@soroush.tech/design-system/Typography/Typography.tsx` - canonical component implementation
+2. `@soroush.tech/design-system/Typography/README.md` - canonical documentation format
+3. `@soroush.tech/design-system/Typography/Typography.stories.tsx` - canonical story structure
+4. `@soroush.tech/design-system/storybookOptions.ts` - existing token arrays and import patterns
+5. `packages/design-system/design-system.md` - full architecture rules (authoritative source of truth)
 
 If reworking an existing component, also read its current files:
 
@@ -35,14 +35,14 @@ If reworking an existing component, also read its current files:
 
 ---
 
-## Step 2 — Clarify base element (new components only)
+## Step 2 - Clarify base element (new components only)
 
 If the task spec already makes the base HTML element and props clear, state your interpretation and proceed without asking.
 
 Otherwise ask:
 
 > What is the base HTML element for `<Name>`, and what is its primary purpose?
-> (e.g. `"div — a layout container"` or `"button — an interactive action trigger"`)
+> (e.g. `"div - a layout container"` or `"button - an interactive action trigger"`)
 
 Use the answer to decide:
 
@@ -54,13 +54,13 @@ Do not generate any files until confirmed.
 
 ---
 
-## Step 3 — Generate or update files
+## Step 3 - Generate or update files
 
 ### New component
 
 Create the folder `packages/design-system/src/<Name>/` with these five files:
 
-**`index.ts`** — re-export only:
+**`index.ts`** - re-export only:
 
 ```ts
 export * from './<Name>'
@@ -71,19 +71,19 @@ export * from './<Name>'
 - `styled` base with `createShouldForwardProp([...props, ...customProps])`
 - Only include styled-system groups relevant to this component
 - Wire `color` → `scale: 'text'` and `bg` → `scale: 'background'` via `system()` if color props are needed
-- Derive all prop types from `Theme` via `keyof Theme['scaleName']` — no manual unions
+- Derive all prop types from `Theme` via `keyof Theme['scaleName']` - no manual unions
 - Export named prop types (e.g. `<Name>Props`)
 
 **`README.md`**
 
 - Document every prop: type, default, description
-- Color/bg tables use palette constant names only — `kineticGreen[500]`, never hex
+- Color/bg tables use palette constant names only - `kineticGreen[500]`, never hex
 - Mirror the section structure of `@soroush.tech/design-system/Typography/README.md`
 
 **`<Name>.stories.tsx`**
 
-- Import all option arrays from `@soroush.tech/design-system/storybookOptions.ts` — never hardcode inline
-- `controls.include` whitelist — no autodiscovery
+- Import all option arrays from `@soroush.tech/design-system/storybookOptions.ts` - never hardcode inline
+- `controls.include` whitelist - no autodiscovery
 - Every prop in `controls.include` must have a matching `argType` with `control`, `description`, and `table.category`
 - Category names: Content · Typography · Layout · Color · Spacing
 - No top-level `name:` in any argType
@@ -93,22 +93,22 @@ export * from './<Name>'
 - Cover: CSS output for each prop, HTML attribute passthrough, element mapping if a variant prop exists
 - Wrap renders in `ThemeProvider`
 
-Update `@soroush.tech/design-system/storybookOptions.ts` only if new token arrays are needed — never duplicate existing ones.
+Update `@soroush.tech/design-system/storybookOptions.ts` only if new token arrays are needed - never duplicate existing ones.
 
 ### Rework (existing component)
 
 Apply only the changes required by the task spec. For every change made:
 
-- **`<Name>.tsx`** — update the component
-- **`<Name>.test.tsx`** — add or update tests to cover the change; remove any tests made obsolete
-- **`README.md`** — update prop documentation to reflect the change; fix any stale references
-- **`<Name>.stories.tsx`** — add the new prop to `controls.include` and `argTypes`; add a story if the change warrants one
+- **`<Name>.tsx`** - update the component
+- **`<Name>.test.tsx`** - add or update tests to cover the change; remove any tests made obsolete
+- **`README.md`** - update prop documentation to reflect the change; fix any stale references
+- **`<Name>.stories.tsx`** - add the new prop to `controls.include` and `argTypes`; add a story if the change warrants one
 
 Do not touch unrelated parts of any file.
 
 ---
 
-## Step 4 — Cross-component impact
+## Step 4 - Cross-component impact
 
 After any change, check whether other components are affected:
 
@@ -118,9 +118,9 @@ After any change, check whether other components are affected:
 
 > **Impact on other components**
 >
-> - `Flex` — inherits `cursor` automatically, no changes needed
-> - `Grid` — inherits `cursor` automatically, no changes needed
-> - `Paper` — not yet implemented; `cursor` will be available when built
+> - `Flex` - inherits `cursor` automatically, no changes needed
+> - `Grid` - inherits `cursor` automatically, no changes needed
+> - `Paper` - not yet implemented; `cursor` will be available when built
 
 Wait for the user to confirm before making changes to other components.
 

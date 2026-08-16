@@ -56,7 +56,7 @@ const meta: Meta<typeof Link> = {
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Semantic text color — resolves from `theme.text`.',
+      description: 'Semantic text color - resolves from `theme.text`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     variant: {
@@ -136,7 +136,7 @@ export const InlineProse: Story = {
     <Typography variant="body1" maxWidth="480px">
       The design system is built with <Link href="#">Emotion</Link> and{' '}
       <Link href="#">styled-system</Link>. All components resolve color, spacing, and typography
-      from theme tokens — see the{' '}
+      from theme tokens - see the{' '}
       <Link href="#" underline="hover" color="secondary">
         design-system docs
       </Link>{' '}

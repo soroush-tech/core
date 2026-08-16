@@ -11,13 +11,13 @@ import {
   system,
 } from '@soroush.tech/design-system'
 
-/** Valid values for the color prop — derived from theme.text keys. */
+/** Valid values for the color prop - derived from theme.text keys. */
 export type TableBodyColorToken = keyof Theme['text']
 
-/** Valid values for the bg prop — derived from theme.background keys. */
+/** Valid values for the bg prop - derived from theme.background keys. */
 export type TableBodyBackgroundToken = keyof Theme['background']
 
-/** Valid values for the borderColor prop — derived from theme.border keys. */
+/** Valid values for the borderColor prop - derived from theme.border keys. */
 export type TableBodyBorderColorToken = keyof Theme['border']
 
 export interface TableBodyProps
@@ -29,7 +29,7 @@ export interface TableBodyProps
   color?: TableBodyColorToken
   /** Resolves against theme.background */
   bg?: TableBodyBackgroundToken
-  /** Resolves against theme.border — light · primary · dark */
+  /** Resolves against theme.border - light · primary · dark */
   borderColor?: TableBodyBorderColorToken
   as?: ElementType
 }

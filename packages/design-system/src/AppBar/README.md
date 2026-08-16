@@ -8,7 +8,7 @@ Renders as `<header>`. A top-level container for navigation, toolbars, and appli
 
 ### `color`
 
-Resolves against `theme.background` — sets the AppBar's background color.
+Resolves against `theme.background` - sets the AppBar's background color.
 
 | Token         | Dark source                      | Light source                        |
 | ------------- | -------------------------------- | ----------------------------------- |
@@ -25,7 +25,7 @@ Resolves against `theme.background` — sets the AppBar's background color.
 
 ### `size`
 
-Padding preset — resolves from `theme.sizes`. Default: `"md"`.
+Padding preset - resolves from `theme.sizes`. Default: `"md"`.
 
 | Value  | `paddingLeft` / `paddingRight` | `paddingTop` / `paddingBottom` |
 | ------ | ------------------------------ | ------------------------------ |
@@ -39,7 +39,7 @@ Override individual sides with `px` / `py` (or `pl`, `pr`, `pt`, `pb`) from the 
 
 ### `elevation`
 
-Box-shadow depth — resolves from `theme.shadows[n]`. Omit for no shadow. Accepts any integer 0–24.
+Box-shadow depth - resolves from `theme.shadows[n]`. Omit for no shadow. Accepts any integer 0-24.
 
 | Value | Shadow                          |
 | ----- | ------------------------------- |
@@ -56,7 +56,7 @@ Controls CSS layout positioning.
 
 | Value        | Behavior                                                   |
 | ------------ | ---------------------------------------------------------- |
-| `"static"`   | Browser default — part of normal document flow             |
+| `"static"`   | Browser default - part of normal document flow             |
 | `"relative"` | Offset from normal position; still occupies its space      |
 | `"absolute"` | Removed from flow; positioned relative to nearest ancestor |
 | `"fixed"`    | Fixed to the viewport; does not scroll with the page       |
@@ -87,7 +87,7 @@ Combine with `color="backdrop"`, which resolves to the theme's pre-composited fr
 
 ### Borders
 
-`AppBar` supports the following border styled-system props. `borderRadius` is intentionally excluded — AppBar is a full-width bar and does not use rounded corners.
+`AppBar` supports the following border styled-system props. `borderRadius` is intentionally excluded - AppBar is a full-width bar and does not use rounded corners.
 
 | Prop           | CSS property    |
 | -------------- | --------------- |
@@ -113,13 +113,13 @@ Combine with `color="backdrop"`, which resolves to the theme's pre-composited fr
 | `boxShadow`                    | none (set via `elevation` prop)                                |
 | `paddingLeft` / `paddingRight` | `theme.space[2]` (16px, `md`)                                  |
 | `paddingTop` / `paddingBottom` | `theme.space[1]` (8px, `md`)                                   |
-| `zIndex`                       | `theme.zOrder.appBar` (1100) — override with the `zIndex` prop |
+| `zIndex`                       | `theme.zOrder.appBar` (1100) - override with the `zIndex` prop |
 
 ---
 
 ## Styled-system props
 
-### Space — `theme.space`
+### Space - `theme.space`
 
 | Prop                              | Shorthand for   |
 | --------------------------------- | --------------- |
@@ -181,7 +181,7 @@ Combine with `color="backdrop"`, which resolves to the theme's pre-composited fr
   <nav>...</nav>
 </AppBar>
 
-// Sticky — stays in flow until it hits the scroll boundary
+// Sticky - stays in flow until it hits the scroll boundary
 <AppBar color="paper" position="sticky" top={0} zIndex={100}>
   <nav>...</nav>
 </AppBar>

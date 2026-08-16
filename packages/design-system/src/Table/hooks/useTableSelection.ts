@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-/** Header select-all state — spreads directly onto `Checkbox`. */
+/** Header select-all state - spreads directly onto `Checkbox`. */
 export interface TableSelectionAllProps {
   checked: boolean
   indeterminate: boolean
@@ -8,7 +8,7 @@ export interface TableSelectionAllProps {
   onChange: () => void
 }
 
-/** One row's selection state — spreads directly onto `Checkbox`. */
+/** One row's selection state - spreads directly onto `Checkbox`. */
 export interface TableSelectionRowProps {
   checked: boolean
   /** Toggles this key in and out of the selection. */
@@ -31,7 +31,7 @@ export interface TableSelection<K extends string | number> {
 }
 
 /**
- * Key-based row selection that survives paging and re-sorting — selection is
+ * Key-based row selection that survives paging and re-sorting - selection is
  * stored as row identities, and the select-all/indeterminate state is computed
  * against the full `keys` list rather than the visible slice.
  *
@@ -39,7 +39,7 @@ export interface TableSelection<K extends string | number> {
  * const selection = useTableSelection(services.map((s) => s.service))
  * <Checkbox {...selection.all} aria-label="Select all" />
  * <Checkbox {...selection.row(row.service)} aria-label={`Select ${row.service}`} />
- * <TableRow isSelected={selection.isSelected(row.service)}>…</TableRow>
+ * <TableRow isSelected={selection.isSelected(row.service)}>...</TableRow>
  * ```
  */
 export function useTableSelection<K extends string | number>(

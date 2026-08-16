@@ -40,7 +40,7 @@ export interface PressableProps
     BorderProps<Theme>,
     TypographyProps<Theme> {
   /**
-   * Element to render. Default: `'div'` — which still behaves as a button
+   * Element to render. Default: `'div'` - which still behaves as a button
    * (`role`, tab stop, Enter/Space) because a `<button>` may not legally contain
    * links, buttons, or block-level content. Pass `'button'` for a native button
    * when the content is phrasing-only, or any other tag you need.
@@ -48,15 +48,15 @@ export interface PressableProps
   as?: ElementType
   /** Feedback shown while pressed. Default: `'none'`, overridable via `theme.components.Pressable.defaultProps`. */
   feedback?: PressableFeedback
-  /** Palette the `highlight` tint derives from — maps to `theme.palette[color]`. Default: `'primary'`, overridable via `theme.defaults.color`. */
+  /** Palette the `highlight` tint derives from - maps to `theme.palette[color]`. Default: `'primary'`, overridable via `theme.defaults.color`. */
   color?: PressableColor
   /** Opacity held content fades to under `feedback="opacity"`. Default: `0.7`. */
   activeOpacity?: number
   /** The URL to link to. If defined and `as` is unset, an `a` element is used. */
   href?: string
-  /** Anchor `target` — only meaningful when `href` is set. */
+  /** Anchor `target` - only meaningful when `href` is set. */
   target?: string
-  /** Anchor `rel` — only meaningful when `href` is set. */
+  /** Anchor `rel` - only meaningful when `href` is set. */
   rel?: string
 }
 
@@ -80,7 +80,7 @@ type PressableRootProps = PressableProps & {
 // ─── Styling functions ────────────────────────────────────────────────────────
 
 // Strips every native affordance so the element contributes semantics and nothing
-// else — no padding, margin, border, background, or font of its own — and whatever
+// else - no padding, margin, border, background, or font of its own - and whatever
 // it wraps lays out exactly as it would unwrapped. Spacing is opt-in through the
 // space/layout/border props, which run last and therefore win.
 const baseStyles = {
@@ -99,11 +99,11 @@ const baseStyles = {
   cursor: 'pointer',
   display: 'inline-flex',
   // A native button's text can't be selected by dragging or double-clicking, but
-  // a shimmed div's can — this keeps every rendered element pressing like a
+  // a shimmed div's can - this keeps every rendered element pressing like a
   // control rather than reading like a paragraph.
   userSelect: 'none' as const,
   transition: 'background-color 0.15s ease, opacity 0.15s ease',
-  // Two selectors because `:disabled` never matches a non-form element — the
+  // Two selectors because `:disabled` never matches a non-form element - the
   // shimmed elements carry `aria-disabled` instead.
   '&:disabled, &[aria-disabled="true"]': {
     cursor: 'not-allowed',
@@ -145,20 +145,20 @@ const PressableRoot = styled('div', {
   label: 'Pressable',
   shouldForwardProp,
   // Styled-system parsers run after theme styleOverrides/variants, so
-  // per-instance props (m, p, width, …) always beat the theme.
+  // per-instance props (m, p, width, ...) always beat the theme.
   systemProps: [space, layout, typography, border],
 })<PressableRootProps>(baseStyles, feedbackStyles, focusVisibleStyles)
 
 // ─── Public component ─────────────────────────────────────────────────────────
 
 /**
- * An unstyled clickable surface — button semantics (keyboard activation, focus
+ * An unstyled clickable surface - button semantics (keyboard activation, focus
  * ring, disabled state) with none of a button's looks, so it can wrap arbitrary
  * content without changing its layout. Use it instead of an `onClick` on a
  * `div`, which no keyboard or screen-reader user can reach.
  *
  * It renders a `div` by default, because `<button>` may not legally contain a
- * link, another button, or block-level content — the shim gives that div a
+ * link, another button, or block-level content - the shim gives that div a
  * `role`, a tab stop, and Enter/Space activation, so it is announced and
  * operated as a button either way. Pass `as="button"` for a native button, or
  * `href` for an anchor; both skip the shim and let the browser do the work.
@@ -242,7 +242,7 @@ export function Pressable({
     <PressableRoot
       as={element}
       href={href}
-      // Attributes only a native button understands — invalid anywhere else.
+      // Attributes only a native button understands - invalid anywhere else.
       type={isButton ? type : undefined}
       disabled={isButton ? disabled : undefined}
       feedback={resolvedFeedback}

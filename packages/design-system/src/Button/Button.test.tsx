@@ -81,7 +81,7 @@ describe('Button', () => {
       expect(screen.getByTestId('btn')).not.toHaveAttribute('variant')
     })
 
-    it('contained — applies background from theme.palette[color].main', () => {
+    it('contained - applies background from theme.palette[color].main', () => {
       renderWithTheme(
         <Button variant="contained" color="primary" data-testid="btn">
           btn
@@ -261,7 +261,7 @@ describe('Button', () => {
   })
 
   describe('variant styles', () => {
-    it('outlined — applies main color as text and border color', () => {
+    it('outlined - applies main color as text and border color', () => {
       renderWithTheme(
         <Button variant="outlined" color="primary" data-testid="btn">
           btn
@@ -270,7 +270,7 @@ describe('Button', () => {
       expect(screen.getByTestId('btn')).toHaveStyle({ color: baseTheme.palette.primary.main })
     })
 
-    it('text — applies main color as text with no border', () => {
+    it('text - applies main color as text with no border', () => {
       renderWithTheme(
         <Button variant="text" color="primary" data-testid="btn">
           btn
@@ -366,7 +366,7 @@ describe('Button', () => {
     })
 
     it('shape="square" produces a different class than shape="rounded"', () => {
-      // borderRadius:0 is the CSS default — jsdom returns '' for computed style.
+      // borderRadius:0 is the CSS default - jsdom returns '' for computed style.
       // Verify via class name change instead (same approach as Avatar).
       const { rerender } = renderWithTheme(
         <Button shape="rounded" data-testid="btn">

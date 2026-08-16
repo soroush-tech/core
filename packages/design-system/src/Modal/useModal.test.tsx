@@ -40,7 +40,7 @@ afterEach(() => {
   document.body.removeAttribute('style')
 })
 
-describe('useModal — scroll lock', () => {
+describe('useModal - scroll lock', () => {
   it('locks the container on open and restores it on unmount', () => {
     const { unmount } = render(<TestModal isOpen container={mountHost()} />)
     expect(host.style.overflow).toBe('hidden')
@@ -97,7 +97,7 @@ describe('useModal — scroll lock', () => {
   })
 })
 
-describe('useModal — backdrop click', () => {
+describe('useModal - backdrop click', () => {
   it('calls onClose with reason "backdropClick" and forwards the handler on a root click', () => {
     const onClose = vi.fn()
     const onRootClick = vi.fn()
@@ -121,7 +121,7 @@ describe('useModal — backdrop click', () => {
   })
 })
 
-describe('useModal — escape key', () => {
+describe('useModal - escape key', () => {
   it('calls onClose with reason "escapeKey" and forwards the consumer handler', () => {
     const onClose = vi.fn()
     const onRootKeyDown = vi.fn()
@@ -186,7 +186,7 @@ describe('useModal — escape key', () => {
   })
 })
 
-describe('useModal — root ref', () => {
+describe('useModal - root ref', () => {
   it('forwards the root element to a provided ref', () => {
     const ref = createRef<Element>()
     render(<TestModal isOpen container={mountHost()} rootRef={ref} />)

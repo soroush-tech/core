@@ -20,7 +20,7 @@ beforeEach(() => {
 const flush = () => new Promise((resolve) => setTimeout(resolve))
 
 // `Mermaid` always renders a `CodeBlock` fallback until its diagram resolves, so every
-// theme rendering it here — success or failure — needs `theme.syntax`.
+// theme rendering it here - success or failure - needs `theme.syntax`.
 const theme = createTheme(baseTheme, { syntax: syntaxDark })
 const renderWithTheme = (ui: ReactNode) =>
   renderRTL(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
@@ -68,7 +68,7 @@ describe('Mermaid', () => {
 
     await waitFor(() => expect(render).toHaveBeenCalled())
     await flush()
-    // No rendered diagram — the source stays visible in the CodeBlock fallback.
+    // No rendered diagram - the source stays visible in the CodeBlock fallback.
     expect(screen.queryByTestId('diagram')).toBeNull()
     expect(container.textContent).toContain('not a diagram')
   })

@@ -10,11 +10,11 @@ const target = resolve(dir, '../.env.local')
 
 if (process.env.CI) {
   // CD injects VITE_* via ambient env (cd-web.yml); a generated .env.local must never appear in CI.
-  console.log('setup-env: CI detected — skipping apps/web/.env.local')
+  console.log('setup-env: CI detected - skipping apps/web/.env.local')
 } else if (!existsSync(template)) {
-  console.log('setup-env: no apps/web/default.env template — nothing to copy')
+  console.log('setup-env: no apps/web/default.env template - nothing to copy')
 } else if (existsSync(target)) {
-  console.log('setup-env: apps/web/.env.local already exists — leaving it untouched')
+  console.log('setup-env: apps/web/.env.local already exists - leaving it untouched')
 } else {
   copyFileSync(template, target)
   console.log('setup-env: created apps/web/.env.local from default.env')

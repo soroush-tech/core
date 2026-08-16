@@ -37,7 +37,7 @@ describe('Icon', () => {
 
   it('preserves fill="none" on stroke-based icon paths (icons are generated without svgo)', () => {
     // Icon's root CSS sets `fill: currentColor`, which paths inherit unless they
-    // carry their own fill attribute — stroke icons must keep `fill="none"` or
+    // carry their own fill attribute - stroke icons must keep `fill="none"` or
     // they render as filled blobs. Guards the svgr --no-svgo generation contract.
     const { container } = renderWithTheme(<Icon name="external_link" />)
     expect(container.querySelector('path')).toHaveAttribute('fill', 'none')

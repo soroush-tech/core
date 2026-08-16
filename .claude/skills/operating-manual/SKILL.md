@@ -1,6 +1,6 @@
 ---
 name: operating-manual
-description: Working doctrine for any nontrivial task — diagnosing bugs, reviewing code, answering hard questions, planning changes, or delivering conclusions. Load before starting investigation or analysis work, and run the five-question self-test before sending any answer or verdict.
+description: Working doctrine for any nontrivial task - diagnosing bugs, reviewing code, answering hard questions, planning changes, or delivering conclusions. Load before starting investigation or analysis work, and run the five-question self-test before sending any answer or verdict.
 argument-hint: [optional: answer or claim to self-test]
 ---
 
@@ -23,7 +23,7 @@ Eight procedures. Apply during work; run the self-test before sending.
 1. Split by what can be checked independently, not by narrative sequence.
 2. Give each piece a pass/fail observation independent of the others.
 3. Run the cheapest invalidating checks first.
-4. A piece with no independent check is a guess — label it (§5).
+4. A piece with no independent check is a guess - label it (§5).
 
 ✗ One theory-driven fix for "stale data after save."
 ✓ Check write reaches DB → read query returns row → cache serves old value. Each observed alone.
@@ -42,33 +42,33 @@ Risk = likelihood wrong × cost wrong × how late it surfaces.
 ## 4. Verify by re-deriving, not re-reading
 
 1. Reconstruct the claim from ground truth by an independent route: read source not docs, run code not mental traces, grep call sites not type signatures, compute the number a second way.
-2. Never re-read your own reasoning as verification — it re-executes the same bug.
+2. Never re-read your own reasoning as verification - it re-executes the same bug.
 3. Two independent routes agree → believe it. One route → provisional, label it.
 
-✗ "Never called with null — the type is non-nullable."
+✗ "Never called with null - the type is non-nullable."
 ✓ Grep call sites; find the `as any` caller.
 
 ## 5. Label known vs guessed
 
 For every load-bearing statement, tier it:
 
-- **observed** — ran it, read the line, saw the output
-- **inferred** — one step from observed
-- **assumed** — needed, never checked
+- **observed** - ran it, read the line, saw the output
+- **inferred** - one step from observed
+- **assumed** - needed, never checked
 
 State assumed/inferred claims in the output with what would confirm them and what changes if wrong. Never let assumed claims wear observed language.
 
-✓ "Pages results (verified in response). Assuming cap is 100 (docs, untested) — if lower, only the loop limit changes."
+✓ "Pages results (verified in response). Assuming cap is 100 (docs, untested) - if lower, only the loop limit changes."
 
 ## 6. Attack your own conclusion
 
-1. Construct the case that breaks it — do not re-confirm the motivating case.
+1. Construct the case that breaks it - do not re-confirm the motivating case.
 2. Ask: what input/state falsifies this? What does a skeptic point at first? Where is wrongness most likely hiding?
 3. Run the counterexample: empty, one element, boundary value, concurrent call.
 4. If no concrete attack is possible, name the untested boundary.
 
 ✗ Reported case passes → done.
-✓ Off-by-one fix: run empty, single-item, exactly-one-page. One fails — the bug moved.
+✓ Off-by-one fix: run empty, single-item, exactly-one-page. One fails - the bug moved.
 
 ## 7. Communicate answer → reasoning → risk
 
@@ -90,11 +90,11 @@ State assumed/inferred claims in the output with what would confirm them and wha
 
 When in doubt: worse theater, better engineering.
 
-## Self-test — before sending any answer
+## Self-test - before sending any answer
 
 1. Does the first sentence answer the question actually asked?
-2. Which single claim, if wrong, most changes the outcome — verified by an independent route?
-3. What is assumed unchecked — and does the text label it?
+2. Which single claim, if wrong, most changes the outcome - verified by an independent route?
+3. What is assumed unchecked - and does the text label it?
 4. What concrete counterexample or edge was run, and what happened?
 5. If wrong anyway, does the reader find out cheaply and early? If late, add the one risk sentence that moves it earlier.
 

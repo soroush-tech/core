@@ -162,33 +162,33 @@ describe('Switch', () => {
   describe('size', () => {
     // outside: track element is a wrapper (height = thumbSize).
     // The visual pill lives in ::before (height = trackHeight).
-    it('outside sm — track wrapper is 34×20px', () => {
+    it('outside sm - track wrapper is 34×20px', () => {
       const { container } = renderWithTheme(<Switch size="sm" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '34px', height: '20px' })
     })
 
-    it('outside md — track wrapper is 44×24px', () => {
+    it('outside md - track wrapper is 44×24px', () => {
       const { container } = renderWithTheme(<Switch size="md" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '44px', height: '24px' })
     })
 
-    it('outside lg — track wrapper is 54×28px', () => {
+    it('outside lg - track wrapper is 54×28px', () => {
       const { container } = renderWithTheme(<Switch size="lg" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '54px', height: '28px' })
     })
 
     // inside: track IS the full pill
-    it('inside sm — track is 36×20px', () => {
+    it('inside sm - track is 36×20px', () => {
       const { container } = renderWithTheme(<Switch variant="inside" size="sm" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '36px', height: '20px' })
     })
 
-    it('inside md — track is 46×26px', () => {
+    it('inside md - track is 46×26px', () => {
       const { container } = renderWithTheme(<Switch variant="inside" size="md" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '46px', height: '26px' })
     })
 
-    it('inside lg — track is 56×32px', () => {
+    it('inside lg - track is 56×32px', () => {
       const { container } = renderWithTheme(<Switch variant="inside" size="lg" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '56px', height: '32px' })
     })
@@ -312,7 +312,7 @@ describe('Switch', () => {
 
     it('renders no extra span when children is null', () => {
       const { container } = renderWithTheme(<Switch />)
-      // Only the track span — no children span
+      // Only the track span - no children span
       expect(container.querySelectorAll('label > span')).toHaveLength(1)
     })
   })
@@ -334,13 +334,13 @@ describe('Switch', () => {
   // ─── variant ─────────────────────────────────────────────────────────────────
 
   describe('variant', () => {
-    it('outside — default variant', () => {
+    it('outside - default variant', () => {
       const { container } = renderWithTheme(<Switch />)
       // outside track wrapper height equals thumb size (OUTSIDE_THUMB.md = 24px)
       expect(container.querySelector('.sw-track')).toHaveStyle({ height: '24px' })
     })
 
-    it('inside — track is the full pill', () => {
+    it('inside - track is the full pill', () => {
       const { container } = renderWithTheme(<Switch variant="inside" />)
       expect(container.querySelector('.sw-track')).toHaveStyle({ width: '46px', height: '26px' })
     })

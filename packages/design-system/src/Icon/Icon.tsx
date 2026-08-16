@@ -13,7 +13,7 @@ export interface IconProps
     SpaceProps {
   /** Registry key of the icon to render. */
   name: IconName
-  /** Resolves against theme.text — applied as `color`, which the SVG inherits via `currentColor`. */
+  /** Resolves against theme.text - applied as `color`, which the SVG inherits via `currentColor`. */
   color?: TextColorToken
   /** Sets both width and height (icons are square). */
   size?: string | number

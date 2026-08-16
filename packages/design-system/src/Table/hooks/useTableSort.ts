@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { type TableSortLabelDirection } from '../TableSortLabel'
 
-/** One column's sort state — spreads directly onto `TableSortLabel`. */
+/** One column's sort state - spreads directly onto `TableSortLabel`. */
 export interface TableSortEntry {
   isActive: boolean
   direction: TableSortLabelDirection
@@ -14,13 +14,13 @@ export type TableSortMap<K extends string = string> = Record<K, TableSortEntry>
 /**
  * Column-keyed sort state for sortable tables. Each column remembers its own
  * direction (initially `'asc'`); clicking a column activates it AND flips its
- * stored direction — so the first click on a column sorts `'desc'`.
+ * stored direction - so the first click on a column sorts `'desc'`.
  * `keys` is read once on mount.
  *
  * ```tsx
  * const sort = useTableSort(['name', 'latency'])
  * <TableSortLabel {...sort.name}>Service</TableSortLabel>
- * <TableControl data={rows} sort={sort}>{(row) => …}</TableControl>
+ * <TableControl data={rows} sort={sort}>{(row) => ...}</TableControl>
  * ```
  */
 export function useTableSort<K extends string>(

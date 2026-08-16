@@ -29,7 +29,7 @@ export interface DiagramViewerProps {
   svg: string
   /** Show the expand-to-fullscreen control and dialog. Off for the nested (in-dialog) viewer. */
   expandable?: boolean
-  /** Fill the parent's height — used by the viewer inside the fullscreen dialog. */
+  /** Fill the parent's height - used by the viewer inside the fullscreen dialog. */
   fill?: boolean
 }
 
@@ -38,7 +38,7 @@ export interface DiagramViewerProps {
  * (bottom-right: a pan d-pad around a reset, plus zoom in/out) and an expand control
  * (top-right) that opens the diagram in a fullscreen dialog. Drag-to-pan and wheel-to-zoom
  * work too. Only the diagram layer clips; the controls sit above it, so a short diagram never
- * hides them. Everything is a CSS transform — no dependency.
+ * hides them. Everything is a CSS transform - no dependency.
  */
 export function DiagramViewer({
   svg,
@@ -143,7 +143,7 @@ export function DiagramViewer({
           <View
             ref={contentRef}
             data-testid="diagram-transform"
-            // A live CSS transform — dynamic per drag/zoom frame, so inline (not a token/prop).
+            // A live CSS transform - dynamic per drag/zoom frame, so inline (not a token/prop).
             style={{
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
               transformOrigin: 'center',

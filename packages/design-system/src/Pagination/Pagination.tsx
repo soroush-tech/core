@@ -24,15 +24,15 @@ export interface PaginationProps
     Omit<HTMLAttributes<HTMLElement>, 'color' | 'onChange'>,
     UsePaginationProps,
     SpaceProps<Theme> {
-  /** Selected-item color — resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Selected-item color - resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: PaginationColor
-  /** Item style — `text` or `outlined`. Default: `'text'`. */
+  /** Item style - `text` or `outlined`. Default: `'text'`. */
   variant?: PaginationVariant
   /** Item corner shape. Default: `'circular'`. */
   shape?: PaginationShape
-  /** Item density — resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
+  /** Item density - resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: PaginationSize
-  /** Accessible name per item — important for screen readers. A sensible default is provided. */
+  /** Accessible name per item - important for screen readers. A sensible default is provided. */
   getItemAriaLabel?: (type: PaginationItemType, page: number | null, isSelected: boolean) => string
 }
 

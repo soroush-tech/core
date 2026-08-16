@@ -51,7 +51,7 @@ const meta: Meta<typeof TextInput> = {
       control: { type: 'select' },
       options: textInputVariantTokens,
       description:
-        '`outlined`/`default` — full border box · `underline` — bottom border only · `text` — no border.',
+        '`outlined`/`default` - full border box · `underline` - bottom border only · `text` - no border.',
       table: { category: 'Visual', defaultValue: { summary: 'default' } },
     },
     color: {
@@ -64,7 +64,7 @@ const meta: Meta<typeof TextInput> = {
     textColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color of the typed value — resolves against `theme.text`.',
+      description: 'Text color of the typed value - resolves against `theme.text`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     disabled: {
@@ -74,7 +74,7 @@ const meta: Meta<typeof TextInput> = {
     },
     error: {
       control: 'boolean',
-      description: 'Marks the field as invalid — border becomes `palette.error.main`.',
+      description: 'Marks the field as invalid - border becomes `palette.error.main`.',
       table: { category: 'State', defaultValue: { summary: 'false' } },
     },
     readOnly: {
@@ -139,7 +139,7 @@ const meta: Meta<typeof TextInput> = {
     inputSize: {
       control: 'number',
       description:
-        'Native HTML `size` attribute — visible width in character widths. Has no effect with `multiline` or `resize`.',
+        'Native HTML `size` attribute - visible width in character widths. Has no effect with `multiline` or `resize`.',
       table: { category: 'Behavior' },
     },
     autoComplete: {
@@ -150,7 +150,7 @@ const meta: Meta<typeof TextInput> = {
     inputProps: {
       control: 'object',
       description:
-        'Extra props spread onto the native element — e.g. `aria-label`, `cols`, `data-*`. Top-level props take priority.',
+        'Extra props spread onto the native element - e.g. `aria-label`, `cols`, `data-*`. Top-level props take priority.',
       table: { category: 'Behavior' },
     },
     p,
@@ -166,7 +166,7 @@ type Story = StoryObj<typeof TextInput>
 
 export const Default: Story = {
   args: {
-    placeholder: 'Enter a value…',
+    placeholder: 'Enter a value...',
     resize: false,
   },
 }
@@ -267,30 +267,30 @@ export const Colors: Story = {
 // ─── Multiline ────────────────────────────────────────────────────────────────
 
 export const MultilineAutoGrow: Story = {
-  name: 'Multiline — Auto-grow',
+  name: 'Multiline - Auto-grow',
   render: () => (
     <Flex flexDirection="column" gap={1} maxWidth="480px">
       <Typography variant="caption" color="secondary" m={0}>
-        Grows with content — no fixed height
+        Grows with content - no fixed height
       </Typography>
       <TextInput
         multiline
         resize
         fullWidth
-        placeholder="Start typing… the field expands as you write."
+        placeholder="Start typing... the field expands as you write."
       />
     </Flex>
   ),
 }
 
 export const MultilineFixedRows: Story = {
-  name: 'Multiline — Fixed rows',
+  name: 'Multiline - Fixed rows',
   render: () => (
     <Flex flexDirection="column" gap={1} maxWidth="480px">
       <Typography variant="caption" color="secondary" m={0}>
-        Fixed to 4 rows — scrolls when content overflows
+        Fixed to 4 rows - scrolls when content overflows
       </Typography>
-      <TextInput rows={4} fullWidth placeholder="Write something…" />
+      <TextInput rows={4} fullWidth placeholder="Write something..." />
     </Flex>
   ),
 }
@@ -300,7 +300,7 @@ export const MultilineFixedRows: Story = {
 export const FullWidth: Story = {
   render: (args) => (
     <Flex width="100%" maxWidth="480px">
-      <TextInput {...args} fullWidth placeholder="Full-width input…" />
+      <TextInput {...args} fullWidth placeholder="Full-width input..." />
     </Flex>
   ),
 }
@@ -314,7 +314,7 @@ export const Types: Story = {
           { type: 'email', placeholder: 'email@example.com' },
           { type: 'password', placeholder: 'Password' },
           { type: 'number', placeholder: '0' },
-          { type: 'search', placeholder: 'Search…' },
+          { type: 'search', placeholder: 'Search...' },
           { type: 'url', placeholder: 'https://' },
         ] as const
       ).map(({ type, placeholder }) => (
@@ -353,7 +353,7 @@ export const Controlled: StoryObj<ControlledArgs> = {
   decorators: [WithValueState],
   render: ({ value, onChange }) => (
     <Flex flexDirection="column" gap={2} maxWidth="360px">
-      <TextInput fullWidth value={value} onChange={onChange} placeholder="Type something…" />
+      <TextInput fullWidth value={value} onChange={onChange} placeholder="Type something..." />
       <Typography variant="caption" color="secondary" m={0}>
         Value: {value || '(empty)'}
       </Typography>

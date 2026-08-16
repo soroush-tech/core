@@ -96,9 +96,9 @@ describe('LiveEdit', () => {
   it('starts an empty document from the placeholder block', () => {
     render(<Harness initial="" />)
     const [block] = blocks()
-    expect(block).toHaveAttribute('data-placeholder', 'Click to start writing…')
+    expect(block).toHaveAttribute('data-placeholder', 'Click to start writing...')
 
-    // Typed characters are literal text — WYSIWYG, not markdown syntax.
+    // Typed characters are literal text - WYSIWYG, not markdown syntax.
     editBlock(block, 'Fresh start')
     fireEvent.blur(block)
     expect(screen.getByText('Fresh start')).toBeInTheDocument()

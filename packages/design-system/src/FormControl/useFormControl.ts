@@ -5,7 +5,7 @@ import { FormContext } from '../Form/FormContext'
 import { FormControlContext } from './FormControlContext'
 import { themeDefault } from '../theme/utils/themeDefault'
 
-/** Explicit props a control passes in — always win over context when defined. */
+/** Explicit props a control passes in - always win over context when defined. */
 export interface FormControlOverrides {
   id?: string
   error?: boolean
@@ -27,7 +27,7 @@ export interface ResolvedFormControl {
   fullWidth: boolean
   color?: keyof Theme['palette']
   textColor?: keyof Theme['text']
-  /** Points at the helper text id only while one is rendered — avoids a dangling reference. */
+  /** Points at the helper text id only while one is rendered - avoids a dangling reference. */
   'aria-describedby'?: string
 }
 

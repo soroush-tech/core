@@ -53,9 +53,9 @@ export function useGraphSimulation({
   const clampForceRef = useRef<ReturnType<typeof forceMaxGroupDistance> | null>(null)
   const areaSepRef = useRef<ReturnType<typeof forceAreaSeparation> | null>(null)
   const positionsRef = useRef(new Map<string, { x: number; y: number }>())
-  // Areas the viewer has dragged — pinned here so they stay put across rebuilds.
+  // Areas the viewer has dragged - pinned here so they stay put across rebuilds.
   const pinnedRef = useRef(new Map<string, { x: number; y: number }>())
-  // Soft-anchor targets for opened areas / expanded nodes — they hold here but drift.
+  // Soft-anchor targets for opened areas / expanded nodes - they hold here but drift.
   const anchorsRef = useRef(new Map<string, { x: number; y: number }>())
 
   // ── Init: create SVG, zoom, and empty simulation (runs once) ─────────────
@@ -180,10 +180,10 @@ export function useGraphSimulation({
   }, [])
 
   // ── Update: sync visible nodes into the running simulation ────────────────
-  // d3 enter/exit/drag against the DOM — same jsdom limitation as init above.
+  // d3 enter/exit/drag against the DOM - same jsdom limitation as init above.
   useEffect(() => {
-    // The init effect sets these three refs together — or, when the container
-    // hasn't mounted (e.g. an isolated renderHook), leaves all three null — so a
+    // The init effect sets these three refs together - or, when the container
+    // hasn't mounted (e.g. an isolated renderHook), leaves all three null - so a
     // single simulation check is a sufficient guard for all of them.
     const simulation = simulationRef.current
     if (!simulation) return
@@ -203,10 +203,10 @@ export function useGraphSimulation({
       pinnedRef.current
     )
     // Soft-anchor opened areas / expanded nodes at their settled spot so opening one
-    // reflows around it instead of jumping it — held loosely, free to drift.
+    // reflows around it instead of jumping it - held loosely, free to drift.
     anchorExpandedNodes(expandedNodes, positionsRef.current, anchorsRef.current)
     // An area hub is always on screen, but an inactive area draws no *containment*
-    // path to its tech — drop those. Relation edges (e.g. area↔area) are always kept.
+    // path to its tech - drop those. Relation edges (e.g. area↔area) are always kept.
     const inactiveArea = (id: string) => data.topLevelIds.includes(id) && !expandedNodes.has(id)
     const links = buildLinks(data.links, nodes).filter(
       (l) => l.kind !== undefined || !inactiveArea(l.source as string)
@@ -219,7 +219,7 @@ export function useGraphSimulation({
     forceLink.links(links)
     clampForceRef.current!.links(links)
 
-    // Links have no interactive state — safe to remove and re-enter each update
+    // Links have no interactive state - safe to remove and re-enter each update
     const linkG = g.select<SVGGElement>('.links')
     linkG.selectAll('.link').remove()
     linkG
@@ -236,7 +236,7 @@ export function useGraphSimulation({
     nodeSel.exit().remove()
 
     // Drag callbacks fire only from a real d3 pointer-drag gesture, which jsdom
-    // cannot synthesise — exercised by NetworkGraph.browser.test.tsx instead.
+    // cannot synthesise - exercised by NetworkGraph.browser.test.tsx instead.
     const dragBehavior = d3
       .drag<SVGGElement, GraphNode>()
       .on('start', (event, d) => {
@@ -254,7 +254,7 @@ export function useGraphSimulation({
         pinnedRef.current.set(d.id, { x: d.fx!, y: d.fy! })
       })
 
-    // Group label nodes are the sources of group-kind edges — styled gray.
+    // Group label nodes are the sources of group-kind edges - styled gray.
     const groupNodeIds = new Set(
       data.links.filter((l) => l.kind === 'group').map((l) => l.source as string)
     )
@@ -312,7 +312,7 @@ export function useGraphSimulation({
       .attr('text-anchor', 'middle')
       .text((d) => d.title)
     // Size each rect to its measured label. getBBox needs a layout engine; jsdom has
-    // none (it throws), so guard it — the real geometry is covered by the browser test.
+    // none (it throws), so guard it - the real geometry is covered by the browser test.
     groupEntered.each(function () {
       const label = d3.select<SVGGElement, GraphNode>(this).select<SVGTextElement>('.node-label')
       let box: DOMRect
@@ -345,7 +345,7 @@ export function useGraphSimulation({
       .selectAll<SVGGElement, GraphNode>('.node-group.is-category')
       .classed('is-expanded', (d) => expandedNodes.has(d.id))
       .select('.node-expand-icon')
-      .text((d) => (expandedNodes.has(d.id) ? '−' : '+'))
+      .text((d) => (expandedNodes.has(d.id) ? '-' : '+'))
 
     simulation.alpha(0.3).restart()
   }, [data, visibleIds, expandedNodes, onActivate, onToggle])

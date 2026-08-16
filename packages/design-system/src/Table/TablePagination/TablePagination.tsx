@@ -34,7 +34,7 @@ export interface TablePaginationProps extends Omit<
   shouldShowLastButton?: boolean
   /** Label for the rows-per-page selector. Default: `'Rows per page:'`. */
   rowsPerPageLabel?: ReactNode
-  /** Renders the displayed-rows range. A sensible default (`1–10 of 57`) is provided. */
+  /** Renders the displayed-rows range. A sensible default (`1-10 of 57`) is provided. */
   displayedRowsLabel?: (info: TablePaginationDisplayedRowsInfo) => ReactNode
   /** Accessible name per nav button. A sensible default is provided. */
   getItemAriaLabel?: (type: TablePaginationActionType) => string
@@ -45,7 +45,7 @@ const DEFAULT_ROWS_PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
 const defaultDisplayedRowsLabel = ({ from, to, count }: TablePaginationDisplayedRowsInfo) => {
   const countLabel = count !== -1 ? count : `more than ${to}`
-  return `${from}–${to} of ${countLabel}`
+  return `${from}-${to} of ${countLabel}`
 }
 
 const defaultGetItemAriaLabel = (type: TablePaginationActionType) => `Go to ${type} page`
@@ -60,7 +60,7 @@ const Toolbar = styled('div', { name: 'TablePagination', label: 'TablePagination
 
 /**
  * A `TableCell`-based pagination control for `TableFooter > TableRow`.
- * Controlled only — the consumer owns `page` and `rowsPerPage`.
+ * Controlled only - the consumer owns `page` and `rowsPerPage`.
  */
 export function TablePagination({
   count,
@@ -82,7 +82,7 @@ export function TablePagination({
   const selectOptions: NativeSelectOption[] = rowsPerPageOptions.map((option) =>
     typeof option === 'number' ? { label: String(option), value: option } : option
   )
-  // Fewer than two options makes the selector pointless — hide it entirely.
+  // Fewer than two options makes the selector pointless - hide it entirely.
   const hasRowsPerPageSelector = selectOptions.length >= 2
 
   const from = count === 0 ? 0 : page * rowsPerPage + 1

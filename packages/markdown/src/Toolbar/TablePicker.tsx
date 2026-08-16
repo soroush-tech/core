@@ -13,7 +13,7 @@ const MAX_EXTENT = 20
 
 const DEFAULT_EXTENT = { rows: MIN_EXTENT, cols: MIN_EXTENT }
 
-// Grow one axis to one past the hovered index, but never below its current size — the grid only
+// Grow one axis to one past the hovered index, but never below its current size - the grid only
 // expands while open (it doesn't shrink back), and is reset to the default when closed.
 const growExtent = (current: number, hovered: number) =>
   Math.min(MAX_EXTENT, Math.max(current, hovered + 1))
@@ -85,7 +85,7 @@ export function TablePicker({ onSelect }: Readonly<TablePickerProps>) {
         onClose={close}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        // The popover is portalled, so focus must be pulled into the grid — otherwise keyboard
+        // The popover is portalled, so focus must be pulled into the grid - otherwise keyboard
         // users tab straight past it. The default auto-focus lands on the first cell.
         disableAriaHidden
       >

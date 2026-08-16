@@ -6,7 +6,7 @@ import { NOT_A_GIST_ID, toGistId } from './toGistId'
 type FilePatch = Record<string, { content: string } | null>
 
 /**
- * Turns staged files into GitHub's `files` map — added/modified write, deleted
+ * Turns staged files into GitHub's `files` map - added/modified write, deleted
  * null out. Empty content becomes a blank line, which GitHub accepts where the
  * empty string is a 422.
  */
@@ -50,14 +50,14 @@ export async function patchGist(
     if (response.status === 401) {
       return {
         success: false,
-        error: 'GitHub rejected the stored token — connect the account again',
+        error: 'GitHub rejected the stored token - connect the account again',
       }
     }
     if (response.status === 422) {
       return {
         success: false,
         error:
-          'GitHub rejected these changes — check the filenames, and that the gist keeps at least one file',
+          'GitHub rejected these changes - check the filenames, and that the gist keeps at least one file',
       }
     }
     if (!response.ok) {

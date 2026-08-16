@@ -23,7 +23,7 @@ test('data-display table sorts and paginates', async ({ page }) => {
   // The page is server-rendered; wait for hydration so the controls are interactive.
   await page.waitForLoadState('networkidle')
 
-  // The sortable/paginated table — anchored by its unique "Latency (ms)" sort header.
+  // The sortable/paginated table - anchored by its unique "Latency (ms)" sort header.
   const table = page
     .locator('table')
     .filter({ has: page.getByRole('button', { name: 'Latency (ms)' }) })
@@ -32,7 +32,7 @@ test('data-display table sorts and paginates', async ({ page }) => {
   await expect(bodyRows).toHaveCount(5)
   await expect(firstService()).toHaveText('web')
 
-  // Sort by Service — first click sorts descending, second flips to ascending.
+  // Sort by Service - first click sorts descending, second flips to ascending.
   // The first click can be dropped if it lands before React finishes hydrating
   // (networkidle doesn't guarantee the handler is attached yet). A dropped click
   // never toggles sort state, so retrying until one registers is safe: the first
@@ -46,7 +46,7 @@ test('data-display table sorts and paginates', async ({ page }) => {
   await serviceSort.click()
   await expect(firstService()).toHaveText('api')
 
-  // Page forward — the second page holds the remaining rows.
+  // Page forward - the second page holds the remaining rows.
   await table.getByRole('button', { name: 'Go to next page' }).click()
   await expect(bodyRows).toHaveCount(5)
 })

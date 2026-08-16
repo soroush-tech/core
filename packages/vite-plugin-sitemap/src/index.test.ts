@@ -65,7 +65,7 @@ describe('sitemap', () => {
   it('is an inert no-op when disabled', () => {
     const plugin = sitemap({ enable: false })
     expect(plugin.name).toBe('vite-plugin-sitemap')
-    // No hooks registered — nothing to run, nothing to scan.
+    // No hooks registered - nothing to run, nothing to scan.
     expect(plugin.apply).toBeUndefined()
     expect(plugin.closeBundle).toBeUndefined()
   })

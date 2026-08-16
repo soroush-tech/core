@@ -28,13 +28,13 @@ Resolves against `theme.background`.
 
 ### `opacity`
 
-Raw CSS opacity value (0–1).
+Raw CSS opacity value (0-1).
 
 ---
 
 ### `cursor`
 
-CSS cursor — controls the mouse pointer style. Accepts any valid CSS cursor value.
+CSS cursor - controls the mouse pointer style. Accepts any valid CSS cursor value.
 
 Common values: `"pointer"` · `"default"` · `"move"` · `"not-allowed"` · `"wait"` · `"grab"` · `"text"`
 
@@ -59,7 +59,7 @@ CSS `order` for placing a flex/grid item out of source order. Accepts a single v
 
 ## Styled-system props
 
-### Space — `theme.space`
+### Space - `theme.space`
 
 | Prop                              | Shorthand for   |
 | --------------------------------- | --------------- |
@@ -90,7 +90,7 @@ CSS `order` for placing a flex/grid item out of source order. Accepts a single v
 
 ---
 
-### Border — `theme.radii`
+### Border - `theme.radii`
 
 `border` · `borderWidth` · `borderStyle` · `borderColor` · `borderRadius` · `borderTop` · `borderRight` · `borderBottom` · `borderLeft` · `borderX` · `borderY`
 

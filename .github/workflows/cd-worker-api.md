@@ -1,8 +1,8 @@
 [← Workflows overview](./README.md)
 
-# `cd-worker-api.yml` — CD · Worker (api)
+# `cd-worker-api.yml` - CD · Worker (api)
 
-Deploys the Cloudflare Worker API. **Gated on CI success** — starts from a
+Deploys the Cloudflare Worker API. **Gated on CI success** - starts from a
 `workflow_run` of `CI`, never from a raw `push`.
 
 ```yaml
@@ -66,14 +66,14 @@ to `true`.
 | 1   | Checkout                          | `actions/checkout@v7`                                                                                                                                                                                                                                                                               |
 | 2   | Read Node.js version              | `cat .nvmrc` → `$GITHUB_ENV` (`NODE_VERSION`)                                                                                                                                                                                                                                                       |
 | 3   | Setup pnpm                        | `pnpm/action-setup@v6`                                                                                                                                                                                                                                                                              |
-| 4   | Setup Node                        | `actions/setup-node@v7`, `node-version: $NODE_VERSION`, `cache: pnpm` (deps cache — see [Caching](#caching))                                                                                                                                                                                        |
+| 4   | Setup Node                        | `actions/setup-node@v7`, `node-version: $NODE_VERSION`, `cache: pnpm` (deps cache - see [Caching](#caching))                                                                                                                                                                                        |
 | 5   | Install                           | `pnpm install --frozen-lockfile --ignore-scripts`                                                                                                                                                                                                                                                   |
-| 6   | Generate `wrangler.json` from env | `pnpm --filter @soroush/api config:gen` — renders the wrangler config from repo `vars`                                                                                                                                                                                                              |
+| 6   | Generate `wrangler.json` from env | `pnpm --filter @soroush/api config:gen` - renders the wrangler config from repo `vars`                                                                                                                                                                                                              |
 | 7   | Deploy                            | `cloudflare/wrangler-action@v4.0.0` with `command: deploy`, `workingDirectory: workers/api`, `wranglerVersion: '4.119.0'`, `packageManager: pnpm` (same action as the Storybook Pages deploy; the root-level lockfile means detection would fall back to npm, which cannot read `workspace:*` deps) |
 
 Uses the official Cloudflare action rather than the wrangler CLI. Because the action runs
 `wrangler deploy` directly (not the package's `deploy` script), it does **not** fire the
-`predeploy` hook — so step 6 (`config:gen`) must render `wrangler.json` first.
+`predeploy` hook - so step 6 (`config:gen`) must render `wrangler.json` first.
 
 `config:gen` env (`vars`): `WORKER_NAME`, `D1_DATABASE_NAME`, `D1_DATABASE_ID`,
 `R2_BUCKET`, `VITE_CONTACT_HONEYPOT`.
@@ -89,7 +89,7 @@ it's rendered fresh instead of committed.
 
 ## Caching
 
-Only the **dependency store**, via `setup-node@v7` with `cache: pnpm` — keyed off the
+Only the **dependency store**, via `setup-node@v7` with `cache: pnpm` - keyed off the
 `pnpm-lock.yaml` hash, same mechanism as CI. No browser or build-artifact caches.
 
 ---

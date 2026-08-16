@@ -41,7 +41,7 @@ const meta: Meta<typeof TableControl<Service>> = {
   argTypes: {
     data: {
       control: 'object',
-      description: 'The full dataset — `TableControl` derives the visible rows from it.',
+      description: 'The full dataset - `TableControl` derives the visible rows from it.',
       table: { category: 'Content' },
     },
   },
@@ -50,7 +50,7 @@ const meta: Meta<typeof TableControl<Service>> = {
 export default meta
 type Story = StoryObj<typeof TableControl<Service>>
 
-// Sortable Service/Region/Latency header — shared by both stories below.
+// Sortable Service/Region/Latency header - shared by both stories below.
 function ServiceSortHead({ sort }: Readonly<{ sort: TableSortMap<'name' | 'latency'> }>) {
   return (
     <TableHead>

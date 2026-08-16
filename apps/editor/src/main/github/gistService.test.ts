@@ -204,7 +204,7 @@ describe('gistService.renameFile', () => {
     })
 
     // The panel rejects a duplicate name, but a stale request would not have
-    // seen it — and what is staged under that name exists nowhere else.
+    // seen it - and what is staged under that name exists nowhere else.
     await expect(
       service.renameFile('abc123', 'notes.md', 'renamed.md', '# notes')
     ).resolves.toEqual({ success: false, error: 'renamed.md has unpublished changes' })

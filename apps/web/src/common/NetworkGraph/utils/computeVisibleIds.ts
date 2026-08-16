@@ -28,8 +28,8 @@ function expandFrom(
  *  Two modes:
  *  - **Gated** (when `areasByNode` is supplied): every area is always shown as a hub;
  *    only *active* areas (those in `expandedNodes`) reveal children. A central root is
- *    shown too when one is present (i.e. `adjacency` has a `rootId` entry). Descent follows the expand rule — an active area reveals its direct
- *    children, a branch reveals its own only once expanded too — and a child appears
+ *    shown too when one is present (i.e. `adjacency` has a `rootId` entry). Descent follows the expand rule - an active area reveals its direct
+ *    children, a branch reveals its own only once expanded too - and a child appears
  *    only if its area gate (`areasByNode`) intersects the active areas. (Edges to an
  *    inactive area are dropped by the renderer so a shared node keeps a line only to
  *    the areas that are on.)

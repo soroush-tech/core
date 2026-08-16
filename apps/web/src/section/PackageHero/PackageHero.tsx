@@ -11,7 +11,7 @@ export interface PackageHeroProps {
   name: string
   /** One-line summary shown under the title. */
   tagline: string
-  /** Install command rendered in the terminal block, e.g. `npm i -D @soroush.tech/…`. */
+  /** Install command rendered in the terminal block, e.g. `npm i -D @soroush.tech/...`. */
   install: string
   /** Link to the package's npm page. */
   npmUrl: string
@@ -21,7 +21,7 @@ export interface PackageHeroProps {
 
 /**
  * Prop-driven hero for a published npm package page: eyebrow, package name, tagline, a
- * copy-ready install command, and npm/source actions. Reused across every package page —
+ * copy-ready install command, and npm/source actions. Reused across every package page -
  * promote to `src/common/` once a second package page consumes it.
  */
 export function PackageHero({

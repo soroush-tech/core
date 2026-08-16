@@ -50,7 +50,7 @@ export interface PopoverProps {
   marginThreshold?: Exclude<keyof Theme['space'], 'auto'> | null
   /** Portal target passed to the underlying Modal. */
   container?: HTMLElement | (() => HTMLElement | null) | null
-  /** Ref for imperative actions — currently `updatePosition()`. */
+  /** Ref for imperative actions - currently `updatePosition()`. */
   action?: Ref<PopoverActions>
   /** Props for the paper slot (the surface). */
   slotProps?: { paper?: PaperProps }
@@ -58,7 +58,7 @@ export interface PopoverProps {
   hasBackdrop?: boolean
   /** Disable body scroll-lock. When true, the popover re-positions on scroll. Default: false. */
   disableScrollLock?: boolean
-  /** Skip `aria-hidden` on background content — for non-modal popovers whose trigger stays focused. Default: false. */
+  /** Skip `aria-hidden` on background content - for non-modal popovers whose trigger stays focused. Default: false. */
   disableAriaHidden?: boolean
   /** Move focus into the popover on open. Default: true. */
   shouldAutoFocus?: boolean
@@ -77,7 +77,7 @@ export interface PopoverProps {
 const ANCHOR_ORIGIN_DEFAULT: PopoverOrigin = { vertical: 'top', horizontal: 'left' }
 
 // The measured, positioned wrapper. Kept transparent so the inner Paper owns the
-// visuals — its rounded corners are never clipped. Hidden until first positioned.
+// visuals - its rounded corners are never clipped. Hidden until first positioned.
 const Positioner = styled('div', {
   name: 'Popover',
   slot: 'positioner',
@@ -101,7 +101,7 @@ const Surface = styled(Paper, { name: 'Popover', label: 'Popover' })({
 /**
  * @description Positions its content next to an anchor, portaled above the page.
  * Built on `Modal`, so it inherits the portal, optional backdrop, focus management,
- * scroll lock, and Escape/click-away close — then adds anchor positioning
+ * scroll lock, and Escape/click-away close - then adds anchor positioning
  * (`anchorOrigin`/`transformOrigin`/`marginThreshold`).
  */
 export function Popover({

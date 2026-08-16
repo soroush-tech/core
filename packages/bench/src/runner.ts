@@ -52,7 +52,7 @@ export interface CaseMean {
 }
 
 /**
- * Formats each case's mean as a percentage relative to the fastest case — the
+ * Formats each case's mean as a percentage relative to the fastest case - the
  * explicit "% slower" companion to mitata's "Nx faster" summary. Returns an
  * empty string when there is nothing to compare (fewer than two means).
  */
@@ -62,7 +62,7 @@ export function formatDeltas(means: CaseMean[]): string {
   const rows = means.map(({ label, avg }) => {
     const pct = (avg / fastest - 1) * 100
     const delta = pct === 0 ? 'fastest' : `+${pct.toFixed(1)}% slower`
-    return `  ${label} — ${delta}`
+    return `  ${label} - ${delta}`
   })
   return ['delta vs fastest:', ...rows].join('\n')
 }
@@ -92,7 +92,7 @@ const formatBytes = (bytes: number): string => {
 
 /**
  * Renders the run as a GitHub-flavored markdown table (fastest first), one row
- * per case with mean, p75, allocation, and percentage relative to the fastest —
+ * per case with mean, p75, allocation, and percentage relative to the fastest -
  * for pasting into reports/PRs (the `--md` output). Empty string for no cases.
  */
 export function formatMarkdown(rows: CaseRow[]): string {
@@ -107,7 +107,7 @@ export function formatMarkdown(rows: CaseRow[]): string {
   // alloc/iter shows the value plus a % vs the least-allocating case (the memory
   // analogue of "vs fastest").
   const allocCell = (alloc: number | undefined): string => {
-    if (alloc === undefined) return '—'
+    if (alloc === undefined) return '-'
     const pct = (alloc / leastAlloc - 1) * 100
     const delta = pct === 0 ? 'least' : `+${pct.toFixed(1)}%`
     return `${formatBytes(alloc)} (${delta})`
@@ -120,7 +120,7 @@ export function formatMarkdown(rows: CaseRow[]): string {
     .map(({ label, avg, p75, alloc, gc }) => {
       const pct = (avg / fastest - 1) * 100
       const cells = [label, formatTime(avg), formatTime(p75), allocCell(alloc)]
-      if (showGc) cells.push(gc === undefined ? '—' : formatTime(gc))
+      if (showGc) cells.push(gc === undefined ? '-' : formatTime(gc))
       cells.push(pct === 0 ? 'fastest' : `+${pct.toFixed(1)}%`)
       return `| ${cells.join(' | ')} |`
     })
@@ -137,11 +137,11 @@ export interface RatioBreach {
 /**
  * Compares every non-baseline case's mean against the baseline case's and
  * returns the ones whose speed ratio (`baseline.avg / avg`, as a percent)
- * falls below `minRatioPct` — e.g. a 80% target fails any case slower than
+ * falls below `minRatioPct` - e.g. a 80% target fails any case slower than
  * 1.25× the baseline. The baseline is matched by its case key (the part after
- * the `name :: ` prefix) or by full label. Throws when no row matches — or
+ * the `name :: ` prefix) or by full label. Throws when no row matches - or
  * when no *other* row survived to compare (a config always has ≥ 2 cases, so
- * an empty comparison means a case crashed) — so neither a typo'd key nor a
+ * an empty comparison means a case crashed) - so neither a typo'd key nor a
  * crashed case can silently pass the gate.
  */
 export function checkRatio(
@@ -159,7 +159,7 @@ export function checkRatio(
   const others = rows.filter((r) => r !== baseline)
   if (others.length === 0) {
     throw new Error(
-      `bench: no case besides the baseline "${baselineCase}" produced results — nothing to gate`
+      `bench: no case besides the baseline "${baselineCase}" produced results - nothing to gate`
     )
   }
   return others
@@ -174,7 +174,7 @@ export function checkRatio(
 export function formatRatioFailure(breaches: RatioBreach[], minRatioPct: number): string {
   if (breaches.length === 0) return ''
   const rows = breaches.map(
-    ({ label, ratioPct }) => `  ${label} — ${ratioPct.toFixed(1)}% of baseline speed`
+    ({ label, ratioPct }) => `  ${label} - ${ratioPct.toFixed(1)}% of baseline speed`
   )
   return [`bench: performance target failed (min ratio ${minRatioPct}%):`, ...rows].join('\n')
 }
@@ -188,7 +188,7 @@ export function median(values: number[]): number {
 
 /**
  * Collapses the per-round rows of a `--rounds N` run into one row per case,
- * taking the median of each stat across rounds — cancelling cross-run noise.
+ * taking the median of each stat across rounds - cancelling cross-run noise.
  * Cases keep first-seen order; `alloc` is the median of the rounds that reported it.
  */
 export function medianRounds(rounds: CaseRow[][]): CaseRow[] {

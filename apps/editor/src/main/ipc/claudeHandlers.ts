@@ -7,7 +7,7 @@ import type { ClaudeRunner } from '../claude/runEdit'
  * Registers the Claude IPC handlers. The runner is built here rather than
  * passed in, so the one map of who-asked-for-what owns both the routing of
  * events and the right to cancel: a run's events go back to the WebContents
- * that started it — never broadcast — and no other window can stop it.
+ * that started it - never broadcast - and no other window can stop it.
  */
 export function registerClaudeHandlers(
   createRunner: (emit: (event: ClaudeEvent) => void) => ClaudeRunner,

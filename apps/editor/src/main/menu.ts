@@ -10,7 +10,7 @@ import type { MenuAction } from '../shared/ipc'
  *
  * The View menu is spelled out rather than taken as the `viewMenu` role: the
  * role ships Reload on Ctrl+R and Force Reload, which throw the document away
- * with no questions asked. Reload here is menu-only — no accelerator — and
+ * with no questions asked. Reload here is menu-only - no accelerator - and
  * `onReload` routes it through main's unsaved-changes guard.
  */
 export function createMenuTemplate(
@@ -22,12 +22,17 @@ export function createMenuTemplate(
       label: 'File',
       submenu: [
         { id: 'file-new', label: 'New', accelerator: 'CmdOrCtrl+N', click: () => send('new') },
-        { id: 'file-open', label: 'Open…', accelerator: 'CmdOrCtrl+O', click: () => send('open') },
+        {
+          id: 'file-open',
+          label: 'Open...',
+          accelerator: 'CmdOrCtrl+O',
+          click: () => send('open'),
+        },
         { type: 'separator' },
         { id: 'file-save', label: 'Save', accelerator: 'CmdOrCtrl+S', click: () => send('save') },
         {
           id: 'file-save-as',
-          label: 'Save As…',
+          label: 'Save As...',
           accelerator: 'CmdOrCtrl+Shift+S',
           click: () => send('save-as'),
         },

@@ -12,7 +12,7 @@ import { codecovVitePlugin } from '@codecov/vite-plugin'
 
 // Opt-in: precompressed assets are only served by a static server configured for
 // them (nginx gzip_static/brotli_static, etc.). GitHub Pages ignores them, so this
-// stays off by default — enable with COMPRESS=true on the controlled-server build.
+// stays off by default - enable with COMPRESS=true on the controlled-server build.
 const compress = process.env.COMPRESS === 'true'
 
 // Test-only: mock server-side GitHub fetches (dev SSR + prerender). The e2e commands
@@ -31,7 +31,7 @@ export default defineConfig({
     react(),
     process.env.NODE_ENV !== 'storybook' && vike(),
     // Storybook reuses this config but emits no build/client SSG output, so the sitemap plugin
-    // has nothing to scan — disable it there (same signal as vike above).
+    // has nothing to scan - disable it there (same signal as vike above).
     sitemap({ enable: process.env.NODE_ENV !== 'storybook' }),
     mswServer({
       enable: mswEnabled,

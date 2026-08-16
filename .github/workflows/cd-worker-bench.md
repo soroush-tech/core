@@ -1,9 +1,9 @@
 [← Workflows overview](./README.md)
 
-# `cd-worker-bench.yml` — CD · Worker (bench)
+# `cd-worker-bench.yml` - CD · Worker (bench)
 
 Deploys the bench-action comment relay (`workers/bench`, served at
-`api.bench.soroush.tech` — see [`workers/bench/worker.md`](../../workers/bench/worker.md)).
+`api.bench.soroush.tech` - see [`workers/bench/worker.md`](../../workers/bench/worker.md)).
 Structurally a mirror of [`cd-worker-api.md`](./cd-worker-api.md): **gated on CI success**
 (`workflow_run` of `CI` + manual `workflow_dispatch`), concurrency group
 `deploy-worker-bench` with `cancel-in-progress: false`.

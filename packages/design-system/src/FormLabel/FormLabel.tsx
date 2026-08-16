@@ -8,7 +8,7 @@ import { FormContext } from '../Form/FormContext'
 // attribute) in its props. Render it through this alias so `htmlFor` type-checks.
 const LabelTypography = Typography as ComponentType<TypographyProps & { htmlFor?: string }>
 
-// Named styled root — theme-customizable via
+// Named styled root - theme-customizable via
 // `theme.components.FormLabel.styleOverrides.root`.
 const FormLabelRoot = styled(LabelTypography, { name: 'FormLabel', label: 'FormLabel' })()
 

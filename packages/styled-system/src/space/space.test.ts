@@ -14,7 +14,7 @@ describe('space', () => {
     })
   })
 
-  // Not in upstream styled-system — gaps resolve against the same scale as margins.
+  // Not in upstream styled-system - gaps resolve against the same scale as margins.
   describe('gaps', () => {
     it('resolves gap, rowGap and columnGap from the scale', () => {
       expect(gap({ gap: 1, rowGap: 2, columnGap: 3, theme: { space: [0, 4, 8, 16] } })).toEqual({

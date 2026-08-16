@@ -10,13 +10,13 @@ A binary toggle control. Supports controlled and uncontrolled usage, six semanti
 
 ### `checked`
 
-`boolean` — controlled checked state. Must be paired with `onChange`.
+`boolean` - controlled checked state. Must be paired with `onChange`.
 
 ---
 
 ### `defaultChecked`
 
-`boolean` — initial checked state for uncontrolled usage. Ignored when `checked` is provided.
+`boolean` - initial checked state for uncontrolled usage. Ignored when `checked` is provided.
 
 Default: `false`.
 
@@ -24,7 +24,7 @@ Default: `false`.
 
 ### `disabled`
 
-`boolean` — disables the checkbox. Applies `opacity: 0.5` and `cursor: not-allowed`.
+`boolean` - disables the checkbox. Applies `opacity: 0.5` and `cursor: not-allowed`.
 
 Default: `false`.
 
@@ -61,7 +61,7 @@ Default: `"medium"`.
 
 ### `fullWidth`
 
-`boolean` — stretches the root to `width: 100%` (and switches it to `display: flex`).
+`boolean` - stretches the root to `width: 100%` (and switches it to `display: flex`).
 
 Default: `false`.
 
@@ -69,7 +69,7 @@ Default: `false`.
 
 ### `indeterminate`
 
-`boolean` — displays the indeterminate state (horizontal dash icon). Takes visual priority over `checked`. Also sets the native `input.indeterminate` property (for form APIs) and a `data-indeterminate` attribute (for CSS targeting).
+`boolean` - displays the indeterminate state (horizontal dash icon). Takes visual priority over `checked`. Also sets the native `input.indeterminate` property (for form APIs) and a `data-indeterminate` attribute (for CSS targeting).
 
 Default: `false`.
 
@@ -77,31 +77,31 @@ Default: `false`.
 
 ### `icon`
 
-`ReactNode` — custom icon for the **unchecked** state. Defaults to an outlined square SVG.
+`ReactNode` - custom icon for the **unchecked** state. Defaults to an outlined square SVG.
 
 ---
 
 ### `checkedIcon`
 
-`ReactNode` — custom icon for the **checked** state. Defaults to a filled square SVG with a white checkmark. Not used for the `indeterminate` state (which always uses the default dash icon).
+`ReactNode` - custom icon for the **checked** state. Defaults to a filled square SVG with a white checkmark. Not used for the `indeterminate` state (which always uses the default dash icon).
 
 ---
 
 ### `onChange`
 
-`(event: ChangeEvent<HTMLInputElement>) => void` — called when the user toggles the checkbox.
+`(event: ChangeEvent<HTMLInputElement>) => void` - called when the user toggles the checkbox.
 
 ---
 
 ### `id`
 
-`string` — forwarded to the underlying `<input>` for external label association (`<label htmlFor="...">`) and form targeting.
+`string` - forwarded to the underlying `<input>` for external label association (`<label htmlFor="...">`) and form targeting.
 
 ---
 
 ### `required`
 
-`boolean` — marks the field as required in a form.
+`boolean` - marks the field as required in a form.
 
 ---
 
@@ -113,13 +113,13 @@ Standard form field attributes forwarded to the underlying `<input>`.
 
 ### `children`
 
-`ReactNode` — label text rendered next to the checkbox icon, wrapped in a `<span>`.
+`ReactNode` - label text rendered next to the checkbox icon, wrapped in a `<span>`.
 
 ---
 
 ## Styled-system props
 
-### Space — `theme.space` (margin only)
+### Space - `theme.space` (margin only)
 
 | Prop                              | Shorthand for  |
 | --------------------------------- | -------------- |

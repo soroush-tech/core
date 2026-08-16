@@ -8,7 +8,7 @@ How the theme is built, how components are structured, and the conventions every
 
 | Concern                   | Library                                                                                                                |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| CSS-in-JS                 | `@emotion/styled` + `@emotion/react` (internal only — see `src/theme/emotion.ts`)                                      |
+| CSS-in-JS                 | `@emotion/styled` + `@emotion/react` (internal only - see `src/theme/emotion.ts`)                                      |
 | Theme tokens              | `styled-system` (space, layout, typography, flexbox, border, position)                                                 |
 | Custom prop→scale mapping | `styled-system` `system()`                                                                                             |
 | Prop filtering            | `@styled-system/should-forward-prop`                                                                                   |
@@ -19,17 +19,17 @@ How the theme is built, how components are structured, and the conventions every
 
 ## Theme
 
-`src/theme/themes.ts` exports `baseTheme` — one complete, dark-schemed default `Theme`. Its color values are raw hex literals: palettes belong to the consumer, who owns the brand color files and builds every brand theme with `createTheme(baseTheme, …)` (this site's palettes and `light`/`dark` themes live in `apps/web/src/theme/`). Components must never hardcode colors — they read theme tokens only; `baseTheme` is the single place in the package where hex values are allowed.
+`src/theme/themes.ts` exports `baseTheme` - one complete, dark-schemed default `Theme`. Its color values are raw hex literals: palettes belong to the consumer, who owns the brand color files and builds every brand theme with `createTheme(baseTheme, ...)` (this site's palettes and `light`/`dark` themes live in `apps/web/src/theme/`). Components must never hardcode colors - they read theme tokens only; `baseTheme` is the single place in the package where hex values are allowed.
 
-Rgba opacity is expressed via hex suffix — `#FFFFFFB3` = rgba(255,255,255,0.7). Never use `rgba()` strings directly.
+Rgba opacity is expressed via hex suffix - `#FFFFFFB3` = rgba(255,255,255,0.7). Never use `rgba()` strings directly.
 
 ### Theme scales
 
-Each scale is a named, consumer-extensible interface (declared in `src/theme/themes.ts`); the `Theme` composition wraps them in `OpenScale<…>` mapped types so styled-system's Record-based constraint is satisfied while `keyof` keeps the literal keys.
+Each scale is a named, consumer-extensible interface (declared in `src/theme/themes.ts`); the `Theme` composition wraps them in `OpenScale<...>` mapped types so styled-system's Record-based constraint is satisfied while `keyof` keeps the literal keys.
 
 | Scale           | Key in Theme           | Interface                 | Prop type                       |
 | --------------- | ---------------------- | ------------------------- | ------------------------------- |
-| Defaults        | `theme.defaults`       | `ThemeDefaults`           | — (component prop fallbacks)    |
+| Defaults        | `theme.defaults`       | `ThemeDefaults`           | - (component prop fallbacks)    |
 | Palette         | `theme.palette`        | `ThemePalette`            | `PaletteColor`                  |
 | Text colors     | `theme.text`           | `ThemeText`               | `keyof Theme['text']`           |
 | Backgrounds     | `theme.background`     | `ThemeBackground`         | `keyof Theme['background']`     |
@@ -44,12 +44,12 @@ Each scale is a named, consumer-extensible interface (declared in `src/theme/the
 | Radii           | `theme.radii`          | `ThemeRadii`              | `keyof Theme['radii']`          |
 | Typography      | `theme.typography`     | `ThemeTypographyVariants` | `TypographyVariant`             |
 | Icon sizes      | `theme.icon`           | `ThemeIconSizes`          | `keyof Theme['icon']`           |
-| Switch tokens   | `theme.switch`         | `ThemeSwitch`             | —                               |
-| Shadow tokens   | `theme.shadow`         | `ThemeShadow`             | —                               |
+| Switch tokens   | `theme.switch`         | `ThemeSwitch`             | -                               |
+| Shadow tokens   | `theme.shadow`         | `ThemeShadow`             | -                               |
 
 ### Theme augmentation
 
-The entire type layer is declared natively — as plain exported interfaces owned by this package — in `src/theme/themes.ts`. `Theme` is this package's own type, not Emotion's: Emotion is an internal implementation detail (see `src/theme/emotion.ts`) and is never part of the public type surface. `declare module '@soroush.tech/design-system/theme'` is the augmentation surface consumers use to extend scales by declaration merging; it survives tsdown's chunked d.ts output the same way augmenting an external module used to (verified by `type-tests/augmentation.ts`).
+The entire type layer is declared natively - as plain exported interfaces owned by this package - in `src/theme/themes.ts`. `Theme` is this package's own type, not Emotion's: Emotion is an internal implementation detail (see `src/theme/emotion.ts`) and is never part of the public type surface. `declare module '@soroush.tech/design-system/theme'` is the augmentation surface consumers use to extend scales by declaration merging; it survives tsdown's chunked d.ts output the same way augmenting an external module used to (verified by `type-tests/augmentation.ts`).
 
 ```ts
 import { type Theme } from '@soroush.tech/design-system/theme'
@@ -60,26 +60,26 @@ type MyBgProp = keyof Theme['background'] // 'backdrop' | 'modal' | 'primary' | 
 
 **Consumers of the published package** extend scales by augmenting `@soroush.tech/design-system/theme` (see the README's "Theming" section), build the values with `createTheme(base, overrides)`, and pass the finished theme to `ThemeProvider`'s `theme` prop. `type-tests/augmentation.ts` (run by `pnpm test:types`) verifies this recipe against the real dist d.ts.
 
-**The in-repo app must NOT augment scale interfaces with new keys** — the monorepo consumes package _source_, so a merged required key would fail the `light: Theme` completeness check inside `src/theme/themes.ts`. The app only overrides values (`apps/web/src/theme/themes.ts` via `createTheme`).
+**The in-repo app must NOT augment scale interfaces with new keys** - the monorepo consumes package _source_, so a merged required key would fail the `light: Theme` completeness check inside `src/theme/themes.ts`. The app only overrides values (`apps/web/src/theme/themes.ts` via `createTheme`).
 
-**New scale interfaces must be declared natively in `src/theme/themes.ts`** (not inside a `declare module` block — this package owns them outright), so member identity stays stable across d.ts chunks.
+**New scale interfaces must be declared natively in `src/theme/themes.ts`** (not inside a `declare module` block - this package owns them outright), so member identity stays stable across d.ts chunks.
 
 ### Per-component customization (`theme.components`)
 
 Full consumer guide: [`docs/customization.md`](./docs/customization.md); theming overview: [`docs/theming.md`](./docs/theming.md).
 
-The engine `styled` (in `src/style/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles — but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
+The engine `styled` (in `src/style/styled.ts`, re-exported from the barrel) accepts `name`/`slot`/`systemProps` options. A named root reads `theme.components[name]` and appends the matching `styleOverrides[slot]` and `variants` after the component's own styles - but before `systemProps`, so per-instance props always win. Zero-config themes bail out on the first check.
 
 Rules when converting a component:
 
-- Pass `name` (the `ThemeComponents` key) on the root, and `slot` on named sub-elements (`label`, `icon`, …). Slot names are public API — renaming one is a breaking change.
-- Move the styled-system parsers (`space`, `layout`, …) from the style arguments into the `systemProps` option so instance props keep beating theme overrides.
+- Pass `name` (the `ThemeComponents` key) on the root, and `slot` on named sub-elements (`label`, `icon`, ...). Slot names are public API - renaming one is a breaking change.
+- Move the styled-system parsers (`space`, `layout`, ...) from the style arguments into the `systemProps` option so instance props keep beating theme overrides.
 - Resolve `defaultProps` via `useDefaultProps(name)` in the wrapper, in the standard chain: explicit prop → group context → `defaultProps` → `theme.defaults.*` → literal fallback.
 - Type the component's entry in `ThemeComponents` (`ComponentConfig<OwnerState, Slots>`) and, if it has variants, expose them via an augmentable interface (see `ButtonVariants`).
 
 `Button` is the reference implementation; `Theme/Customization` in Storybook is the living contract, locked by Chromatic.
 
-**Every styled element is named** — every `styled(...)` call in the package carries a `name` (roots) or `name` + `slot` (sub-elements), including the layout primitives `View`/`Flex`/`Grid`. The full key/slot list is the `ThemeComponents` interface in `src/theme/themes.ts`, and `src/themeComponents.spec.tsx` locks each element's `styleOverrides` wiring. `pnpm audit:styled` regenerates `styled-audit.md` and reports any call that loses its `name` (`--check` exits non-zero); intentional omissions must carry `// audit-styled-ignore: <reason>` on the preceding line. Beware that an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component — that reach is deliberate, so use those keys for app-wide policy only.
+**Every styled element is named** - every `styled(...)` call in the package carries a `name` (roots) or `name` + `slot` (sub-elements), including the layout primitives `View`/`Flex`/`Grid`. The full key/slot list is the `ThemeComponents` interface in `src/theme/themes.ts`, and `src/themeComponents.spec.tsx` locks each element's `styleOverrides` wiring. `pnpm audit:styled` regenerates `styled-audit.md` and reports any call that loses its `name` (`--check` exits non-zero); intentional omissions must carry `// audit-styled-ignore: <reason>` on the preceding line. Beware that an override on `View`/`Flex`/`Grid` cascades into the internals of every composed component - that reach is deliberate, so use those keys for app-wide policy only.
 
 ---
 
@@ -87,31 +87,31 @@ Rules when converting a component:
 
 **Every component lives in its own folder** `packages/design-system/src/ComponentName/` with: `index.ts` (`export * from './ComponentName'`) · `ComponentName.tsx` · `README.md` · `ComponentName.stories.tsx` · `ComponentName.test.tsx`
 
-**Prop types** — derive from `Theme` (this package's own type, owned by `src/theme/themes.ts` — Emotion is internal-only), never write manual unions:
+**Prop types** - derive from `Theme` (this package's own type, owned by `src/theme/themes.ts` - Emotion is internal-only), never write manual unions:
 
 - `color?: keyof Theme['text']`
 - `bg?: keyof Theme['background']`
 - Font/space scales → `keyof Theme['fontWeights']` etc.
 
-**Custom props → theme scales** — wire through `system()` in `@emotion/styled`. Key mappings:
+**Custom props → theme scales** - wire through `system()` in `@emotion/styled`. Key mappings:
 
 - `color` → `scale: 'text'`
 - `bg` → `scale: 'background'`
 
-**Storybook options** — all option arrays live in `@soroush.tech/design-system/utils/test/storiesOptions.ts` with `satisfies` constraints against `Theme`. Import from there in every story, never hardcode inline. When adding a new component, add its token arrays to `storiesOptions.ts`.
+**Storybook options** - all option arrays live in `@soroush.tech/design-system/utils/test/storiesOptions.ts` with `satisfies` constraints against `Theme`. Import from there in every story, never hardcode inline. When adding a new component, add its token arrays to `storiesOptions.ts`.
 
 **Storybook argType rules:**
 
-- Always use `controls.include` whitelist — never rely on autodiscovery
-- Every prop in `controls.include` **must** have a matching `argType` entry — missing argTypes cause the control to silently disappear or leak raw props to the DOM. Verify the lists match before finishing a story.
+- Always use `controls.include` whitelist - never rely on autodiscovery
+- Every prop in `controls.include` **must** have a matching `argType` entry - missing argTypes cause the control to silently disappear or leak raw props to the DOM. Verify the lists match before finishing a story.
 - Do NOT use top-level `name:` in argTypes (breaks `controls.include` matching)
-- Always add `table.category` — use: Content · Typography · Layout · Visual · Spacing · State · Progress · Behavior · Focus — make sure it matches the category; if unsure, suggest a name and verify before implementing.
+- Always add `table.category` - use: Content · Typography · Layout · Visual · Spacing · State · Progress · Behavior · Focus - make sure it matches the category; if unsure, suggest a name and verify before implementing.
 
-**No hardcoded hex values in components** — all component colors read theme tokens; hex literals are allowed only inside `themes.ts` (`baseTheme`) and test/story fixtures. Rgba opacity uses the hex suffix pattern: `#FFFFFFB3`.
+**No hardcoded hex values in components** - all component colors read theme tokens; hex literals are allowed only inside `themes.ts` (`baseTheme`) and test/story fixtures. Rgba opacity uses the hex suffix pattern: `#FFFFFFB3`.
 
-**`Typography` is the reference implementation** — follow its structure for every new component.
+**`Typography` is the reference implementation** - follow its structure for every new component.
 
-**To scaffold a new component** — use the `/new_theme_component` skill:
+**To scaffold a new component** - use the `/new_theme_component` skill:
 
 ```
 /new_theme_component Button
@@ -121,12 +121,12 @@ This reads the current Typography files and `design-system.md` before generating
 
 ### 1. Prop interface
 
-Extend the styled-system prop groups and declare custom props. Derive types from `Theme` — never write manual unions.
+Extend the styled-system prop groups and declare custom props. Derive types from `Theme` - never write manual unions.
 
 ```ts
 import { type Theme } from '@soroush.tech/design-system/theme'
 
-// Derive from Theme — stays in sync automatically
+// Derive from Theme - stays in sync automatically
 export type TextColorToken  = keyof Theme['text']
 export type BackgroundToken = keyof Theme['background']
 
@@ -142,7 +142,7 @@ export interface MyComponentProps
   }
 ```
 
-Export prop types — Storybook's `storiesOptions.ts` will import and use them in `satisfies` constraints.
+Export prop types - Storybook's `storiesOptions.ts` will import and use them in `satisfies` constraints.
 
 ### 2. Prop forwarding
 
@@ -163,7 +163,7 @@ Wire props that don't have a built-in styled-system function through `system()`:
 const colorSystem = system({
   color: { property: 'color', scale: 'text' },
   bg: { property: 'backgroundColor', scale: 'background' },
-  opacity: { property: 'opacity' }, // no scale — raw CSS
+  opacity: { property: 'opacity' }, // no scale - raw CSS
 })
 ```
 
@@ -210,14 +210,14 @@ Every component lives in its own folder under `@soroush.tech/design-system/`. Th
     ComponentName.test.tsx ← unit tests
 ```
 
-The `index.ts` barrel means all existing imports (`import { X } from '@soroush.tech/design-system/ComponentName'`) continue to work without changes — Node/TypeScript resolves the folder to its `index.ts` automatically.
+The `index.ts` barrel means all existing imports (`import { X } from '@soroush.tech/design-system/ComponentName'`) continue to work without changes - Node/TypeScript resolves the folder to its `index.ts` automatically.
 
 ### `README.md`
 
 Documents every prop the component accepts. Rules:
 
-- Color tables show palette source names only — `kineticGreen[500]`, not `#00FF41`
-- Keep in sync with actual values in `themes.ts` — the README is the source of truth for consumers
+- Color tables show palette source names only - `kineticGreen[500]`, not `#00FF41`
+- Keep in sync with actual values in `themes.ts` - the README is the source of truth for consumers
 - Include all styled-system prop groups the component supports
 
 ### `ComponentName.stories.tsx`
@@ -234,25 +234,25 @@ import {
 } from '@soroush.tech/design-system/utils/test/storiesOptions'
 ```
 
-ArgType categories — use exactly these names for consistency across all components:
+ArgType categories - use exactly these names for consistency across all components:
 
 | Category       | What goes here                                                                                                                                             |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Content**    | `children` and content-related props — `src`, `srcSet`, `alt`, `href`, `placeholder`, `count`, `fallback`, `title`                                         |
+| **Content**    | `children` and content-related props - `src`, `srcSet`, `alt`, `href`, `placeholder`, `count`, `fallback`, `title`                                         |
 | **Typography** | `variant`, `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `letterSpacing`                                                              |
-| **Layout**     | Sizing, alignment, and flow — `size`, `fullWidth`, `align`, `orientation`, `as`, `noWrap`, `gutterBottom`, `display`, `overflow`, grid/flex props          |
-| **Visual**     | Visual style tokens — `color`, `bg`, `textColor`, `opacity`, `variant`, `elevation`, `borderRadius`, `shape`, `thickness`                                  |
+| **Layout**     | Sizing, alignment, and flow - `size`, `fullWidth`, `align`, `orientation`, `as`, `noWrap`, `gutterBottom`, `display`, `overflow`, grid/flex props          |
+| **Visual**     | Visual style tokens - `color`, `bg`, `textColor`, `opacity`, `variant`, `elevation`, `borderRadius`, `shape`, `thickness`                                  |
 | **Spacing**    | `m`, `p` (and directional variants if exposed)                                                                                                             |
-| **State**      | Control state flags — `checked`, `disabled`, `error`, `required`, `readOnly`, `indeterminate`                                                              |
-| **Progress**   | Progress values — `value`, `min`, `max`, `valueBuffer`                                                                                                     |
-| **Behavior**   | Interaction and mount behavior — `shouldKeepMounted`, `shouldLockScroll`, `shouldUsePortal`, `isEnabled`, `container`, `page`, `multiple`, event callbacks |
-| **Focus**      | Focus-management toggles — `shouldAutoFocus`, `shouldTrapFocus`, `shouldEnforceFocus`, `shouldRestoreFocus`                                                |
+| **State**      | Control state flags - `checked`, `disabled`, `error`, `required`, `readOnly`, `indeterminate`                                                              |
+| **Progress**   | Progress values - `value`, `min`, `max`, `valueBuffer`                                                                                                     |
+| **Behavior**   | Interaction and mount behavior - `shouldKeepMounted`, `shouldLockScroll`, `shouldUsePortal`, `isEnabled`, `container`, `page`, `multiple`, event callbacks |
+| **Focus**      | Focus-management toggles - `shouldAutoFocus`, `shouldTrapFocus`, `shouldEnforceFocus`, `shouldRestoreFocus`                                                |
 
 Rules:
 
-- Always use `controls.include` whitelist — autodiscovery surfaces every HTML attribute
-- Do **not** use top-level `name:` in an argType — it renames the arg key and breaks `controls.include` matching
-- `table.name` inside the `table:` object is safe — only affects autodocs display
+- Always use `controls.include` whitelist - autodiscovery surfaces every HTML attribute
+- Do **not** use top-level `name:` in an argType - it renames the arg key and breaks `controls.include` matching
+- `table.name` inside the `table:` object is safe - only affects autodocs display
 
 ### `ComponentName.test.tsx`
 
@@ -274,9 +274,9 @@ Two Storybooks render these same story files, for two different jobs.
 | Package | `packages/design-system/.storybook` | `baseTheme` only     | `pnpm storybook` from this directory (port 6007) |
 | Site    | `apps/web/.storybook`               | brand `light`/`dark` | `pnpm storybook` from the repo root (port 6006)  |
 
-The package Storybook is the consumer's-eye view: `baseTheme`, the package's own `globalStyles` reset, and no webfonts — so text falls back to the generic stack in `theme.fonts`, exactly as it does for a consumer who hasn't loaded them. Demo images resolve from `.storybook/public/`. It runs no brand code, so it stays usable if the app is broken or absent.
+The package Storybook is the consumer's-eye view: `baseTheme`, the package's own `globalStyles` reset, and no webfonts - so text falls back to the generic stack in `theme.fonts`, exactly as it does for a consumer who hasn't loaded them. Demo images resolve from `.storybook/public/`. It runs no brand code, so it stays usable if the app is broken or absent.
 
-The site Storybook globs these files too and decorates them with the brand themes and fonts. That build is the Chromatic surface — visual baselines come from there, not from here.
+The site Storybook globs these files too and decorates them with the brand themes and fonts. That build is the Chromatic surface - visual baselines come from there, not from here.
 
 Story play functions and a11y checks run in both: `pnpm test:storybook` here (the `storybook` project in `vitest.config.ts`, against `baseTheme`), and in the app's own `storybook` project against the brand themes.
 
@@ -284,9 +284,9 @@ Story play functions and a11y checks run in both: `pnpm test:storybook` here (th
 
 ## Storybook Options (`@soroush.tech/design-system/utils/test/storiesOptions.ts`)
 
-For props shared across components (`bg`, `opacity`, `p`, `m`, all border props, etc.), `@soroush.tech/design-system/utils/test/storiesArgs.ts` exports pre-built argType objects — import and spread directly into `argTypes` instead of composing from option arrays.
+For props shared across components (`bg`, `opacity`, `p`, `m`, all border props, etc.), `@soroush.tech/design-system/utils/test/storiesArgs.ts` exports pre-built argType objects - import and spread directly into `argTypes` instead of composing from option arrays.
 
-Single source of truth for all option arrays used in Storybook stories. Add new arrays here when building new components. Each array uses `satisfies` to stay in sync with the Theme type — TypeScript will error if a key is missing or misspelled.
+Single source of truth for all option arrays used in Storybook stories. Add new arrays here when building new components. Each array uses `satisfies` to stay in sync with the Theme type - TypeScript will error if a key is missing or misspelled.
 
 ```ts
 // Adding a new token array:
@@ -305,20 +305,20 @@ export const backgroundTokens = [...] satisfies BackgroundToken[]
 
 ## Emotion Babel Plugin
 
-The Babel plugin is configured with key `soroush`. In development, generated class names follow the pattern `soroush-[local]--[filename]`. This is expected — do not mistake it for a naming collision.
+The Babel plugin is configured with key `soroush`. In development, generated class names follow the pattern `soroush-[local]--[filename]`. This is expected - do not mistake it for a naming collision.
 
 ---
 
-## Quick Checklist — New Component
+## Quick Checklist - New Component
 
 Use `/new_theme_component ComponentName` to scaffold all files automatically.
 
-- [ ] `ComponentName/index.ts` — `export * from './ComponentName'`
-- [ ] `ComponentName/ComponentName.tsx` — styled base + wrapper, `shouldForwardProp`, `system()` for custom scales
+- [ ] `ComponentName/index.ts` - `export * from './ComponentName'`
+- [ ] `ComponentName/ComponentName.tsx` - styled base + wrapper, `shouldForwardProp`, `system()` for custom scales
 - [ ] Prop types derived from `Theme` (`keyof Theme['scaleName']`), not manual unions
 - [ ] Custom prop types exported for use in `storiesOptions.ts`
-- [ ] `ComponentName/README.md` — all props documented, no hex codes
-- [ ] `ComponentName/ComponentName.stories.tsx` — imports from `storiesArgs` (shared props) or `storiesOptions` (component-specific), `controls.include` whitelist, argType categories
+- [ ] `ComponentName/README.md` - all props documented, no hex codes
+- [ ] `ComponentName/ComponentName.stories.tsx` - imports from `storiesArgs` (shared props) or `storiesOptions` (component-specific), `controls.include` whitelist, argType categories
 - [ ] New token arrays added to `@soroush.tech/design-system/utils/test/storiesOptions.ts` with `satisfies`
-- [ ] `ComponentName/ComponentName.test.tsx` — prop→CSS, element mapping, HTML passthrough
-- [ ] No hardcoded hex values in the component — colors read theme tokens only
+- [ ] `ComponentName/ComponentName.test.tsx` - prop→CSS, element mapping, HTML passthrough
+- [ ] No hardcoded hex values in the component - colors read theme tokens only

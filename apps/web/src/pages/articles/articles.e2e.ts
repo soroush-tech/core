@@ -5,7 +5,7 @@ import { test, expect } from 'src/test/e2e/fixtures'
 // (staleTime 0). That client refetch briefly mounts a CircularProgress loader, which
 // unmounts once the (mocked) query resolves. Waiting for that loader to be gone lets us
 // assert the resolved data, never the loading state. (We wait on its terminal `hidden`
-// state rather than `visible` — the loader can resolve faster than Playwright observes
+// state rather than `visible` - the loader can resolve faster than Playwright observes
 // it mounted, but "gone" is unambiguous.)
 const waitForLoaded = async (page: Page) => {
   await page.getByRole('progressbar', { name: 'Loading' }).waitFor({ state: 'hidden' })

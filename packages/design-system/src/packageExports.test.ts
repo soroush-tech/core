@@ -24,7 +24,7 @@ const distEntry = (base: string) => ({
 })
 
 describe('package subpath exports', () => {
-  it('exposes no wildcard subpath — every entry is explicit', () => {
+  it('exposes no wildcard subpath - every entry is explicit', () => {
     expect(pkg.exports['./*']).toBeUndefined()
     expect(pkg.publishConfig.exports['./*']).toBeUndefined()
   })

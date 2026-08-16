@@ -11,7 +11,7 @@ export default defineConfig({
       reporter: ['text', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
       // Electron/bootstrap glue (spawn injection, React mount) is exercised by
-      // the Playwright-Electron e2e suite per epic #295 — mirroring how
+      // the Playwright-Electron e2e suite per epic #295 - mirroring how
       // apps/web keeps pages/ e2e-only. Everything else must hold 100%.
       exclude: [
         '**/*.d.ts',

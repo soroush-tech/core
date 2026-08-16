@@ -1,6 +1,6 @@
 # Blueprint
 
-A full-screen background canvas with CSS grid-line decoration rendered via two `linear-gradient` layers — one horizontal, one vertical — producing an evenly spaced line-grid pattern. Also supports a radial dot variant. Used as the outermost wrapper in content`.
+A full-screen background canvas with CSS grid-line decoration rendered via two `linear-gradient` layers - one horizontal, one vertical - producing an evenly spaced line-grid pattern. Also supports a radial dot variant. Used as the outermost wrapper in content`.
 
 ```tsx
 <Blueprint>{/* absolutely positioned children */}</Blueprint>
@@ -29,7 +29,7 @@ A full-screen background canvas with CSS grid-line decoration rendered via two `
 | ----------- | ----------------------- | ---------- | ------------------------------------------------------ |
 | `scanline`  | `boolean`               | `false`    | Renders a fixed scanline sweep animation over the grid |
 | `spotlight` | `boolean`               | `true`     | Cursor-following radial highlight over the viewport    |
-| `variant`   | `'line' \| 'dot'`       | `'line'`   | Background pattern — intersecting lines or radial dots |
+| `variant`   | `'line' \| 'dot'`       | `'line'`   | Background pattern - intersecting lines or radial dots |
 | `height`    | `ViewProps['height']`   | `'100vh'`  | Override the default full-viewport height              |
 | `overflow`  | `ViewProps['overflow']` | `'hidden'` | Override the default overflow clipping                 |
 

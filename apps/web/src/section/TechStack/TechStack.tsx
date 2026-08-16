@@ -8,14 +8,14 @@ import { Link } from '@soroush.tech/design-system/Link'
 import { alpha } from '@soroush.tech/design-system/utils'
 import { languages, frameworks, deploymentTags, qaTags } from './TechStack.data'
 
-// grid-column span on a grid item — View has no gridColumn prop
+// grid-column span on a grid item - View has no gridColumn prop
 const BentoSpan = styled(Paper, { label: 'BentoSpan' })`
   @media (min-width: 1024px) {
     grid-column: span 2;
   }
 `
 
-// background: linear-gradient + grid-column span — no styled-system equivalents
+// background: linear-gradient + grid-column span - no styled-system equivalents
 const AIHighlightCard = styled(Paper, { label: 'AIHighlightCard' })`
   background: linear-gradient(
     to bottom right,
@@ -34,7 +34,7 @@ export function TechStack() {
     <View as="section" bg="terminal" py={10} px={4}>
       <View maxWidth="1280px" mx="auto">
         <Grid gridTemplateColumns={['1fr', '1fr 1fr', 'repeat(4, 1fr)']} gap={2}>
-          {/* Title card — spans 2 cols on large screens */}
+          {/* Title card - spans 2 cols on large screens */}
           <BentoSpan bg="paper" p={6} elevation={0} justifyContent="flex-end">
             <Typography variant="h2" color="initial">
               The Technical Stack
@@ -110,7 +110,7 @@ export function TechStack() {
             </Flex>
           </Paper>
 
-          {/* AI highlight — spans 2 cols on large screens */}
+          {/* AI highlight - spans 2 cols on large screens */}
           <AIHighlightCard p={6} elevation={0} justifyContent="center">
             <Typography variant="overline" color="primary" letterSpacing="widest" mb={2}>
               / INTEL_INTEGRATION

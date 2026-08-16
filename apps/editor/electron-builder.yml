@@ -1,5 +1,5 @@
 # What electron-builder packs and where it publishes. The app itself comes from
-# electron-vite's out/ — every dependency is bundled in there, so no node_modules
+# electron-vite's out/ - every dependency is bundled in there, so no node_modules
 # ship and `files` is just the build output.
 appId: tech.soroush.editor
 productName: Soroush Editor
@@ -10,7 +10,7 @@ files:
   - out/**
 
 # One binary for Apple Silicon and Intel. The zip is not optional: macOS
-# auto-update only consumes zips — the dmg is for people.
+# auto-update only consumes zips - the dmg is for people.
 mac:
   target:
     - target: dmg
@@ -21,7 +21,7 @@ mac:
   hardenedRuntime: true
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
-  # Temporarily unsigned — no Apple Developer account yet. Until signing
+  # Temporarily unsigned - no Apple Developer account yet. Until signing
   # returns, Gatekeeper only opens the app via right-click → Open, and macOS
   # auto-update stays off (Squirrel refuses unsigned apps). To restore:
   # delete `identity`, set `notarize: true`, and give cd-editor.yml the
@@ -29,14 +29,14 @@ mac:
   identity: null
   notarize: false
 
-# Unsigned for now — SmartScreen warns until a signature or reputation arrives,
+# Unsigned for now - SmartScreen warns until a signature or reputation arrives,
 # and auto-update works regardless. Signing slots in here without touching CD.
 win:
   target:
     - target: nsis
       arch: x64
 
-# Not used to publish — CD builds with --publish never and assembles the
+# Not used to publish - CD builds with --publish never and assembles the
 # release itself (see cd-editor.yml). This block still matters: it is baked
 # into the packaged app as app-update.yml, telling electron-updater where to
 # read latest*.yml from (the newest published release).

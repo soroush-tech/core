@@ -8,5 +8,5 @@ export const PREVIEW_LIMIT = 120
  */
 export function toPreview(text: string): string {
   const flat = text.replace(/\s+/g, ' ').trim()
-  return flat.length > PREVIEW_LIMIT ? `${flat.slice(0, PREVIEW_LIMIT)}…` : flat
+  return flat.length > PREVIEW_LIMIT ? `${flat.slice(0, PREVIEW_LIMIT)}...` : flat
 }

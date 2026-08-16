@@ -7,9 +7,9 @@ export type ToggleButtonValue = string | number
  * Visual config (color / size / disabled / fullWidth) travels via `ButtonGroupContext`.
  */
 export interface ToggleButtonGroupContextValue {
-  /** Selected value(s) — single when exclusive, array otherwise. */
+  /** Selected value(s) - single when exclusive, array otherwise. */
   value?: ToggleButtonValue | ToggleButtonValue[] | null
-  /** Fired with the clicked button's value — the group resolves the next selection. */
+  /** Fired with the clicked button's value - the group resolves the next selection. */
   onToggle?: (value: ToggleButtonValue) => void
 }
 

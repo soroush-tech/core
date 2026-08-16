@@ -2,7 +2,7 @@
 
 Conventions for the Cloudflare Worker in `workers/api`. It is a [Hono](https://hono.dev) app
 served at `api.soroush.tech` that handles contact-form intake (`POST /v1/contact`) and a monthly
-maintenance cron. Read this before adding a file — every file has a home, and these rules decide
+maintenance cron. Read this before adding a file - every file has a home, and these rules decide
 which one.
 
 ---
@@ -20,10 +20,10 @@ src/
   openapi.ts                ← OpenAPI 3.1 spec document
   routes/
     contact.ts              ← POST /v1/contact handler
-  services/                 ← external I/O — bindings & third-party calls
+  services/                 ← external I/O - bindings & third-party calls
     email.ts                ← EMAIL binding sender
     turnstile.ts            ← Turnstile siteverify fetch
-  utils/                    ← pure helpers — no I/O
+  utils/                    ← pure helpers - no I/O
     sanitize.ts             ← strip control characters
     tables.ts               ← month-table name / SQL / date helpers
   jobs/                     ← scheduled / cron work
@@ -35,12 +35,12 @@ src/
 
 | Folder      | Belongs here                                                             | Does **not** belong                                               |
 | ----------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `routes/`   | Hono route handlers — request parsing, status codes, the HTTP surface    | Business logic that isn't HTTP-shaped → `services/` or `utils/`   |
+| `routes/`   | Hono route handlers - request parsing, status codes, the HTTP surface    | Business logic that isn't HTTP-shaped → `services/` or `utils/`   |
 | `services/` | Anything that touches a binding or makes a network call (`EMAIL`, fetch) | Pure transforms → `utils/`                                        |
 | `utils/`    | Pure, deterministic, I/O-free helpers                                    | Anything that awaits a binding, `fetch`, or `crypto` randomness   |
 | `jobs/`     | Scheduled / cron handlers and their orchestration                        | The request path → `routes/`                                      |
 | `db/`       | SQL schema templates and SQL-related type declarations                   | Query-building logic (lives with its caller, e.g. `utils/tables`) |
-| root        | The entrypoint, app factory, shared `Env` types, the API spec            | Feature code — push it down into a folder                         |
+| root        | The entrypoint, app factory, shared `Env` types, the API spec            | Feature code - push it down into a folder                         |
 
 ---
 
@@ -48,10 +48,10 @@ src/
 
 The single dividing line: **does it do I/O?**
 
-- **`services/`** — touches the outside world. Reads/writes a binding (`DB`, `EMAIL`, `BACKUPS`,
+- **`services/`** - touches the outside world. Reads/writes a binding (`DB`, `EMAIL`, `BACKUPS`,
   `RATE_LIMITER`), calls `fetch`, or otherwise has side effects. These are the seams you mock in
   tests. A service typically takes `env` (or a secret) as its first argument.
-- **`utils/`** — pure functions. Same input → same output, no awaiting, no side effects. Trivially
+- **`utils/`** - pure functions. Same input → same output, no awaiting, no side effects. Trivially
   unit-testable without mocks.
 
 When unsure, ask whether the test needs a fake binding or network stub. If yes → `services/`.
@@ -69,9 +69,9 @@ Use the `src/*` path alias, the same as the web app:
 
 The alias is wired in three places that must stay in agreement:
 
-1. `tsconfig.json` → `compilerOptions.paths` (`"src/*": ["./src/*"]`) — for `tsc`.
-2. `vitest.config.ts` → `resolve.alias` — for tests.
-3. Wrangler's esbuild reads the tsconfig `paths` automatically — for the bundle.
+1. `tsconfig.json` → `compilerOptions.paths` (`"src/*": ["./src/*"]`) - for `tsc`.
+2. `vitest.config.ts` → `resolve.alias` - for tests.
+3. Wrangler's esbuild reads the tsconfig `paths` automatically - for the bundle.
 
 ---
 
@@ -79,7 +79,7 @@ The alias is wired in three places that must stay in agreement:
 
 - **Co-locate** the unit test next to its source: `email.ts` + `email.test.ts` in the same folder.
 - **100% coverage is enforced** by vitest (`thresholds: { 100: true }` in `vitest.config.ts`). Run
-  `pnpm test:coverage` and verify before pushing — anything under 100% fails the build.
+  `pnpm test:coverage` and verify before pushing - anything under 100% fails the build.
 - Type-only files (`env.ts`, `db/sql.d.ts`) and data files (`db/contacts.schema.sql`) have no logic
   and therefore no test. `index.ts` is exercised through `app.test.ts`.
 - Mock bindings/`fetch` to test `services/`; call `utils/` directly with plain values.
@@ -88,7 +88,7 @@ The alias is wired in three places that must stay in agreement:
 
 ## Schema & SQL
 
-Contact submissions are partitioned into one table per month — `contacts_YYYY_MM`. The schema lives
+Contact submissions are partitioned into one table per month - `contacts_YYYY_MM`. The schema lives
 once in `db/contacts.schema.sql` as a `__TABLE__` template, **not** inline in code, so the write path
 (create-on-first-write) and the cron (provision + archive) share a single definition.
 
@@ -115,7 +115,7 @@ Generated `wrangler.json`, `.env`, `.wrangler/`, `coverage/`, and `dist/` are gi
 
 ---
 
-## Adding a new file — quick guide
+## Adding a new file - quick guide
 
 1. **A new endpoint?** → `routes/`. Keep it thin: parse, validate, delegate, respond.
 2. **Talks to a binding or external API?** → `services/`.

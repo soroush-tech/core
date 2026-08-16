@@ -1,11 +1,11 @@
 # Quote
 
-A `View` with a fixed 2px primary left border — used for terminal readouts and markdown
+A `View` with a fixed 2px primary left border - used for terminal readouts and markdown
 blockquotes.
 
 ## Props
 
-Accepts all `ViewProps` — spacing (`p`, `m`, …), layout, `bg` (→ `theme.background`),
+Accepts all `ViewProps` - spacing (`p`, `m`, ...), layout, `bg` (→ `theme.background`),
 `borderRadius` (→ `theme.radii`), and so on. Only the left border is fixed by the component; every
 other visual is a passthrough View prop.
 

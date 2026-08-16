@@ -8,26 +8,26 @@ import { Typography } from '@soroush.tech/design-system/Typography'
 import { alpha } from '@soroush.tech/design-system/utils'
 import { SidebarContext, type SidebarAnchor, type SidebarItemVariant } from '../SidebarContext'
 
-/** Density token — controls padding and font size. Resolves against `theme.sizes`. */
+/** Density token - controls padding and font size. Resolves against `theme.sizes`. */
 export type SidebarItemSize = keyof Theme['sizes']
 
 export interface SidebarItemProps extends Omit<
   PressableProps,
   'children' | 'feedback' | 'activeOpacity' | 'size'
 > {
-  /** Icon shown in both the collapsed and open states — pinned to the anchored edge. */
+  /** Icon shown in both the collapsed and open states - pinned to the anchored edge. */
   icon: IconName
   /** Accessible name; also the default visible content while open. */
   label: string
-  /** Visual style — overrides the enclosing `Sidebar`'s `variant` (default `'text'`). */
+  /** Visual style - overrides the enclosing `Sidebar`'s `variant` (default `'text'`). */
   variant?: SidebarItemVariant
-  /** Padding and font size — resolves against `theme.sizes`. Default: `'sm'`. */
+  /** Padding and font size - resolves against `theme.sizes`. Default: `'sm'`. */
   size?: SidebarItemSize
-  /** Active state — drives `aria-pressed` and the selected fill. */
+  /** Active state - drives `aria-pressed` and the selected fill. */
   isSelected?: boolean
   /**
    * Custom open-state content rendered instead of the label text (badges,
-   * counts, …) — or, under the enclosing `Sidebar`'s `hasPanel`, the content of
+   * counts, ...) - or, under the enclosing `Sidebar`'s `hasPanel`, the content of
    * the panel column, shown while this item is selected.
    */
   children?: ReactNode
@@ -47,7 +47,7 @@ interface SidebarItemRootProps {
 }
 
 // The same density scale the rest of the library uses, so a rail lines up with
-// the app's other controls — but without a button's uppercase / bold / tracking,
+// the app's other controls - but without a button's uppercase / bold / tracking,
 // which a navigation label has no business carrying.
 const densityStyles = ({ theme, size }: SidebarItemRootProps & { theme: Theme }) => {
   const s = theme.sizes[size]
@@ -62,7 +62,7 @@ const densityStyles = ({ theme, size }: SidebarItemRootProps & { theme: Theme })
     // The rail animates its width, so for the whole transition the content is
     // laid out against a width narrower than it needs. Left to wrap, every label
     // would break onto a second line, double each row's height, and shift the
-    // rows below — then snap back once the rail finished. Nothing wraps, so the
+    // rows below - then snap back once the rail finished. Nothing wraps, so the
     // row height is fixed and Sidebar's overflowX clips the not-yet-visible text
     // instead. Set here rather than on the label so custom `children` are covered too.
     whiteSpace: 'nowrap' as const,
@@ -77,7 +77,7 @@ const layoutStyles = ({ anchor }: SidebarItemRootProps) => ({
   justifyContent: anchor === 'right' ? 'flex-end' : 'flex-start',
 })
 
-// The resting look. Press feedback is Pressable's job — these add only the hover
+// The resting look. Press feedback is Pressable's job - these add only the hover
 // fade and the selected state on top of it. A transparent border on the
 // non-outlined variants keeps every item the same size.
 const stateStyles = ({
@@ -100,11 +100,11 @@ const stateStyles = ({
     '&:disabled, &[aria-disabled="true"]': { opacity: 0.5 },
   }
   // Suppressed rather than guarded by `:not(:disabled)`, which a non-form element
-  // defeats — the same reason Pressable gates its press feedback on the prop.
+  // defeats - the same reason Pressable gates its press feedback on the prop.
   const hoverFill = (backgroundColor: string) =>
     disabled ? {} : { '&:hover': { backgroundColor } }
 
-  // plain carries selection in the text color alone — no fill, no feedback.
+  // plain carries selection in the text color alone - no fill, no feedback.
   if (itemVariant === 'plain') {
     return { ...base, color: isSelected ? main : get(theme, 'text.primary') }
   }
@@ -135,10 +135,10 @@ const SidebarItemRoot = styled(Pressable, {
 
 /**
  * One entry of a `Sidebar`: an icon pinned to the anchored edge, plus content
- * shown while the rail is open — the `label` by default, or custom `children`
+ * shown while the rail is open - the `label` by default, or custom `children`
  * (on a right-anchored rail the content renders to the icon's left). Built on
  * `Pressable`, so it is a real button carrying nothing but the styling declared
- * here — no inherited uppercase, weight, or tracking.
+ * here - no inherited uppercase, weight, or tracking.
  */
 export function SidebarItem({
   icon,
@@ -166,7 +166,7 @@ export function SidebarItem({
   const ownsPanel = hasPanel && children != null
   const isPorting = ownsPanel && (isSelected ?? false)
 
-  // Only the name is published upward — the content is ported, not lifted. The
+  // Only the name is published upward - the content is ported, not lifted. The
   // cleanup runs before the newly selected item's effect, so handing the panel
   // from one item to the next leaves the winner's label in place.
   useEffect(() => {
@@ -178,7 +178,7 @@ export function SidebarItem({
   }, [isPorting, label, setPanelLabel])
 
   // HTMLElement, not HTMLButtonElement: Pressable renders a div by default, and
-  // `as` can make it any tag — matching the handler type Pressable itself uses.
+  // `as` can make it any tag - matching the handler type Pressable itself uses.
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     onClick?.(event)
     onSelect?.()
@@ -197,7 +197,7 @@ export function SidebarItem({
         aria-label={label}
         aria-pressed={isSelected ?? false}
         // An item driving a panel is a disclosure too. aria-controls points at the
-        // panel only while this item is porting into it — the element stays
+        // panel only while this item is porting into it - the element stays
         // mounted either way, but collapses when empty.
         {...(ownsPanel && {
           'aria-expanded': isSelected ?? false,
@@ -212,8 +212,8 @@ export function SidebarItem({
           alignItems="center"
           gap={2}
           // Nothing wraps now, so mid-transition the content is wider than the rail.
-          // Left shrinkable, the flex line would compress and squeeze `Icon` — which
-          // sets width/height but no flex-shrink — off its position. Pinned, the
+          // Left shrinkable, the flex line would compress and squeeze `Icon` - which
+          // sets width/height but no flex-shrink - off its position. Pinned, the
           // content keeps its natural width and Sidebar's overflowX clips it instead.
           flexShrink={0}
         >
@@ -226,8 +226,8 @@ export function SidebarItem({
             ))}
         </Flex>
       </SidebarItemRoot>
-      {/* Ported rather than lifted, so the panel's content stays declared —
-          and mounted — here: the context, state, and handlers it closes over are
+      {/* Ported rather than lifted, so the panel's content stays declared -
+          and mounted - here: the context, state, and handlers it closes over are
           this item's, however deeply the item itself is nested in the rail. */}
       {isPorting && panelNode && <Portal container={panelNode}>{children}</Portal>}
     </>

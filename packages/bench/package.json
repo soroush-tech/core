@@ -1,6 +1,6 @@
 {
   "name": "@soroush.tech/bench",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Run A/B function and package-version benchmarks inside a CPU/RAM-pinned Docker sandbox for stable, low-noise numbers. Built on mitata.",
   "keywords": [
     "benchmark",

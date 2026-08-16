@@ -26,7 +26,7 @@ const meta: Meta<typeof FormLabel> = {
       control: { type: 'select' },
       options: textColorTokens,
       description:
-        'Text color — resolves against `theme.text`. Inherits `textColor` from context when unset.',
+        'Text color - resolves against `theme.text`. Inherits `textColor` from context when unset.',
       table: { category: 'Visual' },
     },
   },

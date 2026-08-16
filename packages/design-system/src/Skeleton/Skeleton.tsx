@@ -19,7 +19,7 @@ export interface SkeletonProps
   extends HTMLAttributes<HTMLSpanElement>, Omit<SpaceProps<Theme>, keyof PaddingProps> {
   /** Shape of the placeholder. Default: `'text'`. */
   variant?: SkeletonVariant
-  /** Corner radius — resolves against `theme.radii` (sq · sm · md · lg). Overrides the variant default. */
+  /** Corner radius - resolves against `theme.radii` (sq · sm · md · lg). Overrides the variant default. */
   borderRadius?: SkeletonRadius
   /** Loading animation. `false` disables it. Default: `'pulse'`. */
   animation?: SkeletonAnimation
@@ -37,14 +37,14 @@ const shouldForwardProp = createShouldForwardProp([
   'height',
 ])
 
-// Opacity fade — size-independent, so every skeleton on the page reads identically.
+// Opacity fade - size-independent, so every skeleton on the page reads identically.
 const pulse = keyframes({
   '0%': { opacity: 1 },
   '50%': { opacity: 0.4 },
   '100%': { opacity: 1 },
 })
 
-// Sweeps the shimmer band across the viewport, not the element — see animationStyle's wave branch.
+// Sweeps the shimmer band across the viewport, not the element - see animationStyle's wave branch.
 const wave = keyframes({
   from: { backgroundPositionX: '100vw' },
   to: { backgroundPositionX: '-100vw' },
@@ -65,7 +65,7 @@ const radiusSystem = system({
   borderRadius: { property: 'borderRadius', scale: 'radii' },
 })
 
-// A circle stays a circle — 50% always wins, even over an explicit borderRadius. Composed last of the radius rules.
+// A circle stays a circle - 50% always wins, even over an explicit borderRadius. Composed last of the radius rules.
 const circularStyle = ({ variant }: SkeletonProps) =>
   variant === 'circular' ? { borderRadius: '50%' } : {}
 

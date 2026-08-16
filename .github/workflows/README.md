@@ -23,13 +23,13 @@ raw `push`; package publishing (`cd-packages`) and the editor release (`cd-edito
 | [`chromatic.yml`](./chromatic.yml)             | `Chromatic`                    | `push` to `main` (paths) + `workflow_dispatch`               |
 | [`label-area.yml`](./label-area.yml)           | `Label Affected Area`          | `issues` `opened`                                            |
 
-Names are `CI · <Area>` and `CD · <Area>`, so the Actions sidebar groups into two blocks — the
+Names are `CI · <Area>` and `CD · <Area>`, so the Actions sidebar groups into two blocks - the
 entry workflow is plain `CI`. Chromatic and the labeller are unprefixed because neither is part of
 `ci-ok`. **Renaming one is never a one-file edit**: `workflow_run` matches on the `name:`, not the
 filename, so the three deploys pin `workflows: ['CI']` and a rename that misses one stops that
 deploy without a word. Branch protection matches the job name `ci-ok`, so it is unaffected.
 
-Everything shared by the jobs that install — pnpm, Node, the install itself — is the composite
+Everything shared by the jobs that install - pnpm, Node, the install itself - is the composite
 action [`.github/actions/setup`](../actions/setup/action.yml), called by every one of them.
 **A new job starts from a checkout and a call to it**, so bumping the `pnpm/action-setup` pin
 or changing the store cache is an edit to one file: see
@@ -43,7 +43,7 @@ or changing the store cache is an edit to one file: see
 CI runs on every push/PR. On a successful `main` run it uploads a single
 [`changes.json`](./ci.md#changesjson) artifact; the **deploy** workflows then start via
 `workflow_run`, download it, and each applies its **own condition** to decide whether to
-deploy. `cd-packages` is separate — it's triggered by hand, not by CI, so it reads no
+deploy. `cd-packages` is separate - it's triggered by hand, not by CI, so it reads no
 artifact.
 
 ```mermaid
@@ -72,12 +72,12 @@ deploys on `apps`/`packages`/`root`); the policy lives in CD, the facts in CI. I
 artifact is missing (e.g. a manual `workflow_dispatch`), the deploy falls back to
 deploying.
 
-## `ci.yml` — CI
+## `ci.yml` - CI
 
 A single `prepare` job detects everything once and exposes it as outputs; the heavy
 jobs fan out from it and are **gated by change detection** so a package-only PR never
 spins up the tri-OS web suite. `ci-ok` is the one stable status check used for branch
-protection — it tolerates change-gated jobs being skipped and fails only if a needed
+protection - it tolerates change-gated jobs being skipped and fails only if a needed
 job actually failed or was cancelled.
 
 ```mermaid
@@ -102,7 +102,7 @@ flowchart TD
 
 ### `prepare` outputs
 
-Detect once, reuse via `needs.prepare.outputs.*` — node version is always read from
+Detect once, reuse via `needs.prepare.outputs.*` - node version is always read from
 `.nvmrc`, never hard-coded.
 
 | Output                              | Source                                                                                          |
@@ -121,7 +121,7 @@ CI also writes the [`changes.json`](./ci.md#changesjson) artifact the CD side re
 A per-entity `dorny/paths-filter` config is generated from the workspace: one key per
 app, worker, package, and workflow file, plus one **per root file** (top-level files only).
 The matched keys become the `changes.json` lists. Dependency and infra policy is **not**
-baked into the filters — it lives in each consumer's condition (CI gating in
+baked into the filters - it lives in each consumer's condition (CI gating in
 `prepare`, deploy/publish gating in each CD workflow).
 
 Two rules keep a run to what it is about, both in
@@ -129,10 +129,10 @@ Two rules keep a run to what it is about, both in
 
 - **Who runs is derived from the tree**, not listed. A member runs when it changed or when a
   package it declares as a `workspace:` dependency changed, so `packages/schema` runs the web app
-  and the API worker that share it — and nothing else.
-- **A workflow file validates what it runs**, declared on its own line 1 as `# ci:validates …`:
+  and the API worker that share it - and nothing else.
+- **A workflow file validates what it runs**, declared on its own line 1 as `# ci:validates ...`:
   `all` for `ci.yml`, `pkg__*` for the package workflow, `app__web` for the web one, `nothing` for a
-  deploy CI never executes. No table kept elsewhere — the scope sits beside the jobs it describes,
+  deploy CI never executes. No table kept elsewhere - the scope sits beside the jobs it describes,
   and an unmarked or unparseable claim means the whole workspace, so a new file can only over-run.
 
 ```mermaid
@@ -152,22 +152,22 @@ flowchart LR
 **`web`** runs on **ubuntu only**. It builds (Codecov bundle analysis) and runs a merged
 `test:coverage` pass (unit + browser + storybook in one V8 pass) uploaded as the authoritative
 `web` flag that patch gates on, plus the three per-tier runs for their informational
-`unit`/`browser`/`storybook` flags. Chromatic visual review is **not** here — it runs in its
+`unit`/`browser`/`storybook` flags. Chromatic visual review is **not** here - it runs in its
 own main-only [`chromatic.yml`](./chromatic.yml).
 
 **`e2e`** is the only multi-OS job: a matrix running each Playwright engine on its native
-platform (macOS ~10× cost — WebKit only). It `needs: web`, so a `web` failure skips `e2e`. Only
+platform (macOS ~10× cost - WebKit only). It `needs: web`, so a `web` failure skips `e2e`. Only
 the chromium row runs with coverage and uploads the `e2e` flag; Playwright's `webServer`
 builds/serves the app, so there is no separate build step.
 
 | Job / Step                                         | ubuntu | windows | macOS |
 | -------------------------------------------------- | :----: | :-----: | :---: |
-| **packages / worker** — one row per changed member |   ✅   |         |       |
-| **web** — build + unit/browser/storybook coverage  |   ✅   |         |       |
+| **packages / worker** - one row per changed member |   ✅   |         |       |
+| **web** - build + unit/browser/storybook coverage  |   ✅   |         |       |
 | **e2e** Chromium (+ coverage)                      |   ✅   |         |       |
 | **e2e** Firefox                                    |        |   ✅    |       |
 | **e2e** WebKit                                     |        |         |  ✅   |
-| **editor** — unit tier + Electron under xvfb       |   ✅   |         |       |
+| **editor** - unit tier + Electron under xvfb       |   ✅   |         |       |
 
 The Playwright browser binaries are cached by `runner.os` + Playwright version, with a
 fixed `PLAYWRIGHT_BROWSERS_PATH`; `web` and the `e2e` chromium row share the ubuntu cache.
@@ -176,7 +176,7 @@ fixed `PLAYWRIGHT_BROWSERS_PATH`; `web` and the `e2e` chromium row share the ubu
 
 Each workspace emits its own `coverage/lcov.info` and uploads under its own **flag**;
 Codecov merges uploads by commit SHA. 100% coverage is enforced inside each
-`vitest.config` — Codecov is for reporting, not the gate.
+`vitest.config` - Codecov is for reporting, not the gate.
 
 | Flag                 | Source                            |
 | -------------------- | --------------------------------- |
@@ -190,7 +190,7 @@ Codecov merges uploads by commit SHA. 100% coverage is enforced inside each
 | `storybook`          | Storybook test runner             |
 | `e2e`                | web Playwright (`coverage/e2e`)   |
 
-## `cd-web.yml` — CD · Web (Pages + Storybook)
+## `cd-web.yml` - CD · Web (Pages + Storybook)
 
 ```mermaid
 flowchart TD
@@ -207,7 +207,7 @@ flowchart TD
 abort each other. Build env (Vite vars, GitHub key, Turnstile sitekey) is injected
 from repo secrets/vars; `APP_ENV=production`.
 
-## `cd-worker-api.yml` — CD · Worker (api)
+## `cd-worker-api.yml` - CD · Worker (api)
 
 ```mermaid
 flowchart TD
@@ -220,16 +220,16 @@ flowchart TD
 `config:gen` renders `wrangler.json` from repo `vars` (worker name, D1, R2, honeypot);
 `wrangler deploy` authenticates with `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
 
-## `cd-worker-bench.yml` — CD · Worker (bench)
+## `cd-worker-bench.yml` - CD · Worker (bench)
 
 Structural mirror of `cd-worker-api.yml` for `workers/bench` (the bench-action comment
 relay at `api.bench.soroush.tech`): deploys when
 `worker∋bench ∥ packages∋wrangler-tools ∥ root`, in its own
-`cd-worker-bench` environment — see [`cd-worker-bench.md`](./cd-worker-bench.md).
+`cd-worker-bench` environment - see [`cd-worker-bench.md`](./cd-worker-bench.md).
 
-## `cd-packages.yml` — CD · Packages (npm)
+## `cd-packages.yml` - CD · Packages (npm)
 
-**Manual only** — unlike the other two CD workflows, this one is **not** gated on CI and
+**Manual only** - unlike the other two CD workflows, this one is **not** gated on CI and
 never runs off a push, PR merge, or `workflow_run`. It publishes from `workflow_dispatch`,
 taking a `package` (choice) and **required** `notes` input.
 
@@ -240,12 +240,12 @@ flowchart TD
     publish -->|"version already on npm"| skip["(skipped)"]
 ```
 
-Publishes the chosen non-`private` package to npm via **Trusted Publishing (OIDC)** — no
+Publishes the chosen non-`private` package to npm via **Trusted Publishing (OIDC)** - no
 long-lived `NPM_TOKEN`; GitHub mints a short-lived id-token per run that npm verifies
 against the package's trusted publisher. The publish step skips a version already on the
 registry, so **a release is just bumping `package.json` `version` on `main`, then
 dispatching**. On a real publish it cuts a GitHub Release tagged `<pkg>@<version>` whose
-notes are the **required `notes` input** — no PR or changelog is read. Auto-publish on
+notes are the **required `notes` input** - no PR or changelog is read. Auto-publish on
 merge and required human-written notes can't coexist, so publishing is a deliberate,
 on-demand step. See [cd-packages.md](./cd-packages.md) for the full walkthrough.
 

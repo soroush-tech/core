@@ -9,7 +9,7 @@ export interface GraphControlsProps {
   onReset: () => void
 }
 
-// background.paper and border.primary don't map to Button's variant system — override via CSS.
+// background.paper and border.primary don't map to Button's variant system - override via CSS.
 const ControlButton = styled(Button)`
   width: 2.5rem;
   height: 2.5rem;
@@ -45,7 +45,7 @@ export function GraphControls({ onZoomIn, onZoomOut, onReset }: Readonly<GraphCo
             +
           </ControlButton>
           <ControlButton variant="text" shape="square" aria-label="Zoom out" onClick={onZoomOut}>
-            −
+            -
           </ControlButton>
           <ControlButton variant="text" shape="square" aria-label="Reset view" onClick={onReset}>
             ↻

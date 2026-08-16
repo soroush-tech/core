@@ -52,7 +52,7 @@ const deployments = [
   { service: 'metrics', region: 'sin1', status: 'degraded', latency: 176 },
 ]
 
-// Sortable Service/Region/Status/Latency header cells — shared by the tables below
+// Sortable Service/Region/Status/Latency header cells - shared by the tables below
 // (SelectableTable prepends a checkbox cell before these).
 function ServiceHeadCells({ sort }: Readonly<{ sort: TableSortMap<'service' | 'latency'> }>) {
   return (
@@ -72,7 +72,7 @@ function ServiceHeadCells({ sort }: Readonly<{ sort: TableSortMap<'service' | 'l
   )
 }
 
-/** Sortable deployments table — extra children (e.g. a TableFooter) render after the body. */
+/** Sortable deployments table - extra children (e.g. a TableFooter) render after the body. */
 function DeploymentsTable({ children, ...tableProps }: Readonly<TableProps>) {
   const sort = useTableSort(['service', 'latency'])
 
@@ -143,19 +143,19 @@ const meta: Meta<typeof Table> = {
       control: { type: 'select' },
       options: ['left', 'right', 'center', 'justify'],
       description:
-        'Default text alignment for every cell — cells with `align="inherit"` follow it.',
+        'Default text alignment for every cell - cells with `align="inherit"` follow it.',
       table: { category: 'Layout' },
     },
     size: {
       control: { type: 'select' },
       options: tableSizeTokens,
-      description: 'Cell density — broadcast to descendant `TableCell`s via `TableContext`.',
+      description: 'Cell density - broadcast to descendant `TableCell`s via `TableContext`.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     cellPadding: {
       control: { type: 'select' },
       options: tableCellPaddingTokens,
-      description: 'Cell padding mode — `none` zeroes cell padding.',
+      description: 'Cell padding mode - `none` zeroes cell padding.',
       table: { category: 'Layout', defaultValue: { summary: 'normal' } },
     },
     hasStickyHeader: {
@@ -167,20 +167,20 @@ const meta: Meta<typeof Table> = {
     shouldHideSortIcon: {
       control: 'boolean',
       description:
-        'Hides inactive sort icons (revealed on hover/focus) — broadcast to `TableSortLabel`s via `TableContext`. Set `false` to keep them always visible (dimmed).',
+        'Hides inactive sort icons (revealed on hover/focus) - broadcast to `TableSortLabel`s via `TableContext`. Set `false` to keep them always visible (dimmed).',
       table: { category: 'Behavior', defaultValue: { summary: 'true' } },
     },
     hasEllipsis: {
       control: 'boolean',
       description:
-        'Truncates overflowing cell text with an ellipsis — broadcast to `TableCell`s via `TableContext`. Cells need a constrained width for the truncation to kick in.',
+        'Truncates overflowing cell text with an ellipsis - broadcast to `TableCell`s via `TableContext`. Cells need a constrained width for the truncation to kick in.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
       description:
-        "Palette color for descendant rows' hover/selected shading — broadcast to `TableRow`s via `TableContext`; a row's own `color` wins.",
+        "Palette color for descendant rows' hover/selected shading - broadcast to `TableRow`s via `TableContext`; a row's own `color` wins.",
       table: { category: 'Visual' },
     },
     bg,
@@ -228,7 +228,7 @@ export const Dense: Story = {
 }
 
 /**
- * Row selection — `useTableSelection` keeps the selection keyed by row identity,
+ * Row selection - `useTableSelection` keeps the selection keyed by row identity,
  * so it survives page flips and re-sorting; select-all/indeterminate run
  * against the whole dataset, not the visible page.
  */

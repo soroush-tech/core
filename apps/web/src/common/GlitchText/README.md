@@ -1,6 +1,6 @@
 # GlitchText
 
-`Typography` with a looping RGB-split glitch animation — an oversized, corrupted-signal
+`Typography` with a looping RGB-split glitch animation - an oversized, corrupted-signal
 heading (used for the `404` glyph on the error page).
 
 ```tsx
@@ -8,7 +8,7 @@ heading (used for the `404` glyph on the error page).
   404
 </GlitchText>
 
-// Second, quieter instance — inverted keyframes so it doesn't jitter in lock-step
+// Second, quieter instance - inverted keyframes so it doesn't jitter in lock-step
 <GlitchText inverted color="secondary" secondaryColor="primary">
   SYSTEM FAILURE
 </GlitchText>
@@ -18,8 +18,8 @@ heading (used for the `404` glyph on the error page).
 
 ## Props
 
-Extends [`TypographyProps`](../../theme/Typography/README.md) — every `Typography` prop
-(`variant`, `color`, `fontSize`, `fontWeight`, `as`, spacing, layout…) is accepted and
+Extends [`TypographyProps`](../../theme/Typography/README.md) - every `Typography` prop
+(`variant`, `color`, `fontSize`, `fontWeight`, `as`, spacing, layout...) is accepted and
 forwarded. Adds three of its own:
 
 | Prop             | Type             | Default     | Description                                                 |
@@ -33,7 +33,7 @@ forwarded. Adds three of its own:
 ## Behaviour
 
 - Runs an infinite `text-shadow` glitch keyframe (`2s`): a short RGB-split burst in the first
-  few percent of each cycle, then holds steady — same period as `Flicker` so they pulse in sync.
+  few percent of each cycle, then holds steady - same period as `Flicker` so they pulse in sync.
   `inverted` swaps in the mirrored keyframes so stacked instances don't jitter in lock-step.
 - The two RGB-split colours are token-driven, injected as CSS custom properties from the
   `color` / `secondaryColor` props: `--glitch-a` = `theme.text[color]`,

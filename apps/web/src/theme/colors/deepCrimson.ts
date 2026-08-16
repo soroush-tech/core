@@ -7,7 +7,7 @@ export const deepCrimson = {
   300: '#ff897d', // Light alert
   400: '#ff5449', // Alert coral
   500: '#de3730', // Signal crimson
-  600: '#ba1a1a', // Deep crimson — base (error)
+  600: '#ba1a1a', // Deep crimson - base (error)
   700: '#93000a', // Blood crimson (on-error-container)
   800: '#680005', // Dark blood
   900: '#410002', // Abyss crimson
@@ -27,7 +27,7 @@ export const _notes = {
   300: 'Light alert',
   400: 'Alert coral',
   500: 'Signal crimson',
-  600: 'Deep crimson — base (error)',
+  600: 'Deep crimson - base (error)',
   700: 'Blood crimson (on-error-container)',
   800: 'Dark blood',
   900: 'Abyss crimson',

@@ -23,14 +23,14 @@ export const GraphContainer = styled(Flex)`
     stroke-opacity: 0.2;
     stroke-width: 1px;
   }
-  /* Relation threads: green, dotted (same dashes as group lines) — lateral cross-links. */
+  /* Relation threads: green, dotted (same dashes as group lines) - lateral cross-links. */
   .link.is-relation {
     stroke: ${({ theme }) => theme.text.primary};
     stroke-opacity: 0.3;
     stroke-dasharray: 4 4;
     stroke-linecap: round;
   }
-  /* Area↔area relations: the strong backbone between areas — heavier + more opaque. */
+  /* Area↔area relations: the strong backbone between areas - heavier + more opaque. */
   .link.is-area-relation {
     stroke: ${({ theme }) => theme.text.primary};
     stroke-opacity: 0.3;

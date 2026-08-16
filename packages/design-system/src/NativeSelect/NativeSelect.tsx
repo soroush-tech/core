@@ -22,7 +22,7 @@ export interface NativeSelectProps
   extends SpaceProps<Theme>, Pick<LayoutProps<Theme>, 'width' | 'minWidth' | 'maxWidth'> {
   /** The options to populate the select with. */
   options: NativeSelectOption[]
-  /** Controlled value — matches an option's `value`. */
+  /** Controlled value - matches an option's `value`. */
   value?: string | number
   /** Uncontrolled initial value. */
   defaultValue?: string | number
@@ -30,17 +30,17 @@ export interface NativeSelectProps
   onChange?: (value: string | number) => void
   /** Empty-state label rendered as a disabled first option, shown while nothing is selected. */
   placeholder?: string
-  /** Corner radius — applies only to `default` and `outlined` variants. Resolves against `theme.radii`. */
+  /** Corner radius - applies only to `default` and `outlined` variants. Resolves against `theme.radii`. */
   borderRadius?: keyof Theme['radii']
-  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Focus/active border color - resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: NativeSelectColor
-  /** Text color of the selected value — resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
+  /** Text color of the selected value - resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
   textColor?: NativeSelectTextColor
-  /** Background color — resolves against `theme.background`. Default: `'terminal'`. */
+  /** Background color - resolves against `theme.background`. Default: `'terminal'`. */
   bg?: NativeSelectBackgroundToken
   /** Disables the select. */
   disabled?: boolean
-  /** Marks the field as invalid — applies error border color. */
+  /** Marks the field as invalid - applies error border color. */
   error?: boolean
   /** Stretches the root to fill its container. */
   fullWidth?: boolean
@@ -57,9 +57,9 @@ export interface NativeSelectProps
   size?: NativeSelectSize
   /**
    * Visual style of the select.
-   * - `outlined` / `default` — full border box (default)
-   * - `underline` — border on bottom only
-   * - `text` — no border, transparent background
+   * - `outlined` / `default` - full border box (default)
+   * - `underline` - border on bottom only
+   * - `text` - no border, transparent background
    */
   variant?: NativeSelectVariant
   className?: string
@@ -182,7 +182,7 @@ const NativeSelectRoot = styled('div', {
 
 // ─── Native select ────────────────────────────────────────────────────────────
 
-// `sizeToken`, not `size` — the native <select size> attribute is a row count
+// `sizeToken`, not `size` - the native <select size> attribute is a row count
 // (number) and clashes with our density token; `sizeToken` drives styles only.
 type StyledNativeSelectProps = {
   sizeToken: NativeSelectSize
@@ -205,7 +205,7 @@ const sizeVariants = ({ theme, sizeToken }: StyledNativeSelectProps & { theme: T
   }
 }
 
-// The native dropdown popup ignores the wrapper's background — the open list is
+// The native dropdown popup ignores the wrapper's background - the open list is
 // painted by the <select>/<option> themselves. Theme the select surface (and its
 // options) directly from `bg`/`textColor` so the popup that opens below matches.
 // Chromium/Firefox honor these; the option hover highlight stays OS-controlled.
@@ -304,7 +304,7 @@ export function NativeSelect({
   const textColor = fc.textColor ?? themeDefault(theme, 'accentTextColor', 'primary')
   const variant = variantProp ?? themeDefault(theme, 'inputVariant', 'default')
 
-  // The DOM casts option values to strings — map back to the option's original
+  // The DOM casts option values to strings - map back to the option's original
   // value so numeric options round-trip as numbers.
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const match = options.find((option) => String(option.value) === event.target.value)

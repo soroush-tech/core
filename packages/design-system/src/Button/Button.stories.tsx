@@ -52,13 +52,13 @@ const meta: Meta<typeof Button> = {
     variant: {
       control: { type: 'inline-radio' },
       options: buttonVariantTokens,
-      description: 'Visual style — filled, stroked, or ghost.',
+      description: 'Visual style - filled, stroked, or ghost.',
       table: { category: 'Visual', defaultValue: { summary: 'contained' } },
     },
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
-      description: 'Color palette — resolves from `theme.palette[color]`.',
+      description: 'Color palette - resolves from `theme.palette[color]`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     size: {
@@ -86,7 +86,7 @@ const meta: Meta<typeof Button> = {
       control: { type: 'inline-radio' },
       options: buttonShapeTokens,
       description:
-        'Corner shape — sets the default `borderRadius`. `borderRadius` prop always overrides.',
+        'Corner shape - sets the default `borderRadius`. `borderRadius` prop always overrides.',
       table: { category: 'Visual', defaultValue: { summary: 'rounded' } },
     },
     borderRadius: {
@@ -273,7 +273,7 @@ export const Shapes: Story = {
       ))}
       <Flex flexDirection="column" gap={2}>
         <Typography variant="caption" color="secondary" m={0}>
-          rounded — borderRadius override
+          rounded - borderRadius override
         </Typography>
         <Flex flexDirection="row" gap={2} flexWrap="wrap">
           <Button shape="rounded" borderRadius="sm">
@@ -306,7 +306,7 @@ const RAINBOW = [
   'hsl(0 100% 50%)',
 ]
 
-// Returns a plain className — no new component needed. Button props handle
+// Returns a plain className - no new component needed. Button props handle
 // shape/typography; only the animated gradient border needs custom CSS.
 // The `&&` selector doubles specificity to beat Button's own variant styles.
 function rainbowBorderClass({
@@ -333,7 +333,7 @@ function rainbowBorderClass({
 }
 
 export const RainbowBorder: Story = {
-  name: 'Custom — Rainbow Border',
+  name: 'Custom - Rainbow Border',
   render: () => (
     <Flex flexDirection="column" gap={4}>
       <Flex flexDirection="row" gap={3} alignItems="center">

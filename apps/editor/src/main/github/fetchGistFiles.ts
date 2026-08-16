@@ -56,7 +56,7 @@ async function toFile(raw: RawGistFile, fetchFn: typeof fetch): Promise<GistFile
     redirect: 'error',
   })
   if (!response.ok) {
-    throw new Error(`Could not read all of ${raw.filename} — GitHub responded ${response.status}`)
+    throw new Error(`Could not read all of ${raw.filename} - GitHub responded ${response.status}`)
   }
   return { filename: raw.filename, content: await response.text() }
 }
@@ -81,7 +81,7 @@ export async function fetchGistFiles(
     if (response.status === 401) {
       return {
         success: false,
-        error: 'GitHub rejected the stored token — connect the account again',
+        error: 'GitHub rejected the stored token - connect the account again',
       }
     }
     if (!response.ok) {

@@ -14,7 +14,7 @@ const processor = unified()
 
 /**
  * Serializes an edited block's live DOM back to markdown. The preview renders
- * non-content UI inside a block (the code-copy control, decorative SVGs) —
+ * non-content UI inside a block (the code-copy control, decorative SVGs) -
  * those are stripped from a clone first so only real content round-trips.
  */
 export function blockToMarkdown(element: Element): string {

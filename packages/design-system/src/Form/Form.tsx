@@ -3,18 +3,18 @@ import { type Theme } from '../theme/themes'
 import { styled } from '../index'
 import { FormContext } from './FormContext'
 
-// Named styled root — the `<form>` element is theme-customizable via
+// Named styled root - the `<form>` element is theme-customizable via
 // `theme.components.Form.styleOverrides.root`.
 const FormRoot = styled('form', { name: 'Form', label: 'Form' })()
 
 export interface FormProps {
   children: ReactNode
   onSubmit?: (event: SyntheticEvent<HTMLFormElement>) => void
-  /** Default control size for every field — overridable per FormControl/control. */
+  /** Default control size for every field - overridable per FormControl/control. */
   size?: keyof Theme['sizes']
   /** Default accent color for every field. */
   color?: keyof Theme['palette']
-  /** Default text color for every field's label/helper/input — resolves against `theme.text`. */
+  /** Default text color for every field's label/helper/input - resolves against `theme.text`. */
   textColor?: keyof Theme['text']
   /** Disables every field. */
   disabled?: boolean
@@ -28,7 +28,7 @@ export interface FormProps {
 }
 
 /**
- * Renders a `<form>` and provides form-wide defaults via FormContext — the lowest
+ * Renders a `<form>` and provides form-wide defaults via FormContext - the lowest
  * priority in the override chain (FormControl and explicit control props win).
  */
 export function Form({

@@ -1,7 +1,7 @@
 import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
-// Coverage e2e runs map V8 coverage on the built bundles back to src/** —
+// Coverage e2e runs map V8 coverage on the built bundles back to src/** -
 // inline sourcemaps keep the mapping inside the files monocart reads.
 const sourcemap = process.env.E2E_COVERAGE === 'true' ? ('inline' as const) : false
 

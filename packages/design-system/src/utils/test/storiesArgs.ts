@@ -16,12 +16,12 @@ import {
 export const bg = {
   control: { type: 'select' },
   options: backgroundTokens,
-  description: 'Background color — resolves from `theme.background`.',
+  description: 'Background color - resolves from `theme.background`.',
   table: { category: 'Visual' },
 } as const
 export const opacity = {
   control: { type: 'range', min: 0, max: 1, step: 0.05 },
-  description: 'CSS opacity (0–1).',
+  description: 'CSS opacity (0-1).',
   table: { category: 'Visual' },
 } as const
 
@@ -29,37 +29,37 @@ export const opacity = {
 export const p = {
   control: { type: 'select' },
   options: spaceTokens,
-  description: 'Padding — resolves from `theme.space`.',
+  description: 'Padding - resolves from `theme.space`.',
   table: { category: 'Spacing', type: { summary: 'space' }, defaultValue: { summary: '0' } },
 } as const
 export const m = {
   control: { type: 'select' },
   options: spaceTokens,
-  description: 'Margin — resolves from `theme.space`.',
+  description: 'Margin - resolves from `theme.space`.',
   table: { category: 'Spacing', type: { summary: 'space' }, defaultValue: { summary: '0' } },
 } as const
 export const mb = {
   control: { type: 'select' },
   options: spaceTokens,
-  description: 'Margin bottom — resolves from `theme.space`.',
+  description: 'Margin bottom - resolves from `theme.space`.',
   table: { category: 'Spacing', type: { summary: 'space' }, defaultValue: { summary: '0' } },
 } as const
 export const gap = {
   control: { type: 'select' },
   options: spaceTokens,
-  description: 'Gap between items — resolves from `theme.space`.',
+  description: 'Gap between items - resolves from `theme.space`.',
   table: { category: 'Spacing', type: { summary: 'GapToken' }, defaultValue: { summary: '0' } },
 } as const
 
 // ─── Layout ─────────────────────────────────────────────────────────────────
 export const width = {
   control: 'text',
-  description: 'CSS width — any valid value.',
+  description: 'CSS width - any valid value.',
   table: { category: 'Layout', type: { summary: 'string | number' } },
 } as const
 export const height = {
   control: 'text',
-  description: 'CSS height — any valid value.',
+  description: 'CSS height - any valid value.',
   table: { category: 'Layout', type: { summary: 'string | number' } },
 } as const
 export const minWidth = {
@@ -97,7 +97,7 @@ export const position = {
 export const cursor = {
   control: { type: 'select' },
   options: cursorTokens,
-  description: 'CSS cursor — controls the mouse pointer style.',
+  description: 'CSS cursor - controls the mouse pointer style.',
   table: { category: 'Visual', type: { summary: 'CSSProperties["cursor"]' } },
 } as const
 export const aspectRatio = {
@@ -115,14 +115,14 @@ export const order = {
 export const border = {
   control: 'text',
   description:
-    'CSS border shorthand (e.g. `"1px solid"`). Width and style are raw CSS — use `borderRadius` for theme tokens.',
+    'CSS border shorthand (e.g. `"1px solid"`). Width and style are raw CSS - use `borderRadius` for theme tokens.',
   table: { category: 'Visual', type: { summary: 'string' } },
 } as const
 export const borderWidth = {
   control: { type: 'select' },
   options: borderWidthTokens,
   description:
-    'Border width — resolves from `theme.borderWidths`: none (0) · thin (1px) · base (2px) · thick (4px).',
+    'Border width - resolves from `theme.borderWidths`: none (0) · thin (1px) · base (2px) · thick (4px).',
   table: { category: 'Visual', type: { summary: 'none | thin | base | thick' } },
 } as const
 export const borderStyle = {
@@ -134,13 +134,13 @@ export const borderStyle = {
 export const borderColor = {
   control: { type: 'select' },
   options: borderColorTokens,
-  description: 'Border color — resolves from `theme.border`.',
+  description: 'Border color - resolves from `theme.border`.',
   table: { category: 'Visual' },
 } as const
 export const borderRadius = {
   control: { type: 'select' },
   options: borderRadiiTokens,
-  description: 'Border radius — resolves from `theme.radii`: sm (4px) · md (8px) · lg (16px).',
+  description: 'Border radius - resolves from `theme.radii`: sm (4px) · md (8px) · lg (16px).',
   table: { category: 'Visual', type: { summary: 'sm | md | lg' } },
 } as const
 
@@ -149,7 +149,7 @@ export const borderRadius = {
 export const paginationColor = {
   control: { type: 'select' },
   options: buttonColorTokens,
-  description: 'Selected-item color — resolves against `theme.palette`.',
+  description: 'Selected-item color - resolves against `theme.palette`.',
   table: { category: 'Visual', defaultValue: { summary: 'primary' } },
 } as const
 export const paginationVariant = {
@@ -167,7 +167,7 @@ export const paginationShape = {
 export const paginationSize = {
   control: { type: 'select' },
   options: tableSizeTokens,
-  description: 'Item density — resolves against `theme.sizes`.',
+  description: 'Item density - resolves against `theme.sizes`.',
   table: { category: 'Layout', defaultValue: { summary: 'md' } },
 } as const
 export const paginationCount = {

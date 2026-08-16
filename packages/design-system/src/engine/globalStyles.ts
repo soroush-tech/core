@@ -2,9 +2,9 @@ import { css } from '@emotion/react'
 import type { Theme } from '../theme/themes'
 
 /**
- * The base reset this package owns — box-sizing, margin/table resets, and
+ * The base reset this package owns - box-sizing, margin/table resets, and
  * theme-driven body colors. Font-family, webfont loading, and anything else
- * app-specific are app policy — compose this into your own `Global` styles array.
+ * app-specific are app policy - compose this into your own `Global` styles array.
  */
 export const globalStyles = (theme: Theme) => css`
   *,

@@ -8,13 +8,13 @@ Displays a named color palette as a card: a header swatch showing the base color
 
 ### `name`
 
-`string` — Label rendered in the header row. Displayed as an overline above the base hex value.
+`string` - Label rendered in the header row. Displayed as an overline above the base hex value.
 
 ---
 
 ### `palette`
 
-`Record<string | number, string>` — Color map where `base` is the header color and numeric keys (`100`–`900`) are the shade strip entries.
+`Record<string | number, string>` - Color map where `base` is the header color and numeric keys (`100`-`900`) are the shade strip entries.
 
 ```ts
 // Example palette shape
@@ -38,7 +38,7 @@ The header text color is chosen automatically based on the perceived luminance o
 - Luminance > 0.5 → `#000000` (dark text)
 - Luminance ≤ 0.5 → `#ffffff` (light text)
 
-These two values are intentional hardcodes — they are CSS-standard black and white used solely for contrast enforcement, not theme tokens.
+These two values are intentional hardcodes - they are CSS-standard black and white used solely for contrast enforcement, not theme tokens.
 
 ---
 

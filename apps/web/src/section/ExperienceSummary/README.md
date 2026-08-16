@@ -33,7 +33,7 @@ None. The section renders static content.
   borders, the open-source `border-l-2`) are dropped; separation comes from background
   tiers (`terminal` panel, `surface-container` tags, `grid`-tinted open-source note).
 - The neon bar fill uses `palette.primary.main` via `styled` (not in the `background`
-  scale) — same documented exception as `Eyebrow`. The `bg-primary/5` open-source tint
+  scale) - same documented exception as `Eyebrow`. The `bg-primary/5` open-source tint
   maps to the `background.grid` token.
 
 ## Usage

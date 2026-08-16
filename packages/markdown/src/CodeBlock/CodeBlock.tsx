@@ -10,12 +10,12 @@ import { useCopyToClipboard } from '@soroush.tech/hooks/useCopyToClipboard'
 // children inside the code element that props can't reach. Colors come from the
 // active theme, so blocks re-tint for light and dark automatically.
 // `theme.syntax` is optional only so design-system's own `baseTheme` literal still
-// satisfies `Theme` — CodeBlock requires it in practice, with no fallback, so any
+// satisfies `Theme` - CodeBlock requires it in practice, with no fallback, so any
 // theme rendering this component must merge `syntaxDark`/`syntaxLight` (or its own).
 const syntaxStyles = ({ theme }: { theme: Theme }) => ({
   color: theme.syntax!.base,
   fontFamily: theme.syntax!.font,
-  // `.hljs-meta.prompt_` is the shell `$`/`#` CLI prompt — dim it like a comment.
+  // `.hljs-meta.prompt_` is the shell `$`/`#` CLI prompt - dim it like a comment.
   '& .hljs-comment, & .hljs-quote, & .hljs-doctag, & .hljs-meta.prompt_': {
     color: theme.syntax!.comment,
     fontStyle: 'italic',

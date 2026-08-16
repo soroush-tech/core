@@ -9,7 +9,7 @@ export interface MarkdownBlock {
 
 // Up to three characters of indentation, then a run of at least three backticks
 // or tildes. Deliberately narrow: `[ \t]` rather than `\s`, which would also
-// admit the newline that cannot occur mid-line, and nothing trailing the run —
+// admit the newline that cannot occur mid-line, and nothing trailing the run -
 // an unbounded `(.*)` after an unbounded marker gives the engine an ambiguous
 // split to backtrack through. What follows the marker is sliced off instead.
 const FENCE = /^[ \t]{0,3}(`{3,}|~{3,})/
@@ -19,7 +19,7 @@ const FENCE = /^[ \t]{0,3}(`{3,}|~{3,})/
  * marker itself when one opens a block, and `null` when one closes it.
  *
  * A closing marker must use the same character, be at least as long, and carry
- * nothing after it. The info string is what separates the two roles — a
+ * nothing after it. The info string is what separates the two roles - a
  * ```` ```ts ```` line inside an open ```` ``` ```` block opens nothing and closes
  * nothing, it is content. Without that check the block would end early and its
  * remaining blank lines would split it into further blocks.
@@ -36,7 +36,7 @@ const nextFence = (line: string, fence: string | null): string | null => {
 
 /**
  * Splits markdown into top-level blocks separated by blank lines, keeping
- * fenced code blocks whole — blank lines inside a ``` / ~~~ fence never split.
+ * fenced code blocks whole - blank lines inside a ``` / ~~~ fence never split.
  * Offsets index the original string, so an edited block's source can be
  * spliced back losslessly.
  */

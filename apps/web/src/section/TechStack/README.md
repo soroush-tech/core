@@ -19,6 +19,6 @@ import { TechStack } from 'src/section/TechStack'
 - Layout: 1 → 2 → 4 column responsive grid. Title card and AI card each span 2 columns
   on large screens via `grid-column: span 2` in their styled components (`BentoSpan`,
   `AIHighlightCard`). This requires a styled component because View has no `gridColumn` prop.
-- `AIHighlightCard` uses `background: linear-gradient()` — no styled-system equivalent.
+- `AIHighlightCard` uses `background: linear-gradient()` - no styled-system equivalent.
 - Language skill levels: `Expert` / `Legacy` use `color="primary"` (green accent);
   `Mid` uses `color="secondary"` (muted).

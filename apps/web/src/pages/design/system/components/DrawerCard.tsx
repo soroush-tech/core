@@ -26,7 +26,7 @@ export function DrawerCard() {
           storybookHref={`${STORYBOOK_URL}?path=/docs/theme-drawer--docs`}
         />
       }
-      caption="A temporary panel that slides in from a screen edge, built on Modal — portal, backdrop, focus trap, scroll lock, and Escape/backdrop-click close are inherited."
+      caption="A temporary panel that slides in from a screen edge, built on Modal - portal, backdrop, focus trap, scroll lock, and Escape/backdrop-click close are inherited."
     >
       <Flex flexDirection="row" gap={2} flexWrap="wrap">
         {ANCHORS.map((edge) => (

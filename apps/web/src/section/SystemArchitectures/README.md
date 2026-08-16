@@ -35,8 +35,8 @@ one column. Spans are set with the `Grid` component's `gridColumn` / `gridRow` p
 
 ## Assets
 
-- `src/assets/datacenter-server-room.png` — image-tile background.
-- `src/assets/icons/`: `hub`, `architecture` (existing), `security` — Material
+- `src/assets/datacenter-server-room.png` - image-tile background.
+- `src/assets/icons/`: `hub`, `architecture` (existing), `security` - Material
   Symbols (filled, `#9cff93`). Decorative icons are `alt=""` + `aria-hidden`.
 
 ## Notes

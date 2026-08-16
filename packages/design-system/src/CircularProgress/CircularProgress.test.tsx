@@ -28,7 +28,7 @@ describe('CircularProgress', () => {
   // ─── variant ─────────────────────────────────────────────────────────────────
 
   describe('variant', () => {
-    it('indeterminate (default) — produces a different root class than determinate', () => {
+    it('indeterminate (default) - produces a different root class than determinate', () => {
       const { rerender } = renderWithTheme(
         <CircularProgress variant="indeterminate" data-testid="cp" />
       )
@@ -90,7 +90,7 @@ describe('CircularProgress', () => {
       expect(screen.getByTestId('cp')).not.toHaveAttribute('aria-valuenow')
     })
 
-    it('disableShrink — changes circle class (suppresses dash animation)', () => {
+    it('disableShrink - changes circle class (suppresses dash animation)', () => {
       const { container, rerender } = renderWithTheme(<CircularProgress disableShrink={false} />)
       const withShrink = container.querySelector('circle')!.getAttribute('class')
       rerender(<CircularProgress disableShrink={true} />)
@@ -106,7 +106,7 @@ describe('CircularProgress', () => {
   // ─── spinning ─────────────────────────────────────────────────────────────────
 
   describe('spinning', () => {
-    it('determinate + spinning — changes class compared to non-spinning determinate', () => {
+    it('determinate + spinning - changes class compared to non-spinning determinate', () => {
       const { rerender } = renderWithTheme(
         <CircularProgress variant="determinate" value={75} data-testid="cp" />
       )
@@ -187,7 +187,7 @@ describe('CircularProgress', () => {
       })
     })
 
-    it('inherit — produces a different root class than primary', () => {
+    it('inherit - produces a different root class than primary', () => {
       const { rerender } = renderWithTheme(<CircularProgress color="primary" data-testid="cp" />)
       const primaryClass = screen.getByTestId('cp').getAttribute('class')
       rerender(<CircularProgress color="inherit" data-testid="cp" />)

@@ -1,6 +1,6 @@
 # Documentation
 
-Full documentation for [`@soroush.tech/styled-system`](../README.md) — a maintained,
+Full documentation for [`@soroush.tech/styled-system`](../README.md) - a maintained,
 first-class-TypeScript rewrite of [styled-system](https://github.com/jxnblk/styled-system)
 v5. It is a drop-in replacement for the `styled-system` runtime and ships its own types
 (replacing `@types/styled-system`).
@@ -9,24 +9,24 @@ Ported and adapted from the original styled-system documentation.
 
 ## Introduction
 
-- [Getting Started](./getting-started.md) — install, create a component, theming, margin/padding, layout
-- [How it Works](./how-it-works.md) — the props-to-style-object pattern
-- [Rationale](./rationale.md) — why style props and scales
-- [TypeScript](./typescript.md) — typed, theme-scale-aware props (this package's headline feature)
+- [Getting Started](./getting-started.md) - install, create a component, theming, margin/padding, layout
+- [How it Works](./how-it-works.md) - the props-to-style-object pattern
+- [Rationale](./rationale.md) - why style props and scales
+- [TypeScript](./typescript.md) - typed, theme-scale-aware props (this package's headline feature)
 
 ## Core concepts
 
-- [Responsive Styles](./responsive-styles.md) — mobile-first array & object syntax
-- [Theming](./theming.md) — referencing theme values in props
-- [Theme Specification](./theme-specification.md) — the full theme object shape and scales
-- [Variants](./variants.md) — `variant`, `buttonStyle`, `textStyle`, `colorStyle`
-- [Custom Style Props](./custom-props.md) — build your own with `system` and `compose`
+- [Responsive Styles](./responsive-styles.md) - mobile-first array & object syntax
+- [Theming](./theming.md) - referencing theme values in props
+- [Theme Specification](./theme-specification.md) - the full theme object shape and scales
+- [Variants](./variants.md) - `variant`, `buttonStyle`, `textStyle`, `colorStyle`
+- [Custom Style Props](./custom-props.md) - build your own with `system` and `compose`
 
 ## Reference
 
-- [API](./api.md) — every style function and utility
-- [Reference Table](./table.md) — every style prop, its CSS property, and theme scale
-- [css / theme-get / props](./css.md) — the `/css`, `/theme-get`, `/props` subpath exports
+- [API](./api.md) - every style function and utility
+- [Reference Table](./table.md) - every style prop, its CSS property, and theme scale
+- [css / theme-get / props](./css.md) - the `/css`, `/theme-get`, `/props` subpath exports
 
 ## Guides
 
@@ -59,6 +59,6 @@ subpath exports:
 
 ## Examples
 
-Runnable demos live in the [examples repo](https://github.com/soroush-tech/examples/tree/main/styled-system) —
+Runnable demos live in the [examples repo](https://github.com/soroush-tech/examples/tree/main/styled-system) -
 `basic` (styled-components), `emotion`, `css`, `responsive-objects`, `theme-aliases`,
 `svelte`, and `typescript` (typed, `tsc`-verified).

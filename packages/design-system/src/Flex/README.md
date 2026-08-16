@@ -2,7 +2,7 @@
 
 Extends [`View`](../View/). Renders as a `<div>` with `display: flex` and `flex-direction: column` by default.
 
-All `View` props are inherited — including `gap` (resolves from `theme.space`). Flex adds the full set of CSS Flexbox layout props.
+All `View` props are inherited - including `gap` (resolves from `theme.space`). Flex adds the full set of CSS Flexbox layout props.
 
 ---
 

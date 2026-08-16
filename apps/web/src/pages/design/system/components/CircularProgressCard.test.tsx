@@ -49,7 +49,7 @@ describe('CircularProgressCard', () => {
 
     it('sets start on the first frame and shows 0%', () => {
       renderWithTheme(<CircularProgressCard />)
-      tick(1000) // first frame — start = 1000, elapsed = 0
+      tick(1000) // first frame - start = 1000, elapsed = 0
       expect(screen.getByText('0%')).toBeInTheDocument()
     })
 

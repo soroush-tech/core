@@ -1,6 +1,6 @@
 # Paper
 
-An elevated surface primitive that extends `View`. Adds visual surface styling — shadow via `theme.shadows`, a default `bg="paper"` background, and a default `borderRadius="md"`. Consumers compose `Flex` or `Grid` inside `Paper` for layout.
+An elevated surface primitive that extends `View`. Adds visual surface styling - shadow via `theme.shadows`, a default `bg="paper"` background, and a default `borderRadius="md"`. Consumers compose `Flex` or `Grid` inside `Paper` for layout.
 
 ---
 
@@ -24,13 +24,13 @@ Default: `1`.
 
 ### `aspectRatio`
 
-Inherited from `View`. CSS `aspect-ratio` for fixed-ratio surfaces. Accepts any valid CSS value (e.g. `"1"`, `"4/3"`, `"16/9"`). No theme scale — raw CSS.
+Inherited from `View`. CSS `aspect-ratio` for fixed-ratio surfaces. Accepts any valid CSS value (e.g. `"1"`, `"4/3"`, `"16/9"`). No theme scale - raw CSS.
 
 ---
 
 ### `transition`
 
-CSS `transition` for surface animations, typically used for hover elevation changes. No theme scale — raw CSS.
+CSS `transition` for surface animations, typically used for hover elevation changes. No theme scale - raw CSS.
 
 ```tsx
 <Paper
@@ -52,7 +52,7 @@ CSS `transition` for surface animations, typically used for hover elevation chan
 
 ---
 
-## `bg` — `theme.background`
+## `bg` - `theme.background`
 
 | Token         | Dark source                      | Light source                        |
 | ------------- | -------------------------------- | ----------------------------------- |
@@ -66,7 +66,7 @@ CSS `transition` for surface animations, typically used for hover elevation chan
 
 ## Inherited props from View
 
-### Space — `theme.space`
+### Space - `theme.space`
 
 | Prop                              | Shorthand for   |
 | --------------------------------- | --------------- |
@@ -81,7 +81,7 @@ CSS `transition` for surface animations, typically used for hover elevation chan
 
 ---
 
-### Border — `theme.radii`
+### Border - `theme.radii`
 
 `border` · `borderWidth` · `borderStyle` · `borderColor` · `borderRadius` · `borderTop` · `borderRight` · `borderBottom` · `borderLeft`
 

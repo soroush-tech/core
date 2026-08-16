@@ -38,7 +38,7 @@ describe('Pressable', () => {
     const pressable = screen.getByRole('button', { name: 'Open' })
     expect(pressable.tagName).toBe('BUTTON')
     expect(pressable).toHaveAttribute('type', 'button')
-    // The browser already handles these — no redundant role or tab stop.
+    // The browser already handles these - no redundant role or tab stop.
     expect(pressable).not.toHaveAttribute('role')
     expect(pressable).not.toHaveAttribute('tabindex')
   })
@@ -96,7 +96,7 @@ describe('Pressable', () => {
     fireEvent.keyDown(pressable, { key: 'Enter' })
     expect(onClick).toHaveBeenCalledTimes(1)
 
-    // Space must not fire on keydown — that is where the page scroll is blocked.
+    // Space must not fire on keydown - that is where the page scroll is blocked.
     fireEvent.keyDown(pressable, { key: ' ' })
     expect(onClick).toHaveBeenCalledTimes(1)
     fireEvent.keyUp(pressable, { key: ' ' })

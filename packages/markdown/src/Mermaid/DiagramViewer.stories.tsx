@@ -29,7 +29,7 @@ const meta: Meta<typeof DiagramViewer> = {
     },
     fill: {
       control: 'boolean',
-      description: "Fill the parent's height — used by the nested viewer inside the dialog.",
+      description: "Fill the parent's height - used by the nested viewer inside the dialog.",
       table: { category: 'Layout' },
     },
   },

@@ -6,8 +6,8 @@ const COMMIT_DELAY_MS = 500
 const SOURCE_LABEL = 'Markdown source'
 
 /**
- * Whether the key was pressed in some other editable thing — the Claude
- * instruction, a filename, a description — rather than in the document.
+ * Whether the key was pressed in some other editable thing - the Claude
+ * instruction, a filename, a description - rather than in the document.
  */
 function isOtherField(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
@@ -22,7 +22,7 @@ function isOtherField(target: EventTarget | null): boolean {
 export interface UndoRedo {
   undo: () => void
   redo: () => void
-  /** Clears the history — call when a different document is loaded. */
+  /** Clears the history - call when a different document is loaded. */
   reset: () => void
   canUndo: boolean
   canRedo: boolean

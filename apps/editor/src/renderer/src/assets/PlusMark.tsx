@@ -2,7 +2,7 @@ import type { SVGProps } from 'react'
 
 /**
  * A plus. Lives here rather than in the design system only because its icon
- * set has no "add" — sized and coloured like a design-system `Icon` so it
+ * set has no "add" - sized and coloured like a design-system `Icon` so it
  * lines up with the rail's other rows.
  */
 export function PlusMark(props: Readonly<SVGProps<SVGSVGElement>>) {

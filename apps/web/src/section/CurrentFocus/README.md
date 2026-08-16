@@ -20,7 +20,7 @@ None. The section renders static content.
 
 ## Icons
 
-`src/assets/icons/`: `neurology` (existing), `database`, `stacks` — Material Symbols
+`src/assets/icons/`: `neurology` (existing), `database`, `stacks` - Material Symbols
 (filled, `#9cff93`), decorative (`alt=""`, `aria-hidden`).
 
 ## Notes

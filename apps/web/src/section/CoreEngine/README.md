@@ -18,12 +18,12 @@ import { CoreEngine } from 'src/section/CoreEngine'
 - Eyebrow: `MODERN_TOOLING_ARRAY`
 - Heading: "CORE ENGINE SPECIFICATIONS"
 - Six square tiles, each an icon + label:
-  - `code` — TypeScript
-  - `rebase_edit` — React / Next
-  - `smartphone` — React Native
-  - `dns` — Node.js
-  - `cloud_done` — AWS / GCP
-  - `terminal` — Rust / WASM
+  - `code` - TypeScript
+  - `rebase_edit` - React / Next
+  - `smartphone` - React Native
+  - `dns` - Node.js
+  - `cloud_done` - AWS / GCP
+  - `terminal` - Rust / WASM
 
 ## Notes
 
@@ -32,7 +32,7 @@ import { CoreEngine } from 'src/section/CoreEngine'
   which has no space-scale equivalent) over a `border.light` background, so the gaps render
   as single hairlines between tiles.
 - `EngineTile` is a `styled(Paper)` only to add a `:hover` background change to
-  `background.paper` — styled-system has no hover prop.
+  `background.paper` - styled-system has no hover prop.
 - Icons are white-fill SVGs rendered via `Image` (`aria-hidden`); the mockup's muted/green
   icon tint and hover-recolor are not applied (would require a CSS filter on an `<img>`).
 - Typography mapping: heading `h1` (48px, black) · tile label `caption` (12px, uppercase) ·

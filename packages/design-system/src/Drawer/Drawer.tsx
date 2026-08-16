@@ -22,7 +22,7 @@ export interface DrawerProps extends Pick<
   children: ReactNode
   /** Edge the drawer slides in from. Default: 'left'. */
   anchor?: DrawerAnchor
-  /** Shadow depth of the panel (0–24), forwarded to Paper. Default: 16. */
+  /** Shadow depth of the panel (0-24), forwarded to Paper. Default: 16. */
   elevation?: PaperElevation
   /** Slide duration in milliseconds. Default: 225. */
   transitionDuration?: number

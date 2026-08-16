@@ -71,7 +71,7 @@ describe('describeDraft', () => {
   it('marks the sandbox as a gist that does not exist yet', () => {
     expect(
       describeDraft(newGistId(), { files: { 'draft.md': { status: 'added', content: '' } } }).title
-    ).toBe('New gist — draft.md')
+    ).toBe('New gist - draft.md')
   })
 
   it('has something to show even for a draft with nothing named', () => {

@@ -64,8 +64,8 @@ interface ParserCache {
 export interface Parser {
   // TEMPORARY loosening to match the original @styled-system `styleFn`
   // (`(...args: any[]): any`). The `any` return makes Emotion treat style
-  // functions (layout, space, …) as permissive interpolations, so consumers'
-  // `styled('svg')(layout, …)` accept styled-system props as they did upstream.
+  // functions (layout, space, ...) as permissive interpolations, so consumers'
+  // `styled('svg')(layout, ...)` accept styled-system props as they did upstream.
   // TODO(next version): restore the strict `<P extends { theme?: unknown }>(props: P): CSSObject`
   // signature once consumer styled components declare their prop generics.
   (...args: any[]): any

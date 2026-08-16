@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { styled } from '../index'
 
-// Named styled root — the trap wrapper is theme-customizable via
+// Named styled root - the trap wrapper is theme-customizable via
 // `theme.components.FocusTrap.styleOverrides.root`. `outline: none` stays the
 // base since the wrapper itself is focused only as a programmatic fallback.
 const FocusTrapRoot = styled('div', { name: 'FocusTrap', label: 'FocusTrap' })({

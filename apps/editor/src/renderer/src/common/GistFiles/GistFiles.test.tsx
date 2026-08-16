@@ -36,7 +36,7 @@ const staged = (draft: Partial<GistDraft>) => ({
   data: { files: {}, ...draft },
 })
 
-/** Opens the name field and types into it — the only way to add a file. */
+/** Opens the name field and types into it - the only way to add a file. */
 const addFile = async (typed: string) => {
   await userEvent.click(screen.getByRole('button', { name: 'Add file' }))
   await userEvent.type(screen.getByLabelText('New filename'), typed)
@@ -94,7 +94,7 @@ describe('GistFiles', () => {
     )
     renderFiles()
 
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md — modified' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'notes.md - modified' }))
 
     expect(onOpenFile).toHaveBeenCalledWith('# saved locally', {
       gistId: 'abc123',
@@ -122,9 +122,9 @@ describe('GistFiles', () => {
     )
     renderFiles()
 
-    expect(await screen.findByRole('button', { name: 'notes.md — modified' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'todo.md — deleted' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'draft.md — added' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'notes.md - modified' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'todo.md - deleted' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'draft.md - added' })).toBeInTheDocument()
     expect(screen.getByText('3 unpublished changes')).toBeInTheDocument()
   })
 
@@ -260,7 +260,7 @@ describe('GistFiles', () => {
         staged({ files: { 'draft.md': { status: 'added', content: '# draft' } } })
       )
       renderFiles()
-      await screen.findByRole('button', { name: 'draft.md — added' })
+      await screen.findByRole('button', { name: 'draft.md - added' })
 
       await rename('draft.md', 'renamed.md')
 
@@ -317,7 +317,7 @@ describe('GistFiles', () => {
     it('offers no rename for a file staged for deletion', async () => {
       gistsApi.draft.mockResolvedValue(staged({ files: { 'notes.md': { status: 'deleted' } } }))
       renderFiles()
-      await screen.findByRole('button', { name: 'notes.md — deleted' })
+      await screen.findByRole('button', { name: 'notes.md - deleted' })
 
       expect(screen.queryByRole('button', { name: 'Rename notes.md' })).not.toBeInTheDocument()
     })
@@ -408,7 +408,7 @@ describe('GistFiles', () => {
       renderFiles()
 
       expect(await screen.findByText('A better one')).toBeInTheDocument()
-      expect(screen.getByText('Description edited — publish to apply it.')).toBeInTheDocument()
+      expect(screen.getByText('Description edited - publish to apply it.')).toBeInTheDocument()
       expect(screen.getByText('1 unpublished change')).toBeInTheDocument()
     })
 

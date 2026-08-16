@@ -13,7 +13,7 @@ All packages are scoped **`@soroush.tech/*`**, and the directory name matches th
 | `@soroush.tech/vite-plugin-sitemap`    | private   | Build-only Vite plugin: emits `sitemap.xml` from Vike's prerendered HTML.                               |
 | `@soroush.tech/vite-plugin-msw-server` | published | Runs an `msw`/node mock server inside Vite for server-side rendering and SSG prerendering.              |
 | `@soroush.tech/playwright-coverage`    | published | Collects per-test V8 coverage from Playwright e2e runs and aggregates it to lcov via monocart.          |
-| `@soroush.tech/styled-system`          | published | First-class-TypeScript rewrite of styled-system — the canonical implementation, exposed via subpaths.   |
+| `@soroush.tech/styled-system`          | published | First-class-TypeScript rewrite of styled-system - the canonical implementation, exposed via subpaths.   |
 
 ## Consuming a package
 
@@ -30,13 +30,13 @@ Add it as a `workspace:*` dependency on the member that needs it, then import th
 import mswServer from '@soroush.tech/vite-plugin-msw-server'
 ```
 
-Internally, packages are consumed as **TypeScript source** (`exports` → `./src/index.ts`, bundler resolution) — there is no build step for internal use. Publishable packages additionally build a `dist/` with `tsdown` and swap their `exports` to it on publish via `publishConfig`.
+Internally, packages are consumed as **TypeScript source** (`exports` → `./src/index.ts`, bundler resolution) - there is no build step for internal use. Publishable packages additionally build a `dist/` with `tsdown` and swap their `exports` to it on publish via `publishConfig`.
 
 ## Conventions
 
 Two house rules to know up front:
 
-- **100% test coverage is mandatory** for every package — none ships or publishes below it.
+- **100% test coverage is mandatory** for every package - none ships or publishes below it.
 - **Licensing:** a publishable (non-`private`) package must declare a `license` and ship a `LICENSE` file before it is published. _Current state: the published packages above ship MIT; the remaining `private` packages carry no license until they are published._
 
-Full rules — folder structure, exports, publishing, testing, licensing, naming — live in [`packages.md`](./packages.md).
+Full rules - folder structure, exports, publishing, testing, licensing, naming - live in [`packages.md`](./packages.md).

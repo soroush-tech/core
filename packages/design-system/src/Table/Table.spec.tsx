@@ -20,7 +20,7 @@ import {
 } from './'
 
 // 23 rows → 3 pages at 10/page. Latency increases with the row number, EXCEPT a
-// planted global max on service-15 and global min on service-20 — both off the
+// planted global max on service-15 and global min on service-20 - both off the
 // unsorted first page, so sorting by latency surfaces rows the page slice would
 // otherwise hide (proving the sort runs over the whole dataset before slicing).
 interface Service {
@@ -181,7 +181,7 @@ describe('Table (integration)', () => {
     fireEvent.click(navButton('next')) // page index 1
     expect(screen.getByText(/^11.20 of 23$/)).toBeInTheDocument()
 
-    // sort service descending (first click) → service-23..01; page 2 now holds ranks 11–20
+    // sort service descending (first click) → service-23..01; page 2 now holds ranks 11-20
     fireEvent.click(screen.getByRole('button', { name: 'Service' }))
     expect(screen.getByText(/^11.20 of 23$/)).toBeInTheDocument()
     expect(rowNames()[0]).toBe('service-13')
@@ -293,7 +293,7 @@ describe('Table (integration)', () => {
     // hasStickyHeader reached the head cell through TableContext
     expect(serviceHeader).toHaveStyle({ position: 'sticky' })
 
-    // size="sm" reached both head and body cells identically — the body cell
+    // size="sm" reached both head and body cells identically - the body cell
     // gets its density from context through TableControl, not a direct prop
     const bodyCell = within(within(getBody()).getAllByRole('row')[0]).getAllByRole('cell')[1]
     const headPadding = getComputedStyle(serviceHeader).paddingLeft
@@ -302,7 +302,7 @@ describe('Table (integration)', () => {
   })
 })
 
-describe('Table (integration) — styling & edge compositions', () => {
+describe('Table (integration) - styling & edge compositions', () => {
   it('flows table-level styling props to a section-less cell', () => {
     renderWithTheme(
       <Table align="right" borderRadius="md" cellPadding="none" hasEllipsis>

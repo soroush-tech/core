@@ -45,11 +45,11 @@ export function DocumentEditor({
   }
 
   const handleModeChange = (next: ToggleButtonValue | ToggleButtonValue[] | null) => {
-    // Clicking the active mode reports null — the surface always keeps a mode.
+    // Clicking the active mode reports null - the surface always keeps a mode.
     if (next === null) return
     const mode = next as DocumentViewMode
     setMode(mode)
-    // Source-textarea offsets are meaningless once that textarea is gone — but
+    // Source-textarea offsets are meaningless once that textarea is gone - but
     // edit and split both keep it, and clearing there would leave text visibly
     // highlighted while the panel had already moved on to the whole document.
     if (!HAS_SOURCE.has(mode)) onSelectionChange?.({ start: 0, end: 0 })
@@ -62,7 +62,7 @@ export function DocumentEditor({
         gap={2}
         flex={1}
         minHeight={0}
-        // Selection offsets are document offsets only in the source textarea —
+        // Selection offsets are document offsets only in the source textarea -
         // Live edit's inline block editor emits block-relative ones.
       >
         <>
@@ -88,7 +88,7 @@ export function DocumentEditor({
             gap={3}
             flex={1}
             // Selection offsets are document offsets only in the source textarea
-            // (edit/split) — Live edit's blocks emit block-relative ones.
+            // (edit/split) - Live edit's blocks emit block-relative ones.
             onSelect={mode === 'edit' || mode === 'split' ? handleSelect : undefined}
           >
             {/* maxRows keeps the source field inside the pane (it scrolls

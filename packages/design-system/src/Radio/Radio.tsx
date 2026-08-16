@@ -33,7 +33,7 @@ export interface RadioProps extends SpaceProps<Theme> {
   id?: string
   /** Marks the field as required in a form. */
   required?: boolean
-  /** Radio group name — required for native group exclusivity. */
+  /** Radio group name - required for native group exclusivity. */
   name?: string
   /** Value submitted with the form when this radio is selected. */
   value?: string | number | readonly string[]
@@ -44,7 +44,7 @@ export interface RadioProps extends SpaceProps<Theme> {
   'data-testid'?: string
 }
 
-// Glyph size comes from theme.icon — mapped over theme.sizes, so augmenting a
+// Glyph size comes from theme.icon - mapped over theme.sizes, so augmenting a
 // size key forces the matching icon size to be supplied by the theme.
 
 // ─── Default icons ────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ const RadioIconWrapper = styled('span', {
   justifyContent: 'center',
   flexShrink: 0,
   fontSize: theme.icon[size],
-  // 0 (not 1) so the inline SVG's line box can't inflate the wrapper height —
+  // 0 (not 1) so the inline SVG's line box can't inflate the wrapper height -
   // keeps it square so the focus outline sits evenly on all sides.
   lineHeight: 0,
   transition: 'color 0.15s ease',
@@ -165,7 +165,7 @@ export function Radio({
     size: sizeProp,
   })
   const { id, disabled, required, size } = fc
-  // Left unresolved when unset — the styled layer falls back to themeDefault(theme, 'neutralColor', 'default').
+  // Left unresolved when unset - the styled layer falls back to themeDefault(theme, 'neutralColor', 'default').
   const color = colorProp ?? fc.color
   const describedBy = inputProps?.['aria-describedby'] ?? fc['aria-describedby']
 

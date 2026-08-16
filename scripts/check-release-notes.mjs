@@ -5,13 +5,13 @@
 //    to release without it; this catches the same gap earlier, so a version bump can't land on
 //    main without its notes. The editor is held to the same rule: cd-editor.yml reads
 //    apps/editor/release-notes/<version>.md into its GitHub Release the same way.
-// 2. A package with *staged changes* must sit ahead of its latest npm-published version — you
+// 2. A package with *staged changes* must sit ahead of its latest npm-published version - you
 //    can't edit a package and forget the bump. Packages with no staged changes are skipped, so
 //    resting at the published version is fine, and repeated commits against one unreleased
 //    version (e.g. 1.1.0 while 1.0.0 is live) all pass without touching the version again.
 //    The editor mirrors this against its own release channel: staged apps/editor changes must
 //    sit ahead of the newest *published* GitHub Release (a v* tag only exists once a release
-//    is published — drafts carry none).
+//    is published - drafts carry none).
 //
 // Private packages are skipped by both (they never publish). Guard 2 needs the network: when the
 // registry (or GitHub) is unreachable it warns and passes, so being offline never blocks a commit.
@@ -38,8 +38,8 @@ const publishablePackages = () =>
 
 /**
  * The incoming commits of a merge in progress: MERGE_HEAD sits in .git from
- * `git merge` until its commit, one sha per line — several for an octopus
- * merge. Read from disk rather than asked of git — one less process, and the
+ * `git merge` until its commit, one sha per line - several for an octopus
+ * merge. Read from disk rather than asked of git - one less process, and the
  * path is fixed for a regular checkout, which this repo's workflow is.
  * Empty outside a merge.
  */
@@ -53,7 +53,7 @@ const mergeHeadShas = () => {
 }
 
 /**
- * Staged file paths differing from `base` — HEAD when omitted.
+ * Staged file paths differing from `base` - HEAD when omitted.
  * Empty when nothing is staged (e.g. in CI).
  */
 const stagedFiles = (base) =>
@@ -79,7 +79,7 @@ const editorIsStaged = (base) => stagedFiles(base).some((file) => file.startsWit
 
 /**
  * Compares two semver core versions. Returns a positive number when `a` is newer, 0 when equal.
- * Prereleases are compared by their core only — enough for a "did you bump?" guard, and it never
+ * Prereleases are compared by their core only - enough for a "did you bump?" guard, and it never
  * reports a prerelease as newer than the release it precedes.
  */
 const compareVersions = (a, b) => {
@@ -106,7 +106,7 @@ const latestPublishedVersion = async (name) => {
 }
 
 /**
- * The editor's latest released version — the newest *published* v* GitHub Release, asked of the
+ * The editor's latest released version - the newest *published* v* GitHub Release, asked of the
  * Releases API rather than the tag refs: a stray tag with no release, or one sitting under a
  * draft, is not a published baseline. `null` when no release exists yet, `undefined` when
  * GitHub was unreachable.
@@ -134,7 +134,7 @@ const packages = publishablePackages()
 // ─── Guard 1: notes file exists for the current version ───────────────────────
 
 // The editor releases through cd-editor.yml rather than npm, but its GitHub
-// Release reads the same kind of file — hold it to the same guard.
+// Release reads the same kind of file - hold it to the same guard.
 const editor = JSON.parse(readFileSync(join(repoRoot, 'apps', 'editor', 'package.json'), 'utf8'))
 
 const missingNotes = packages
@@ -164,7 +164,7 @@ console.log('Release notes present for every publishable package version and the
 // A merge stages the whole incoming branch, so a package released there looks
 // edited-without-a-bump here. Content that matches any parent already passed
 // this guard on its own branch; only a package differing from HEAD and from
-// every incoming parent — an edit made during conflict resolution — is new to
+// every incoming parent - an edit made during conflict resolution - is new to
 // this commit, and that one stays checked.
 const mergeHeads = mergeHeadShas()
 let staged = stagedPackageDirs()
@@ -175,13 +175,13 @@ if (mergeHeads.length > 0) {
     staged = new Set([...staged].filter((dir) => vsParent.has(dir)))
   }
   editorStaged = editorStaged && mergeHeads.every((parent) => editorIsStaged(parent))
-  console.log('Merge in progress — checking only changes that match no parent.')
+  console.log('Merge in progress - checking only changes that match no parent.')
 }
 
 const changed = packages.filter(({ dir }) => staged.has(dir))
 
 if (changed.length === 0 && !editorStaged) {
-  console.log('No staged package or editor changes — skipping the published-version check.')
+  console.log('No staged package or editor changes - skipping the published-version check.')
   process.exit(0)
 }
 
@@ -191,7 +191,7 @@ const results = await Promise.all(
 
 const unreachable = results.filter(({ published }) => published === undefined)
 for (const { name } of unreachable) {
-  console.warn(`Warning: could not reach the registry for ${name} — version check skipped.`)
+  console.warn(`Warning: could not reach the registry for ${name} - version check skipped.`)
 }
 
 const stale = results.filter(
@@ -206,7 +206,7 @@ if (stale.length > 0) {
   }
   console.error(
     '\nBump the version and add its release-notes file (see the release-notes skill).\n' +
-      'A package you did not change can stay at its published version — only staged ones are checked.'
+      'A package you did not change can stay at its published version - only staged ones are checked.'
   )
   process.exit(1)
 }
@@ -217,12 +217,12 @@ for (const { name, version, published } of results) {
   console.log(`${name}: ${version} is ahead of npm (${live}).`)
 }
 
-// The editor's published versions live in GitHub Releases, not on npm — same
+// The editor's published versions live in GitHub Releases, not on npm - same
 // "did you bump?" rule, different registry.
 if (editorStaged) {
   const published = await latestEditorRelease()
   if (published === undefined) {
-    console.warn('Warning: could not reach GitHub for the editor — version check skipped.')
+    console.warn('Warning: could not reach GitHub for the editor - version check skipped.')
   } else if (published !== null && compareVersions(editor.version, published) <= 0) {
     console.error('\nStaged editor is not ahead of the version already released on GitHub:')
     console.error(

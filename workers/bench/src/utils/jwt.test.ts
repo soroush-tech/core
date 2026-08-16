@@ -76,7 +76,7 @@ describe('pemToPkcs8Der', () => {
     )
     const pkcs8 = new Uint8Array(await crypto.subtle.exportKey('pkcs8', pair.privateKey))
 
-    // PrivateKeyInfo = 30 len · 02 01 00 · alg(15) · 04 len · <PKCS#1> — skip to the key bytes.
+    // PrivateKeyInfo = 30 len · 02 01 00 · alg(15) · 04 len · <PKCS#1> - skip to the key bytes.
     const lengthOctets = (at: number) => (pkcs8[at] < 0x80 ? 1 : 1 + (pkcs8[at] & 0x7f))
     let offset = 1 + lengthOctets(1) + 3 + 15
     offset += 1 + lengthOctets(offset + 1)

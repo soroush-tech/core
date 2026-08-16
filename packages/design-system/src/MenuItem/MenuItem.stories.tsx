@@ -42,7 +42,7 @@ const meta: Meta<typeof MenuItem> = {
   argTypes: {
     value: {
       control: 'text',
-      description: "The value this option represents — reported to Select's onChange.",
+      description: "The value this option represents - reported to Select's onChange.",
       table: { category: 'Content' },
     },
     children: {
@@ -73,19 +73,19 @@ const meta: Meta<typeof MenuItem> = {
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
-      description: 'Accent color — resolves to `theme.palette[color]`.',
+      description: 'Accent color - resolves to `theme.palette[color]`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     textColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Base text color of the row — resolves against `theme.text`.',
+      description: 'Base text color of the row - resolves against `theme.text`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     size: {
       control: { type: 'select' },
       options: textInputSizeTokens,
-      description: 'Density — resolves against `theme.sizes`.',
+      description: 'Density - resolves against `theme.sizes`.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     dense: {
