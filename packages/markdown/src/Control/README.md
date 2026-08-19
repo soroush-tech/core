@@ -1,6 +1,6 @@
 # Control
 
-The headless root of the `Markdown` compound. It renders **no UI of its own** — it owns the shared
+The headless root of the `Markdown` compound. It renders **no UI of its own** - it owns the shared
 value/selection state and exposes it (plus a `dispatch` for toolbar actions) via context to the
 nested parts (`Toolbar`, `Editor`, `Preview`). Controlled: the consumer holds the `value`.
 
@@ -13,7 +13,7 @@ There is no built-in view switcher; the consumer arranges the parts and decides 
 | ---------- | ------------------------- | ---------------------------------------------------- |
 | `value`    | `string`                  | Current markdown source (controlled).                |
 | `onChange` | `(value: string) => void` | Called on typing or a toolbar action.                |
-| `children` | `ReactNode`               | The composed parts — `Toolbar`, `Editor`, `Preview`. |
+| `children` | `ReactNode`               | The composed parts - `Toolbar`, `Editor`, `Preview`. |
 
 ## Context
 

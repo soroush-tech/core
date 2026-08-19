@@ -4,7 +4,7 @@
 
 The Creative North Star for this design system is **"The Kinetic Architect."** This aesthetic moves beyond standard tech minimalism into a high-end, editorial space that feels both surgically precise and vibrantly alive.
 
-To break the "template" look, the system leverages **intentional asymmetry** and **architectural layering**. We do not use standard grids to contain ideas; we use the Space Grotesk typeface and high-contrast neon accents to anchor them. The layout should feel like a technical blueprint—calculated, layered, and premium. Depth is not achieved through shadows, but through the sophisticated stacking of dark surfaces, creating an environment that feels like a high-end terminal interface.
+To break the "template" look, the system leverages **intentional asymmetry** and **architectural layering**. We do not use standard grids to contain ideas; we use the Space Grotesk typeface and high-contrast neon accents to anchor them. The layout should feel like a technical blueprint-calculated, layered, and premium. Depth is not achieved through shadows, but through the sophisticated stacking of dark surfaces, creating an environment that feels like a high-end terminal interface.
 
 ---
 

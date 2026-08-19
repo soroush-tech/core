@@ -4,7 +4,7 @@ import { ThemeProvider } from '../theme'
 import { createTheme, baseTheme, type ComponentConfig } from '../theme/themes'
 import { styled } from './styled'
 
-// A consumer-style component registered under a custom theme.components key —
+// A consumer-style component registered under a custom theme.components key -
 // exercises the wrapper directly, independent of any design-system component.
 declare module '@emotion/react' {
   interface ThemeComponents {

@@ -10,8 +10,8 @@ const NON_PRERENDERED_ROUTE = /^\/article\/[^/]+\/?$/
 
 // Vike renders this for both unmatched routes (404) and render errors (500). On a cold hard-load
 // of a non-prerendered article (e.g. a gist published after the last deploy) the static host
-// hands back 404.html; we boot client routing to re-resolve the real URL — running data() in the
-// browser via dataIsomorph — so refresh / deep-link renders the article instead of the 404 screen.
+// hands back 404.html; we boot client routing to re-resolve the real URL - running data() in the
+// browser via dataIsomorph - so refresh / deep-link renders the article instead of the 404 screen.
 function ErrorPage() {
   const { urlPathname, urlOriginal, isClientSideNavigation } = usePageContext()
 

@@ -3,7 +3,7 @@
 Generic, interactive D3 force-directed graph. It is **data-agnostic**: pass it a
 pre-built `GraphData` object and a `heading`, and it renders a draggable, zoomable
 node network with an expandable category sidebar and a zoom control cluster. The
-graph holds no domain data of its own — a producer (e.g. a section's data layer)
+graph holds no domain data of its own - a producer (e.g. a section's data layer)
 builds the `GraphData` and supplies it.
 
 ## Props
@@ -11,7 +11,7 @@ builds the `GraphData` and supplies it.
 | Prop      | Type        | Description                                                        |
 | --------- | ----------- | ------------------------------------------------------------------ |
 | `data`    | `GraphData` | The fully-derived render graph (see below). Built by the consumer. |
-| `heading` | `ReactNode` | Title content shown in the header — keeps the graph content-free.  |
+| `heading` | `ReactNode` | Title content shown in the header - keeps the graph content-free.  |
 
 ### `GraphData`
 
@@ -49,7 +49,7 @@ NetworkGraph/
 
 `useGraphState` holds the UI state and `useGraphSimulation` consumes its
 `visibleIds`/`expandedNodes` plus the `data` graph and `onActivate`/`onToggle`
-callbacks to drive the D3 graph — keeping the imperative DOM code isolated from the
+callbacks to drive the D3 graph - keeping the imperative DOM code isolated from the
 React state.
 
 ## Behaviour
@@ -57,11 +57,11 @@ React state.
 - **Root + top-level nodes are always visible.** Other nodes appear only when an
   ancestor branch is expanded (BFS in `computeVisibleIds`).
 - **Expand/collapse** via clicking a category row in the legend or a branch node in
-  the graph. The row shows a `+` when collapsed and a `−` when expanded.
+  the graph. The row shows a `+` when collapsed and a `-` when expanded.
 - **Legend children.** When a category is expanded, its direct children list in the
   legend (animating open, respecting `prefers-reduced-motion`). A child that is
   itself a branch gets a **checkbox** that expands it in the graph; a **leaf** child
-  (no children of its own) shows a dash marker and label instead — a checkbox would
+  (no children of its own) shows a dash marker and label instead - a checkbox would
   be meaningless when there is nothing to expand.
 - **Zoom controls** dispatch `graph:zoom-in` / `graph:zoom-out` / `graph:reset`
   DOM events on the container, which the D3 zoom behaviour listens for.

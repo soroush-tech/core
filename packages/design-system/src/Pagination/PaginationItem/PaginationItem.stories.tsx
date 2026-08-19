@@ -26,7 +26,7 @@ const meta: Meta<typeof PaginationItem> = {
     type: {
       control: { type: 'select' },
       options: ['page', 'first', 'previous', 'next', 'last', 'start-ellipsis', 'end-ellipsis'],
-      description: 'What the item renders — page number, nav control, or ellipsis.',
+      description: 'What the item renders - page number, nav control, or ellipsis.',
       table: { category: 'Content', defaultValue: { summary: 'page' } },
     },
     page: {
@@ -36,7 +36,7 @@ const meta: Meta<typeof PaginationItem> = {
     },
     isSelected: {
       control: 'boolean',
-      description: 'Active styling for the current page — also sets `aria-current="page"`.',
+      description: 'Active styling for the current page - also sets `aria-current="page"`.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     color: paginationColor,

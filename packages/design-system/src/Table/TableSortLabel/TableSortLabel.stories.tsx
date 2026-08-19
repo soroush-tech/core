@@ -27,7 +27,7 @@ const meta: Meta<typeof TableSortLabel> = {
   argTypes: {
     children: {
       control: 'text',
-      description: 'Label contents — the arrow is appended automatically.',
+      description: 'Label contents - the arrow is appended automatically.',
       table: { category: 'Content' },
     },
     isActive: {
@@ -38,7 +38,7 @@ const meta: Meta<typeof TableSortLabel> = {
     direction: {
       control: { type: 'select' },
       options: ['asc', 'desc'],
-      description: 'Current sort direction — rotates the arrow.',
+      description: 'Current sort direction - rotates the arrow.',
       table: { category: 'Behavior', defaultValue: { summary: 'asc' } },
     },
     shouldHideSortIcon: {

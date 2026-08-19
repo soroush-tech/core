@@ -71,7 +71,7 @@ jobs:
           cache: pnpm
 
       # --ignore-scripts, as in the bench deploy: no lifecycle script runs at
-      # install — workerd's binary ships as a platform package.
+      # install - workerd's binary ships as a platform package.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
@@ -85,7 +85,7 @@ jobs:
           VITE_CONTACT_HONEYPOT: ${{ vars.VITE_CONTACT_HONEYPOT }}
 
       # Deploy via the official Cloudflare action (same as the Storybook Pages deploy in
-      # cd-web.yml) rather than the wrangler CLI. `config:gen` above must run first — the action
+      # cd-web.yml) rather than the wrangler CLI. `config:gen` above must run first - the action
       # runs `wrangler deploy` directly and does not fire the package's `predeploy` hook.
       - name: Deploy
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
@@ -94,7 +94,7 @@ jobs:
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: '4.119.0'
           # The lockfile lives at the repo root, so the action's per-directory
-          # detection falls back to npm — which cannot read workspace:* deps.
+          # detection falls back to npm - which cannot read workspace:* deps.
           packageManager: pnpm
           workingDirectory: workers/api
           command: deploy

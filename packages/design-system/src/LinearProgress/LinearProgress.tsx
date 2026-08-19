@@ -22,9 +22,9 @@ export interface LinearProgressProps
     HTMLAttributes<HTMLSpanElement>,
     Omit<SpaceProps<Theme>, keyof PaddingProps>,
     LayoutProps<Theme> {
-  /** Visual variant — looping animation, value-driven bar, or reversed loop. Default: `'indeterminate'`. */
+  /** Visual variant - looping animation, value-driven bar, or reversed loop. Default: `'indeterminate'`. */
   variant?: LinearProgressVariant
-  /** Bar color — resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Bar color - resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: LinearProgressColor
   /** Bar height. Number → px; string → raw CSS unit (e.g. `'0.5rem'`). Default: `4`. */
   thickness?: number | string
@@ -102,7 +102,7 @@ const LinearProgressTrack = styled('span', {
   opacity: 0.2,
 })
 
-// Dotted leading edge for the buffer mode — replaces the solid track.
+// Dotted leading edge for the buffer mode - replaces the solid track.
 // currentColor keeps it on the resolved theme color without extra tokens.
 const LinearProgressDash = styled('span', {
   name: 'LinearProgress',
@@ -123,7 +123,7 @@ type BarProps = Pick<LinearProgressProps, 'variant' | 'buffer' | 'easing'>
 const barShouldForwardProp = (prop: string) =>
   prop !== 'variant' && prop !== 'buffer' && prop !== 'easing'
 
-// Primary bar — animated for indeterminate/query, transform-driven for determinate.
+// Primary bar - animated for indeterminate/query, transform-driven for determinate.
 const LinearProgressBar = styled('span', {
   name: 'LinearProgress',
   slot: 'bar',
@@ -167,7 +167,7 @@ const LinearProgressSegment = styled('span', {
   backgroundColor: 'currentColor',
 })
 
-// Secondary bar — delayed animation for indeterminate/query, buffer amount in buffer mode.
+// Secondary bar - delayed animation for indeterminate/query, buffer amount in buffer mode.
 const LinearProgressBarSecondary = styled('span', {
   name: 'LinearProgress',
   slot: 'secondaryBar',
@@ -210,7 +210,7 @@ const thicknessStyle = ({ thickness = THICKNESS_DEFAULT }: LinearProgressProps) 
 const directionStyle = ({ variant = 'indeterminate' }: LinearProgressProps) =>
   variant === 'query' ? { transform: 'rotate(180deg)' } : {}
 
-// Pill corners — same literal Button uses for its pill shape. overflow:hidden
+// Pill corners - same literal Button uses for its pill shape. overflow:hidden
 // on the root clips the bars to the radius.
 const roundStyle = ({ round }: LinearProgressProps) => (round ? { borderRadius: '9999px' } : {})
 

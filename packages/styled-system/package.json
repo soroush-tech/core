@@ -1,7 +1,7 @@
 {
   "name": "@soroush.tech/styled-system",
-  "version": "5.8.2",
-  "description": "Maintained, first-class-TypeScript rewrite of styled-system — responsive, theme-aware style props for CSS-in-JS. Drop-in replacement for styled-system v5.",
+  "version": "5.8.3",
+  "description": "Maintained, first-class-TypeScript rewrite of styled-system - responsive, theme-aware style props for CSS-in-JS. Drop-in replacement for styled-system v5.",
   "keywords": [
     "styled-system",
     "css-in-js",

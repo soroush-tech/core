@@ -13,13 +13,13 @@ import {
 } from '@soroush.tech/design-system'
 import { themeDefault } from '@soroush.tech/design-system/theme'
 
-/** Palette color driving the hover/selected shading — a `theme.palette` key. */
+/** Palette color driving the hover/selected shading - a `theme.palette` key. */
 export type TableRowColor = PaletteColor
 
-/** Valid values for the bg prop — derived from theme.background keys. */
+/** Valid values for the bg prop - derived from theme.background keys. */
 export type TableRowBackgroundToken = keyof Theme['background']
 
-/** Valid values for the borderColor prop — derived from theme.border keys. */
+/** Valid values for the borderColor prop - derived from theme.border keys. */
 export type TableRowBorderColorToken = keyof Theme['border']
 
 export interface TableRowProps
@@ -28,7 +28,7 @@ export interface TableRowProps
     SpaceProps<Theme>,
     Omit<BorderProps<Theme>, 'borderColor' | 'borderRadius'> {
   /**
-   * Palette color for the hover/selected shading — maps to `theme.palette[color]`
+   * Palette color for the hover/selected shading - maps to `theme.palette[color]`
    * (hover → `.light`, selected → `.dark`, both with `contrastText`). Falls back
    * to the enclosing `Table`'s `color`. Default: 'primary', overridable via `theme.defaults.color`.
    */
@@ -36,7 +36,7 @@ export interface TableRowProps
   as?: ElementType
   /** Resolves against theme.background */
   bg?: TableRowBackgroundToken
-  /** Resolves against theme.border — light · primary · dark */
+  /** Resolves against theme.border - light · primary · dark */
   borderColor?: TableRowBorderColorToken
   /** Shades the row on hover with `theme.palette[color].light`. Default: `false`. */
   isHoverable?: boolean

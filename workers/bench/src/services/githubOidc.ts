@@ -5,7 +5,7 @@ export const JWKS_URL = `${OIDC_ISSUER}/.well-known/jwks`
 /** Fixed audience the action requests its OIDC token with (`core.getIDToken(audience)`). */
 export const OIDC_AUDIENCE = 'soroush-bench-action'
 
-/** OIDC verification failure — the route maps it to 401. */
+/** OIDC verification failure - the route maps it to 401. */
 export class OidcError extends Error {}
 
 /** Allowed clock skew between GitHub's token clock and ours, in seconds. */
@@ -13,7 +13,7 @@ const CLOCK_LEEWAY_S = 60
 
 /**
  * Verifies a GitHub Actions OIDC JWT (JWKS signature, issuer, audience, validity window) and
- * returns its `repository` claim — the only caller identity the relay trusts. Throws `OidcError`
+ * returns its `repository` claim - the only caller identity the relay trusts. Throws `OidcError`
  * on any verification failure; a JWKS fetch that dies on the network rejects as-is (→ 502).
  */
 export const verifyActionsOidc = async (token: string, audience: string): Promise<string> => {

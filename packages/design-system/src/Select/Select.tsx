@@ -34,15 +34,15 @@ export type SelectSize = keyof Theme['sizes']
 
 export interface SelectProps
   extends SpaceProps<Theme>, Pick<LayoutProps<Theme>, 'width' | 'minWidth' | 'maxWidth'> {
-  /** `MenuItem` children — one per option. */
+  /** `MenuItem` children - one per option. */
   children: ReactNode
   /** Render a native `<select>` (delegates to `NativeSelect`, single-select) instead of the custom listbox. */
   native?: boolean
-  /** Allow selecting several options — `value` becomes an array. Ignored on the native path. */
+  /** Allow selecting several options - `value` becomes an array. Ignored on the native path. */
   multiple?: boolean
   /** Size the trigger to the current selection instead of reserving the widest option's width. When `false` (default) the trigger keeps a stable width, avoiding layout shift on selection. */
   autoWidth?: boolean
-  /** Controlled value — a single option value, or an array when `multiple`. */
+  /** Controlled value - a single option value, or an array when `multiple`. */
   value?: SelectValue
   /** Uncontrolled initial value. */
   defaultValue?: SelectValue
@@ -58,13 +58,13 @@ export interface SelectProps
   placeholder?: string
   /** Override the trigger's rendered content for the current value. */
   renderValue?: (value: SelectValue) => ReactNode
-  /** Corner radius — applies only to `default` and `outlined` variants. */
+  /** Corner radius - applies only to `default` and `outlined` variants. */
   borderRadius?: keyof Theme['radii']
-  /** Focus/active border color — resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Focus/active border color - resolves to `theme.palette[color].main`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: SelectColor
-  /** Text color of the trigger value — resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
+  /** Text color of the trigger value - resolves against `theme.text`. Default: 'primary', overridable via `theme.defaults.accentTextColor`. */
   textColor?: SelectTextColor
-  /** Background color — resolves against `theme.background`. Default: `'terminal'`. */
+  /** Background color - resolves against `theme.background`. Default: `'terminal'`. */
   bg?: SelectBackgroundToken
   disabled?: boolean
   error?: boolean
@@ -72,7 +72,7 @@ export interface SelectProps
   required?: boolean
   /** Controls padding and font size. Default: 'md', overridable via `theme.defaults.size`. */
   size?: SelectSize
-  /** Visual style — mirrors `TextInput`/`NativeSelect`. Default: `'default'`. */
+  /** Visual style - mirrors `TextInput`/`NativeSelect`. Default: `'default'`. */
   variant?: SelectVariant
   /** Dropdown affordance icon. Default: `'expand_more'` / `'expand_less'` when open. */
   iconName?: IconName
@@ -211,7 +211,7 @@ const Trigger = styled('div', {
 )
 
 // The value area reserves the widest option's width via a hidden ghost stack, so the
-// trigger doesn't resize — and shift the layout — as the selection changes. `autoWidth`
+// trigger doesn't resize - and shift the layout - as the selection changes. `autoWidth`
 // opts into sizing to the current content instead.
 const ValueArea = styled('span', {
   name: 'Select',
@@ -322,8 +322,8 @@ export function Select({
     defaultValue ?? (multiple ? [] : '')
   )
   const rawValue = isControlledValue ? valueProp : internalValue
-  // Keep the value shape in sync with `multiple` — it can be toggled after mount, or the
-  // provided value/defaultValue may not match — so selection logic always sees the right type.
+  // Keep the value shape in sync with `multiple` - it can be toggled after mount, or the
+  // provided value/defaultValue may not match - so selection logic always sees the right type.
   const multipleValue: SelectValue = Array.isArray(rawValue) ? rawValue : []
   const singleValue: SelectValue = Array.isArray(rawValue) ? '' : rawValue
   const value: SelectValue = multiple ? multipleValue : singleValue
@@ -406,7 +406,7 @@ export function Select({
   )
 }
 
-// Split out so hooks (popover, highlight) only run for the interactive listbox path —
+// Split out so hooks (popover, highlight) only run for the interactive listbox path -
 // the native branch returns before any of them, keeping the rules of hooks satisfied.
 interface NonNativeSelectProps {
   children: ReactNode
@@ -610,7 +610,7 @@ function NonNativeSelect({
     // Options keep source order, so the count of preceding option children is this row's index.
     const index = childArray.slice(0, position).filter(isOptionChild).length
     const option = options[index]
-    // Select's color/textColor are defaults — an item's own props override them.
+    // Select's color/textColor are defaults - an item's own props override them.
     const childProps = (child as ReactElement<MenuItemProps>).props
     return cloneElement(child as ReactElement<MenuItemProps>, {
       id: `${listboxId}-option-${index}`,
@@ -667,7 +667,7 @@ function NonNativeSelect({
               {placeholder !== undefined && <span>{placeholder}</span>}
             </ValueGhost>
           )}
-          <TriggerValue>{showPlaceholder ? (placeholder ?? '​') : display}</TriggerValue>
+          <TriggerValue>{showPlaceholder ? (placeholder ?? '\u200B') : display}</TriggerValue>
         </ValueArea>
         <Icon
           name={iconName ?? (open ? 'expand_less' : 'expand_more')}

@@ -11,7 +11,7 @@ export interface DraftedFile {
 /**
  * Lays the local draft over the gist's published files: remote files first, in
  * GitHub's order, then anything that exists only locally. A staged deletion
- * keeps its row — it is a pending change to show, not a file to hide.
+ * keeps its row - it is a pending change to show, not a file to hide.
  */
 export function mergeDraft(files: GistFile[], staged: GistDraftFiles): DraftedFile[] {
   const merged = files.map((file) => {

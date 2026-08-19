@@ -36,7 +36,7 @@ const meta: Meta<typeof TableFooter> = {
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color — resolves against `theme.text`.',
+      description: 'Text color - resolves against `theme.text`.',
       table: { category: 'Visual' },
     },
     bg,

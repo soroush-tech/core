@@ -1,6 +1,6 @@
 # Preview
 
-Renders a markdown **string** with every element mapped to a design-system primitive — headings,
+Renders a markdown **string** with every element mapped to a design-system primitive - headings,
 paragraphs, links, lists, GFM task-list checkboxes (`theme/Checkbox`), tables, blockquotes, images,
 and syntax-highlighted fenced code blocks (`CodeBlock`, via `rehype-highlight`).
 
@@ -20,7 +20,7 @@ README bodies.
 
 ## Customising elements
 
-`slotProps` overrides the props of **any** mapped element — keyed by the markdown tag: `h1`–`h6`,
+`slotProps` overrides the props of **any** mapped element - keyed by the markdown tag: `h1`-`h6`,
 `p`, `a`, `strong`, `em`, `ul`, `ol`, `li`, `code`, `blockquote`, `img`, `hr`, `th`, `td`, `pre`
 (the fenced `CodeBlock`), `input` (the task-list checkbox), and the table wrappers `table`,
 `thead`, `tbody`, `tr`. Provided props are spread **after** the defaults, so common props like
@@ -39,7 +39,7 @@ README bodies.
 ```
 
 A ` ```mermaid ` fence renders through the `Mermaid` component, configured via the `mermaid` slot.
-Its nested `diagram` key forwards to the zoom/pan viewer (`DiagramViewer`) — so **code**, **mermaid**,
+Its nested `diagram` key forwards to the zoom/pan viewer (`DiagramViewer`) - so **code**, **mermaid**,
 and **diagram** props all flow through `slotProps`:
 
 ```tsx
@@ -56,5 +56,5 @@ and **diagram** props all flow through `slotProps`:
 ## Notes
 
 - GFM is enabled (`remark-gfm`): tables, strikethrough, task lists, autolinks.
-- Fenced code blocks render through `CodeBlock` — horizontally scrollable, themed to
+- Fenced code blocks render through `CodeBlock` - horizontally scrollable, themed to
   `theme.syntax`, with a copy-to-clipboard button.

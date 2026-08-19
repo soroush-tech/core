@@ -38,7 +38,7 @@ export async function createGist(
     if (response.status === 401) {
       return {
         success: false,
-        error: 'GitHub rejected the stored token — connect the account again',
+        error: 'GitHub rejected the stored token - connect the account again',
       }
     }
     if (response.status === 422) {

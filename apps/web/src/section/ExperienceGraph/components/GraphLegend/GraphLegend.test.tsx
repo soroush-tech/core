@@ -11,7 +11,7 @@ const firstChildOf = (id: string) => childrenByParent.get(id)![0]
 const inputFor = (title: string) =>
   screen.getByText(title).closest('label')?.querySelector('input') ?? null
 // The clickable row (category or branch) that owns a given label. It is a div
-// carrying button semantics — a native <button> may not contain the Flex divs
+// carrying button semantics - a native <button> may not contain the Flex divs
 // these rows are built from.
 const rowOf = (title: string) => screen.getByText(title).closest('[role="button"]')!
 
@@ -116,7 +116,7 @@ describe('GraphLegend', () => {
     expect(onToggle).toHaveBeenCalledWith('P')
   })
 
-  it('announces each expandable row’s state via aria-expanded', () => {
+  it("announces each expandable row's state via aria-expanded", () => {
     const { rerender } = renderLegend({ ...withBranchChild })
     expect(rowOf('Parent')).toHaveAttribute('aria-expanded', 'false')
 
@@ -125,19 +125,19 @@ describe('GraphLegend', () => {
     expect(rowOf('Child 1')).toHaveAttribute('aria-expanded', 'true')
   })
 
-  it('shows + when a category is collapsed and − when expanded', () => {
+  it('shows + when a category is collapsed and - when expanded', () => {
     const { rerender } = renderLegend()
-    // both categories collapsed → two "+", no "−"
+    // both categories collapsed → two "+", no "-"
     expect(screen.getAllByText('+')).toHaveLength(topLevelIds.length)
-    expect(screen.queryByText('−')).not.toBeInTheDocument()
+    expect(screen.queryByText('-')).not.toBeInTheDocument()
 
     rerender(legend({ expandedNodes: new Set([topLevelIds[0]]) }))
-    // the expanded category now shows "−"; the other stays "+"
-    expect(screen.getByText('−')).toBeInTheDocument()
+    // the expanded category now shows "-"; the other stays "+"
+    expect(screen.getByText('-')).toBeInTheDocument()
     expect(screen.getAllByText('+')).toHaveLength(topLevelIds.length - 1)
   })
 
-  it('reveals a category’s children only once it is expanded', () => {
+  it("reveals a category's children only once it is expanded", () => {
     // Children are always rendered; the list collapses via its data-open flag.
     const child = firstChildOf(topLevelIds[0])
     const listOf = (title: string) => screen.getByText(title).closest('[data-open]')
@@ -149,7 +149,7 @@ describe('GraphLegend', () => {
   })
 
   it('renders an empty list for an expanded category that has none', () => {
-    // topLevelIds[1] (B) is absent from childrenByParent — its opened list has no rows.
+    // topLevelIds[1] (B) is absent from childrenByParent - its opened list has no rows.
     renderLegend({ expandedNodes: new Set([topLevelIds[1]]) })
     const list = rowOf(titleOf(topLevelIds[1])).nextElementSibling
     expect(list).toHaveAttribute('data-open', 'true')
@@ -170,7 +170,7 @@ describe('GraphLegend', () => {
     expect(within(rowOf('Child 1')).getByText('+')).toBeInTheDocument()
 
     rerender(legend({ ...withBranchChild, expandedNodes: new Set(['P', 'c1']) }))
-    expect(within(rowOf('Child 1')).getByText('−')).toBeInTheDocument()
+    expect(within(rowOf('Child 1')).getByText('-')).toBeInTheDocument()
     expect(screen.getByText('Grandchild 1')).toBeInTheDocument()
   })
 
@@ -188,7 +188,7 @@ describe('GraphLegend', () => {
     // React is shared, so it shows under both areas.
     expect(within(subtree('Web')).getByText('React')).toBeInTheDocument()
     expect(within(subtree('Mobile')).getByText('React')).toBeInTheDocument()
-    // React Native gates to Mobile only — present there, absent under Web.
+    // React Native gates to Mobile only - present there, absent under Web.
     expect(within(subtree('Mobile')).getByText('React Native')).toBeInTheDocument()
     expect(within(subtree('Web')).queryByText('React Native')).not.toBeInTheDocument()
     // Redux gates to both, so it still appears under Web.

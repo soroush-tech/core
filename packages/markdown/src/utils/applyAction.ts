@@ -8,12 +8,12 @@ export interface EditorSelection {
 }
 
 // A separating space is only needed when the neighbouring character would fuse with the marker
-// — i.e. it is neither whitespace nor another Markdown emphasis delimiter. Treating delimiters as
+// - i.e. it is neither whitespace nor another Markdown emphasis delimiter. Treating delimiters as
 // safe lets marks nest cleanly (e.g. bold then italic → **_text_**) instead of breaking apart.
 const fusesWithMarker = (char: string) => !/[\s*_~`]/.test(char)
 
-// If the selection is already wrapped by the markers — whether they sit inside the selection
-// or immediately outside it — return the unwrapped result (toggle off); otherwise null.
+// If the selection is already wrapped by the markers - whether they sit inside the selection
+// or immediately outside it - return the unwrapped result (toggle off); otherwise null.
 function stripWrap(
   action: WrapAction,
   { value, selectionStart, selectionEnd }: EditorSelection
@@ -54,7 +54,7 @@ function stripWrap(
   return null
 }
 
-// Inline mark (bold/italic/…): keep the selection's padding outside the markers, and insert a
+// Inline mark (bold/italic/...): keep the selection's padding outside the markers, and insert a
 // separating space if the token would butt up against neighbouring text so it always renders.
 function wrapInline(
   action: WrapAction,
@@ -82,7 +82,7 @@ function wrapInline(
   return { value: value_, selectionStart: start, selectionEnd: start + core.length }
 }
 
-// Block fence (code block): put the fence on its own line — add a newline before/after unless
+// Block fence (code block): put the fence on its own line - add a newline before/after unless
 // the neighbouring character is already a line break (or the document edge).
 function wrapBlock(
   action: WrapAction,
@@ -125,7 +125,7 @@ function applyLinePrefix(
   { value, selectionStart, selectionEnd }: EditorSelection
 ): EditorSelection {
   // `lastIndexOf` clamps a negative fromIndex to 0, so a caret at 0 with a leading '\n' would
-  // resolve to line two — the document start is always its own line start.
+  // resolve to line two - the document start is always its own line start.
   const lineStart = selectionStart === 0 ? 0 : value.lastIndexOf('\n', selectionStart - 1) + 1
   const nextNewline = value.indexOf('\n', selectionEnd)
   const lineEnd = nextNewline === -1 ? value.length : nextNewline
@@ -138,7 +138,7 @@ function applyLinePrefix(
   return { value: value_, selectionStart: lineStart, selectionEnd: lineStart + prefixed.length }
 }
 
-// If `pos` falls inside a fenced code block (``` … ```), returns the offset at the end of the
+// If `pos` falls inside a fenced code block (``` ... ```), returns the offset at the end of the
 // closing fence line; otherwise null. Lets an inserted block land after the fence instead of
 // nesting inside it (e.g. a mermaid diagram added while the caret sits in another mermaid block).
 function fenceEndAfter(value: string, pos: number): number | null {

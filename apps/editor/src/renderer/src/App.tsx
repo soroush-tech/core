@@ -41,10 +41,10 @@ export function App() {
   const documentName = origin?.filename ?? filePath ?? 'Untitled'
   useWindowTitle(documentName, isDirty)
 
-  // A different file on disk means a different document — its history starts fresh.
+  // A different file on disk means a different document - its history starts fresh.
   useEffect(() => reset(), [filePath, reset])
 
-  // A gist file is a new document, so its history starts fresh — the
+  // A gist file is a new document, so its history starts fresh - the
   // filePath-keyed reset above cannot see it (filePath stays null). Stable, so
   // the rail can open its startup sandbox exactly once.
   const openGistFile = useCallback(
@@ -61,7 +61,7 @@ export function App() {
         const actions = {
           // A new document starts its own history: the filePath-keyed reset
           // above cannot see this one, since an untitled document replacing a
-          // gist file leaves filePath null throughout — and undoing back into
+          // gist file leaves filePath null throughout - and undoing back into
           // what was just discarded is not what Ctrl+Z is for.
           new: () => void newDocument().then(reset),
           open: () => void open(),
@@ -76,13 +76,13 @@ export function App() {
     [newDocument, open, save, undo, redo, reset]
   )
 
-  // Clamp against stale ranges after external content changes (open/undo/…).
+  // Clamp against stale ranges after external content changes (open/undo/...).
   const start = Math.min(selection.start, content.length)
   const end = Math.min(selection.end, content.length)
   const hasSelection = start !== end
 
   // With a selection, Claude works on it; without one, on the whole document
-  // (which may be empty — pure generation).
+  // (which may be empty - pure generation).
   const targetText = hasSelection ? content.slice(start, end) : content
 
   // What is in the document when an answer arrives, rather than the copy
@@ -93,8 +93,8 @@ export function App() {
   }, [content])
 
   // What Claude was actually asked about, and the text that was in it. Held
-  // from the moment the request starts, because the selection can move — or
-  // collapse — while it runs, and an answer about a selection must never be
+  // from the moment the request starts, because the selection can move - or
+  // collapse - while it runs, and an answer about a selection must never be
   // applied as a whole document.
   const asked = useRef({ start, end, text: targetText, revision: revision.current })
   const beginEdit = () => {
@@ -102,7 +102,7 @@ export function App() {
   }
 
   /**
-   * Splices the answer over what Claude was given — but only if it is still the
+   * Splices the answer over what Claude was given - but only if it is still the
    * same document, and what the last one wrote is still exactly where it was
    * put. Typing, undo/redo, or opening another file while the request runs
    * would otherwise land the answer at shifted offsets, or in a document Claude

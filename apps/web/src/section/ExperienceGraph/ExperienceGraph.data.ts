@@ -1,6 +1,6 @@
 export const ROOT_ID = 'EXPERIENCE'
 
-/** Areas — the show/hide toggles and the top level (there is no root node). Stable
+/** Areas - the show/hide toggles and the top level (there is no root node). Stable
  *  short ids; label in `title`. */
 export const A = {
   WEB: '0',
@@ -11,7 +11,7 @@ export const A = {
   LANGUAGE: '5',
 } as const
 
-/** Groups — drawn label-nodes; each links to its members and rides along when a
+/** Groups - drawn label-nodes; each links to its members and rides along when a
  *  member is visible. */
 export const G = {
   BUILD_TOOLS: '21',
@@ -35,7 +35,7 @@ export const G = {
   DATA_PRESENTATION: '39',
 } as const
 
-/** Nodes — tech used as a `parent` (sub-tech nests under it) or a relation target,
+/** Nodes - tech used as a `parent` (sub-tech nests under it) or a relation target,
  *  so they need a stable id. Plain leaves keep a readable string id. */
 export const N = {
   NODE_JS: '100',
@@ -108,18 +108,18 @@ export interface TechNode {
   size?: number
   /** Level: `area` (top-level toggle), `group` (a drawn label node), or `node` (tech). */
   kind: 'area' | 'group' | 'node'
-  /** Area tags — gate show/hide only, no line drawn. Own tags override those inherited
+  /** Area tags - gate show/hide only, no line drawn. Own tags override those inherited
    *  from parents; with none, the node follows its parents' tags. */
   area?: Area[]
-  /** Parent attachments — the drawn containment line. A parent may be a node (e.g. Redux
+  /** Parent attachments - the drawn containment line. A parent may be a node (e.g. Redux
    *  under React), an area (Web ← React), or `ROOT_ID` (an area off the central root). The
    *  node's gate flows in from its parents unless it sets its own `area`. */
   parent?: (Area | Node | typeof ROOT_ID)[]
-  /** Categorical label nodes (a group, or a node acting as one) — dotted group line. */
+  /** Categorical label nodes (a group, or a node acting as one) - dotted group line. */
   groups?: (Group | Node)[]
   /** Lateral associations to other nodes (e.g. React ↔ React Native). Dashed threads. */
   relations?: (Area | Node)[]
-  /** Optional/legacy tech — collected so the legend can offer a show/hide toggle. */
+  /** Optional/legacy tech - collected so the legend can offer a show/hide toggle. */
   legacy?: boolean
   /** Auto-expand one level: when its area opens, this node's direct children show too
    *  without a click (still collapsible). E.g. React ⇒ Zustand/Redux ride along. */

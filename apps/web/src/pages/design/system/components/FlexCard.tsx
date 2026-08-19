@@ -17,7 +17,7 @@ export function FlexCard() {
           storybookHref={`${STORYBOOK_URL}?path=/docs/theme-flex--docs`}
         />
       }
-      caption="View is the base layout primitive — a div with all styled-system props. Flex extends it with display:flex and column direction by default."
+      caption="View is the base layout primitive - a div with all styled-system props. Flex extends it with display:flex and column direction by default."
     >
       <Flex flexDirection="column" gap={3}>
         <Flex flexDirection="row" gap={2}>

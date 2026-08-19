@@ -189,7 +189,7 @@ describe('App', () => {
     // Writing the answer in at that range would have mangled what is there now.
     expect(source).toHaveValue('a different document')
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'The document changed while Claude was working — the edit was not applied.'
+      'The document changed while Claude was working - the edit was not applied.'
     )
   })
 
@@ -208,7 +208,7 @@ describe('App', () => {
     // that answer would throw the difference away.
     expect(source).toHaveValue('hello, and more since')
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'The document changed while Claude was working — the edit was not applied.'
+      'The document changed while Claude was working - the edit was not applied.'
     )
   })
 
@@ -226,13 +226,13 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Ask Claude' }))
 
     // Another file is opened while Claude works, and it happens to hold the
-    // same text — which is not the same as being the document it was asked about.
+    // same text - which is not the same as being the document it was asked about.
     await dispatchMenu('open')
     await finishRun('HELLO')
 
     expect(source).toHaveValue('hello')
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'The document changed while Claude was working — the edit was not applied.'
+      'The document changed while Claude was working - the edit was not applied.'
     )
   })
 
@@ -323,7 +323,7 @@ describe('App', () => {
       content: '# from a gist!',
     })
     expect(fileApi.save).not.toHaveBeenCalled()
-    // Staged counts as saved — the document is clean, so Save goes quiet.
+    // Staged counts as saved - the document is clean, so Save goes quiet.
     expect(screen.getByRole('button', { name: 'Save to sandbox' })).toBeDisabled()
   })
 
@@ -461,7 +461,7 @@ describe('App', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'todo.md' }))
     expect(screen.getByLabelText('Markdown source')).toHaveValue('# todo')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md — modified' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'notes.md - modified' }))
 
     expect(screen.getByLabelText('Markdown source')).toHaveValue('# notes!')
   })

@@ -36,7 +36,7 @@ export type CoverageFixtureTuple = [
 
 /**
  * Builds the auto fixture that collects per-test coverage. Returned as a tuple (rather than a
- * hidden `base.extend` arrow) so the fixture body is callable — and thus unit-testable — directly.
+ * hidden `base.extend` arrow) so the fixture body is callable - and thus unit-testable - directly.
  */
 export const createAutoCoverageFixture = (
   options: PlaywrightCoverageOptions

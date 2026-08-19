@@ -79,7 +79,7 @@ describe('createGist', () => {
     expect(sentBody().files).toEqual({ 'new.md': { content: '\n' } })
   })
 
-  it('drops staged deletions — there is nothing published to delete yet', async () => {
+  it('drops staged deletions - there is nothing published to delete yet', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ id: 'abc123' }))
 
     await createGist(
@@ -105,7 +105,7 @@ describe('createGist', () => {
     fetchMock.mockResolvedValue(jsonResponse({}, false, 401))
     await expect(createGist(DRAFT, false, 'stale', fetchFn)).resolves.toEqual({
       success: false,
-      error: 'GitHub rejected the stored token — connect the account again',
+      error: 'GitHub rejected the stored token - connect the account again',
     })
   })
 

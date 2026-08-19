@@ -44,7 +44,7 @@ export function CircularProgressCard() {
           storybookHref={`${STORYBOOK_URL}?path=/docs/theme-circularprogress--docs`}
         />
       }
-      caption="Indeterminate loops continuously with configurable easing. Determinate is value-driven (0–100) on a 10s loop."
+      caption="Indeterminate loops continuously with configurable easing. Determinate is value-driven (0-100) on a 10s loop."
     >
       <Flex flexDirection="column" gap={5}>
         <Flex flexDirection="row" alignItems="flex-end" gap={2} flexWrap="wrap">

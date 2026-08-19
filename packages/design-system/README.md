@@ -8,9 +8,9 @@
 [![license](https://img.shields.io/npm/l/@soroush.tech/design-system.svg?cacheSeconds=86400)](./LICENSE)
 
 **Your design system. Your tokens. Your rules.**
-A fully typed React component library where nothing is hardcoded — every color, scale, and default belongs to you, not the package.
+A fully typed React component library where nothing is hardcoded - every color, scale, and default belongs to you, not the package.
 
-Tired of forking a component library just to change a color? Every token here is designed to be overridden — theming isn't an afterthought, it's the whole point.
+Tired of forking a component library just to change a color? Every token here is designed to be overridden - theming isn't an afterthought, it's the whole point.
 
 ## Install
 
@@ -18,7 +18,7 @@ Tired of forking a component library just to change a color? Every token here is
 npm i @soroush.tech/design-system
 ```
 
-`react` and `react-dom` are peer dependencies. Emotion is an internal implementation detail — it ships as a regular dependency, not a peer, so you never install it yourself.
+`react` and `react-dom` are peer dependencies. Emotion is an internal implementation detail - it ships as a regular dependency, not a peer, so you never install it yourself.
 
 ---
 
@@ -31,7 +31,7 @@ import { Typography } from '@soroush.tech/design-system/Typography'
 import { Flex } from '@soroush.tech/design-system/Flex'
 ```
 
-Styling primitives (the engine) come from the barrel `@soroush.tech/design-system` — `styled`, `css`, `keyframes`, the `Theme` type, styled-system functions, and `createShouldForwardProp`. The barrel (`src/index.ts`) is the engine abstraction layer: to swap the CSS-in-JS engine, only that file changes.
+Styling primitives (the engine) come from the barrel `@soroush.tech/design-system` - `styled`, `css`, `keyframes`, the `Theme` type, styled-system functions, and `createShouldForwardProp`. The barrel (`src/index.ts`) is the engine abstraction layer: to swap the CSS-in-JS engine, only that file changes.
 
 ```ts
 import { styled, css, type Theme } from '@soroush.tech/design-system'
@@ -43,21 +43,21 @@ import { styled, css, type Theme } from '@soroush.tech/design-system'
 import { ThemeProvider, useTheme } from '@soroush.tech/design-system/theme'
 ```
 
-Style-computation helpers (`useStyle`, `withStyles`, `StylesConsumer`) — resolving a `StyleInput`/`StyleFactory` into a `CSSObject` — live at their own subpath:
+Style-computation helpers (`useStyle`, `withStyles`, `StylesConsumer`) - resolving a `StyleInput`/`StyleFactory` into a `CSSObject` - live at their own subpath:
 
 ```ts
 import { useStyle } from '@soroush.tech/design-system/style'
 ```
 
-Raw engine primitives for building your own global styles — `Global`, `globalStyles`, and the SSR-only `CacheProvider`/`styleCache` pairing — live at their own subpath, not the barrel:
+Raw engine primitives for building your own global styles - `Global`, `globalStyles`, and the SSR-only `CacheProvider`/`styleCache` pairing - live at their own subpath, not the barrel:
 
 ```ts
 import { Global, globalStyles, CacheProvider, styleCache } from '@soroush.tech/design-system/engine'
 ```
 
-`Global` (retyped against this package's `Theme`) applies app-wide CSS and should render inside `ThemeProvider` so it resolves against the active theme. `globalStyles(theme)` is the base reset this package owns — box-sizing, margin/table resets, and theme-driven body colors — compose it into your own `Global` styles array alongside your app's own concerns (font-family, webfont loading, and anything else app-specific stay entirely app policy).
+`Global` (retyped against this package's `Theme`) applies app-wide CSS and should render inside `ThemeProvider` so it resolves against the active theme. `globalStyles(theme)` is the base reset this package owns - box-sizing, margin/table resets, and theme-driven body colors - compose it into your own `Global` styles array alongside your app's own concerns (font-family, webfont loading, and anything else app-specific stay entirely app policy).
 
-SSR critical-CSS extraction (e.g. with `@emotion/server`) is a separate, opt-in concern most apps never need — that's what `CacheProvider` and its paired `styleCache` instance are for.
+SSR critical-CSS extraction (e.g. with `@emotion/server`) is a separate, opt-in concern most apps never need - that's what `CacheProvider` and its paired `styleCache` instance are for.
 
 ---
 
@@ -67,7 +67,7 @@ SSR critical-CSS extraction (e.g. with `@emotion/server`) is a separate, opt-in 
 
 | Component | Purpose                                           |
 | --------- | ------------------------------------------------- |
-| `View`    | Styled `div` primitive — the base building block  |
+| `View`    | Styled `div` primitive - the base building block  |
 | `Flex`    | `View` with flexbox defaults                      |
 | `Grid`    | CSS grid container                                |
 | `Paper`   | Elevated surface with background and shadow       |
@@ -80,12 +80,12 @@ SSR critical-CSS extraction (e.g. with `@emotion/server`) is a separate, opt-in 
 
 | Component    | Purpose                                                                                                                                                                                                                                      |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Typography` | Text with variant → element mapping — the reference implementation for all components                                                                                                                                                        |
+| `Typography` | Text with variant → element mapping - the reference implementation for all components                                                                                                                                                        |
 | `Link`       | Anchor with theme-aware styling                                                                                                                                                                                                              |
 | `Icon`       | Icon renderer                                                                                                                                                                                                                                |
 | `Image`      | Image with styled-system props                                                                                                                                                                                                               |
 | `Avatar`     | User/entity avatar                                                                                                                                                                                                                           |
-| `Table`      | Compound data table — exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `@soroush.tech/design-system/Table` |
+| `Table`      | Compound data table - exports `TableContainer`, `TableHead`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`, `TablePagination`, `TablePaginationActions`, `TableSortLabel`, and `TableControl` from `@soroush.tech/design-system/Table` |
 
 ### Inputs & forms
 
@@ -122,7 +122,7 @@ SSR critical-CSS extraction (e.g. with `@emotion/server`) is a separate, opt-in 
 
 ## Theme tokens
 
-Components never hardcode colors or sizes — props resolve against scales on the `Theme` object:
+Components never hardcode colors or sizes - props resolve against scales on the `Theme` object:
 
 | Group              | Scales                                                                                                |
 | ------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -138,11 +138,11 @@ Prop types are derived from the interface (`keyof Theme['text']`), so adding a t
 
 ## Theming
 
-The theme belongs to you — the package only ships defaults. This section is the overview; the full guides are [`docs/theming.md`](./docs/theming.md) and [`docs/customization.md`](./docs/customization.md).
+The theme belongs to you - the package only ships defaults. This section is the overview; the full guides are [`docs/theming.md`](./docs/theming.md) and [`docs/customization.md`](./docs/customization.md).
 
 ### One theme, yours
 
-`ThemeProvider` provides exactly one theme — the built-in dark theme when you pass nothing. Bring one theme, or as many as you like: switching between them is your state, not the provider's.
+`ThemeProvider` provides exactly one theme - the built-in dark theme when you pass nothing. Bring one theme, or as many as you like: switching between them is your state, not the provider's.
 
 ```tsx
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
@@ -151,20 +151,20 @@ import { baseTheme, createTheme } from '@soroush.tech/design-system/theme'
 // Zero-config: the built-in `baseTheme`.
 <ThemeProvider>{app}</ThemeProvider>
 
-// Your theme — written from scratch or extended from the base.
+// Your theme - written from scratch or extended from the base.
 const brand = createTheme(baseTheme, { palette: { primary: { main: '#00ff88' } } })
 <ThemeProvider theme={brand}>{app}</ThemeProvider>
 
-// Mode switching is app policy — own the state and pass the active theme:
+// Mode switching is app policy - own the state and pass the active theme:
 const [isDark, setIsDark] = useState(true)
 <ThemeProvider theme={isDark ? brandDark : brandLight}>{app}</ThemeProvider>
 ```
 
-`createTheme(base, overrides)` (exported from `@soroush.tech/design-system/theme`) is the merge primitive: plain objects recurse, arrays (`shadows`, `fontSizes`) and functions replace wholesale, `undefined` values are ignored — keys are added or replaced, never removed.
+`createTheme(base, overrides)` (exported from `@soroush.tech/design-system/theme`) is the merge primitive: plain objects recurse, arrays (`shadows`, `fontSizes`) and functions replace wholesale, `undefined` values are ignored - keys are added or replaced, never removed.
 
 ### Component defaults
 
-Components carry visible literal fallbacks (`size = 'md'`, `variant = 'outside'`, …) resolved through `themeDefault(theme, key, fallback)` — so every default, including behavioral variants, is overridable via the optional `theme.defaults` map or the provider's `defaults` prop:
+Components carry visible literal fallbacks (`size = 'md'`, `variant = 'outside'`, ...) resolved through `themeDefault(theme, key, fallback)` - so every default, including behavioral variants, is overridable via the optional `theme.defaults` map or the provider's `defaults` prop:
 
 | Key                                          | Fallback                           | Drives                                 |
 | -------------------------------------------- | ---------------------------------- | -------------------------------------- |
@@ -181,7 +181,7 @@ Components carry visible literal fallbacks (`size = 'md'`, `variant = 'outside'`
 | `linkUnderline`                              | `'always'`                         | Link underline behavior                |
 | `paginationVariant` / `paginationShape`      | `'text'` / `'circular'`            | Pagination items                       |
 
-The built-in themes carry no `defaults` — the literals apply. A theme with entirely different size or palette keys stays valid by pointing the keys at its own tokens:
+The built-in themes carry no `defaults` - the literals apply. A theme with entirely different size or palette keys stays valid by pointing the keys at its own tokens:
 
 ```tsx
 <ThemeProvider defaults={{ size: 'compact', color: 'brand', switchVariant: 'inside' }}>
@@ -189,7 +189,7 @@ The built-in themes carry no `defaults` — the literals apply. A theme with ent
 
 ### Per-component customization (`theme.components`)
 
-Customize one component for the whole app — default prop values, per-slot CSS, and new variant values — without wrapping or forking:
+Customize one component for the whole app - default prop values, per-slot CSS, and new variant values - without wrapping or forking:
 
 ```tsx
 const brand = createTheme(baseTheme, {
@@ -198,8 +198,8 @@ const brand = createTheme(baseTheme, {
       // Buttons default to sm + rounded; explicit props and ButtonGroup still win.
       defaultProps: { size: 'sm', shape: 'rounded' },
 
-      // Per-slot CSS merged after Button's own styles — the theme wins the cascade,
-      // but per-instance props (m, p, width, …) still beat the theme.
+      // Per-slot CSS merged after Button's own styles - the theme wins the cascade,
+      // but per-instance props (m, p, width, ...) still beat the theme.
       styleOverrides: {
         root: ({ theme, ownerState }) => ({
           letterSpacing: theme.letterSpacings.wide,
@@ -208,7 +208,7 @@ const brand = createTheme(baseTheme, {
         label: { fontStyle: 'italic' },
       },
 
-      // A new variant value — register it first so it typechecks:
+      // A new variant value - register it first so it typechecks:
       // declare module '@soroush.tech/design-system/theme' { interface ButtonVariants { dashed: true } }
       variants: [
         {
@@ -226,11 +226,11 @@ const brand = createTheme(baseTheme, {
 
 Style callbacks receive `{ theme, ownerState }`, where `ownerState` is the styled root's **resolved** props (after group context, `defaultProps`, and `theme.defaults`). `defaultProps` sits in the standard precedence chain: explicit prop → group context → `defaultProps` → `theme.defaults.*` → the component's literal fallback. `variants` arrays are replaced wholesale by `createTheme`, never merged.
 
-Your own components can join the same mechanism: create their roots with this package's `styled(tag, { name: 'MyWidget', slot: 'root' })` and register the name by augmenting `ThemeComponents`. Zero-config themes pay nothing — the resolver bails out on the first check when `theme.components` is absent.
+Your own components can join the same mechanism: create their roots with this package's `styled(tag, { name: 'MyWidget', slot: 'root' })` and register the name by augmenting `ThemeComponents`. Zero-config themes pay nothing - the resolver bails out on the first check when `theme.components` is absent.
 
 ### Extending tokens (declaration merging)
 
-Every scale is an open interface declared on `@soroush.tech/design-system/theme`, so you can add palette colors, tokens, or whole scales — and every component prop union (`color`, `bg`, `size`, …) widens automatically:
+Every scale is an open interface declared on `@soroush.tech/design-system/theme`, so you can add palette colors, tokens, or whole scales - and every component prop union (`color`, `bg`, `size`, ...) widens automatically:
 
 ```ts
 import type { PaletteEntry } from '@soroush.tech/design-system/theme'
@@ -263,13 +263,13 @@ const brandDark = createTheme(baseTheme, {
 </ThemeProvider>
 ```
 
-Notes: new object-valued keys (like a `PaletteEntry`) must be supplied complete — components read `.main`/`.contrastText` at runtime; and TypeScript cannot verify at runtime that an augmented token was actually supplied, so always pair an augmentation with the matching override.
+Notes: new object-valued keys (like a `PaletteEntry`) must be supplied complete - components read `.main`/`.contrastText` at runtime; and TypeScript cannot verify at runtime that an augmented token was actually supplied, so always pair an augmentation with the matching override.
 
 ---
 
 ## Adding a component
 
-Scaffold with the skill — it reads the live `Typography` files and `design-system.md` so output matches the codebase:
+Scaffold with the skill - it reads the live `Typography` files and `design-system.md` so output matches the codebase:
 
 ```
 /new_theme_component ComponentName
@@ -279,7 +279,7 @@ Then work through the checklist at the bottom of [`design-system.md`](./design-s
 
 ---
 
-The library takes inspiration from [Material UI](https://mui.com/) — its component vocabulary and prop conventions will feel familiar — but it is written entirely in house. It is not a clone or a fork: every component is built from scratch on our own engine and token system, and the API is free to diverge wherever it serves its consumers better.
+The library takes inspiration from [Material UI](https://mui.com/) - its component vocabulary and prop conventions will feel familiar - but it is written entirely in house. It is not a clone or a fork: every component is built from scratch on our own engine and token system, and the API is free to diverge wherever it serves its consumers better.
 
 ---
 

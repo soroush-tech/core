@@ -1,20 +1,20 @@
 # Theming
 
-The theme belongs to you — the package ships defaults, every part is replaceable, and the type system widens with your extensions. This guide covers the full ladder, from using the built-ins to owning every token.
+The theme belongs to you - the package ships defaults, every part is replaceable, and the type system widens with your extensions. This guide covers the full ladder, from using the built-ins to owning every token.
 
 ## The ladder
 
-1. **Use the default** — `<ThemeProvider>` with no props renders the built-in `baseTheme` (dark-schemed).
-2. **Override values** — build your theme with `createTheme(base, overrides)` and pass it via `theme`.
-3. **Repoint component defaults** — `theme.defaults` / the provider's `defaults` prop change what components fall back to.
-4. **Extend the type system** — declaration merging adds palette colors, scale keys, and whole scales.
-5. **Customize single components** — `theme.components` (see [customization.md](./customization.md)).
+1. **Use the default** - `<ThemeProvider>` with no props renders the built-in `baseTheme` (dark-schemed).
+2. **Override values** - build your theme with `createTheme(base, overrides)` and pass it via `theme`.
+3. **Repoint component defaults** - `theme.defaults` / the provider's `defaults` prop change what components fall back to.
+4. **Extend the type system** - declaration merging adds palette colors, scale keys, and whole scales.
+5. **Customize single components** - `theme.components` (see [customization.md](./customization.md)).
 
 ---
 
 ## One theme, yours
 
-`ThemeProvider` provides exactly one theme. The package ships a single complete default — `baseTheme` — and you derive every mode from it; switching (dark/light, or ten brand modes) is your state:
+`ThemeProvider` provides exactly one theme. The package ships a single complete default - `baseTheme` - and you derive every mode from it; switching (dark/light, or ten brand modes) is your state:
 
 ```tsx
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
@@ -41,21 +41,21 @@ export const brandDark = createTheme(baseTheme, {
 })
 ```
 
-Merge rules: plain objects recurse; arrays (`shadows`, `fontSizes`) and functions replace wholesale; `undefined` values are ignored — keys are added or replaced, never removed. Neither argument is mutated.
+Merge rules: plain objects recurse; arrays (`shadows`, `fontSizes`) and functions replace wholesale; `undefined` values are ignored - keys are added or replaced, never removed. Neither argument is mutated.
 
 ## Component defaults (`theme.defaults`)
 
-Components carry visible literal fallbacks (`size = 'md'`, `variant = 'outside'`, …) resolved through `themeDefault(theme, key, fallback)`. The optional `theme.defaults` map overrides any of them globally — essential when your theme uses entirely different size or palette keys:
+Components carry visible literal fallbacks (`size = 'md'`, `variant = 'outside'`, ...) resolved through `themeDefault(theme, key, fallback)`. The optional `theme.defaults` map overrides any of them globally - essential when your theme uses entirely different size or palette keys:
 
 ```tsx
 <ThemeProvider defaults={{ size: 'compact', color: 'brand', switchVariant: 'inside' }}>
 ```
 
-The full key table lives in the [README's Theming section](../README.md#component-defaults). The built-in `baseTheme` carries no `defaults` — the literals apply until you say otherwise. For _per-component_ defaults (only Buttons compact), use `theme.components.X.defaultProps` instead ([customization.md](./customization.md)).
+The full key table lives in the [README's Theming section](../README.md#component-defaults). The built-in `baseTheme` carries no `defaults` - the literals apply until you say otherwise. For _per-component_ defaults (only Buttons compact), use `theme.components.X.defaultProps` instead ([customization.md](./customization.md)).
 
 ## Extending the type system
 
-Every scale is an open interface owned by `@soroush.tech/design-system/theme` — that module (not Emotion, an internal implementation detail) is the augmentation surface, and it merges reliably across tsdown's chunked d.ts for every consumer:
+Every scale is an open interface owned by `@soroush.tech/design-system/theme` - that module (not Emotion, an internal implementation detail) is the augmentation surface, and it merges reliably across tsdown's chunked d.ts for every consumer:
 
 ```ts
 import type { PaletteEntry, SizeEntry } from '@soroush.tech/design-system/theme'
@@ -88,7 +88,7 @@ const brand = createTheme(baseTheme, {
 })
 ```
 
-Two rules: new object-valued keys (like a `PaletteEntry`) must be supplied complete — components read `.main`/`.contrastText` at runtime; and TypeScript cannot verify at runtime that an augmented token was supplied — **always pair an augmentation with the matching override**.
+Two rules: new object-valued keys (like a `PaletteEntry`) must be supplied complete - components read `.main`/`.contrastText` at runtime; and TypeScript cannot verify at runtime that an augmented token was supplied - **always pair an augmentation with the matching override**.
 
 ## The scale interfaces
 

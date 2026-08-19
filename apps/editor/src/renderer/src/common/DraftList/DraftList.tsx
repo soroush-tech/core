@@ -15,7 +15,7 @@ export interface DraftListProps {
 }
 
 /**
- * Discard stays out of the way until the row is hovered — `opacity` rather
+ * Discard stays out of the way until the row is hovered - `opacity` rather
  * than `display`, so it keeps its place in the tab order and `:focus-within`
  * brings it back for keyboard users. Same treatment as a file row.
  */
@@ -29,7 +29,7 @@ const DraftRow = styled(Flex)`
   }
 `
 
-/** Gists with unpublished changes — the way back to work in progress. */
+/** Gists with unpublished changes - the way back to work in progress. */
 export function DraftList({ selectedId, onSelect }: Readonly<DraftListProps>) {
   const { drafts, error, isLoading, discard } = useDrafts()
   // Only for naming the rows: a draft holds no record of what its gist is

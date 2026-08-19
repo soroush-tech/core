@@ -5,7 +5,7 @@ export type UnhandledRequestStrategy = 'bypass' | 'warn' | 'error'
 
 /**
  * Minimal structural shape of an msw/node `SetupServerApi`. Declared structurally so this
- * plugin carries no runtime dependency on `msw` — install `msw` in the consuming app and
+ * plugin carries no runtime dependency on `msw` - install `msw` in the consuming app and
  * hand the plugin your own server (or a factory that builds one).
  */
 export interface MockServer {
@@ -29,7 +29,7 @@ const NAME = 'vite-plugin-msw-server'
 
 /**
  * Starts an msw/node mock server inside the Vite process so that server-side data
- * fetches — SSR `data()` hooks and SSG prerendering — resolve against mocks instead of the
+ * fetches - SSR `data()` hooks and SSG prerendering - resolve against mocks instead of the
  * live API. `buildStart` covers `vite build`/prerender; `configureServer` covers `vite dev`.
  * Gate it with `enable` (e.g. an env flag) so production builds opt out and never load msw.
  */

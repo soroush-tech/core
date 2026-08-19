@@ -1,6 +1,6 @@
 # TypeScript
 
-`@soroush.tech/styled-system` ships its own first-class types — it **replaces
+`@soroush.tech/styled-system` ships its own first-class types - it **replaces
 `@types/styled-system`**, and the public type surface matches `@types/styled-system@5.1.25`
 so existing typed code keeps compiling.
 
@@ -8,7 +8,7 @@ so existing typed code keeps compiling.
 
 Every style function has a matching prop interface. Compose the ones you use into your
 component's props. Each interface is generic over your `Theme`, so prop values are
-**scale-aware** — they resolve to keys of the relevant theme scale.
+**scale-aware** - they resolve to keys of the relevant theme scale.
 
 ```tsx
 import styled from '@emotion/styled'
@@ -35,7 +35,7 @@ type BoxProps = SpaceProps<AppTheme> & ColorProps<AppTheme> & TypographyProps<Ap
 const Box = styled('div')<BoxProps>(space, color, typography)
 
 // `m` → space index, `bg`/`color` → colors keys, `fontSize` → fontSizes index.
-// `bg="green"` would be a compile error — green isn't in the theme's colors.
+// `bg="green"` would be a compile error - green isn't in the theme's colors.
 ;<Box m={2} bg="primary" color="white" fontSize={3} />
 ```
 
@@ -45,7 +45,7 @@ const Box = styled('div')<BoxProps>(space, color, typography)
 `TVal` from the theme via the `ThemeValue` helper:
 
 - array scale (`space: [...]`) → the value type is `number` (an index)
-- object scale (`colors: { primary, … }`) → the value type is the key union
+- object scale (`colors: { primary, ... }`) → the value type is the key union
 
 The seven scale-bound groups mirror `@types/styled-system`: `space` (`SpaceProps`,
 `MarginProps`, `PaddingProps`), `colors` (`ColorProps`, `BorderProps.borderColor`),
@@ -59,7 +59,7 @@ Prop interfaces exported: `SpaceProps`, `MarginProps`, `PaddingProps`, `LayoutPr
 
 ## Custom style functions are typed too
 
-`system()` / `createParser()` / `compose()` return a `Parser` — a callable that drops
+`system()` / `createParser()` / `compose()` return a `Parser` - a callable that drops
 straight into Emotion's or styled-components' `styled()` as an interpolation. Its call
 signature is currently loosened to `(...args: any[]): any` to match the original
 `@styled-system` `styleFn`, so the style functions stay permissive interpolations on any
@@ -68,7 +68,7 @@ signature is planned for a future major.
 
 ## Drop-in for existing `styled-system` + `@types/styled-system`
 
-Swap via a package-manager alias — no code or type changes:
+Swap via a package-manager alias - no code or type changes:
 
 ```jsonc
 "dependencies": {

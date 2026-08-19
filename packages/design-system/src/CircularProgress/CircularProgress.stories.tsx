@@ -36,14 +36,14 @@ const meta: Meta<typeof CircularProgress> = {
     variant: {
       control: { type: 'inline-radio' },
       options: circularProgressVariantTokens,
-      description: 'Visual variant — looping animation or value-driven arc.',
+      description: 'Visual variant - looping animation or value-driven arc.',
       table: { category: 'Visual', defaultValue: { summary: 'indeterminate' } },
     },
     color: {
       control: { type: 'select' },
       options: circularProgressColorTokens,
       description:
-        'Stroke color — resolves to `theme.palette[color].main`; `"inherit"` uses `currentColor`.',
+        'Stroke color - resolves to `theme.palette[color].main`; `"inherit"` uses `currentColor`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     size: {
@@ -79,7 +79,7 @@ const meta: Meta<typeof CircularProgress> = {
     spinning: {
       control: 'boolean',
       description:
-        'Applies rotation animation to `"determinate"` — arc length reflects `value` while the spinner still rotates.',
+        'Applies rotation animation to `"determinate"` - arc length reflects `value` while the spinner still rotates.',
       table: { category: 'Visual', defaultValue: { summary: 'false' } },
     },
     easing: {
@@ -219,7 +219,7 @@ export const CustomRange: Story = {
         [
           { value: 3, min: 0, max: 10, label: '3 of 10' },
           { value: 120, min: 0, max: 200, label: '120 of 200' },
-          { value: 7, min: 5, max: 15, label: '7 of 5–15' },
+          { value: 7, min: 5, max: 15, label: '7 of 5-15' },
         ] as const
       ).map(({ value, min, max, label }) => (
         <Flex key={label} flexDirection="row" gap={2} alignItems="center">

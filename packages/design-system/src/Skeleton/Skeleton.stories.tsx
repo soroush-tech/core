@@ -12,7 +12,7 @@ import { View } from '../View'
 import { Skeleton, type SkeletonProps } from './Skeleton'
 const MEDIA_SIZES = '(min-width: 640px) min(30vw, 400px), 100vw'
 
-// Story-local stand-in for the app's imagetools `?as=picture` import — the package
+// Story-local stand-in for the app's imagetools `?as=picture` import - the package
 // has no image pipeline, so the "loaded" card uses the public site logo.
 const portrait = { sources: {} as Record<string, string>, img: { src: '/soroush.svg' } }
 
@@ -40,12 +40,12 @@ const meta: Meta<typeof Skeleton> = {
     animation: {
       control: { type: 'select' },
       options: skeletonAnimationTokens,
-      description: 'Loading animation — `false` disables it.',
+      description: 'Loading animation - `false` disables it.',
       table: { category: 'Behavior', defaultValue: { summary: 'pulse' } },
     },
     children: {
       control: 'text',
-      description: 'Content to infer width and height from — rendered invisibly.',
+      description: 'Content to infer width and height from - rendered invisibly.',
       table: { category: 'Content' },
     },
     borderRadius,
@@ -103,7 +103,7 @@ export const Animations: Story = {
   ),
 }
 
-// Different-sized skeletons share one viewport-anchored wave — the shimmer stays in sync.
+// Different-sized skeletons share one viewport-anchored wave - the shimmer stays in sync.
 export const WaveInSync: Story = {
   render: () => (
     <Flex flexDirection="column" gap={2}>
@@ -161,7 +161,7 @@ const PostCardSkeleton = ({ animation }: Pick<SkeletonProps, 'animation'>) => (
   </Paper>
 )
 
-// The real, loaded card built from our design system — same layout the skeleton stands in for.
+// The real, loaded card built from our design system - same layout the skeleton stands in for.
 const RealPostCard = () => (
   <Card variant="paper" flexDirection="column" gap={2} p={3} width="100%">
     <Flex flexDirection="row" gap={2} alignItems="center">
@@ -220,7 +220,7 @@ export const PostCard: Story = {
   ),
 }
 
-// A feed of post-card skeletons on a 6:3 grid (2fr 1fr) — two cards per row.
+// A feed of post-card skeletons on a 6:3 grid (2fr 1fr) - two cards per row.
 export const PostCardGrid: Story = {
   render: ({ animation }) => (
     <Grid gridTemplateColumns="2fr 1fr" gap={3}>

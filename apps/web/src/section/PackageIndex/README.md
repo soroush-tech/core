@@ -7,7 +7,7 @@ The `/npm` index section: a grid of `DomainCard`s, one per published `@soroush.t
 `PackageIndex.data.ts` **auto-discovers** packages via `import.meta.glob` (eager) over every
 `packages/*/package.json`, keeping only published (non-private) ones. Each entry's name /
 description / keywords / version come straight from that `package.json`. A second glob over
-`src/pages/*/+Page.tsx` yields the set of packages that have a detail page — no manual list to
+`src/pages/*/+Page.tsx` yields the set of packages that have a detail page - no manual list to
 maintain; adding a package (or its detail page) updates the index automatically.
 
 ## Notes

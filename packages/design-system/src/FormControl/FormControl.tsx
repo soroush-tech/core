@@ -4,13 +4,13 @@ import { styled } from '../index'
 import { View, type ViewProps } from '../View'
 import { FormControlContext } from './FormControlContext'
 
-// Named styled root — theme-customizable via
+// Named styled root - theme-customizable via
 // `theme.components.FormControl.styleOverrides.root`.
 const FormControlRoot = styled(View, { name: 'FormControl', label: 'FormControl' })<ViewProps>()
 
 export interface FormControlProps extends Omit<ViewProps, 'color'> {
   children: ReactNode
-  /** Field id — auto-generated via `useId()` when omitted. Links FormLabel, control, and helper text. */
+  /** Field id - auto-generated via `useId()` when omitted. Links FormLabel, control, and helper text. */
   id?: string
   error?: boolean
   disabled?: boolean

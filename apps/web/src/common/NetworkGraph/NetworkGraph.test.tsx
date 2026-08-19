@@ -35,7 +35,7 @@ describe('NetworkGraph', () => {
   })
 
   describe('content component', () => {
-    it('renders the graph’s top-level ids and titles through the supplied component', () => {
+    it("renders the graph's top-level ids and titles through the supplied component", () => {
       renderGraph()
       for (const id of topLevelIds) {
         expect(screen.getByRole('button', { name: titleById.get(id) ?? id })).toBeInTheDocument()
@@ -46,7 +46,7 @@ describe('NetworkGraph', () => {
       const { container } = renderGraph()
       const count = () => container.querySelectorAll('.node-group').length
       const before = count()
-      // topLevelIds[0] (A) is a branch — toggling it reveals its child node.
+      // topLevelIds[0] (A) is a branch - toggling it reveals its child node.
       fireEvent.click(screen.getByRole('button', { name: titleById.get(topLevelIds[0])! }))
       expect(count()).toBeGreaterThan(before)
     })

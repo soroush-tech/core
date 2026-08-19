@@ -27,7 +27,7 @@ import { Mermaid, type MermaidProps } from '../Mermaid'
 import { MERMAID_LANGUAGE, isMermaidBlock, mermaidSource } from './mermaidBlock'
 
 const remarkPlugins: Options['remarkPlugins'] = [remarkGfm]
-// `ignoreMissing` keeps unknown fence languages from throwing — they render unhighlighted.
+// `ignoreMissing` keeps unknown fence languages from throwing - they render unhighlighted.
 const rehypePlugins: Options['rehypePlugins'] = [[rehypeHighlight, { ignoreMissing: true }]]
 
 // Keeps the content within its (flex-item) column on narrow viewports: shrink to fit,
@@ -41,7 +41,7 @@ const PreviewRoot = styled(View, { name: 'MarkdownPreview', label: 'MarkdownPrev
 
 /**
  * Per-element prop overrides, merged over the design-system defaults (the caller's props win).
- * Keyed by markdown element — e.g. `slotProps={{ p: { color: 'primary' }, h1: { variant: 'h2' } }}`.
+ * Keyed by markdown element - e.g. `slotProps={{ p: { color: 'primary' }, h1: { variant: 'h2' } }}`.
  */
 export interface PreviewSlotProps {
   h1?: TypographyProps
@@ -69,7 +69,7 @@ export interface PreviewSlotProps {
   thead?: TableHeadProps
   tbody?: TableBodyProps
   tr?: TableRowProps
-  /** Props for a ` ```mermaid ` fence's `Mermaid` renderer — including `diagram` (viewer) props. */
+  /** Props for a ` ```mermaid ` fence's `Mermaid` renderer - including `diagram` (viewer) props. */
   mermaid?: Omit<MermaidProps, 'chart'>
 }
 
@@ -162,7 +162,7 @@ const components: Components = {
       {children}
     </Typography>
   )),
-  // GFM task-list checkbox — the theme Checkbox, read-only (disabled) and brand-coloured.
+  // GFM task-list checkbox - the theme Checkbox, read-only (disabled) and brand-coloured.
   input: slotted(({ input }, { checked }) => (
     <Checkbox
       checked={Boolean(checked)}

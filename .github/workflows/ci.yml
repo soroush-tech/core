@@ -1,5 +1,5 @@
 # ci:validates all
-# ci.yml holds prepare, lint and ci-ok — it decides how every job runs, so every job proves it.
+# ci.yml holds prepare, lint and ci-ok - it decides how every job runs, so every job proves it.
 name: CI
 
 on:
@@ -43,8 +43,8 @@ jobs:
         run: echo "version=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
 
       # Every install runs --ignore-scripts: no lifecycle script at install
-      # time, anywhere in CI. The one script a job genuinely needs — Electron's
-      # binary download — runs explicitly in ci-editor.yml (`rebuild electron`).
+      # time, anywhere in CI. The one script a job genuinely needs - Electron's
+      # binary download - runs explicitly in ci-editor.yml (`rebuild electron`).
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -75,7 +75,7 @@ jobs:
           echo "version=${VERSION#^}" >> "$GITHUB_OUTPUT"
 
       # One key per app / worker / package (folders with a package.json), per workflow file,
-      # and per root file — each root file is its own key so what changed can be attributed
+      # and per root file - each root file is its own key so what changed can be attributed
       # rather than read as "everything". Root docs/tooling dotfiles are deliberately absent:
       # they must not validate the workspace, so the list is explicit rather than a glob.
       - name: Discover workspace entities
@@ -91,7 +91,7 @@ jobs:
           list-files: json
 
       # The root manifest and the lockfile are attributed by comparing them against the
-      # base — the target branch for a pull request, the previous tip for a push — so both
+      # base - the target branch for a pull request, the previous tip for a push - so both
       # are copied out at that commit, fetched one deep first when the shallow clone lacks
       # it. Every step here may fail without failing the job: a copy that is missing or
       # empty is one the next step reads as "cannot be compared", which validates
@@ -159,18 +159,24 @@ jobs:
         run: ${{ needs.prepare.outputs.runner }} run typecheck
 
       # Fail the build if a publishable package bumped its version without adding the matching
-      # release-notes/<version>.md — the same file cd-packages.yml requires before publishing.
+      # release-notes/<version>.md - the same file cd-packages.yml requires before publishing.
       - name: Check release notes
         run: ${{ needs.prepare.outputs.runner }} run check:release-notes
 
+      # Fail the build on invisible characters (zero-width space, word joiner, BOM, soft hyphen),
+      # typographic punctuation (en/em dashes, curly quotes, the ellipsis character, non-breaking
+      # spaces) or mojibake in any tracked text file. ASCII punctuation is the house rule.
+      - name: Check typography
+        run: ${{ needs.prepare.outputs.runner }} run check:typography
+
   # Each area's jobs live in a workflow of its own, called from here rather than triggered
   # separately: `needs:` cannot cross workflow files, and `ci-ok` has to stay able to see every
-  # job. Calling them keeps one run, one CI-environment approval wave and one required check —
+  # job. Calling them keeps one run, one CI-environment approval wave and one required check -
   # and gives each area a file whose own `# ci:validates` marker says what editing it re-runs.
   #
   # `secrets: inherit` is not decoration: CODECOV_TOKEN is scoped to the CI environment, and
   # naming it explicitly here would evaluate it in this workflow's environment-less context and
-  # pass an empty string — a green upload step that uploads nothing.
+  # pass an empty string - a green upload step that uploads nothing.
   packages:
     needs: [prepare, lint]
     if: needs.prepare.outputs.has_packages == 'true'

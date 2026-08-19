@@ -18,12 +18,12 @@ None. The section renders static content.
 | Header rule  | `View height="2px" bg="default"` (desktop only)           |
 | Card grid    | `Grid` (`1fr` → 2 → 3 columns)                            |
 | Card         | `Flex bg="secondary"` + `Image` icon + `Typography`       |
-| Card title   | `Typography variant="h4" as="h3"` — h4 size, h3 semantics |
+| Card title   | `Typography variant="h4" as="h3"` - h4 size, h3 semantics |
 
 ## Icons
 
 `src/assets/icons/`: `psychology`, `settings_input_component`, `ads_click`,
-`groups`, `visibility`, `speed` — Material Symbols (filled, `#9cff93`), rendered
+`groups`, `visibility`, `speed` - Material Symbols (filled, `#9cff93`), rendered
 decoratively (`alt=""`, `aria-hidden`).
 
 ## Notes

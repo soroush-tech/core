@@ -34,12 +34,12 @@ const meta: Meta<typeof Image> = {
     },
     srcSet: {
       control: 'text',
-      description: 'Responsive image URLs — used as primary source when `src` is absent.',
+      description: 'Responsive image URLs - used as primary source when `src` is absent.',
       table: { category: 'Content' },
     },
     alt: {
       control: 'text',
-      description: 'Alt text — required for accessibility.',
+      description: 'Alt text - required for accessibility.',
       table: { category: 'Content' },
     },
     fallback: {
@@ -52,7 +52,7 @@ const meta: Meta<typeof Image> = {
     objectFit: {
       control: { type: 'select' },
       options: objectFitTokens,
-      description: 'CSS object-fit — controls how the image fills its container.',
+      description: 'CSS object-fit - controls how the image fills its container.',
       table: { category: 'Layout' },
     },
     borderRadius,

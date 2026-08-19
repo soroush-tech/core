@@ -1,22 +1,22 @@
 # ContactInquire
 
-The "SECURE INQUIRE" contact section — a validated inquiry form composed entirely from
+The "SECURE INQUIRE" contact section - a validated inquiry form composed entirely from
 theme primitives (`View`, `Flex`, `Grid`, `Typography`, `TextInput`, `Button`, `Icon`).
 
 Form state and validation are powered by **TanStack Form** + **Zod**. On submit the section
 POSTs to the Worker `/contact` endpoint via `useContactSubmit` (TanStack Query mutation over
 the shared axios client). The component takes no props.
 
-`ContactFormValues` is derived from the shared `@soroush.tech/schema` contact schema — see
+`ContactFormValues` is derived from the shared `@soroush.tech/schema` contact schema - see
 `ContactInquire.data.ts`.
 
 ## Submission states
 
 The section is a small state machine driven by the mutation:
 
-- **idle / submitting** — the form; the submit button shows a loading state while in flight.
-- **success** (2xx) — the form is replaced by a `role="status"` panel ("TRANSMISSION RECEIVED").
-- **error** (network / non-2xx) — a `role="alert"` banner with a **Retry** button (which resets
+- **idle / submitting** - the form; the submit button shows a loading state while in flight.
+- **success** (2xx) - the form is replaced by a `role="status"` panel ("TRANSMISSION RECEIVED").
+- **error** (network / non-2xx) - a `role="alert"` banner with a **Retry** button (which resets
   the mutation); the entered values are preserved.
 
 ## Anti-spam honeypot
@@ -47,10 +47,10 @@ full-width textarea.
 
 Defined in the shared `@soroush.tech/schema` package (`contact.schema`):
 
-- `name`, `subject`, `message` — required (non-empty)
-- `email` — valid e-mail
-- `website` — optional; must be a valid URL when present
-- all others — optional strings
+- `name`, `subject`, `message` - required (non-empty)
+- `email` - valid e-mail
+- `website` - optional; must be a valid URL when present
+- all others - optional strings
 
 Validation runs `onChange`; errors surface beneath a field once it has been touched.
 

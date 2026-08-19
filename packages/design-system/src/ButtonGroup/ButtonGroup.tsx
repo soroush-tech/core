@@ -14,13 +14,13 @@ export interface ButtonGroupProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'color'>, SpaceProps<Theme> {
   /** Visual style for all child buttons. Default: `'outlined'`. */
   variant?: ButtonVariant
-  /** Color palette for all child buttons — resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Color palette for all child buttons - resolves against `theme.palette`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: ButtonColor
-  /** Density for all child buttons — resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
+  /** Density for all child buttons - resolves against `theme.sizes`. Default: 'md', overridable via `theme.defaults.size`. */
   size?: ButtonSize
   /** Layout flow direction. Default: `'horizontal'`. */
   orientation?: ButtonGroupOrientation
-  /** Group corner radius — rounds the group's outer corners only. Resolves against `theme.radii`. Default: 'md', overridable via `theme.defaults.borderRadius`. */
+  /** Group corner radius - rounds the group's outer corners only. Resolves against `theme.radii`. Default: 'md', overridable via `theme.defaults.borderRadius`. */
   borderRadius?: ButtonGroupRadius
   /** Disables all child buttons. Default: `false`. */
   disabled?: boolean
@@ -40,7 +40,7 @@ interface GroupRootProps {
 }
 
 // Adjacent buttons merge: doubled borders collapse via a negative margin, and the
-// group's `borderRadius` rounds only its outer corners — the first/last buttons keep
+// group's `borderRadius` rounds only its outer corners - the first/last buttons keep
 // their leading/trailing corners, every inner corner is squared. `:only-child` comes
 // last so a lone button keeps the full radius on all four corners.
 const orientationStyles = ({
@@ -93,7 +93,7 @@ const orientationStyles = ({
 // Each seam is painted on the leading edge of the trailing button (left edge when
 // horizontal, top edge when vertical) so exactly one border shows there:
 // - `outlined` buttons already carry a main-colored border, so the trailing edge is
-//   made `transparent` — otherwise the `-thin` overlap would stack two borders and
+//   made `transparent` - otherwise the `-thin` overlap would stack two borders and
 //   render a doubled/misaligned line. The width is kept, so nothing shifts.
 // - `contained` / `text` buttons have transparent side borders, so a visible divider
 //   is drawn instead (the color's `dark` shade, or a translucent `main`).

@@ -150,7 +150,7 @@ describe('usePagination', () => {
     const { result } = renderHook(() => usePagination({ count: 5, page: 2, onChange }))
     act(() => result.current.items.find((item) => item.page === 4)?.onClick?.())
     expect(onChange).toHaveBeenCalledWith(4)
-    // still page 2 — the consumer owns the state
+    // still page 2 - the consumer owns the state
     expect(result.current.items.find((item) => item.isSelected)?.page).toBe(2)
   })
 

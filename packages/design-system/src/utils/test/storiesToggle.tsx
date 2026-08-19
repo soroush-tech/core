@@ -10,7 +10,7 @@ export interface ControlledArgs {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-/** Owns `checked` state in a decorator and injects it — plus its `onChange` — via args. */
+/** Owns `checked` state in a decorator and injects it - plus its `onChange` - via args. */
 export const WithCheckedState: Decorator = (Story, ctx) => {
   const [checked, setChecked] = useState(false)
   return (

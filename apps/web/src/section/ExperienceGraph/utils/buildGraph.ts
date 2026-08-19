@@ -1,7 +1,7 @@
 import type { GraphNode, LinkKind, RawLink } from 'src/common/NetworkGraph'
 
-/** Structural shape the builder consumes. The authored `TechNode` — whose fields are
- *  narrowed to the id enums to guard against typos — is a strict subtype of this. */
+/** Structural shape the builder consumes. The authored `TechNode` - whose fields are
+ *  narrowed to the id enums to guard against typos - is a strict subtype of this. */
 export interface GraphInputNode {
   id: string
   title?: string
@@ -9,16 +9,16 @@ export interface GraphInputNode {
   /** Level: `area` (top-level, a show/hide toggle), `group` (a drawn label node), or
    *  `node` (a tech). */
   kind: 'area' | 'group' | 'node'
-  /** Area tags — gate show/hide only, **no line drawn**. A node with its own `area`
+  /** Area tags - gate show/hide only, **no line drawn**. A node with its own `area`
    *  *overrides* the tags it would inherit from its parents; with none, it follows its
    *  parents' tags. */
   area?: string[]
-  /** Parent attachments — the drawn containment line. A parent may be a node (e.g. Redux
+  /** Parent attachments - the drawn containment line. A parent may be a node (e.g. Redux
    *  under React), an *area* (the line that used to come from `area`), or `rootId` (an
    *  area hanging off the central root, materialized only when referenced). A node's gate
    *  flows in from its parents unless it sets its own `area`. */
   parent?: string[]
-  /** Categorical label nodes (a group, or a node acting as one) — each draws a dotted
+  /** Categorical label nodes (a group, or a node acting as one) - each draws a dotted
    *  group→member line. */
   groups?: string[]
   /** Lateral associations to other nodes (dashed). */
@@ -53,14 +53,14 @@ function indexById(nodeList: GraphInputNode[], rootId: string): Map<string, Grap
   return byId
 }
 
-// A node needs *some* way onto the screen: an area, a parent, or — for a relation-anchored
-// (floating) node — at least one relation it can ride along.
+// A node needs *some* way onto the screen: an area, a parent, or - for a relation-anchored
+// (floating) node - at least one relation it can ride along.
 function assertHasAnchor(n: GraphInputNode): void {
   if (
     n.kind === 'node' &&
     !((n.area?.length ?? 0) + (n.parent?.length ?? 0) + (n.relations?.length ?? 0))
   )
-    throw new Error(`Node "${n.id}" has no area, parent, or relation — it would never be drawn`)
+    throw new Error(`Node "${n.id}" has no area, parent, or relation - it would never be drawn`)
 }
 
 function assertAreaRefs(n: GraphInputNode, byId: Map<string, GraphInputNode>): void {
@@ -77,7 +77,7 @@ function assertParentRefs(
   rootId: string
 ): void {
   for (const p of n.parent ?? []) {
-    if (p === rootId) continue // the central root — a valid containment parent for areas
+    if (p === rootId) continue // the central root - a valid containment parent for areas
     if (!byId.has(p)) throw new Error(`Node "${n.id}" references unknown parent "${p}"`)
     if (byId.get(p)?.kind === 'group')
       throw new Error(`Node "${n.id}" lists a group "${p}" as a parent`)
@@ -141,7 +141,7 @@ function findDroppedGroups(nodeList: GraphInputNode[], allLinks: RawLink[]): Set
 }
 
 // Containment adjacency (group + relation edges excluded). The root keeps its area children
-// in `childrenByParent` (so the renderer can detect root mode), but it is not a `branchId` —
+// in `childrenByParent` (so the renderer can detect root mode), but it is not a `branchId` -
 // it stays pinned at the centre, not a clickable category.
 function buildContainment(
   links: RawLink[],
@@ -160,8 +160,8 @@ function buildContainment(
 }
 
 // Relation-anchored (floating) nodes: a tech node with no containment parent but with
-// relations. It has no place in the containment tree — it rides along its relations,
-// appearing whenever a node it relates to is visible — so it is exempt from the reachability
+// relations. It has no place in the containment tree - it rides along its relations,
+// appearing whenever a node it relates to is visible - so it is exempt from the reachability
 // check below. (An `area`, if present, just keeps it near that hub.)
 function findRelationAnchored(nodeList: GraphInputNode[]): Set<string> {
   return new Set(
@@ -259,7 +259,7 @@ function materialize(
   const featuredIds = new Set<string>()
   const areasByNode = new Map<string, string[]>()
   for (const n of nodeList) {
-    if (droppedGroupIds.has(n.id)) continue // single-member group — not drawn
+    if (droppedGroupIds.has(n.id)) continue // single-member group - not drawn
     const title = n.title ?? n.id
     const isTop = topLevel.has(n.id)
     const size = resolveSize(n, isTop)
@@ -275,13 +275,13 @@ function materialize(
 
 /** Materialize the flat authored nodes into a render graph.
  *
- *  Areas are the top level. The only drawn containment line is `parent` — a node hangs
+ *  Areas are the top level. The only drawn containment line is `parent` - a node hangs
  *  off each parent, which may be a node, an area, or `rootId`. `area` is a gate-only tag
  *  (no line): a node with its own `area` overrides the tags inherited from its parents,
  *  otherwise it follows them. A `group` is a drawn node linked to its members by a dotted
- *  edge (a group labelling a single member is dropped — it adds no grouping), and
+ *  edge (a group labelling a single member is dropped - it adds no grouping), and
  *  `relations` are lateral edges. Areas may list `rootId` as a parent to hang
- *  off a central root node — materialized only when referenced, so the same data toggles
+ *  off a central root node - materialized only when referenced, so the same data toggles
  *  between a root-centred and a free-floating layout.
  *
  *  Strict: a duplicate id, unknown/wrong-kind reference, a node with neither area nor

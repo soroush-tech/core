@@ -5,7 +5,7 @@ import { TOKEN_SETTINGS_URL } from '../github/const'
 
 /**
  * Registers the GitHub IPC handlers. The token crosses the bridge once, on
- * sign-in, and never travels back — `status` returns only the account name.
+ * sign-in, and never travels back - `status` returns only the account name.
  */
 export function registerGitHubHandlers(service: AuthService): void {
   ipcMain.handle(GITHUB_CHANNELS.status, async (): Promise<Result<GitHubStatus>> => ({
@@ -25,7 +25,7 @@ export function registerGitHubHandlers(service: AuthService): void {
 
   ipcMain.handle(GITHUB_CHANNELS.signOut, (): Promise<Result<null>> => service.signOut())
 
-  // Always the constant — a renderer-supplied URL must never reach openExternal.
+  // Always the constant - a renderer-supplied URL must never reach openExternal.
   ipcMain.handle(GITHUB_CHANNELS.openTokenSettings, async (): Promise<Result<null>> => {
     try {
       await shell.openExternal(TOKEN_SETTINGS_URL)

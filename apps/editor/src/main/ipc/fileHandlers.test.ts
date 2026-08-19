@@ -202,7 +202,7 @@ describe('confirmDiscard', () => {
     await expect(confirmDiscard(window, false)).resolves.toBe(choice)
   })
 
-  it('names keeping a gist file what it is — a draft', async () => {
+  it('names keeping a gist file what it is - a draft', async () => {
     showMessageBox.mockResolvedValue({ response: 0 })
     await confirmDiscard(window, true)
 

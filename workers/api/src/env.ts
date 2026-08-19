@@ -16,7 +16,7 @@ export interface Env {
   TURNSTILE_SECRET: string
   /**
    * Comma-separated hostnames a Turnstile token may be solved on (e.g.
-   * `soroush.tech,www.soroush.tech`). Unset/empty skips the hostname check — set only in
+   * `soroush.tech,www.soroush.tech`). Unset/empty skips the hostname check - set only in
    * production config, so the local test secret keeps working.
    */
   TURNSTILE_HOSTNAME?: string

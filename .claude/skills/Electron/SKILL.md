@@ -28,13 +28,13 @@ The preload path must point at the **built** output, not the source file.
 
 ### All renderer↔main traffic flows through `contextBridge`
 
-Never expose `ipcRenderer` itself — wrap each channel in a named function.
+Never expose `ipcRenderer` itself - wrap each channel in a named function.
 
 ```ts
-// ✗ preload.ts — renderer gets full IPC access
+// ✗ preload.ts - renderer gets full IPC access
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer)
 
-// ✓ preload.ts — typed, named surface
+// ✓ preload.ts - typed, named surface
 contextBridge.exposeInMainWorld('electronAPI', {
   loadPreferences: () => ipcRenderer.invoke('load-prefs'),
   saveFile: (content: string) => ipcRenderer.invoke('save-file', content),
@@ -71,7 +71,7 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
 `send`/`on` has no return value and no error propagation. Use `invoke`/`handle` for anything that produces a result.
 
 ```ts
-// ✗ — no result, no error path
+// ✗ - no result, no error path
 ipcRenderer.send('save-file', content)
 ipcMain.on('save-file', (_e, content) => fs.writeFile(...))
 
@@ -93,15 +93,15 @@ For larger apps, prefer `electron-trpc` (tRPC router + Zod input validation) ove
 
 ---
 
-### Wrap every IPC response in a Result type — Electron only serializes `Error.message`
+### Wrap every IPC response in a Result type - Electron only serializes `Error.message`
 
 ```ts
-// ✗ — stack, cause, custom fields all lost crossing the IPC boundary
+// ✗ - stack, cause, custom fields all lost crossing the IPC boundary
 ipcMain.handle('save-file', async (_e, content: string) => {
   await fs.writeFile(filePath, content) // throws raw Error
 })
 
-// ✓ — full error context preserved as data
+// ✓ - full error context preserved as data
 ipcMain.handle('save-file', async (_e, content: string) => {
   try {
     await fs.writeFile(filePath, content)
@@ -112,7 +112,7 @@ ipcMain.handle('save-file', async (_e, content: string) => {
 })
 ```
 
-Validate every argument received from the renderer (Zod or manual checks) — it crossed a trust boundary.
+Validate every argument received from the renderer (Zod or manual checks) - it crossed a trust boundary.
 
 Group related handlers into one module per domain:
 
@@ -127,7 +127,7 @@ export function registerFileHandlers(): void {
 
 ## React integration: IPC listeners always return a cleanup
 
-Strict Mode double-invokes effects — an IPC listener without cleanup leaks a duplicate handler per mount.
+Strict Mode double-invokes effects - an IPC listener without cleanup leaks a duplicate handler per mount.
 
 ```ts
 // ✗
@@ -142,7 +142,7 @@ useEffect(() => {
 }, [])
 ```
 
-For multi-window apps, the main process is the single source of truth for shared state (`electron-store` + IPC broadcast to all windows) — never mutate state window-to-window directly.
+For multi-window apps, the main process is the single source of truth for shared state (`electron-store` + IPC broadcast to all windows) - never mutate state window-to-window directly.
 
 ---
 
@@ -161,7 +161,7 @@ src/
     └── index.html
 ```
 
-Use `electron-vite` for dev (unified main/preload/renderer config, instant HMR) and Electron Forge for packaging/signing/notarizing — not webpack-based toolchains or manual packaging.
+Use `electron-vite` for dev (unified main/preload/renderer config, instant HMR) and Electron Forge for packaging/signing/notarizing - not webpack-based toolchains or manual packaging.
 
 ---
 

@@ -1,6 +1,6 @@
 import type { contact } from '@soroush.tech/schema'
 
-/** Form field keys — derived from the shared contact schema (the single source of truth). */
+/** Form field keys - derived from the shared contact schema (the single source of truth). */
 export type ContactFieldName = keyof contact.Values
 
 export type ContactFormValues = contact.Values
@@ -97,7 +97,7 @@ export const fields = [
 /** Copy for the post-submit success panel. */
 export const success = {
   heading: 'TRANSMISSION RECEIVED',
-  subtext: 'Message secured. I’ll respond to your inquiry shortly.',
+  subtext: "Message secured. I'll respond to your inquiry shortly.",
   logLines: [
     'HANDSHAKE_SUCCESSFUL',
     'PACKETS_ROUTED_THROUGH_SECURE_NODE',

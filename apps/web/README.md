@@ -1,6 +1,6 @@
 # @soroush/web
 
-The **soroush.tech** website — a React 19 + **Vike** app, prerendered to static
+The **soroush.tech** website - a React 19 + **Vike** app, prerendered to static
 HTML (SSG) with an isomorphic render path. This is the `apps/web` workspace of
 the [soroush.tech monorepo](../../README.md).
 
@@ -22,7 +22,7 @@ the [soroush.tech monorepo](../../README.md).
 
 ## 🚀 Running
 
-From the repo root, top-level scripts proxy here (`pnpm dev`, `pnpm build`, …),
+From the repo root, top-level scripts proxy here (`pnpm dev`, `pnpm build`, ...),
 or run scripts directly inside `apps/web`:
 
 ```bash
@@ -31,7 +31,7 @@ pnpm dev       # start the Vite dev server
 ```
 
 `pnpm install` bootstraps `apps/web/.env.local` from [`default.env`](./default.env) (via the
-root `postprepare` → `pnpm run setup`) so Vite has its `VITE_*` values — it never overwrites an
+root `postprepare` → `pnpm run setup`) so Vite has its `VITE_*` values - it never overwrites an
 existing file. Edit `.env.local` for your local secrets, or re-run `pnpm run setup`.
 
 ---
@@ -42,24 +42,24 @@ existing file. Edit `.env.local` for your local secrets, or re-run `pnpm run set
 apps/web/
 ├── .storybook/                        # Storybook configuration.
 ├── @types/                            # Ambient TypeScript declarations.
-├── public/                            # Static files served as-is (robots.txt, worker…).
+├── public/                            # Static files served as-is (robots.txt, worker...).
 ├── scripts/                           # Codegen and coverage helpers.
 ├── src/
 │   ├── App.tsx                        # Root application component.
 │   ├── config.ts                      # App-wide configuration values.
 │   ├── assets/                        # Images, icons, and fonts.
-│   ├── common/                        # Reusable UI and app-shell components (Header, Footer, Layout…).
+│   ├── common/                        # Reusable UI and app-shell components (Header, Footer, Layout...).
 │   │   └── [Component]/               # index.ts · Component.tsx · *.test.tsx · *.stories.tsx · const.ts · utils.ts · README.md
-│   ├── section/                       # Page-specific composed sections (Hero, Summary, ExperienceGraph…).
+│   ├── section/                       # Page-specific composed sections (Hero, Summary, ExperienceGraph...).
 │   │   └── [Section]/                 # index.ts · Section.tsx · Section.data.ts · *.test.tsx · README.md
-│   ├── pages/                         # Vike file-based routes (about, articles, contact, projects…).
+│   ├── pages/                         # Vike file-based routes (about, articles, contact, projects...).
 │   │   └── [route]/                   # +Page.tsx · @id/ (+route.ts, +onBeforeRender.ts, +onBeforePrerenderStart.ts)
 │   ├── theme/                         # Brand layer: color palettes, light/dark themes, global styles + fonts.
-│   ├── hooks/                         # Shared data-fetching hooks (useCustomQuery, useGists, useUser…).
-│   ├── utils/                         # Framework-agnostic helpers (incl. api/ — client, query client, logger).
+│   ├── hooks/                         # Shared data-fetching hooks (useCustomQuery, useGists, useUser...).
+│   ├── utils/                         # Framework-agnostic helpers (incl. api/ - client, query client, logger).
 │   ├── renderer/                      # Vike SSR/CSR render hooks and app bootstrap.
 │   ├── types/                         # Shared TypeScript types.
-│   └── test/                          # Test infra — e2e/ (Playwright), mocks/ (MSW), utils/ (renderWithTheme…).
+│   └── test/                          # Test infra - e2e/ (Playwright), mocks/ (MSW), utils/ (renderWithTheme...).
 ├── playwright.config.ts
 ├── vite.config.ts
 └── package.json
@@ -115,7 +115,7 @@ apps/web/
 Tests run across **two nested matrices**, so a green build means "works
 everywhere," not "works on my machine."
 
-**OS matrix** — unit & component tests run on three runners in parallel:
+**OS matrix** - unit & component tests run on three runners in parallel:
 
 | 🐧 Linux | 🪟 Windows | 🍎 macOS |
 | :------: | :--------: | :------: |
@@ -123,13 +123,13 @@ everywhere," not "works on my machine."
 Catches platform-specific bugs: path separators, case-sensitive imports,
 line-ending / encoding, and locale & timezone differences.
 
-**Browser matrix (Playwright)** — within each platform, end-to-end specs run
+**Browser matrix (Playwright)** - within each platform, end-to-end specs run
 against all three major engines:
 
 | Chromium | Firefox | WebKit |
 | :------: | :-----: | :----: |
 
-A feature can pass in Chromium and still break in WebKit (Safari) — engines
+A feature can pass in Chromium and still break in WebKit (Safari) - engines
 differ in CSS rendering, layout, and JS API support. Nesting the two means
 every engine is exercised on every OS (3 × 3).
 

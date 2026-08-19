@@ -20,7 +20,7 @@ import {
 import { Flex, type FlexProps } from '../Flex'
 import { themeDefault } from '../theme/utils/themeDefault'
 
-/** Valid values for the color prop — derived from theme.background keys. */
+/** Valid values for the color prop - derived from theme.background keys. */
 export type AppBarColor = keyof Theme['background']
 
 export type AppBarPosition = 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky'
@@ -29,11 +29,11 @@ export type AppBarPosition = 'absolute' | 'fixed' | 'relative' | 'static' | 'sti
 export type AppBarSize = keyof Theme['sizes']
 
 export interface AppBarProps extends Omit<FlexProps, 'position' | 'bg'> {
-  /** Resolves against theme.background — sets the AppBar background color. */
+  /** Resolves against theme.background - sets the AppBar background color. */
   color?: AppBarColor
   /** CSS position value for layout placement. Default: browser default (static). */
   position?: AppBarPosition
-  /** Box-shadow elevation (index into theme.shadows, 0–24). Default: `4`; use `0` for no shadow. */
+  /** Box-shadow elevation (index into theme.shadows, 0-24). Default: `4`; use `0` for no shadow. */
   elevation?: number
   /** Padding preset from theme.sizes. Default: 'md', overridable via `theme.defaults.size`. */
   size?: AppBarSize

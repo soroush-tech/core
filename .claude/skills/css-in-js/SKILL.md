@@ -6,13 +6,13 @@ paths: @soroush.tech/design-system/**
 
 ## Canonical reference
 
-Read `@soroush.tech/design-system/Avatar/Avatar.tsx` before writing any new component — it is the correct styled-system pattern.
+Read `@soroush.tech/design-system/Avatar/Avatar.tsx` before writing any new component - it is the correct styled-system pattern.
 
 ---
 
 ## Rules
 
-### 0. All engine imports come from `@soroush.tech/design-system` — never from the underlying packages
+### 0. All engine imports come from `@soroush.tech/design-system` - never from the underlying packages
 
 Inside `@soroush.tech/design-system/`, every styling primitive must be imported from the barrel, not from its original package:
 
@@ -40,11 +40,11 @@ This applies to every file in `@soroush.tech/design-system/` and `src/common/`. 
 | Custom prop → theme scale       | `system({ gap: { property: 'gap', scale: 'space' } })`            |
 | Shape / state variants          | `variant({ prop, variants: { key: { cssProperty: themeKey } } })` |
 | Font weight, letter spacing     | `typography()` + prop default in wrapper                          |
-| Static styles (no theme access) | Plain object — no function                                        |
+| Static styles (no theme access) | Plain object - no function                                        |
 
 `variant()` resolves string keys against theme scales automatically: `{ borderRadius: 'md' }` → `theme.radii.md`.
 
-### 2. Static base styles — no function unless theme access is required
+### 2. Static base styles - no function unless theme access is required
 
 ```ts
 // ✗
@@ -59,7 +59,7 @@ Component-specific config stays in the component file. If only one component use
 
 ### 4. All variants must occupy equal space
 
-Use transparent borders on borderless variants — never remove the border entirely.
+Use transparent borders on borderless variants - never remove the border entirely.
 
 ```ts
 contained: {
@@ -81,12 +81,12 @@ text: {
 const safeLayout = ({ size: _size, ...rest }: object) => layout(rest)
 ```
 
-Do not rename the public API — fix the conflict internally.
+Do not rename the public API - fix the conflict internally.
 
 ### 6. Typography defaults as overridable props
 
 ```ts
-// ✓ — resolved through typography() against theme scales; user can override
+// ✓ - resolved through typography() against theme scales; user can override
 export function Button({ fontWeight = 'bold', letterSpacing = 'tight', ...rest }) {
   return <ButtonRoot fontWeight={fontWeight} letterSpacing={letterSpacing} {...rest} />
 }

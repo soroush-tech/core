@@ -38,14 +38,14 @@ const meta: Meta<typeof LinearProgress> = {
     variant: {
       control: { type: 'inline-radio' },
       options: linearProgressVariantTokens,
-      description: 'Visual variant — looping animation, value-driven bar, or reversed loop.',
+      description: 'Visual variant - looping animation, value-driven bar, or reversed loop.',
       table: { category: 'Visual', defaultValue: { summary: 'indeterminate' } },
     },
     color: {
       control: { type: 'select' },
       options: linearProgressColorTokens,
       description:
-        'Bar color — resolves to `theme.palette[color].main`; `"inherit"` uses `currentColor`.',
+        'Bar color - resolves to `theme.palette[color].main`; `"inherit"` uses `currentColor`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     thickness: {
@@ -250,7 +250,7 @@ const AnimatedDeterminate = () => {
   return <LinearProgress variant="determinate" value={progress} aria-label="Export data" />
 }
 
-/** Live determinate bar — `value` updates on a timer and the bar transitions to it. */
+/** Live determinate bar - `value` updates on a timer and the bar transitions to it. */
 export const DeterminateAnimated: Story = {
   render: () => <AnimatedDeterminate />,
 }
@@ -269,7 +269,7 @@ const AnimatedBuffer = () => {
   )
 }
 
-/** Live buffer mode — `valueBuffer` stays ahead of `value` as both advance. */
+/** Live buffer mode - `valueBuffer` stays ahead of `value` as both advance. */
 export const BufferAnimated: Story = {
   render: () => <AnimatedBuffer />,
 }
@@ -279,7 +279,7 @@ const ProgressWithLabel = () => {
   return (
     <Flex flexDirection="column" gap={1}>
       <Typography variant="body2" color="secondary" m={0}>
-        Uploading photos…
+        Uploading photos...
       </Typography>
       <Flex flexDirection="row" alignItems="center" gap={2}>
         <LinearProgress variant="determinate" value={progress} aria-label="Uploading photos" />

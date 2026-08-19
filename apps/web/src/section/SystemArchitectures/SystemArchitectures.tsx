@@ -9,7 +9,7 @@ import dataCenter from 'src/assets/datacenter-server-room.png?w=256;384;512&form
 import { ThemeProvider } from '@soroush.tech/design-system/theme'
 import { dark } from 'src/theme/themes'
 
-// Cover-fill bento tile — ~792px tall once the grid goes multi-column at the 52em (832px)
+// Cover-fill bento tile - ~792px tall once the grid goes multi-column at the 52em (832px)
 // breakpoint (square source binds to the taller side); full viewport width below that.
 const DATA_CENTER_SIZES = '(min-width: 832px) 792px, 100vw'
 
@@ -44,7 +44,7 @@ export function SystemArchitectures() {
           gap={2}
           height={['auto', 'auto', '800px']}
         >
-          {/* Tile 1 — Global Data Mesh (image) */}
+          {/* Tile 1 - Global Data Mesh (image) */}
           <Grid
             gridColumn={['auto', 'auto', 'span 2']}
             gridRow={['auto', 'auto', 'span 2']}
@@ -107,7 +107,7 @@ export function SystemArchitectures() {
             </View>
           </Grid>
 
-          {/* Tile 2 — Event-Driven Core */}
+          {/* Tile 2 - Event-Driven Core */}
           <Grid gridColumn={['auto', 'auto', 'span 2']} bg="default">
             <Flex justifyContent="space-between" p={4} gap={6}>
               <View>
@@ -141,7 +141,7 @@ export function SystemArchitectures() {
             </Flex>
           </Grid>
 
-          {/* Tile 3 — Cloud Native */}
+          {/* Tile 3 - Cloud Native */}
           <Grid bg="paper">
             <View p={4}>
               <Typography
@@ -173,7 +173,7 @@ export function SystemArchitectures() {
             </View>
           </Grid>
 
-          {/* Tile 4 — Zero Trust */}
+          {/* Tile 4 - Zero Trust */}
           <Grid bg="paper" position="relative" overflow="hidden">
             <View position="absolute" right={0} bottom={0} opacity={0.1} aria-hidden="true">
               <Icon name="security" color="primary" size="6rem" />

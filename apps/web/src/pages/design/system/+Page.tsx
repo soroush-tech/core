@@ -52,7 +52,7 @@ export default function SystemDesignPage() {
             Design System
           </Typography>
           <Typography variant="body1" color="secondary" lineHeight="relaxed">
-            A comprehensive documentation of the Soroush Design System — scalable components, strict
+            A comprehensive documentation of the Soroush Design System - scalable components, strict
             structural consistency, and production-grade developer experience.
           </Typography>
         </View>

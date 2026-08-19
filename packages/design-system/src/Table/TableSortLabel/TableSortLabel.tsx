@@ -15,9 +15,9 @@ export type TableSortLabelDirection = 'asc' | 'desc'
 
 export interface TableSortLabelProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'>, SpaceProps<Theme> {
-  /** Marks the currently-sorted column — shows the icon fully opaque. Default: `false`. */
+  /** Marks the currently-sorted column - shows the icon fully opaque. Default: `false`. */
   isActive?: boolean
-  /** Current sort direction — rotates the arrow. Default: `'asc'`. */
+  /** Current sort direction - rotates the arrow. Default: `'asc'`. */
   direction?: TableSortLabelDirection
   /**
    * Hides the inactive sort icon, revealing it on hover/focus. Set `false` to
@@ -33,7 +33,7 @@ export interface TableSortLabelProps
 
 const shouldForwardProp = createShouldForwardProp([...props, 'isActive', 'shouldHideSortIcon'])
 
-// A lean inline button that inherits the cell's typography and color — the
+// A lean inline button that inherits the cell's typography and color - the
 // active column keeps the header's color; the icon alone signals sort state.
 const SortLabelRoot = styled('button', {
   name: 'TableSortLabel',
@@ -66,7 +66,7 @@ const SortLabelRoot = styled('button', {
       : {}
 )
 
-// `isDescending`, not `direction` — SVG elements have a native `direction`
+// `isDescending`, not `direction` - SVG elements have a native `direction`
 // attribute that clashes with a custom string prop of the same name.
 const shouldForwardIconProp = (prop: string) =>
   prop !== 'isDescending' && prop !== 'isActive' && prop !== 'shouldHideSortIcon'

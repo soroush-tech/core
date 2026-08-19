@@ -16,7 +16,7 @@ function resolveContainer(container: PortalProps['container']): HTMLElement | nu
 /**
  * Renders its children into a DOM node outside the parent hierarchy (the document
  * body by default). Resolves the container synchronously during render, so the
- * portaled content mounts in the same commit — consumers like Modal can rely on
+ * portaled content mounts in the same commit - consumers like Modal can rely on
  * their root ref being attached before their effects run. Renders nothing during
  * server rendering.
  */

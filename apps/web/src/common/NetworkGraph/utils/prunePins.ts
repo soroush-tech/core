@@ -3,7 +3,7 @@ interface Point {
   y: number
 }
 
-/** Drop drag-pins for nodes that are no longer visible — e.g. when an area is
+/** Drop drag-pins for nodes that are no longer visible - e.g. when an area is
  *  collapsed its members hide, so their pins are cleared and reopening reflows them
  *  fresh instead of snapping back to where they were dropped. Area hubs stay visible
  *  even when closed, so their pins persist. Mutates `pinned`. */

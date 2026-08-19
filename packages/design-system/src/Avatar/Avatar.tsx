@@ -26,13 +26,13 @@ export interface AvatarProps extends Omit<FlexProps, OmittedProps> {
   fallback?: string
   /** Shape of the avatar. Default: 'circular'. */
   variant?: AvatarVariant
-  /** Preset size — resolves against theme.avatar. Default: 'md', overridable via `theme.defaults.size`. */
+  /** Preset size - resolves against theme.avatar. Default: 'md', overridable via `theme.defaults.size`. */
   size?: AvatarSize
   /** Adds a CSS outline ring around the avatar. */
   ring?: boolean
-  /** Ring color — resolves against theme.border. */
+  /** Ring color - resolves against theme.border. */
   ringColor?: AvatarRingColor
-  /** Ring width — resolves against theme.borderWidths. */
+  /** Ring width - resolves against theme.borderWidths. */
   ringWidth?: AvatarRingWidth
 }
 
@@ -84,7 +84,7 @@ const AvatarRoot = styled(Flex, {
   ringSystem
 )
 
-// Plain img fills the container — no styled-system props needed.
+// Plain img fills the container - no styled-system props needed.
 const AvatarImg = styled('img', { name: 'Avatar', slot: 'img', label: 'AvatarImg' })({
   width: '100%',
   height: '100%',
@@ -129,7 +129,7 @@ export function Avatar({
 
   const handleError = () => {
     // Switch to fallback only when a primary source existed and fallback hasn't been tried yet.
-    // If fallback was the only source it was already rendered as src — go straight to failed
+    // If fallback was the only source it was already rendered as src - go straight to failed
     // (1 error → children).
     if (!useFallback && fallback && hasPrimary) {
       setUseFallback(true)

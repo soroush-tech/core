@@ -7,7 +7,7 @@
 // and decides which jobs run, writing changes.json for the CD workflows on the way.
 //
 // A root file used to mean "everything changed", so adding one dependency to one package ran
-// the whole matrix — a lockfile is written by every dependency change. Each root file is now
+// the whole matrix - a lockfile is written by every dependency change. Each root file is now
 // asked what it actually affects; only `pnpm-lock.yaml` and the root `package.json` need their
 // previous version to answer, and both fall back to the whole workspace when it cannot be read.
 //
@@ -53,7 +53,7 @@ const dirsWithPackageJson = (root) => {
  * Every CI definition file that carries a `# ci:validates` marker, by the name its `wf__` filter
  * key uses. The workflows are discovered; the composite setup action is named, being the one such
  * file outside `.github/workflows/`. It belongs here rather than in `ROOT_FILES`: every job
- * installs through it, so editing it must re-run all of them — but it is a CI file, and a root
+ * installs through it, so editing it must re-run all of them - but it is a CI file, and a root
  * file additionally sets `changes.root`, which is what the CD workflows deploy on.
  */
 export function ciFiles() {
@@ -66,14 +66,14 @@ export function ciFiles() {
 }
 
 /**
- * One key over every CI definition path, whose matched **paths** — not just the key — come back
- * to `assemble` via `list-files: json`, to catch a file that `ciFiles()` cannot see — see
+ * One key over every CI definition path, whose matched **paths** - not just the key - come back
+ * to `assemble` via `list-files: json`, to catch a file that `ciFiles()` cannot see - see
  * `unclaimedCiPaths`.
  */
 const CI_ANY = 'ci__any'
 
 /**
- * Matches only when a CI definition file was **deleted** — a paths-filter status predicate over
+ * Matches only when a CI definition file was **deleted** - a paths-filter status predicate over
  * the same two globs as `CI_ANY`, firing on the deletion itself no matter what else changed
  * alongside it. A deleted path also surfaces through `unclaimedCiPaths`, but that rests on the
  * file list arriving intact; this fires from the filter match alone, so the deletion case never
@@ -101,13 +101,13 @@ export function buildFilters() {
 /**
  * The changed CI paths that no per-file key claims: `ci__any`'s matches, minus `ciFiles()` and
  * minus the `.md` companions, which are documentation no job reads. Anything left is a CI file
- * the attribution cannot see — a deleted workflow (the keys are built from the working tree), an
- * aux file inside an action — and the caller validates everything for it: the same answer an
+ * the attribution cannot see - a deleted workflow (the keys are built from the working tree), an
+ * aux file inside an action - and the caller validates everything for it: the same answer an
  * unreadable marker gets, for the same reason: this must over-run, never quietly under-run.
  *
  * Paths rather than keys, because keys cannot say this. A deletion or an unkeyed file beside an
  * ordinary edit produces the same matched keys as the edit alone, so any key heuristic goes blind
- * past the first claim — while the edit's claim can be far narrower than what the masked file
+ * past the first claim - while the edit's claim can be far narrower than what the masked file
  * validated. `null` means `ci__any` matched but the file list itself is missing: nothing can be
  * ruled out, and the caller treats it as "everything" too.
  */
@@ -121,7 +121,7 @@ export function unclaimedCiPaths(changed, files) {
 /**
  * The importer blocks of a pnpm lockfile, keyed by workspace path. Sectioned by indentation
  * rather than parsed: prepare runs before any install, so there is no YAML parser to reach for,
- * and pnpm writes this file itself — the shape is machine-stable.
+ * and pnpm writes this file itself - the shape is machine-stable.
  *
  * Structural, because a changed importer's inner lines carry no key of their own: a diff hunk
  * cannot say whose dependency moved, but the block it sits in can.
@@ -167,7 +167,7 @@ function toFilterKey(importer) {
 /**
  * Which members a lockfile change belongs to. Null means the whole workspace: the root importer
  * carries the tooling everything is built with, and a change that moves no importer at all is a
- * transitive one — who inherits it cannot be told without resolving the graph, so everything runs.
+ * transitive one - who inherits it cannot be told without resolving the graph, so everything runs.
  */
 export function attributeLockfile(base, head) {
   const before = readImporters(base)
@@ -184,7 +184,7 @@ export function attributeLockfile(base, head) {
   return keys.includes(null) ? null : keys
 }
 
-/** True when the root manifest changed anywhere but `scripts` — the part that shapes the install. */
+/** True when the root manifest changed anywhere but `scripts` - the part that shapes the install. */
 export function packageJsonMattersBeyondScripts(base, head) {
   const withoutScripts = (json) => {
     const manifest = JSON.parse(json)
@@ -204,11 +204,11 @@ export function packageJsonMattersBeyondScripts(base, head) {
  *   # ci:validates nothing       → nothing (a deploy, Chromatic, the labeller: CI never runs them)
  *   # ci:validates app__web      → those filter keys
  *
- * The prefix is exact — `# ci:validates ` and then the tokens. A file that spells it any other
+ * The prefix is exact - `# ci:validates ` and then the tokens. A file that spells it any other
  * way is unmarked as far as this is concerned, and an unmarked workflow means the whole
  * workspace: a new file, or a mistyped marker, can only ever over-run.
  */
-/** How a workflow opens its scope. Exactly this, then the tokens — see the doc block above. */
+/** How a workflow opens its scope. Exactly this, then the tokens - see the doc block above. */
 const MARKER = '# ci:validates '
 
 export function workflowValidates(name) {
@@ -228,7 +228,7 @@ export function workflowValidates(name) {
   // Found by looking at each line rather than by pattern: the marker is a fixed prefix at the
   // start of a line, which is a thing to compare, not to search for. A regular expression asked
   // to find it has to consider every place it might begin, and pays for that on every workflow
-  // that carries no marker at all — which is most of them. It also settles CRLF, where `$` and
+  // that carries no marker at all - which is most of them. It also settles CRLF, where `$` and
   // the trailing `\r` disagree.
   const marker = source
     .split('\n')
@@ -238,9 +238,9 @@ export function workflowValidates(name) {
     .trim()
   if (!marker) return { keys: [], wholeWorkspace: true }
 
-  // The marker line carries tokens and nothing else — prose belongs on the line below it. An
+  // The marker line carries tokens and nothing else - prose belongs on the line below it. An
   // unreadable token means the whole workspace rather than a guess: a marker nobody can parse
-  // must over-run, never quietly under-run. (It is not hypothetical: "…and nothing else" in a
+  // must over-run, never quietly under-run. (It is not hypothetical: "...and nothing else" in a
   // trailing explanation once made a file claim it validated nothing.)
   const claimed = marker.trim().split(/\s+/)
   const known = /^(all|nothing|(app|worker|pkg)__([\w.-]+|\*))$/
@@ -267,7 +267,7 @@ export function attributeWorkflows(workflows) {
   return {
     keys: claims.flatMap(({ keys }) => keys),
     wholeWorkspace: claims.some((claim) => claim.wholeWorkspace),
-    reasons: claims.map((claim) => `${pathOf(claim.name)} changed — ${meaning(claim)}`),
+    reasons: claims.map((claim) => `${pathOf(claim.name)} changed - ${meaning(claim)}`),
   }
 }
 
@@ -278,7 +278,7 @@ const readManifest = (area, dir) =>
 /**
  * One matrix row: where the member lives, what to filter pnpm by, and the Codecov flag it uploads
  * under. The flag is the unscoped package name rather than the directory, because two members are
- * called `bench` — `packages/bench` owns the flag `bench`, and `workers/bench` is `bench-api`.
+ * called `bench` - `packages/bench` owns the flag `bench`, and `workers/bench` is `bench-api`.
  */
 function toRow(area, dir) {
   const pkg = readManifest(area, dir)
@@ -288,7 +288,7 @@ function toRow(area, dir) {
     filter: pkg.name,
     flag: pkg.name.split('/').pop(),
     // A real-browser vitest tier declares `playwright` itself and needs Chromium downloaded
-    // first. A member with an e2e script of its own declares it for that instead — the editor's
+    // first. A member with an e2e script of its own declares it for that instead - the editor's
     // Electron ships its own Chromium, so downloading another would be a minute spent on nothing.
     browsers:
       Boolean(pkg.devDependencies?.playwright ?? pkg.dependencies?.playwright) &&
@@ -312,7 +312,7 @@ export function assembleChanges({
   // `changes.root` is the second one only: the CD workflows deploy on it, and editing `ci.yml`
   // must re-run the tests without shipping the site and both workers.
   const everything = wholeWorkspace || revalidateAll
-  // What the tree actually says changed — this is what `changes.json` reports and what the CD
+  // What the tree actually says changed - this is what `changes.json` reports and what the CD
   // workflows deploy from. A workflow file asking for a job to run is not a change to that area,
   // so it stays out of here: putting `web` in `changes.apps` because `ci-web.yml` moved would
   // deploy the site off a CI edit.
@@ -349,7 +349,7 @@ export function assembleChanges({
   /**
    * A member runs when it changed, when a workflow asked for it, or when a package it declares
    * changed. Derived rather than listed: a hand-written list of consumers is a list to forget the
-   * day a dependency moves. Only a real change propagates along those edges — a workflow that
+   * day a dependency moves. Only a real change propagates along those edges - a workflow that
    * asks for the packages says nothing about the apps that consume them.
    */
   const runs = (area, dir) => {
@@ -390,7 +390,7 @@ export function assembleChanges({
 
 /**
  * A file as the base commit had it, or null when there is nothing to compare against. The copies
- * are laid out by the workflow step before this one — the rules live here, `git` stays there.
+ * are laid out by the workflow step before this one - the rules live here, `git` stays there.
  * An empty file is a `git show` that found nothing, which is no answer either.
  */
 function fileAtBase(file) {
@@ -405,7 +405,7 @@ function fileAtBase(file) {
 
 /**
  * Reads the root files that changed and reports what they mean. Anything that cannot be compared
- * against its previous version counts as the whole workspace — the safe answer is the slow one.
+ * against its previous version counts as the whole workspace - the safe answer is the slow one.
  */
 export function attributeRootFiles(changed, read = fileAtBase) {
   const touched = Object.keys(ROOT_FILES).filter((key) => changed.includes(key))
@@ -417,7 +417,7 @@ export function attributeRootFiles(changed, read = fileAtBase) {
 
   for (const key of touched.filter((key) => WHOLE_WORKSPACE.has(key))) {
     wholeWorkspace = true
-    reasons.push(`${ROOT_FILES[key]} changed — it shapes the whole workspace`)
+    reasons.push(`${ROOT_FILES[key]} changed - it shapes the whole workspace`)
   }
 
   const compare = (key, decide) => {
@@ -484,11 +484,11 @@ function main() {
   const unclaimed = unclaimedCiPaths(changed, ciAnyFiles)
   const unattributedCi = changed.includes(CI_DELETED) || unclaimed === null || unclaimed.length > 0
   const reasons = [...root.reasons, ...workflows.reasons]
-  if (changed.includes(CI_DELETED)) reasons.push('a CI file was deleted — nothing left to claim it')
+  if (changed.includes(CI_DELETED)) reasons.push('a CI file was deleted - nothing left to claim it')
   if (unclaimed === null) {
     reasons.push('a CI file changed and the matched paths could not be read')
   } else if (unclaimed.length > 0) {
-    reasons.push(`CI files changed that no per-file key claims — ${unclaimed.join(', ')}`)
+    reasons.push(`CI files changed that no per-file key claims - ${unclaimed.join(', ')}`)
   }
   for (const reason of reasons) console.error(`changes: ${reason}`)
 

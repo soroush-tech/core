@@ -19,7 +19,7 @@ export interface SavedFile {
 /**
  * What the user chose when told the document has unsaved changes. Two ways
  * out, both safe: keep the work or throw it away. There is no cancel, because
- * keeping it already costs nothing — a gist file is saved into the sandbox as
+ * keeping it already costs nothing - a gist file is saved into the sandbox as
  * one more staged change, to be published alongside the others later.
  */
 export type UnsavedChoice = 'save' | 'discard'
@@ -41,8 +41,8 @@ export const CLAUDE_CHANNELS = {
 
 /**
  * What a run tells the renderer as it happens. The names are the AG-UI
- * (Agent–User Interaction) protocol's, so the vocabulary is a known quantity
- * rather than invented here — without taking the dependency. Tool-call and
+ * (Agent-User Interaction) protocol's, so the vocabulary is a known quantity
+ * rather than invented here - without taking the dependency. Tool-call and
  * state events are deliberately absent: the CLI runs with `--allowedTools ""`,
  * so they would be dead weight.
  *
@@ -56,14 +56,14 @@ export type ClaudeEvent =
   | { type: 'RUN_FINISHED'; runId: string; text: string }
   | { type: 'RUN_ERROR'; runId: string; error: string }
 
-/** The signed-in GitHub account. Never carries the token — that stays in main. */
+/** The signed-in GitHub account. Never carries the token - that stays in main. */
 export interface GitHubStatus {
   login: string | null
   /** The avatar as a `data:` URI, so the renderer's CSP needs no remote image host. */
   avatar: string | null
 }
 
-/** One row of the gist list. Only what the panel renders — not the gist's content. */
+/** One row of the gist list. Only what the panel renders - not the gist's content. */
 export interface GistSummary {
   id: string
   /** The gist's description, or null when it has none. */
@@ -110,7 +110,7 @@ export type GistDrafts = Record<string, GistDraft>
 
 /**
  * Marks the sandbox for a gist that does not exist on GitHub yet. Not a real
- * gist id — GitHub's are hex — so it cannot collide with one, and publishing
+ * gist id - GitHub's are hex - so it cannot collide with one, and publishing
  * such an id creates the gist rather than patching it.
  *
  * Each new gist gets its own id after the prefix, so starting one never
@@ -123,7 +123,7 @@ export function newGistId(): string {
   return `${NEW_GIST_PREFIX}${crypto.randomUUID()}`
 }
 
-/** True for a gist that has never been published — see `NEW_GIST_PREFIX`. */
+/** True for a gist that has never been published - see `NEW_GIST_PREFIX`. */
 export function isNewGist(gistId: string): boolean {
   // 'new' was the single shared sandbox before each got its own id; a draft
   // left under it is still a gist that does not exist yet.

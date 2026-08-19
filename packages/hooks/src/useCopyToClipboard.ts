@@ -29,7 +29,7 @@ export function useCopyToClipboard(resetMs: number = COPIED_RESET_MS): UseCopyTo
   const copy = useCallback(
     (text: string) => {
       // Clipboard is unavailable in insecure/unsupported contexts, and writeText can
-      // reject (e.g. permission denied) — guard both so the UI never sticks.
+      // reject (e.g. permission denied) - guard both so the UI never sticks.
       if (!navigator.clipboard?.writeText) return
       void navigator.clipboard
         .writeText(text)

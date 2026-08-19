@@ -49,7 +49,7 @@ export interface FileHandlerState {
   isDraft: boolean
 }
 
-/** Disk access used by the handlers — injectable so they stay unit-testable. */
+/** Disk access used by the handlers - injectable so they stay unit-testable. */
 export interface FileIo {
   readFile: (path: string, encoding: 'utf8') => Promise<string>
   writeFile: (path: string, content: string, encoding: 'utf8') => Promise<void>

@@ -20,10 +20,10 @@ import { usePageContext } from 'src/hooks/usePageContext'
 import { Quote } from '@soroush.tech/design-system/Quote'
 
 export function ContactInquire() {
-  // Hidden honeypot field name — read from env so it stays out of the public repo. When unset
+  // Hidden honeypot field name - read from env so it stays out of the public repo. When unset
   // (e.g. local/dev), the honeypot isn't rendered; the Worker still enforces its own.
   const honeypotName = import.meta.env.VITE_CONTACT_HONEYPOT ?? null
-  // Turnstile sitekey — read from env like the honeypot. When unset (local/dev) the widget
+  // Turnstile sitekey - read from env like the honeypot. When unset (local/dev) the widget
   // isn't rendered and submission proceeds tokenless; the Worker skips verification in turn.
   const turnstileSitekey = import.meta.env.VITE_TURNSTILE_SITEKEY ?? ''
   const submit = useContactSubmit()
@@ -38,7 +38,7 @@ export function ContactInquire() {
   const form = useContactInquire()
 
   // A tripped honeypot shows the same success screen as a real send (without any request), so a
-  // bot gets no signal it was caught — and a real visitor who autofills the trap isn't left stuck.
+  // bot gets no signal it was caught - and a real visitor who autofills the trap isn't left stuck.
   // The decoy carries its own `res_` reference since it never reaches the server to get a real id.
   const [decoySuccess, setDecoySuccess] = useState(false)
   const [decoyId, setDecoyId] = useState('')
@@ -60,7 +60,7 @@ export function ContactInquire() {
       form.handleSubmit() // surface field errors; an invalid form never submits
       return
     }
-    // A filled honeypot means a bot — skip the request but show the success screen anyway.
+    // A filled honeypot means a bot - skip the request but show the success screen anyway.
     if (honeypotRef.current?.value) {
       setDecoyId(makeDecoyId())
       setDecoySuccess(true)
@@ -221,8 +221,8 @@ export function ContactInquire() {
             </Flex>
 
             {honeypotName && (
-              // Hidden bot trap. `display:none` (not off-screen) so browser autofill — Chrome's
-              // native autofill honors it but ignores the data-* hints — and password managers
+              // Hidden bot trap. `display:none` (not off-screen) so browser autofill - Chrome's
+              // native autofill honors it but ignores the data-* hints - and password managers
               // skip it; an autofilled honeypot would otherwise drop a real user's submission.
               <View aria-hidden display="none">
                 <input
@@ -243,7 +243,7 @@ export function ContactInquire() {
                 <div ref={containerRef} />
                 {turnstileError && (
                   <Typography variant="overline" as="p" color="error" mt={2}>
-                    Verification couldn’t load. Disable any blockers and refresh to continue.
+                    Verification couldn't load. Disable any blockers and refresh to continue.
                   </Typography>
                 )}
               </View>

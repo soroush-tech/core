@@ -11,6 +11,7 @@ import { useClaudeEdit } from '../../hooks/useClaudeEdit'
 import { useGistFiles } from '../../hooks/useGistFiles'
 import { useGists } from '../../hooks/useGists'
 import { isGistDrag, readGistDrag } from '../../utils/gistDrag'
+import { normalizeTypography } from './utils/normalizeTypography'
 import { CONTEXT_LIMIT, toContext } from './utils/toContext'
 import { toGistLabel } from './utils/toGistLabel'
 import { toPreview } from './utils/toPreview'
@@ -19,10 +20,10 @@ import { toPreview } from './utils/toPreview'
 const NO_REFERENCE = ''
 
 /** Said when the answer came back to a document that had moved on without it. */
-const STALE_MESSAGE = 'The document changed while Claude was working — the edit was not applied.'
+const STALE_MESSAGE = 'The document changed while Claude was working - the edit was not applied.'
 
 export interface ClaudePanelProps {
-  /** The text Claude rewrites — the selection, or the whole document when nothing is selected. */
+  /** The text Claude rewrites - the selection, or the whole document when nothing is selected. */
   targetText: string
   /** True when `targetText` is a selection rather than the whole document. */
   isSelection: boolean
@@ -30,7 +31,7 @@ export interface ClaudePanelProps {
   documentName: string
   /**
    * Called as a request starts, so the caller can remember what was asked
-   * about — the selection may move before the answer arrives.
+   * about - the selection may move before the answer arrives.
    */
   onStart?: () => void
   /**
@@ -50,28 +51,30 @@ export function ClaudePanel({
 }: Readonly<ClaudePanelProps>) {
   const [instruction, setInstruction] = useState('')
   const [isStale, setIsStale] = useState(false)
-  // An existing gist to write from — "we covered rehydration, now do the part
+  // An existing gist to write from - "we covered rehydration, now do the part
   // about data fetching". Its files are fetched as soon as it is chosen.
   const [referenceId, setReferenceId] = useState(NO_REFERENCE)
   const [isDropTarget, setIsDropTarget] = useState(false)
   const { files, description, error: referenceError } = useGistFiles(referenceId || null)
   // The same choice the drag makes, for anyone not making it with a mouse.
-  // Dropped when the account has no gists to offer — which is also what a
+  // Dropped when the account has no gists to offer - which is also what a
   // signed-out account looks like from here, and neither needs saying twice.
   const { gists } = useGists()
 
   // Every delta goes straight into the document, so the answer is watched
   // being written where it will live rather than in a box beside it. A delta
   // the document has no room for is dropped by the caller, and the run carries
-  // on — what it writes next is judged against the document as it then is.
-  const { editSelection, cancel, isLoading, error } = useClaudeEdit({ onText: onApply })
+  // on - what it writes next is judged against the document as it then is.
+  const { editSelection, cancel, isLoading, error } = useClaudeEdit({
+    onText: (text) => onApply(normalizeTypography(text)),
+  })
   const canSubmit = instruction.trim() !== '' && !isLoading
   const message = error ?? (isStale ? STALE_MESSAGE : null)
 
   const preview = toPreview(targetText)
 
   const reference = referenceId === NO_REFERENCE ? null : toContext(description, files)
-  // What the dropped gist is called: its description, else its first file —
+  // What the dropped gist is called: its description, else its first file -
   // the drag carries only an id, so the name comes from what was fetched.
   // `||`, not `??`: a description of nothing but spaces is no name either, and
   // an empty one would leave the button to stop referring to it unlabelled.
@@ -81,16 +84,18 @@ export function ClaudePanel({
     onStart?.()
     setIsStale(false)
     // What was there before the streaming overwrote it, to put back if the run
-    // is stopped or fails — a half-written answer is not something to leave behind.
+    // is stopped or fails - a half-written answer is not something to leave behind.
     const before = targetText
     const rewritten = await editSelection(targetText, instruction, reference?.text ?? null)
     if (rewritten === null) {
+      // Not normalized: this is the document's own text going back untouched,
+      // and putting it back is not an edit.
       onApply(before)
       return
     }
     // The instruction is kept when the answer could not be applied, so asking
     // again is one click rather than typing it out a second time.
-    if (!onApply(rewritten)) return setIsStale(true)
+    if (!onApply(normalizeTypography(rewritten))) return setIsStale(true)
     setInstruction('')
   }
 
@@ -107,7 +112,7 @@ export function ClaudePanel({
           Edit with Claude
         </Typography>
         {/* What is about to be rewritten: the selection, or the whole file by
-            name — with a taste of it either way. */}
+            name - with a taste of it either way. */}
         <Typography variant="caption" color="secondary" m={0}>
           {isSelection ? 'Selection' : documentName} ·{' '}
           {targetText.length === 0 ? 'empty' : `${targetText.length} characters`}
@@ -118,13 +123,13 @@ export function ClaudePanel({
           </Typography>
         )}
         {/* The keyboard's way to the same thing the drag does. Shown only while
-            there is something to choose, so an account with no gists — or none
-            connected — is not offered an empty list. */}
+            there is something to choose, so an account with no gists - or none
+            connected - is not offered an empty list. */}
         {gists.length > 0 && (
           <NativeSelect
             size="sm"
             variant="text"
-            placeholder="Write from a gist…"
+            placeholder="Write from a gist..."
             value={referenceId}
             onChange={(value) => setReferenceId(String(value))}
             selectProps={{ 'aria-label': 'Gist to write from' }}
@@ -165,7 +170,7 @@ export function ClaudePanel({
           </Typography>
         )}
         {isLoading && <LinearProgress />}
-        {/* Drop a gist from the Gists panel here to write from it — the
+        {/* Drop a gist from the Gists panel here to write from it - the
             placeholder is the only thing that changes, so nothing takes room
             for a reference that is usually absent. */}
         <Flex
@@ -191,7 +196,7 @@ export function ClaudePanel({
             fullWidth
             minRows={2}
             value={instruction}
-            placeholder={isDropTarget ? 'Drop to write from this gist' : 'Describe the change…'}
+            placeholder={isDropTarget ? 'Drop to write from this gist' : 'Describe the change...'}
             onChange={(event) => setInstruction(event.target.value)}
             inputProps={{ 'aria-label': 'Edit instruction' }}
           />

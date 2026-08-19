@@ -99,7 +99,7 @@ describe('runMonthlyMaintenance', () => {
     const { env, calls, tables } = makeEnv({ contacts_2025_12: [{ id: 'x' }] }, '12')
     await runMonthlyMaintenance(env, JUNE_2026)
 
-    // 6 months old — expired at the default 6, but kept under a 12-month window.
+    // 6 months old - expired at the default 6, but kept under a 12-month window.
     expect(calls).not.toContain('drop:contacts_2025_12')
     expect(tables.contacts_2025_12).toBeDefined()
   })

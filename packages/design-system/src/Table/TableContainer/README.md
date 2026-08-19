@@ -6,11 +6,11 @@ horizontally inside it instead of breaking the page layout. Give it a bounded `m
 
 ```tsx
 <TableContainer maxHeight="320px">
-  <Table hasStickyHeader>…</Table>
+  <Table hasStickyHeader>...</Table>
 </TableContainer>
 ```
 
 ## Props
 
-Accepts every `View` prop — `bg`, `borderColor`, `borderWidth`, `borderRadius`, spacing, layout,
+Accepts every `View` prop - `bg`, `borderColor`, `borderWidth`, `borderRadius`, spacing, layout,
 position, and `as` (default `'div'`). See `@soroush.tech/design-system/View/README.md`.

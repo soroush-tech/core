@@ -21,7 +21,7 @@ None. The section renders static content.
 
 ## Icons
 
-`src/assets/icons/`: `language`, `smartphone` (existing), `desktop_windows` — Material
+`src/assets/icons/`: `language`, `smartphone` (existing), `desktop_windows` - Material
 Symbols (filled, `#9cff93`), decorative (`alt=""`, `aria-hidden`).
 
 ## Notes
@@ -31,7 +31,7 @@ Symbols (filled, `#9cff93`), decorative (`alt=""`, `aria-hidden`).
   `ARCHITECTURE_V4_LTS` label loses its `border-l`; and the hub "node" is rendered as a
   filled `surface-container-lowest` box (instead of a green-bordered, glowing box) so it
   stands out by background contrast on the `surface-container-highest` hub block.
-- The hub label is `Typography ... as="p"` (not a heading) — it is a diagram node, not
+- The hub label is `Typography ... as="p"` (not a heading) - it is a diagram node, not
   part of the document outline; card titles use `as="h3"` under the section `h2`.
 
 ## Usage

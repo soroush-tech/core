@@ -8,7 +8,7 @@ import { ThemeProvider } from './ThemeProvider'
 
 // Living documentation for theme-level component customization
 // (`theme.components`): defaultProps, styleOverrides, and theme-contributed
-// variants — locked by Chromatic so the customization contract can't silently break.
+// variants - locked by Chromatic so the customization contract can't silently break.
 
 const customized = createTheme(baseTheme, {
   components: {
@@ -53,7 +53,7 @@ export const ThemeComponents: Story = {
       <Flex flexDirection="column" gap={3} p={2}>
         <Flex flexDirection="column" gap={1}>
           <Typography variant="overline" color="secondary" m={0}>
-            defaultProps — sm + rounded without touching call sites
+            defaultProps - sm + rounded without touching call sites
           </Typography>
           <Flex flexDirection="row" gap={2}>
             <Button>Customized default</Button>
@@ -65,7 +65,7 @@ export const ThemeComponents: Story = {
 
         <Flex flexDirection="column" gap={1}>
           <Typography variant="overline" color="secondary" m={0}>
-            styleOverrides — contained loses its uppercase via ownerState
+            styleOverrides - contained loses its uppercase via ownerState
           </Typography>
           <Flex flexDirection="row" gap={2}>
             <Button variant="contained">No Uppercase Here</Button>
@@ -75,7 +75,7 @@ export const ThemeComponents: Story = {
 
         <Flex flexDirection="column" gap={1}>
           <Typography variant="overline" color="secondary" m={0}>
-            variants — a theme-contributed “dashed” value
+            variants - a theme-contributed "dashed" value
           </Typography>
           <ButtonGroup>
             <Button variant={'dashed' as ButtonVariant}>Draft</Button>

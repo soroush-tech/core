@@ -15,7 +15,7 @@ import type { ComponentClass, ComponentProps, ComponentType, JSX, Ref } from 're
  * `name` becomes theme-customizable: `theme.components[name]` may contribute
  * `styleOverrides` (per `slot`) and `variants`, appended after the component's
  * own styles so the theme wins the cascade. Roots without `name` are plain
- * Emotion — zero behavior change, zero cost.
+ * Emotion - zero behavior change, zero cost.
  */
 export interface ThemeCustomizationOptions {
   /** `theme.components` key enabling styleOverrides/variants for this root. */
@@ -23,13 +23,13 @@ export interface ThemeCustomizationOptions {
   /** The `styleOverrides` slot this root maps to. Default: `'root'`. */
   slot?: string
   /**
-   * Styled-system prop parsers (`space`, `layout`, …) appended AFTER the theme
-   * override resolver, so per-instance props (`m`, `p`, `width`, …) always beat
+   * Styled-system prop parsers (`space`, `layout`, ...) appended AFTER the theme
+   * override resolver, so per-instance props (`m`, `p`, `width`, ...) always beat
    * theme `styleOverrides`.
    */
   systemProps?: ReadonlyArray<Interpolation<never>>
   /**
-   * Custom mapping from render props to applied override styles — replaces the
+   * Custom mapping from render props to applied override styles - replaces the
    * default `styleOverrides[slot]` lookup (for prop-keyed override keys).
    */
   overridesResolver?: (
@@ -50,7 +50,7 @@ const matchesProps = (props: Record<string, unknown>, matcher: Record<string, un
   Object.entries(matcher).every(([key, value]) => props[key] === value)
 
 /**
- * The `styled.div`, `styled.span`, … tag shorthands — mirrors Emotion's own
+ * The `styled.div`, `styled.span`, ... tag shorthands - mirrors Emotion's own
  * `StyledTags`, retyped against this package's `Theme` instead of Emotion's
  * (otherwise-empty) one, so `${({ theme }) => theme.space[2]}` template
  * interpolations resolve to the real theme shape.
@@ -83,7 +83,7 @@ interface CreateThemedStyled extends StyledTags {
     component: C,
     options: FilteringStyledOptions<ComponentProps<C>, ForwardedProps> & ThemeCustomizationOptions
   ): CreateStyledComponent<Pick<PropsOf<C>, ForwardedProps> & { theme?: Theme }>
-  // Component + plain options — `shouldForwardProp` may be a boolean predicate
+  // Component + plain options - `shouldForwardProp` may be a boolean predicate
   // (no type-predicate narrowing), mirroring Emotion's non-filtering overload.
   <C extends ComponentType<ComponentProps<C>>>(
     component: C,
@@ -150,7 +150,7 @@ const createThemedStyled = (
 }
 
 /**
- * The design system's `styled` — Emotion's styled plus theme-level component
+ * The design system's `styled` - Emotion's styled plus theme-level component
  * customization (`theme.components[name].styleOverrides` / `.variants`).
  */
 export const styled = Object.assign(

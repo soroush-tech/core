@@ -4,7 +4,7 @@ import { renderWithTheme } from '../utils/test/renderWithTheme'
 import { ThemeProvider } from '../theme'
 import { baseTheme, createTheme } from '../theme/themes'
 
-// A second theme with a different surface value — proves tokens resolve per-theme.
+// A second theme with a different surface value - proves tokens resolve per-theme.
 const light = createTheme(baseTheme, { background: { paper: '#F3F3F3' } })
 import { AppBar } from '../AppBar'
 
@@ -166,7 +166,7 @@ describe('AppBar', () => {
     it('does not apply backgroundColor when color is omitted', () => {
       renderWithTheme(<AppBar data-testid="bar" />)
       const style = getComputedStyle(screen.getByTestId('bar'))
-      // transparent is excluded — rgba(0,0,0,0) is also the default computed value for unstyled elements
+      // transparent is excluded - rgba(0,0,0,0) is also the default computed value for unstyled elements
       const opaqueTokens = Object.values(baseTheme.background).filter(
         (v) => v !== baseTheme.background.transparent
       )

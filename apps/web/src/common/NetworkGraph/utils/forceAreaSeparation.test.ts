@@ -129,7 +129,7 @@ describe('forceAreaSeparation', () => {
 
     force(1)
 
-    expect(w.vx).toBe(-10) // same as the two-area case — stray contributes nothing
+    expect(w.vx).toBe(-10) // same as the two-area case - stray contributes nothing
     expect(stray.vx).toBe(0)
   })
 

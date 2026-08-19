@@ -1,6 +1,6 @@
 # Articles
 
-Renders the article index — the list of published gists as links to each article. Fetches the gist
+Renders the article index - the list of published gists as links to each article. Fetches the gist
 list via `useGists` and renders one `NavLink` per gist to `/article/:id`.
 
 ```tsx
@@ -8,7 +8,7 @@ import { Articles } from 'src/section/Articles'
 ;<Articles />
 ```
 
-Rendered at `/articles` by `src/pages/articles/+Page.tsx`. Stateless — accepts no props.
+Rendered at `/articles` by `src/pages/articles/+Page.tsx`. Stateless - accepts no props.
 
 ---
 
@@ -22,5 +22,5 @@ Rendered at `/articles` by `src/pages/articles/+Page.tsx`. Stateless — accepts
 
 ## Data
 
-- `useGists()` — suspense query; the page wraps `Articles` in `<Suspense>`.
+- `useGists()` - suspense query; the page wraps `Articles` in `<Suspense>`.
 - Each link targets `/article/${gist.id}` and shows the gist `description`.

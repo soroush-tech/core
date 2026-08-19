@@ -32,7 +32,7 @@ export function ButtonGroupCard() {
           storybookHref={`${STORYBOOK_URL}?path=/docs/theme-buttongroup--docs`}
         />
       }
-      caption="ButtonGroup joins Button children into one cluster and broadcasts variant/color/size via context. ToggleButtonGroup adds selection state — exclusive here, so re-clicking clears it."
+      caption="ButtonGroup joins Button children into one cluster and broadcasts variant/color/size via context. ToggleButtonGroup adds selection state - exclusive here, so re-clicking clears it."
     >
       <Flex flexDirection="column" gap={4}>
         {VARIANTS.map((variant) => (

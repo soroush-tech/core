@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { ModalManager, type ManagedModal } from './ModalManager'
 
 // Scroll-lock math depends on real layout (scrollHeight / offsetWidth), which jsdom
-// can't produce — these run in headless Chromium where the box metrics are real.
+// can't produce - these run in headless Chromium where the box metrics are real.
 
 const makeModal = (): ManagedModal => ({
   mount: document.createElement('div'),

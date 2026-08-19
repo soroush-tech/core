@@ -4,7 +4,7 @@ import { Typography, type TypographyProps } from '../Typography'
 import { FormControlContext } from '../FormControl/FormControlContext'
 import { FormContext } from '../Form/FormContext'
 
-// Named styled root — theme-customizable via
+// Named styled root - theme-customizable via
 // `theme.components.FormHelperText.styleOverrides.root`.
 const FormHelperTextRoot = styled(Typography, {
   name: 'FormHelperText',

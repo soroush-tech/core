@@ -3,7 +3,7 @@
 Application header built on `AppBar`. Contains the site logo linking to the homepage, primary navigation links, and a `Switch` for toggling between dark and light themes.
 
 ```tsx
-// No props — the Header is self-contained.
+// No props - the Header is self-contained.
 <Header />
 ```
 
@@ -17,7 +17,7 @@ Three-column `AppBar` using `flexDirection="row"` + `justifyContent="space-betwe
 | ------ | --------------------- | -------------------------------------------------- |
 | Root   | `AppBar`              | `position="fixed"`, `height="64px"`, `px={6}`      |
 | Left   | `Flex` (row)          | `Logo` (40 px) + `"SOROUSH"` wordmark              |
-| Center | `Flex as="nav"` (row) | `NavLink` × 4 — Home · About · Projects · Articles |
+| Center | `Flex as="nav"` (row) | `NavLink` × 4 - Home · About · Projects · Articles |
 | Right  | `Flex` (row)          | `"MODE"` label + `Switch` + Sun / Moon icon        |
 
 ---
@@ -32,7 +32,7 @@ Three-column `AppBar` using `flexDirection="row"` + `justifyContent="space-betwe
 | Backdrop blur | `blur(12px)` via `backdropFilter` + `-webkit-` prefix             |
 | Border-bottom | `1px solid theme.border.primary` + `"33"` suffix (≈ 20 % opacity) |
 
-The frosted-glass effect requires the page content to scroll beneath the header — do not add an opaque background or remove the `backdropFilter`.
+The frosted-glass effect requires the page content to scroll beneath the header - do not add an opaque background or remove the `backdropFilter`.
 
 ---
 
@@ -40,8 +40,8 @@ The frosted-glass effect requires the page content to scroll beneath the header 
 
 The `Switch` is bound to `useThemeMode()` from `src/hooks/useThemeMode`:
 
-- `checked={isDark}` — switch is on when dark mode is active (default)
-- `onChange={toggleTheme}` — clicking the switch calls `toggleTheme`, which flips the global theme
+- `checked={isDark}` - switch is on when dark mode is active (default)
+- `onChange={toggleTheme}` - clicking the switch calls `toggleTheme`, which flips the global theme
 
 The theme state lives in `ThemeModeProvider` (above `ThemeProvider` in the tree). Toggling re-renders `ThemeProvider` with either `dark` or `light` from `@soroush.tech/design-system/theme`.
 

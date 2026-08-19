@@ -23,13 +23,13 @@ import { themeDefault } from '../theme/utils/themeDefault'
 import { useDefaultProps, useTheme } from '../theme'
 import type { ButtonVariants } from '../theme/themes'
 
-/** Augmentable via the `ButtonVariants` interface — style new values through `theme.components.Button.variants`. */
+/** Augmentable via the `ButtonVariants` interface - style new values through `theme.components.Button.variants`. */
 export type ButtonVariant = keyof ButtonVariants
 export type ButtonColor = PaletteColor
 export type ButtonSize = keyof Theme['sizes']
 export type ButtonShape = 'square' | 'rounded' | 'pill'
 export type ButtonLoadingPosition = 'start' | 'end' | 'center'
-/** Valid values for the gap prop — resolves against theme.space. */
+/** Valid values for the gap prop - resolves against theme.space. */
 export type GapToken = keyof Theme['space']
 
 export interface ButtonProps
@@ -39,13 +39,13 @@ export interface ButtonProps
     LayoutProps<Theme>,
     BorderProps<Theme>,
     TypographyProps<Theme> {
-  /** Visual style — filled, stroked, or ghost. Default: `'contained'`, overridable via `theme.defaults.buttonVariant`. */
+  /** Visual style - filled, stroked, or ghost. Default: `'contained'`, overridable via `theme.defaults.buttonVariant`. */
   variant?: ButtonVariant
-  /** Color palette — maps to `theme.palette[color]`. Default: `'primary'`, overridable via `theme.defaults.color`. */
+  /** Color palette - maps to `theme.palette[color]`. Default: `'primary'`, overridable via `theme.defaults.color`. */
   color?: ButtonColor
-  /** Size token — controls padding and font size. Default: `'md'`, overridable via `theme.defaults.size`. */
+  /** Size token - controls padding and font size. Default: `'md'`, overridable via `theme.defaults.size`. */
   size?: ButtonSize
-  /** Gap between icon and label — resolves against theme.space. Default: `1` (8px). */
+  /** Gap between icon and label - resolves against theme.space. Default: `1` (8px). */
   gap?: GapToken
   /** Icon rendered before the label. */
   startIcon?: ReactNode
@@ -58,7 +58,7 @@ export interface ButtonProps
   /** Custom loading element. Default: animated spinner. */
   loadingIndicator?: ReactNode
   /**
-   * Corner shape — sets the default `borderRadius`.
+   * Corner shape - sets the default `borderRadius`.
    * `"square"` → 0 · `"rounded"` → `theme.radii.md` (default) · `"pill"` → 9999px
    * The `borderRadius` prop always overrides this.
    */
@@ -67,9 +67,9 @@ export interface ButtonProps
   loadingPosition?: ButtonLoadingPosition
   /** The URL to link to when the button is clicked. If defined, an `a` element will be used as the root node. */
   href?: string
-  /** Anchor `target` — only meaningful when `href` is set. */
+  /** Anchor `target` - only meaningful when `href` is set. */
   target?: string
-  /** Anchor `rel` — only meaningful when `href` is set. */
+  /** Anchor `rel` - only meaningful when `href` is set. */
   rel?: string
 }
 
@@ -120,7 +120,7 @@ const ButtonIcon = styled('span', { name: 'Button', slot: 'icon' })({
 
 // ─── Styling functions ────────────────────────────────────────────────────────
 
-// Truly static — no theme access needed; textTransform is invariant for all buttons
+// Truly static - no theme access needed; textTransform is invariant for all buttons
 const baseStyles = {
   appearance: 'none' as const,
   outline: 'none',
@@ -205,7 +205,7 @@ const focusVisibleStyles = ({ theme }: { theme: Theme }) => ({
   },
 })
 
-// layout's built-in `size` shorthand maps to width+height — strip it so Button's
+// layout's built-in `size` shorthand maps to width+height - strip it so Button's
 // own `size` prop (sm/md/lg) doesn't bleed into layout CSS.
 const safeLayout = (props: ButtonProps & { theme?: Theme }) => layout({ ...props, size: undefined })
 
@@ -217,7 +217,7 @@ const ButtonRoot = styled('button', {
   name: 'Button',
   shouldForwardProp,
   // Styled-system parsers run after theme styleOverrides/variants, so
-  // per-instance props (m, width, fontWeight, …) always beat the theme.
+  // per-instance props (m, width, fontWeight, ...) always beat the theme.
   systemProps: [space, safeLayout, typography, border],
 })<ButtonRootProps>(
   baseStyles,

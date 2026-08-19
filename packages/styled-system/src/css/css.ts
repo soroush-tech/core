@@ -1,5 +1,5 @@
 // Typed rewrite of @styled-system/css (styled-system v5).
-// Standalone — does not depend on ./core; carries its own get/responsive/scales.
+// Standalone - does not depend on ./core; carries its own get/responsive/scales.
 
 export type CSSObject = Record<string, unknown>
 

@@ -1,10 +1,10 @@
 # ci:validates all
-# Every job installs through this action, so editing it re-runs every one of them — and, being a
+# Every job installs through this action, so editing it re-runs every one of them - and, being a
 # CI file rather than a root file, ships nothing.
 #
 # The four steps every CI job used to repeat, minus the checkout: a local action is
 # resolved from the working tree, so `uses: ./.github/actions/setup` cannot carry the
-# checkout that puts it there. Jobs keep their own — which is also the step that varies
+# checkout that puts it there. Jobs keep their own - which is also the step that varies
 # (ci-web.yml's `web` job needs `fetch-depth: 0` for Codecov base detection).
 #
 # Per-area caches stay in the jobs that need them. This holds only what every job shares,
@@ -14,10 +14,10 @@ description: Set up pnpm and Node, then install the workspace's dependencies.
 
 inputs:
   node_version:
-    description: Node.js version to install — ci.yml's `prepare` job reads it from .nvmrc.
+    description: Node.js version to install - ci.yml's `prepare` job reads it from .nvmrc.
     required: true
   manager:
-    description: Detected package manager — pnpm, yarn or npm.
+    description: Detected package manager - pnpm, yarn or npm.
     required: true
   command:
     description: The manager's install command, with its flags.
@@ -37,7 +37,7 @@ runs:
         cache: ${{ inputs.manager }}
 
     # Both inputs reach the shell through env and a fixed dispatch, never spliced into
-    # the run body — zizmor: template-injection. `$COMMAND` is deliberately unquoted: it
+    # the run body - zizmor: template-injection. `$COMMAND` is deliberately unquoted: it
     # is a flag list ("install --frozen-lockfile --ignore-scripts"), not a single word.
     - name: Install dependencies
       shell: bash

@@ -103,17 +103,17 @@ describe('Radio', () => {
   // ─── size ─────────────────────────────────────────────────────────────────────
 
   describe('size', () => {
-    it('sm — sets theme.icon.sm font-size on icon wrapper', () => {
+    it('sm - sets theme.icon.sm font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Radio size="sm" />)
       expect(container.querySelector('span')).toHaveStyle({ fontSize: '1rem' })
     })
 
-    it('md — sets theme.icon.md font-size on icon wrapper', () => {
+    it('md - sets theme.icon.md font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Radio size="md" />)
       expect(container.querySelector('span')).toHaveStyle({ fontSize: '1.25rem' })
     })
 
-    it('lg — sets theme.icon.lg font-size on icon wrapper', () => {
+    it('lg - sets theme.icon.lg font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Radio size="lg" />)
       expect(container.querySelector('span')).toHaveStyle({ fontSize: '1.5rem' })
     })
@@ -138,7 +138,7 @@ describe('Radio', () => {
   // ─── icons ────────────────────────────────────────────────────────────────────
 
   // Both icon spans are always in the DOM; CSS toggles visibility via :checked.
-  // These tests verify DOM placement — CSS behaviour is covered by Storybook tests.
+  // These tests verify DOM placement - CSS behaviour is covered by Storybook tests.
   describe('icons', () => {
     it('always renders both icon spans in the DOM', () => {
       const { container } = renderWithTheme(<Radio />)

@@ -13,7 +13,7 @@ import { Preview, type PreviewSlotProps } from '../Preview'
 import { blockToMarkdown } from '../utils/blockToMarkdown'
 import { splitBlocks, type MarkdownBlock } from '../utils/splitBlocks'
 
-// Named styled roots — theme-customizable via
+// Named styled roots - theme-customizable via
 // `theme.components.MarkdownLiveEdit.styleOverrides.root` / `.block`.
 const LiveEditRoot = styled(View, { name: 'MarkdownLiveEdit', label: 'MarkdownLiveEdit' })({
   minWidth: 0,
@@ -38,7 +38,7 @@ const LiveEditBlock = styled(View, {
   },
 }))
 
-// A mermaid fence renders as an SVG diagram — there is no text to edit in place.
+// A mermaid fence renders as an SVG diagram - there is no text to edit in place.
 const MERMAID_FENCE = /^\s{0,3}(?:`{3,}|~{3,})\s*mermaid\b/
 
 const noop = () => {}
@@ -60,7 +60,7 @@ interface EditableBlockProps {
 }
 
 /**
- * One contentEditable block. The preview element is created once per mount —
+ * One contentEditable block. The preview element is created once per mount -
  * while the browser owns the DOM during typing, React must never reconcile
  * the subtree under the caret. The parent remounts the block (source-derived
  * key) whenever its markdown actually changes.
@@ -101,9 +101,9 @@ function EditableBlock({
 }
 
 export interface LiveEditProps {
-  /** Standalone source value — used when rendered outside a `Control`. Ignored inside one. */
+  /** Standalone source value - used when rendered outside a `Control`. Ignored inside one. */
   value?: string
-  /** Standalone change handler — used when rendered outside a `Control`. Ignored inside one. */
+  /** Standalone change handler - used when rendered outside a `Control`. Ignored inside one. */
   onChange?: (value: string) => void
   /** Shown inside the (empty) document's first block until something is typed. */
   placeholder?: string
@@ -113,18 +113,18 @@ export interface LiveEditProps {
 
 /**
  * A preview you write on directly: the document renders exactly like
- * `Preview`, split into blocks, and every block is `contentEditable` — no
+ * `Preview`, split into blocks, and every block is `contentEditable` - no
  * textarea. While a block is being typed in, the browser owns its DOM; each
  * input serializes that block back to markdown and splices it into `value`,
  * so `onChange` stays live and untouched blocks keep their exact source.
- * Blur (or Escape) re-splits the document. Mermaid blocks are read-only —
+ * Blur (or Escape) re-splits the document. Mermaid blocks are read-only -
  * a diagram has no text to edit in place. Inside a `Control` it is driven by
  * context; standalone it is a plain controlled component.
  */
 export function LiveEdit({
   value: valueProp,
   onChange: onChangeProp,
-  placeholder = 'Click to start writing…',
+  placeholder = 'Click to start writing...',
   slotProps,
 }: Readonly<LiveEditProps>) {
   const context = useContext(MarkdownContext)
@@ -132,7 +132,7 @@ export function LiveEdit({
   const onChange = context?.onChange ?? onChangeProp ?? noop
 
   const [blocks, setBlocks] = useState<MarkdownBlock[]>(() => toBlocks(value))
-  // Bumped on every re-split so all blocks remount — browser-edited DOM must
+  // Bumped on every re-split so all blocks remount - browser-edited DOM must
   // never be reconciled, only replaced wholesale.
   const [generation, setGeneration] = useState(0)
 
@@ -159,7 +159,7 @@ export function LiveEdit({
     setGeneration((current) => current + 1)
   }
 
-  // The document as last seen by this component — commits update it directly;
+  // The document as last seen by this component - commits update it directly;
   // anything else arriving through `value` is an external change to re-split.
   const syncedValueRef = useRef(value)
   if (value !== syncedValueRef.current) {

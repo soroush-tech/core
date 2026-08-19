@@ -21,7 +21,7 @@ const meta: Meta<{ paletteName: string }> = {
     paletteName: {
       control: { type: 'select' },
       options: paletteNames,
-      description: 'Color palette — select from all registered palettes.',
+      description: 'Color palette - select from all registered palettes.',
       table: { category: 'Content' },
     },
   },

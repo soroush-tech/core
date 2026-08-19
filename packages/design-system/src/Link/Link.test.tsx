@@ -59,7 +59,7 @@ describe('Link', () => {
     })
 
     it('sets an explicit color on :hover to prevent global a:hover overrides', () => {
-      // &:hover rules aren't applied by jsdom — verify the generated stylesheet contains
+      // &:hover rules aren't applied by jsdom - verify the generated stylesheet contains
       // a :hover rule for the link's class that includes a color declaration.
       renderWithTheme(
         <Link href="/" color="secondary" data-testid="link">

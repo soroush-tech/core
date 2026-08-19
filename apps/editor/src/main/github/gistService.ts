@@ -39,7 +39,7 @@ export interface GistService {
   /**
    * `isPublic` only applies to the new-gist sandbox, which publishing creates.
    * Resolves with the id that now holds the work: the created gist's for a
-   * sandbox, and the same id back for one that already existed — so the caller
+   * sandbox, and the same id back for one that already existed - so the caller
    * can follow a sandbox to what it became.
    */
   publish: (id: string, isPublic: boolean) => Promise<Result<string>>
@@ -60,7 +60,7 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
     },
 
     async files(id) {
-      // A gist that does not exist yet has no published files — only staged ones.
+      // A gist that does not exist yet has no published files - only staged ones.
       if (isNewGist(id)) return { success: true, data: { description: null, files: [] } }
 
       const credentials = await store.read()
@@ -96,7 +96,7 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
 
     // One step, so the old name and the new one cannot disagree: a rename that
     // staged the deletion and then failed would leave the file gone with nothing
-    // in its place — and what is staged exists nowhere else.
+    // in its place - and what is staged exists nowhere else.
     async renameFile(id, from, to, content) {
       // Read inside the update rather than before it, so the check and the write
       // cannot be separated by another change to the same draft.
@@ -143,12 +143,12 @@ export function createGistService({ fetchFn, store, drafts }: GistServiceDeps): 
         ? await createGist(draft, isPublic, credentials.token, fetchFn)
         : await patchGist(id, draft, credentials.token, fetchFn)
 
-      // The draft is only dropped once GitHub has it — a failed publish keeps the work.
+      // The draft is only dropped once GitHub has it - a failed publish keeps the work.
       if (!published.success) return published
 
       // Whether the sandbox could be tidied away afterwards does not change what
       // happened: GitHub has the work. Reporting the cleanup's failure instead
-      // would invite the one retry that must never happen — publishing a sandbox
+      // would invite the one retry that must never happen - publishing a sandbox
       // twice is two gists, and the second is not a correction of the first.
       await drafts.clear(id)
       return { success: true, data: published.data ?? id }

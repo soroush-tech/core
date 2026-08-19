@@ -24,7 +24,7 @@ const editorAPI = {
   claude: {
     /**
      * Starts a run and resolves its id; the text arrives through `onEvent`.
-     * `context` is background material — an existing gist to build on.
+     * `context` is background material - an existing gist to build on.
      */
     startEdit: (
       selectedText: string,
@@ -75,7 +75,7 @@ const editorAPI = {
     reset: (id: string): Promise<Result<boolean>> => ipcRenderer.invoke(GIST_CHANNELS.reset, id),
     /**
      * Sends the whole draft to GitHub in one request, then clears it. For the
-     * new-gist sandbox this creates the gist — `isPublic` decides its
+     * new-gist sandbox this creates the gist - `isPublic` decides its
      * visibility and is ignored for one that already exists.
      */
     publish: (id: string, isPublic: boolean): Promise<Result<string>> =>
@@ -103,7 +103,7 @@ const editorAPI = {
     open: (): Promise<Result<OpenedFile | null>> => ipcRenderer.invoke(FILE_CHANNELS.open),
     /**
      * Pass `filePath: null` to force a Save As dialog. Cancelled dialog resolves
-     * `data: null`. `suggested` is what that dialog opens on — the name the
+     * `data: null`. `suggested` is what that dialog opens on - the name the
      * document already goes by, so it need not be typed again.
      */
     save: (

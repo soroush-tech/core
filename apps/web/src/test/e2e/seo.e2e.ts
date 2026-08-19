@@ -2,7 +2,7 @@ import { test, expect } from './fixtures'
 
 test('each page declares a self-referential https canonical URL', async ({ request }) => {
   // Canonical tags are SSR-rendered by buildHead on every request, so they exist in
-  // both the dev-server runs and the production-build run — no E2E_COVERAGE gate needed.
+  // both the dev-server runs and the production-build run - no E2E_COVERAGE gate needed.
   const home = await request.get('/')
   expect(home.status()).toBe(200)
   const homeHtml = await home.text()
@@ -24,7 +24,7 @@ test('syncs all head meta on client-side navigation (not just the title)', async
   // does a full document navigation and we'd never exercise the client-side head sync).
   await page.waitForLoadState('networkidle')
 
-  // Baseline: the articles list — a plain page with no article meta or JSON-LD.
+  // Baseline: the articles list - a plain page with no article meta or JSON-LD.
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
     'https://soroush.tech/articles/'
@@ -41,7 +41,7 @@ test('syncs all head meta on client-side navigation (not just the title)', async
     true
   )
 
-  // The full managed set is re-synced from the destination page — title, description,
+  // The full managed set is re-synced from the destination page - title, description,
   // canonical, og:url, og:type, and the article's JSON-LD that the list never had.
   await expect(page).toHaveTitle('Mock Article Title by Masoud Soroush · SOROUSH.TECH')
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
@@ -59,7 +59,7 @@ test('syncs all head meta on client-side navigation (not just the title)', async
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'article')
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1)
 
-  // Navigating back removes the article-only tags — proving stale tags are cleared, not stacked.
+  // Navigating back removes the article-only tags - proving stale tags are cleared, not stacked.
   await page.goBack()
   await expect(page).toHaveURL('/articles')
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(

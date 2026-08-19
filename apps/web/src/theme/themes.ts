@@ -22,7 +22,7 @@ import {
   solarAmber,
 } from './colors'
 
-// The site's brand themes. Structural tokens (spacing, typography, radii, fonts, …)
+// The site's brand themes. Structural tokens (spacing, typography, radii, fonts, ...)
 // come from the design-system `baseTheme` via createTheme's deep merge; every
 // color-driven scale is defined here from the app's own palettes in `src/theme/colors/`.
 

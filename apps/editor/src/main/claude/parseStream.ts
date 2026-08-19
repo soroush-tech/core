@@ -22,8 +22,8 @@ interface StreamEventLine {
 }
 
 /**
- * Reads one NDJSON line. Anything unrecognised — the `system` init line, an
- * `assistant` message already seen as deltas, a half-written line — is ignored
+ * Reads one NDJSON line. Anything unrecognised - the `system` init line, an
+ * `assistant` message already seen as deltas, a half-written line - is ignored
  * rather than failing the run: the CLI is free to add message types, and a run
  * that works today must not break when it does.
  */
@@ -63,7 +63,7 @@ export function parseStreamLine(line: string): StreamLine {
 
 /**
  * Turns a stream of chunks into whole lines. A chunk boundary can fall
- * anywhere — mid-line, mid-multibyte-character — so the tail is held back
+ * anywhere - mid-line, mid-multibyte-character - so the tail is held back
  * until its newline arrives.
  */
 export function createLineReader(onLine: (line: string) => void) {
@@ -73,7 +73,7 @@ export function createLineReader(onLine: (line: string) => void) {
     push(chunk: string): void {
       buffer += chunk
       const lastBreak = buffer.lastIndexOf('\n')
-      // Nothing has been completed yet — it all belongs to the next chunk.
+      // Nothing has been completed yet - it all belongs to the next chunk.
       if (lastBreak === -1) return
 
       const complete = buffer.slice(0, lastBreak)

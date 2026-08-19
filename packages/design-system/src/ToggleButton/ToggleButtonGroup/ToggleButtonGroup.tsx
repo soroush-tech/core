@@ -5,7 +5,7 @@ import { styled, type Theme } from '@soroush.tech/design-system'
 import { useTheme, themeDefault } from '@soroush.tech/design-system/theme'
 
 export interface ToggleButtonGroupProps extends Omit<ButtonGroupProps, 'variant' | 'onChange'> {
-  /** Selected value(s) — single when `isExclusive`, array otherwise. Controlled. */
+  /** Selected value(s) - single when `isExclusive`, array otherwise. Controlled. */
   value?: ToggleButtonValue | ToggleButtonValue[] | null
   /**
    * Fired with the next selection: a single value or `null` when `isExclusive`,
@@ -43,7 +43,7 @@ const ToggleButtonGroupRoot = styled(ButtonGroup, {
 
 /**
  * A `ButtonGroup` of `ToggleButton`s with single (exclusive) or multiple selection,
- * provided to children via `ToggleButtonGroupContext`. Controlled — the consumer
+ * provided to children via `ToggleButtonGroupContext`. Controlled - the consumer
  * owns `value`. Visual props (`color` / `size` / `disabled` / `fullWidth`) broadcast
  * through `ButtonGroup` as usual.
  */

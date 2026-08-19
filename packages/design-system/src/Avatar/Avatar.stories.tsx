@@ -46,7 +46,7 @@ const meta: Meta<typeof Avatar> = {
     },
     srcSet: {
       control: 'text',
-      description: 'Responsive image URLs — used as the primary source when `src` is absent.',
+      description: 'Responsive image URLs - used as the primary source when `src` is absent.',
       table: { category: 'Content' },
     },
     fallback: {
@@ -75,7 +75,7 @@ const meta: Meta<typeof Avatar> = {
       control: { type: 'inline-radio' },
       options: avatarSizeTokens,
       description:
-        'Preset size — resolves against theme.space (small=32px, medium=40px, large=48px).',
+        'Preset size - resolves against theme.space (small=32px, medium=40px, large=48px).',
       table: { category: 'Layout', defaultValue: { summary: 'medium' } },
     },
     ring: {
@@ -86,13 +86,13 @@ const meta: Meta<typeof Avatar> = {
     ringColor: {
       control: { type: 'select' },
       options: borderColorTokens,
-      description: 'Ring color — resolves against theme.border.',
+      description: 'Ring color - resolves against theme.border.',
       table: { category: 'Visual' },
     },
     ringWidth: {
       control: { type: 'select' },
       options: borderWidthTokens,
-      description: 'Ring width — resolves against theme.borderWidths.',
+      description: 'Ring width - resolves against theme.borderWidths.',
       table: { category: 'Visual' },
     },
     bg,

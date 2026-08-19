@@ -20,7 +20,7 @@ export function ImageCard() {
       title={
         <CardTitle title="IMAGE" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-image--docs`} />
       }
-      caption="A styled-system <img> primitive with objectFit/objectPosition and built-in source recovery — a failing src advances to fallback before onError fires."
+      caption="A styled-system <img> primitive with objectFit/objectPosition and built-in source recovery - a failing src advances to fallback before onError fires."
     >
       <Flex flexDirection="row" gap={4} flexWrap="wrap">
         {FITS.map((fit) => (

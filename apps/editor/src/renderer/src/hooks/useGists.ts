@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { GistSummary } from '../../../shared/ipc'
 
 /**
- * The account's gists, fetched once on mount — the panel only mounts this
+ * The account's gists, fetched once on mount - the panel only mounts this
  * while its row is selected, so opening the panel is the refresh.
  */
 export function useGists() {

@@ -29,7 +29,7 @@ coverage
 playwright-report
 cov.txt
 
-# Cloudflare Worker — generated from default.wrangler.json + env (never commit real IDs)
+# Cloudflare Worker - generated from default.wrangler.json + env (never commit real IDs)
 workers/*/wrangler.json
 workers/*/.wrangler
 workers/*/.dev.vars
@@ -52,7 +52,7 @@ prod.env
 # Local issue drafts
 /issues
 
-# What CI attributed this run to — written by scripts/assemble-changes.mjs, uploaded as an artifact
+# What CI attributed this run to - written by scripts/assemble-changes.mjs, uploaded as an artifact
 /changes.json
 
 # Test

@@ -3,7 +3,7 @@ import { ThemeProvider, baseTheme, type Theme } from '@soroush.tech/design-syste
 import { Global, globalStyles } from '@soroush.tech/design-system/engine'
 import { css } from '@soroush.tech/design-system'
 
-// Font-family is consumer policy, not part of the package's reset — the site loads the
+// Font-family is consumer policy, not part of the package's reset - the site loads the
 // webfonts itself. Here only the family is applied, so text falls back to the generic
 // stack in `theme.fonts`, which is exactly what an unstyled consumer gets.
 const fontFamily = (theme: Theme) => css`

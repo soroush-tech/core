@@ -10,7 +10,7 @@ Renders a focus-scope wrapper `<div tabIndex={-1}>` around its children; when th
 
 | Prop                 | Type        | Default | Description                                                                 |
 | -------------------- | ----------- | ------- | --------------------------------------------------------------------------- |
-| `children`           | `ReactNode` | —       | Content whose focusable descendants are trapped.                            |
+| `children`           | `ReactNode` | -       | Content whose focusable descendants are trapped.                            |
 | `isEnabled`          | `boolean`   | `true`  | When false, focus is neither moved nor trapped (e.g. a non-top modal).      |
 | `shouldAutoFocus`    | `boolean`   | `true`  | Move focus into the trap when it activates.                                 |
 | `shouldTrapFocus`    | `boolean`   | `true`  | Keep `Tab` / `Shift+Tab` cycling within the trap.                           |

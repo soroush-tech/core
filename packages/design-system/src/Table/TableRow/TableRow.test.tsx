@@ -39,7 +39,7 @@ describe('TableRow', () => {
   })
 
   it('adds a hover background rule when isHoverable is set', () => {
-    // jsdom doesn't apply :hover — assert the generated stylesheet contains a
+    // jsdom doesn't apply :hover - assert the generated stylesheet contains a
     // hover rule for the row's class with a background-color declaration.
     renderRow(<TableRow isHoverable data-testid="row" />)
     const rowClasses = Array.from(screen.getByTestId('row').classList)

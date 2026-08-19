@@ -60,7 +60,7 @@ const RESULT_LINE = line({ type: 'result', subtype: 'success', result: CLAUDE_ST
 
 /**
  * Puts a fake `claude` on PATH: streams one delta, waits, then answers. Every
- * launch gets it, so no test can reach the real CLI — that would spend the
+ * launch gets it, so no test can reach the real CLI - that would spend the
  * developer's own tokens and need them signed in.
  *
  * The pause is what makes both halves testable: the delta is on screen while
@@ -137,7 +137,7 @@ export const test = base.extend<ElectronFixtures>({
     if (isCoverageEnabled) {
       await page.coverage.startJSCoverage({ resetOnNavigation: false })
       // The renderer entry already ran during launch, before coverage could
-      // attach — reload so it re-executes instrumented.
+      // attach - reload so it re-executes instrumented.
       await page.reload()
     }
     await run(page)

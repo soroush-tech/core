@@ -1,7 +1,11 @@
 # Format the staged files and re-stage them, so a commit cannot introduce unformatted
 # code. A file staged and then edited again is formatted but left unstaged, and the
-# commit aborts — staging it would sweep those unstaged edits in.
+# commit aborts - staging it would sweep those unstaged edits in.
 pnpm exec oxfmt-quick --staged
+# The same pass for characters: invisible ones, typographic punctuation and mojibake.
+# Prose is fixed and re-staged; code is reported and the commit stops, because rewriting a
+# quoted string is how a file stops parsing.
+pnpm exec aiwg --staged --fix
 pnpm gen:publish-options --check
 pnpm check:release-notes
 pnpm prebuild

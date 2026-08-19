@@ -22,19 +22,19 @@ None. The section renders static content.
 
 ## Assets
 
-- `src/assets/masoud_soroush.png` (+ `@2x` / `@3x` retina) — the portrait, imported as Vite URLs and served via `srcSet`.
-- `src/assets/icons/terminal.svg` — button glyph (existing).
+- `src/assets/masoud_soroush.png` (+ `@2x` / `@3x` retina) - the portrait, imported as Vite URLs and served via `srcSet`.
+- `src/assets/icons/terminal.svg` - button glyph (existing).
 
 ## Custom CSS (approved)
 
 Unlike the other sections, this hero reproduces the source design 1:1, so it uses
 `styled` where theme token props cannot express the visuals:
 
-- **`PortraitImage`** — `grayscale` + `contrast` + `mix-blend-mode: screen` (CSS filters).
-- **`MatrixGradient`** / **`ImageScrim`** — `linear-gradient` overlays.
-- **`ImageFrame`** / **`OffsetBlock`** — thin borders (`border.primary` @20%, `border.light`)
+- **`PortraitImage`** - `grayscale` + `contrast` + `mix-blend-mode: screen` (CSS filters).
+- **`MatrixGradient`** / **`ImageScrim`** - `linear-gradient` overlays.
+- **`ImageFrame`** / **`OffsetBlock`** - thin borders (`border.primary` @20%, `border.light`)
   and elevation; these intentionally **deviate from the No-Line rule** to match the source.
-- **`ButtonGlyph`** — `filter: brightness(0)` so the neon-green `terminal` asset reads as a
+- **`ButtonGlyph`** - `filter: brightness(0)` so the neon-green `terminal` asset reads as a
   dark glyph on the green contained button.
 
 ## Typography

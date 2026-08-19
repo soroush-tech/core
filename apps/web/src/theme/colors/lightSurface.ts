@@ -19,7 +19,7 @@ export const _title = 'Light Surface'
 export const _description = `
   Name: Light Surface / Material Light Neutrals
   Hue Bias: Near-neutral with a very slight warm-green tint at the dark end
-  Category: Light mode foundation — surfaces, borders, text
+  Category: Light mode foundation - surfaces, borders, text
   Mood: Clean, airy, professional
 `
 

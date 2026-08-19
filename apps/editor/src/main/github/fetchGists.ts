@@ -22,7 +22,7 @@ const toSummary = ({ id, description, files, public: isPublic }: RawGist): GistS
 }
 
 /**
- * Every gist the signed-in user has, newest first — GitHub's default ordering,
+ * Every gist the signed-in user has, newest first - GitHub's default ordering,
  * which is what the panel wants.
  *
  * GitHub pages this endpoint, so a short page is the last one and anything
@@ -47,7 +47,7 @@ export async function fetchGists(
       if (response.status === 401) {
         return {
           success: false,
-          error: 'GitHub rejected the stored token — connect the account again',
+          error: 'GitHub rejected the stored token - connect the account again',
         }
       }
       if (!response.ok) {
@@ -60,14 +60,14 @@ export async function fetchGists(
       }
 
       gists.push(...(payload as RawGist[]).map(toSummary))
-      // A page that is not full is the last one — no need to ask for another.
+      // A page that is not full is the last one - no need to ask for another.
       if (payload.length < GISTS_PAGE_SIZE) break
       // A full last page means there are more, and this promised every gist.
       // Saying so beats handing back a list that only looks complete.
       if (page === GISTS_MAX_PAGES) {
         return {
           success: false,
-          error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists — more than this can list`,
+          error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists - more than this can list`,
         }
       }
     }

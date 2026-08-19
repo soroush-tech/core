@@ -8,15 +8,15 @@ import { resolve } from 'node:path'
  */
 export const setupEnv = (dir: string, env: Record<string, string | undefined>): void => {
   if (env.CI) {
-    console.log('setup-env: CI detected — skipping .env')
+    console.log('setup-env: CI detected - skipping .env')
     return
   }
   const template = resolve(dir, 'default.env')
   const target = resolve(dir, '.env')
   if (!existsSync(template)) {
-    console.log('setup-env: no default.env template — nothing to copy')
+    console.log('setup-env: no default.env template - nothing to copy')
   } else if (existsSync(target)) {
-    console.log('setup-env: .env already exists — leaving it untouched')
+    console.log('setup-env: .env already exists - leaving it untouched')
   } else {
     copyFileSync(template, target)
     console.log('setup-env: created .env from default.env')

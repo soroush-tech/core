@@ -40,7 +40,7 @@ describe('DiagramViewer', () => {
     expect(transform()).toContain('scale(1)')
   })
 
-  it('does not zoom on wheel when inline — the page scrolls instead', () => {
+  it('does not zoom on wheel when inline - the page scrolls instead', () => {
     renderWithTheme(<DiagramViewer svg={SVG} />)
     fireEvent.wheel(surface(), { deltaY: -1 })
     expect(transform()).toContain('scale(1)')

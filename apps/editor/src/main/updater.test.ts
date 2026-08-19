@@ -6,7 +6,7 @@ const createUpdater = (result: Promise<unknown>): Updater => ({
 })
 
 describe('startAutoUpdates', () => {
-  it('does nothing outside a packaged build — there is nothing to replace', () => {
+  it('does nothing outside a packaged build - there is nothing to replace', () => {
     const updater = createUpdater(Promise.resolve(null))
 
     startAutoUpdates(false, updater)

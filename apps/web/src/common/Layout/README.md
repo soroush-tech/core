@@ -14,10 +14,10 @@ App-shell wrapper used by every page. Composes `Header`, `Blueprint` (main conte
 
 | Prop             | Type                               | Default      | Description                                      |
 | ---------------- | ---------------------------------- | ------------ | ------------------------------------------------ |
-| `children`       | `ReactNode`                        | —            | Page content rendered inside Blueprint           |
+| `children`       | `ReactNode`                        | -            | Page content rendered inside Blueprint           |
 | `header`         | `ReactNode`                        | `<Header />` | Override or suppress (`null`) the default header |
 | `footer`         | `ReactNode`                        | `<Footer />` | Override or suppress (`null`) the default footer |
-| `blueprintProps` | `Omit<BlueprintProps, 'children'>` | —            | Props forwarded to the Blueprint wrapper         |
+| `blueprintProps` | `Omit<BlueprintProps, 'children'>` | -            | Props forwarded to the Blueprint wrapper         |
 
 ---
 

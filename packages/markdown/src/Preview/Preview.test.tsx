@@ -121,7 +121,7 @@ describe('Preview', () => {
     expect(screen.getByAltText('alt text')).toHaveAttribute('src', 'https://example.com/img.png')
   })
 
-  it('merges slotProps over an element’s default props', () => {
+  it("merges slotProps over an element's default props", () => {
     const { container } = renderWithTheme(
       <Preview slotProps={{ p: { className: 'custom-para', color: 'primary' } }}>
         {'a paragraph'}
@@ -135,7 +135,7 @@ describe('Preview', () => {
       <Preview slotProps={{ p: { color: 'primary' } }}>{'a paragraph'}</Preview>
     )
     const paragraph = screen.getByText('a paragraph')
-    // A new inline slotProps object must not remount the tree — same node, updated props.
+    // A new inline slotProps object must not remount the tree - same node, updated props.
     rerender(<Preview slotProps={{ p: { color: 'secondary' } }}>{'a paragraph'}</Preview>)
     expect(screen.getByText('a paragraph')).toBe(paragraph)
   })

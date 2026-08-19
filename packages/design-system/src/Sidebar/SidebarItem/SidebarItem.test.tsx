@@ -94,7 +94,7 @@ describe('SidebarItem', () => {
         <SidebarItem icon="account_tree" label="GitHub" variant="plain" />
       </>
     )
-    // No fill either way — only the text color moves.
+    // No fill either way - only the text color moves.
     expect(screen.getByRole('button', { name: 'Directory' })).toHaveStyle({
       backgroundColor: 'rgba(0, 0, 0, 0)',
       color: baseTheme.palette.primary.main,
@@ -120,7 +120,7 @@ describe('SidebarItem', () => {
     })
   })
 
-  it('renders the label as plain text, not a button’s uppercase', () => {
+  it("renders the label as plain text, not a button's uppercase", () => {
     renderItem(<SidebarItem icon="folder" label="Directory" />)
     expect(screen.getByRole('button', { name: 'Directory' })).not.toHaveStyle({
       textTransform: 'uppercase',

@@ -1,9 +1,9 @@
-# Socket security configuration — https://docs.socket.dev/docs/socket-yml
+# Socket security configuration - https://docs.socket.dev/docs/socket-yml
 version: 2
 
-# Ported upstream demo apps (examples/styled-system/*) — not shipped, not in the
+# Ported upstream demo apps (examples/styled-system/*) - not shipped, not in the
 # pnpm workspace, not built in CI. Ignore their manifests so demo-only dependencies
-# (react-scripts, react 16, emotion 10, …) don't raise alerts on the repo.
+# (react-scripts, react 16, emotion 10, ...) don't raise alerts on the repo.
 projectIgnorePaths:
   - examples/**
 

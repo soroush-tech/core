@@ -2,7 +2,7 @@
 
 Extends [`View`](../View/). Renders as a `<div>` with `display: grid`.
 
-All `View` props are inherited — including `gap`, `rowGap` and `columnGap`. Grid adds the full set of CSS Grid layout props via `styled-system`.
+All `View` props are inherited - including `gap`, `rowGap` and `columnGap`. Grid adds the full set of CSS Grid layout props via `styled-system`.
 
 ---
 
@@ -31,7 +31,7 @@ Inherited from `View`. Resolves against `theme.space`. Maps to CSS `gap` (shorth
 
 ### Grid layout props
 
-These map directly to CSS Grid properties and accept **raw CSS strings** — grid layout values (column sizes, area definitions, track counts) are structurally varied and can't be reduced to a fixed token set. See the [MDN CSS Grid Layout reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) for all valid values.
+These map directly to CSS Grid properties and accept **raw CSS strings** - grid layout values (column sizes, area definitions, track counts) are structurally varied and can't be reduced to a fixed token set. See the [MDN CSS Grid Layout reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) for all valid values.
 
 | Prop                  | CSS property          |
 | --------------------- | --------------------- |
@@ -53,7 +53,7 @@ These map directly to CSS Grid properties and accept **raw CSS strings** — gri
 
 ## Inherited from View
 
-### Space — `theme.space`
+### Space - `theme.space`
 
 | Prop                              | Shorthand for   |
 | --------------------------------- | --------------- |
@@ -68,7 +68,7 @@ These map directly to CSS Grid properties and accept **raw CSS strings** — gri
 
 ---
 
-### Color — `theme.colors`
+### Color - `theme.colors`
 
 | Prop    | CSS property     | Scale          |
 | ------- | ---------------- | -------------- |
@@ -83,7 +83,7 @@ These map directly to CSS Grid properties and accept **raw CSS strings** — gri
 
 ---
 
-### Border — `theme.radii`
+### Border - `theme.radii`
 
 `border` · `borderWidth` · `borderStyle` · `borderColor` · `borderRadius` · `borderTop` · `borderRight` · `borderBottom` · `borderLeft` · `borderX` · `borderY`
 
@@ -119,7 +119,7 @@ Radii: `"sm"` (4px) · `"md"` (8px) · `"lg"` (16px)
 // Auto-fill responsive columns
 <Grid gridTemplateColumns="repeat(auto-fill, minmax(240px, 1fr))" gap={2} p={3} />
 
-// Child spanning columns — use gridColumn on a View/Box child
+// Child spanning columns - use gridColumn on a View/Box child
 <View gridColumn="1 / -1" />
 ```
 
@@ -127,5 +127,5 @@ Radii: `"sm"` (4px) · `"md"` (8px) · `"lg"` (16px)
 
 ## References
 
-- [MDN CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) — complete guide to all grid properties and values
-- [styled-system grid docs](https://styled-system.com/api#grid-layout) — prop-to-CSS mapping reference
+- [MDN CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) - complete guide to all grid properties and values
+- [styled-system grid docs](https://styled-system.com/api#grid-layout) - prop-to-CSS mapping reference

@@ -15,7 +15,7 @@ export function formatDate(iso: string): string {
 const BYTES_PER_WORD = 5
 
 /**
- * Rough word count for a gist, estimated from its files' byte sizes — the gists
+ * Rough word count for a gist, estimated from its files' byte sizes - the gists
  * list endpoint omits file content, so size is the only available signal.
  */
 export function estimateWordCount(files: GistShort['files']): number {

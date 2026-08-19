@@ -9,7 +9,7 @@ import {
 import { Control } from '../Control'
 import { Editor, type EditorProps } from './Editor'
 
-const SAMPLE = '# New article\n\nStart writing in **Markdown** — Tab indents, no focus jump.\n'
+const SAMPLE = '# New article\n\nStart writing in **Markdown** - Tab indents, no focus jump.\n'
 
 // The Editor is controlled by Markdown context, so every story wraps it in a Control provider.
 function EditorDemo(props: Readonly<EditorProps>) {
@@ -59,25 +59,25 @@ const meta: Meta<typeof Editor> = {
     variant: {
       control: { type: 'select' },
       options: textInputVariantTokens,
-      description: 'Visual style — forwarded to `TextInput`.',
+      description: 'Visual style - forwarded to `TextInput`.',
       table: { category: 'Visual', defaultValue: { summary: 'default' } },
     },
     color: {
       control: { type: 'select' },
       options: textInputColorTokens,
-      description: 'Focus/active border colour — forwarded to `TextInput`.',
+      description: 'Focus/active border colour - forwarded to `TextInput`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     textColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text colour of the typed source — forwarded to `TextInput`.',
+      description: 'Text colour of the typed source - forwarded to `TextInput`.',
       table: { category: 'Visual', defaultValue: { summary: 'initial' } },
     },
     size: {
       control: { type: 'select' },
       options: textInputSizeTokens,
-      description: 'Padding/font-size density — forwarded to `TextInput`.',
+      description: 'Padding/font-size density - forwarded to `TextInput`.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     name: {
@@ -87,22 +87,22 @@ const meta: Meta<typeof Editor> = {
     },
     id: {
       control: 'text',
-      description: 'Label association — falls back to the enclosing `FormControl`.',
+      description: 'Label association - falls back to the enclosing `FormControl`.',
       table: { category: 'Behavior' },
     },
     error: {
       control: 'boolean',
-      description: 'Marks the field invalid — falls back to the enclosing `FormControl`.',
+      description: 'Marks the field invalid - falls back to the enclosing `FormControl`.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     required: {
       control: 'boolean',
-      description: 'Marks the field required — falls back to the enclosing `FormControl`.',
+      description: 'Marks the field required - falls back to the enclosing `FormControl`.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     disabled: {
       control: 'boolean',
-      description: 'Disables editing — falls back to the enclosing `FormControl`.',
+      description: 'Disables editing - falls back to the enclosing `FormControl`.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     showShortcutHint: {

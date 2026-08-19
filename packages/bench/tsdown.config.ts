@@ -11,7 +11,7 @@ export default defineConfig([
   // The executable entrypoints: ESM-only (run by node/tsx), no declarations.
   // Kept separate because the harness uses top-level await, which CJS forbids.
   // mitata is bundled in (noExternal) so the in-container harness needs no
-  // runtime module resolution for it — ESM `import` ignores NODE_PATH, so a
+  // runtime module resolution for it - ESM `import` ignores NODE_PATH, so a
   // global install would not be found.
   {
     entry: { bin: 'src/bin.ts', harness: 'src/harness.ts' },

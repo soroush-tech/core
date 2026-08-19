@@ -28,13 +28,13 @@ const meta: Meta<typeof ToggleButtonGroup> = {
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
-      description: 'Selected-state color for all children — resolves against `theme.palette`.',
+      description: 'Selected-state color for all children - resolves against `theme.palette`.',
       table: { category: 'Visual' },
     },
     size: {
       control: { type: 'select' },
       options: tableSizeTokens,
-      description: 'Density for all children — resolves against `theme.sizes`.',
+      description: 'Density for all children - resolves against `theme.sizes`.',
       table: { category: 'Layout' },
     },
     orientation: {

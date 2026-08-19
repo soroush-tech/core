@@ -62,31 +62,31 @@ const meta: Meta<typeof NativeSelect> = {
       control: { type: 'select' },
       options: textInputVariantTokens,
       description:
-        '`outlined`/`default` — full border box · `underline` — bottom border only · `text` — no border.',
+        '`outlined`/`default` - full border box · `underline` - bottom border only · `text` - no border.',
       table: { category: 'Visual', defaultValue: { summary: 'default' } },
     },
     color: {
       control: { type: 'select' },
       options: textInputColorTokens,
-      description: 'Focus/active border color — resolves to `theme.palette[color]`.',
+      description: 'Focus/active border color - resolves to `theme.palette[color]`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     textColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color of the selected value — resolves against `theme.text`.',
+      description: 'Text color of the selected value - resolves against `theme.text`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     bg: {
       control: { type: 'select' },
       options: backgroundTokens,
-      description: 'Background color — resolves against `theme.background`.',
+      description: 'Background color - resolves against `theme.background`.',
       table: { category: 'Visual', defaultValue: { summary: 'terminal' } },
     },
     size: {
       control: { type: 'select' },
       options: textInputSizeTokens,
-      description: 'Controls padding and font size — resolves against `theme.sizes`.',
+      description: 'Controls padding and font size - resolves against `theme.sizes`.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     disabled: {
@@ -96,7 +96,7 @@ const meta: Meta<typeof NativeSelect> = {
     },
     error: {
       control: 'boolean',
-      description: 'Marks the field as invalid — applies error border color.',
+      description: 'Marks the field as invalid - applies error border color.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
     required: {

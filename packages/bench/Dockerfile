@@ -5,7 +5,7 @@ FROM node:24-slim
 
 # tsx runs the TypeScript harness and bench files. mitata is bundled into the
 # harness at build time, so it is not installed here. --ignore-scripts: no
-# lifecycle script runs at install — esbuild's binary ships as a platform
+# lifecycle script runs at install - esbuild's binary ships as a platform
 # package. Pinned exactly: an image built from a range is not reproducible.
 RUN npm install -g --ignore-scripts tsx@4.23.11
 
@@ -15,7 +15,7 @@ ENV NODE_OPTIONS=--expose-gc
 
 WORKDIR /repo
 
-# Drop root: the image's built-in unprivileged `node` user suffices — /bench (the
+# Drop root: the image's built-in unprivileged `node` user suffices - /bench (the
 # writable tmpfs) is world-writable (mode 1777) and everything else is read-only
-# or global, so package installs and the harness still run. — S6471
+# or global, so package installs and the harness still run. - S6471
 USER node

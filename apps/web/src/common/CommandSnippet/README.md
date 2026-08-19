@@ -4,10 +4,10 @@ A terminal-style snippet of a single shell command with a copy-to-clipboard butt
 
 ## Props
 
-| Prop      | Type        | Description                                                               |
-| --------- | ----------- | ------------------------------------------------------------------------- |
-| `command` | `string`    | The command shown after a `$` prompt and copied on click.                 |
-| …`rest`   | `ViewProps` | Layout/spacing props (`maxWidth`, `mb`, …) pass through to the container. |
+| Prop      | Type        | Description                                                                 |
+| --------- | ----------- | --------------------------------------------------------------------------- |
+| `command` | `string`    | The command shown after a `$` prompt and copied on click.                   |
+| ...`rest` | `ViewProps` | Layout/spacing props (`maxWidth`, `mb`, ...) pass through to the container. |
 
 ## Behaviour
 

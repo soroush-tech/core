@@ -1,5 +1,5 @@
 ---
-description: How to consume design system components in pages and features — when to use View/Flex/Typography/Button, how to pass theme tokens, and what to avoid. Auto-load when writing or reviewing code in src/pages/, src/section/, or src/common/.
+description: How to consume design system components in pages and features - when to use View/Flex/Typography/Button, how to pass theme tokens, and what to avoid. Auto-load when writing or reviewing code in src/pages/, src/section/, or src/common/.
 argument-hint: [component or file name]
 paths: src/pages/**,src/section/**,src/common/**
 ---
@@ -10,7 +10,7 @@ paths: src/pages/**,src/section/**,src/common/**
 | ------------------------- | ------------ | --------------------------------------------- |
 | Block container / wrapper | `View`       | `div`, `section`, `article`                   |
 | Flex layout               | `Flex`       | `View` with inline `display: flex`, raw `div` |
-| All text                  | `Typography` | `p`, `span`, `h1`–`h6`                        |
+| All text                  | `Typography` | `p`, `span`, `h1`-`h6`                        |
 | Clickable element         | `Button`     | `div onClick`, `a` for actions                |
 | Navigation link           | `Link`       | `a href`, `Button`                            |
 
@@ -18,7 +18,7 @@ paths: src/pages/**,src/section/**,src/common/**
 
 ---
 
-## Rule 1 — Theme tokens for color and spacing, never literals
+## Rule 1 - Theme tokens for color and spacing, never literals
 
 ```tsx
 // ✗
@@ -32,7 +32,7 @@ Color props (`bg`, `color`, `borderColor`) accept keys from `Theme['background']
 
 ---
 
-## Rule 2 — Use `Flex` for any flex layout
+## Rule 2 - Use `Flex` for any flex layout
 
 ```tsx
 // ✗
@@ -46,7 +46,7 @@ Color props (`bg`, `color`, `borderColor`) accept keys from `Theme['background']
 
 ---
 
-## Rule 3 — Typography for all text, with variant
+## Rule 3 - Typography for all text, with variant
 
 ```tsx
 // ✗
@@ -56,11 +56,11 @@ Color props (`bg`, `color`, `borderColor`) accept keys from `Theme['background']
 <Typography variant="h2">Heading</Typography>
 ```
 
-The `variant` prop maps to the correct HTML element automatically (via `theme.typography[variant].element`) — no need to set `as` unless you want to override the element while keeping the visual style. Always prefer a semantic `variant` over raw `fontSize`/`fontWeight` props.
+The `variant` prop maps to the correct HTML element automatically (via `theme.typography[variant].element`) - no need to set `as` unless you want to override the element while keeping the visual style. Always prefer a semantic `variant` over raw `fontSize`/`fontWeight` props.
 
 ---
 
-## Rule 4 — Import from the barrel index
+## Rule 4 - Import from the barrel index
 
 ```ts
 // ✗
@@ -77,9 +77,9 @@ Always use the `src/` alias, never relative paths up the tree.
 
 ---
 
-## Rule 5 — Never recreate what already exists
+## Rule 5 - Never recreate what already exists
 
-Before adding a layout div, spinner, input, or icon wrapper — check `@soroush.tech/design-system/`. If it exists, use it:
+Before adding a layout div, spinner, input, or icon wrapper - check `@soroush.tech/design-system/`. If it exists, use it:
 
 | If you need               | Check                         |
 | ------------------------- | ----------------------------- |
@@ -93,9 +93,9 @@ Before adding a layout div, spinner, input, or icon wrapper — check `@soroush.
 
 ---
 
-## Rule 6 — Responsive props over conditional renders
+## Rule 6 - Responsive props over conditional renders
 
-styled-system props accept responsive arrays — prefer them over JS ternaries or media query CSS strings:
+styled-system props accept responsive arrays - prefer them over JS ternaries or media query CSS strings:
 
 ```tsx
 // ✗
@@ -109,11 +109,11 @@ styled-system props accept responsive arrays — prefer them over JS ternaries o
 
 ## What NOT to do
 
-- No inline `style={{}}` for colors, spacing, or typography — use theme props
-- No hardcoded hex values (`'#fff'`, `'rgba(0,0,0,0.5)'`) — reference palette tokens
+- No inline `style={{}}` for colors, spacing, or typography - use theme props
+- No hardcoded hex values (`'#fff'`, `'rgba(0,0,0,0.5)'`) - reference palette tokens
 - No raw `div`/`span`/`p` when a theme component exists
-- No `className` + external CSS for layout — use `View`/`Flex` props
+- No `className` + external CSS for layout - use `View`/`Flex` props
 - No custom wrapper components that just rename a theme primitive with no added logic
-- Do not import theme components from inside `packages/design-system/src/ComponentName/ComponentName.tsx` — always go through the barrel `index.ts`
+- Do not import theme components from inside `packages/design-system/src/ComponentName/ComponentName.tsx` - always go through the barrel `index.ts`
 
 If `$ARGUMENTS` names a file or component, read it and flag every violation above with a corrected snippet. Otherwise apply to the code being discussed.

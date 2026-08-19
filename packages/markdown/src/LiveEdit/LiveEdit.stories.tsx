@@ -5,7 +5,7 @@ import { LiveEdit, type LiveEditProps } from './LiveEdit'
 const SAMPLE = [
   '# Live editing',
   '',
-  'Type directly on the rendered document — **bold**, _italic_,',
+  'Type directly on the rendered document - **bold**, _italic_,',
   '`code`, and [links](https://example.com) render exactly like `Preview`.',
   '',
   '- Every block is contentEditable; edits serialize back to markdown live',
@@ -60,7 +60,7 @@ export const Default: Story = {}
 
 // An empty document renders the placeholder block; clicking it starts writing.
 export const Empty: Story = {
-  args: { value: '', placeholder: 'Click to start writing…' },
+  args: { value: '', placeholder: 'Click to start writing...' },
 }
 
 // `slotProps` overrides flow into every block's preview.

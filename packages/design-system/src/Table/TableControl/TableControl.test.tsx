@@ -84,7 +84,7 @@ describe('TableControl', () => {
     Array.from(body.children).forEach((child) => expect(child.tagName).toBe('TR'))
   })
 
-  it('sorts by the active column — first click desc, second asc', () => {
+  it('sorts by the active column - first click desc, second asc', () => {
     renderWithTheme(<Harness pagination={undefined} />)
     fireEvent.click(screen.getByRole('button', { name: 'Service' }))
     expect(bodyRowNames()).toEqual(['worker', 'web', 'edge', 'cron', 'api'])

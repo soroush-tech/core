@@ -27,7 +27,7 @@ export function FormCard() {
       title={
         <CardTitle title="FORM" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-form--docs`} />
       }
-      caption="Form provides field-wide defaults via context; Field bridges to TanStack Form and composes FormControl, FormLabel, and FormHelperText — shown standalone below in the error state."
+      caption="Form provides field-wide defaults via context; Field bridges to TanStack Form and composes FormControl, FormLabel, and FormHelperText - shown standalone below in the error state."
     >
       <Form
         data-testid="form-demo"
@@ -60,7 +60,7 @@ export function FormCard() {
           <FormControl error fullWidth>
             <FormLabel>ACCESS_CODE</FormLabel>
             <TextInput variant="outlined" placeholder="****" />
-            <FormHelperText>ERR_INVALID_CODE — request a new code.</FormHelperText>
+            <FormHelperText>ERR_INVALID_CODE - request a new code.</FormHelperText>
           </FormControl>
           <View>
             <Button type="submit" variant="contained" size="md">

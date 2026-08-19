@@ -34,7 +34,7 @@ const refererOrigin = (referer: string | undefined): string | null => {
   }
 }
 
-/** Docs (Swagger UI + OpenAPI) are served only when `DOCS_ENABLED` is set — never in production. */
+/** Docs (Swagger UI + OpenAPI) are served only when `DOCS_ENABLED` is set - never in production. */
 const docsEnabled = (c: { env: Env }) => c.env.DOCS_ENABLED === 'true'
 
 /**
@@ -55,7 +55,7 @@ export const createApp = () => {
 
   // Belt-and-suspenders origin gate: reject requests whose Origin (or Referer, as a fallback) is
   // not our site before they reach a route. Non-browser clients can forge these headers, so this
-  // is noise reduction, not security — Turnstile is the real gate. `cors()` above already
+  // is noise reduction, not security - Turnstile is the real gate. `cors()` above already
   // short-circuits the OPTIONS preflight, so only real requests reach here.
   app.use('/*', async (c, next) => {
     if (GUARD_EXEMPT.has(c.req.path)) return next()
@@ -84,7 +84,7 @@ export const createApp = () => {
   app.get('/health', (c) => c.json({ ok: true }))
   app.route('/', contactRoute)
 
-  // API docs — gated so production (where DOCS_ENABLED is unset) returns 404.
+  // API docs - gated so production (where DOCS_ENABLED is unset) returns 404.
   app.use('/openapi.json', async (c, next) => {
     if (!docsEnabled(c)) return c.notFound()
     await next()

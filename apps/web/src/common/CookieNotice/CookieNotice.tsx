@@ -21,7 +21,7 @@ const slideIn = keyframes`
   to   { transform: translateY(0); opacity: 1; }
 `
 
-// Single-side top border — View's borderColor would apply to all four sides.
+// Single-side top border - View's borderColor would apply to all four sides.
 // Frosted-glass surface matching AppBar: semi-transparent appBar bg + backdrop blur.
 const CookieNoticeRoot = styled(View, { label: 'CookieNoticeRoot' })`
   border-top: ${({ theme }) => theme.borderWidths.thin} solid
@@ -38,7 +38,7 @@ const CookieNoticeRoot = styled(View, { label: 'CookieNoticeRoot' })`
 /**
  * @description Sticky, dismissible bar that explains the site is cookie-free.
  * Pins to the viewport bottom while scrolling, then docks into place at the end of the page.
- * No persistence — re-shows on every page load; the X removes it for the session view.
+ * No persistence - re-shows on every page load; the X removes it for the session view.
  */
 export function CookieNotice({ message = DEFAULT_MESSAGE }: Readonly<CookieNoticeProps>) {
   const [dismissed, setDismissed] = useState(false)

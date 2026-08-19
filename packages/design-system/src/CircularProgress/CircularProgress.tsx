@@ -24,9 +24,9 @@ export interface CircularProgressProps
     HTMLAttributes<HTMLSpanElement>,
     Omit<SpaceProps<Theme>, keyof PaddingProps>,
     LayoutProps<Theme> {
-  /** Visual variant — looping animation or value-driven arc. Default: `'indeterminate'`. */
+  /** Visual variant - looping animation or value-driven arc. Default: `'indeterminate'`. */
   variant?: CircularProgressVariant
-  /** Stroke color — resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: 'primary', overridable via `theme.defaults.color`. */
+  /** Stroke color - resolves to `theme.palette[color].main`; `'inherit'` uses `currentColor`. Default: 'primary', overridable via `theme.defaults.color`. */
   color?: CircularProgressColor
   /** Width and height. Number → px; string → raw CSS unit (e.g. `'3rem'`). Default: `40`. */
   size?: number | string
@@ -40,7 +40,7 @@ export interface CircularProgressProps
   max?: number
   /** Disables the stroke shrink/expand animation (`'indeterminate'` only). */
   disableShrink?: boolean
-  /** Applies the rotation animation to a `'determinate'` arc — arc length reflects `value` while the spinner still rotates. */
+  /** Applies the rotation animation to a `'determinate'` arc - arc length reflects `value` while the spinner still rotates. */
   spinning?: boolean
   /** Timing function for the rotation animation. Default: `'linear'`. */
   easing?: CircularProgressEasing

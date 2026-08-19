@@ -144,17 +144,17 @@ describe('Checkbox', () => {
   // ─── size ─────────────────────────────────────────────────────────────────────
 
   describe('size', () => {
-    it('sm — sets theme.icon.sm font-size on icon wrapper', () => {
+    it('sm - sets theme.icon.sm font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Checkbox size="sm" />)
       expect(container.querySelector('span')).toHaveStyle({ fontSize: '1rem' })
     })
 
-    it('md — sets theme.icon.md font-size on icon wrapper', () => {
+    it('md - sets theme.icon.md font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Checkbox size="md" />)
       expect(container.querySelector('span')).toHaveStyle({ fontSize: '1.25rem' })
     })
 
-    it('lg — sets theme.icon.lg font-size on icon wrapper', () => {
+    it('lg - sets theme.icon.lg font-size on icon wrapper', () => {
       const { container } = renderWithTheme(<Checkbox size="lg" />)
       expect(container.querySelector('span')).toHaveStyle({ fontSize: '1.5rem' })
     })
@@ -193,7 +193,7 @@ describe('Checkbox', () => {
   // ─── icons ────────────────────────────────────────────────────────────────────
 
   // All three icon spans are always in the DOM; CSS toggles visibility via :checked/:indeterminate.
-  // These tests verify DOM placement — CSS behaviour is covered by Storybook tests.
+  // These tests verify DOM placement - CSS behaviour is covered by Storybook tests.
   describe('icons', () => {
     it('always renders all three icon spans in the DOM', () => {
       const { container } = renderWithTheme(<Checkbox />)

@@ -29,7 +29,7 @@ const makeEnv = (honeypot = 'fax', turnstileSecret = '') => {
       prepare: (sql: string) => {
         sqls.push(sql)
         return {
-          // CREATE TABLE IF NOT EXISTS … (no bind).
+          // CREATE TABLE IF NOT EXISTS ... (no bind).
           run: async () => ({}),
           bind: (...args: unknown[]) => ({
             run: async () => {
@@ -192,7 +192,7 @@ describe('POST /v1/contact', () => {
   })
 })
 
-describe('POST /v1/contact — Turnstile captcha', () => {
+describe('POST /v1/contact - Turnstile captcha', () => {
   it('verifies the token and proceeds when verification succeeds', async () => {
     stubFetch({ turnstileOk: true })
     const { env, inserts } = makeEnv('fax', 'secret')

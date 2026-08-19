@@ -10,13 +10,13 @@ A single-selection control for use within a group. Supports controlled checked s
 
 ### `checked`
 
-`boolean` — controlled checked state. Must be paired with `onChange`.
+`boolean` - controlled checked state. Must be paired with `onChange`.
 
 ---
 
 ### `disabled`
 
-`boolean` — disables the radio. Applies `opacity: 0.5` and `cursor: not-allowed`.
+`boolean` - disables the radio. Applies `opacity: 0.5` and `cursor: not-allowed`.
 
 Default: `false`.
 
@@ -53,61 +53,61 @@ Default: `"medium"`.
 
 ### `icon`
 
-`ReactNode` — custom icon for the **unchecked** state. Defaults to an outlined circle SVG.
+`ReactNode` - custom icon for the **unchecked** state. Defaults to an outlined circle SVG.
 
 ---
 
 ### `checkedIcon`
 
-`ReactNode` — custom icon for the **checked** state. Defaults to a filled circle SVG with a white inner dot.
+`ReactNode` - custom icon for the **checked** state. Defaults to a filled circle SVG with a white inner dot.
 
 ---
 
 ### `onChange`
 
-`(event: ChangeEvent<HTMLInputElement>) => void` — called when the user selects the radio.
+`(event: ChangeEvent<HTMLInputElement>) => void` - called when the user selects the radio.
 
 ---
 
 ### `id`
 
-`string` — forwarded to the underlying `<input>` for external label association (`<label htmlFor="...">`) and form targeting.
+`string` - forwarded to the underlying `<input>` for external label association (`<label htmlFor="...">`) and form targeting.
 
 ---
 
 ### `required`
 
-`boolean` — marks the field as required in a form.
+`boolean` - marks the field as required in a form.
 
 ---
 
 ### `name`
 
-`string` — radio group identifier. All radios sharing the same `name` are mutually exclusive in the browser. Required for group behaviour.
+`string` - radio group identifier. All radios sharing the same `name` are mutually exclusive in the browser. Required for group behaviour.
 
 ---
 
 ### `value`
 
-`string | number | readonly string[]` — value submitted with the form when this radio is selected.
+`string | number | readonly string[]` - value submitted with the form when this radio is selected.
 
 ---
 
 ### `inputProps`
 
-`InputHTMLAttributes<HTMLInputElement>` — extra props spread onto the underlying `<input>` before the explicit top-level props. Use for `aria-label`, `aria-describedby`, `tabIndex`, `data-*`, etc. Explicit top-level props (`checked`, `onChange`, `name`, etc.) always take priority.
+`InputHTMLAttributes<HTMLInputElement>` - extra props spread onto the underlying `<input>` before the explicit top-level props. Use for `aria-label`, `aria-describedby`, `tabIndex`, `data-*`, etc. Explicit top-level props (`checked`, `onChange`, `name`, etc.) always take priority.
 
 ---
 
 ### `children`
 
-`ReactNode` — label text rendered next to the radio icon, wrapped in a `<span>`.
+`ReactNode` - label text rendered next to the radio icon, wrapped in a `<span>`.
 
 ---
 
 ## Styled-system props
 
-### Space — `theme.space` (margin only)
+### Space - `theme.space` (margin only)
 
 | Prop                              | Shorthand for  |
 | --------------------------------- | -------------- |

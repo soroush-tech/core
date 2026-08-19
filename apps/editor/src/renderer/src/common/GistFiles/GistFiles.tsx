@@ -35,7 +35,7 @@ export interface GistFilesProps {
 const STATUS_LETTER = { added: 'A', modified: 'M', deleted: 'D' } as const
 
 /**
- * Delete stays out of the way until the row is hovered — but `opacity`, not
+ * Delete stays out of the way until the row is hovered - but `opacity`, not
  * `display`, so it keeps its place in the tab order and `:focus-within` brings
  * it back for keyboard users.
  */
@@ -87,7 +87,7 @@ export function GistFiles({
   // not a mistake they can take back.
   const [isPublic, setIsPublic] = useState(false)
   // Publishing a sandbox creates the gist, so a second press before the first
-  // has answered is a second gist — and nothing about the two says which was
+  // has answered is a second gist - and nothing about the two says which was
   // meant. The button is held until the request comes back.
   const [isPublishing, setIsPublishing] = useState(false)
 
@@ -230,7 +230,7 @@ export function GistFiles({
                   p={1}
                   // Named explicitly: the status letter is decorative, and letting it
                   // into the name would read as "notes.md notes.md is modified".
-                  aria-label={file.status ? `${file.filename} — ${file.status}` : file.filename}
+                  aria-label={file.status ? `${file.filename} - ${file.status}` : file.filename}
                   onClick={() => onOpenFile(file.content, { gistId, filename: file.filename })}
                 >
                   <Flex flexDirection="row" alignItems="center" gap={2}>

@@ -37,7 +37,7 @@ const HEADING_BY_ID: Record<string, LinePrefixAction> = Object.fromEntries(
 )
 
 // line-through has no Typography style prop, so a thin styled Typography carries it.
-// Named styled root — theme-customizable via
+// Named styled root - theme-customizable via
 // `theme.components.MarkdownToolbar.styleOverrides.root`.
 const ToolbarRoot = styled(Flex, { name: 'MarkdownToolbar', label: 'MarkdownToolbar' })()
 

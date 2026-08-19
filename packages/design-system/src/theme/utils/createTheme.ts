@@ -38,7 +38,7 @@ const deepMerge = (base: Record<string, unknown>, overrides: Record<string, unkn
  *
  * - Recurses only where both sides are plain objects; arrays (`shadows`,
  *   `fontSizes`) and functions replace wholesale.
- * - `undefined` override values are ignored — a key can be added or replaced,
+ * - `undefined` override values are ignored - a key can be added or replaced,
  *   never removed.
  * - Neither argument is mutated; untouched branches keep referential identity.
  */

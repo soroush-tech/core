@@ -68,7 +68,7 @@ describe('Skeleton', () => {
       expect(screen.getByTestId('sk')).toHaveStyle({ borderRadius: '16px' })
     })
 
-    it('is ignored for the circular variant — the circle stays 50%', () => {
+    it('is ignored for the circular variant - the circle stays 50%', () => {
       renderWithTheme(<Skeleton variant="circular" borderRadius="sm" data-testid="sk" />)
       expect(screen.getByTestId('sk')).toHaveStyle({ borderRadius: '50%' })
     })

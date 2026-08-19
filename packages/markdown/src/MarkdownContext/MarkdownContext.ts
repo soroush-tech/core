@@ -14,11 +14,11 @@ export interface MarkdownContextValue {
   onChange: (value: string) => void
   /** Applies a toolbar action at the last remembered selection and queues the caret to restore. */
   dispatch: (action: ToolbarAction) => void
-  /** Records the current textarea selection — the Editor calls this on select/blur. */
+  /** Records the current textarea selection - the Editor calls this on select/blur. */
   rememberSelection: (selection: MarkdownSelection) => void
   /** Queues a selection to restore after the next value change (e.g. after Tab). */
   queueSelection: (selection: MarkdownSelection) => void
-  /** Returns and clears the queued selection — the Editor's effect calls this to restore focus. */
+  /** Returns and clears the queued selection - the Editor's effect calls this to restore focus. */
   takeQueuedSelection: () => MarkdownSelection | null
 }
 

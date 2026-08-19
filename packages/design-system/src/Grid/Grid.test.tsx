@@ -35,7 +35,7 @@ describe('Grid', () => {
 
   // ─── gap (theme.space scale) ─────────────────────────────────────────────────
 
-  describe('gap — theme.space scale', () => {
+  describe('gap - theme.space scale', () => {
     it.each([
       [1, '8px'],
       [2, '16px'],

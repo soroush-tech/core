@@ -64,7 +64,7 @@ export const Default: Story = {
   },
   render: (args) => (
     <Flex flexDirection="column" gap={3} alignItems="flex-start">
-      {/* Outside the trap: try to Tab or click here — with shouldEnforceFocus on,
+      {/* Outside the trap: try to Tab or click here - with shouldEnforceFocus on,
           focus is pulled straight back inside the panel. */}
       <TextInput inputProps={{ placeholder: 'Outside the trap' }} />
       <FocusTrap {...args}>

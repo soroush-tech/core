@@ -41,13 +41,13 @@ const meta: Meta<typeof Sidebar> = {
     anchor: {
       control: 'radio',
       options: ['left', 'right'],
-      description: 'Screen edge the rail hugs — labels render away from it.',
+      description: 'Screen edge the rail hugs - labels render away from it.',
       table: { category: 'Layout' },
     },
     variant: {
       control: 'radio',
       options: ['text', 'outlined', 'plain'],
-      description: "Default variant for every item — an item's own `variant` wins.",
+      description: "Default variant for every item - an item's own `variant` wins.",
       table: { category: 'Visual', defaultValue: { summary: 'text' } },
     },
     expandedWidth: {
@@ -74,7 +74,7 @@ const meta: Meta<typeof Sidebar> = {
     panelProps: {
       control: false,
       description:
-        'Props for the panel column — any `Flex` prop, plus `as`. Overrides `panelWidth` and the derived `aria-label`.',
+        'Props for the panel column - any `Flex` prop, plus `as`. Overrides `panelWidth` and the derived `aria-label`.',
       table: { category: 'Layout' },
     },
     bg,
@@ -124,7 +124,7 @@ const PANELS = [
   { id: 'drafts', icon: 'edit_note', label: 'Drafts', lines: ['Untitled', 'Release post'] },
 ] as const
 
-// Selection is the consumer's, as everywhere else in this component — the rail
+// Selection is the consumer's, as everywhere else in this component - the rail
 // only decides where the selected item's children are rendered.
 const PanelDemo = (args: SidebarArgs) => {
   const [selected, setSelected] = useState<string | null>('directory')
@@ -163,7 +163,7 @@ const PanelDemo = (args: SidebarArgs) => {
 /**
  * With `hasPanel`, the selected item's children render in a second column
  * instead of inside its row. Click an item to switch panels, or click the
- * selected one again to close it — with nothing selected the column disappears
+ * selected one again to close it - with nothing selected the column disappears
  * rather than leaving an empty gap.
  */
 export const WithPanel: Story = {
@@ -172,7 +172,7 @@ export const WithPanel: Story = {
 }
 
 // The panel is independent of `isOpen`, so an icons-only rail can sit beside an
-// open panel — and a right-anchored rail keeps the panel on its inner side.
+// open panel - and a right-anchored rail keeps the panel on its inner side.
 export const PanelOpenRail: Story = {
   ...WithPanel,
   args: { isOpen: true, hasPanel: true },
@@ -183,7 +183,7 @@ export const PanelRightAnchored: Story = {
   args: { isOpen: true, hasPanel: true, anchor: 'right' },
 }
 
-// `panelProps` restyles or re-tags the column — here an `<aside>` on its own
+// `panelProps` restyles or re-tags the column - here an `<aside>` on its own
 // surface, wider than the default, separated from the rail by a rule.
 export const PanelStyled: Story = {
   ...WithPanel,

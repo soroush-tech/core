@@ -16,7 +16,7 @@ describe('Sidebar', () => {
     )
     expect(screen.getByRole('navigation', { name: 'Editor panels' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Directory' })).toBeInTheDocument()
-    // Non-item children compose freely (logos, footers, …).
+    // Non-item children compose freely (logos, footers, ...).
     expect(screen.getByText('Sponsored')).toBeInTheDocument()
   })
 
@@ -38,7 +38,7 @@ describe('Sidebar', () => {
 
   it('animates between the collapsed and expanded widths', () => {
     // The width sits on the rail inside the landmark, not on the landmark
-    // itself — the root is sized by its contents so its background can span the
+    // itself - the root is sized by its contents so its background can span the
     // panel column too.
     const rail = () => screen.getByRole('navigation', { name: 'Panels' }).firstElementChild
 
@@ -86,11 +86,11 @@ describe('Sidebar', () => {
       </Sidebar>
     )
 
-    it('renders the selected item’s children in a panel named after it', () => {
+    it("renders the selected item's children in a panel named after it", () => {
       renderWithTheme(rail())
       const panel = screen.getByRole('region', { name: 'Directory' })
       expect(panel).toContainElement(screen.getByText('Directory tree'))
-      // Only the selected item's children — the others stay unrendered.
+      // Only the selected item's children - the others stay unrendered.
       expect(screen.queryByText('Gist list')).not.toBeInTheDocument()
     })
 
@@ -141,7 +141,7 @@ describe('Sidebar', () => {
 
     it('ports from items at any depth, not just direct children', () => {
       // The item ports its own children, so it needs no particular position in
-      // the rail — a consumer's wrapper component works the same as a bare item.
+      // the rail - a consumer's wrapper component works the same as a bare item.
       const Group = ({ children }: { children: React.ReactNode }) => (
         <div className="group">Group heading{children}</div>
       )
@@ -161,7 +161,7 @@ describe('Sidebar', () => {
       expect(panel).toContainElement(screen.getByText('Directory tree'))
     })
 
-    it('ports the content out of the item’s own DOM subtree', () => {
+    it("ports the content out of the item's own DOM subtree", () => {
       renderWithTheme(rail())
       const item = screen.getByRole('button', { name: 'Directory' })
       const content = screen.getByText('Directory tree')
@@ -191,7 +191,7 @@ describe('Sidebar', () => {
       expect(screen.queryByText('Directory tree')).not.toBeInTheDocument()
     })
 
-    it('puts the panel on the rail’s inner side for each anchor', () => {
+    it("puts the panel on the rail's inner side for each anchor", () => {
       const { rerender } = renderWithTheme(rail({ anchor: 'left' }))
       expect(screen.getByRole('navigation', { name: 'Panels' })).toHaveStyle({
         flexDirection: 'row',
@@ -229,7 +229,7 @@ describe('Sidebar', () => {
       )
     })
 
-    it('keeps the panel inside the landmark so the rail’s background covers it', () => {
+    it("keeps the panel inside the landmark so the rail's background covers it", () => {
       renderWithTheme(rail())
       const nav = screen.getByRole('navigation', { name: 'Panels' })
       // Sharing the background means sharing the box that paints it.

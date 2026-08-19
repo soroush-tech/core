@@ -30,21 +30,21 @@ const meta: Meta<typeof ToggleButton> = {
     isSelected: {
       control: 'boolean',
       description:
-        'Active state — inferred from the group value when omitted. Drives `aria-pressed`.',
+        'Active state - inferred from the group value when omitted. Drives `aria-pressed`.',
       table: { category: 'Behavior' },
     },
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
       description:
-        'Active-state color — resolves against `theme.palette`. Inherited from the group.',
+        'Active-state color - resolves against `theme.palette`. Inherited from the group.',
       table: { category: 'Visual', defaultValue: { summary: 'default' } },
     },
     size: {
       control: { type: 'select' },
       options: tableSizeTokens,
       description:
-        'Padding and font size — resolves against `theme.sizes`. Inherited from the group.',
+        'Padding and font size - resolves against `theme.sizes`. Inherited from the group.',
       table: { category: 'Layout', defaultValue: { summary: 'md' } },
     },
     fullWidth: {
@@ -59,7 +59,7 @@ const meta: Meta<typeof ToggleButton> = {
     },
     loading: {
       control: 'boolean',
-      description: 'Shows loading indicator and disables the button — e.g. while a toggle saves.',
+      description: 'Shows loading indicator and disables the button - e.g. while a toggle saves.',
       table: { category: 'Behavior', defaultValue: { summary: 'false' } },
     },
   },

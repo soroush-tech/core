@@ -17,13 +17,13 @@ All content is static and specific to the site:
 | ------------- | -------------------------------------------------- |
 | Role label    | `Principal Software Engineer`                      |
 | H1            | `Building High‑Performance Software Architectures` |
-| Description   | Engineering scalable, low-latency systems…         |
+| Description   | Engineering scalable, low-latency systems...       |
 | Primary CTA   | `View Projects` (contained, primary)               |
 | Secondary CTA | `Inquire` (outlined, default)                      |
 
 ## Layout
 
-The gradient-backed `<section>` shell — the `Paper` surface, linear-gradient backdrop, and centered `maxWidth="1280px"` container — comes from `src/common/PageHeader`. Hero passes its content as `children` and sets `minHeight="620px"`.
+The gradient-backed `<section>` shell - the `Paper` surface, linear-gradient backdrop, and centered `maxWidth="1280px"` container - comes from `src/common/PageHeader`. Hero passes its content as `children` and sets `minHeight="620px"`.
 
 ## Typography mapping
 

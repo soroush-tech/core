@@ -16,7 +16,7 @@ const meta: Meta<typeof Quote> = {
   render: (args) => (
     <Quote {...args}>
       <Typography variant="body1" color="secondary" m={0}>
-        A View with a 2px primary left border — for terminal readouts and markdown blockquotes.
+        A View with a 2px primary left border - for terminal readouts and markdown blockquotes.
       </Typography>
     </Quote>
   ),

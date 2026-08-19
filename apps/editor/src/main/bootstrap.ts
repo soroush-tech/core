@@ -27,7 +27,7 @@ function createWindow(devRendererUrl: string | undefined): void {
     // binary, which would otherwise show the default Electron icon.
     ...(devRendererUrl ? { icon: join(import.meta.dirname, '../../build/icon.png') } : {}),
     webPreferences: {
-      // Sandboxed preloads must be CJS — see the preload output config in electron.vite.config.ts.
+      // Sandboxed preloads must be CJS - see the preload output config in electron.vite.config.ts.
       preload: join(import.meta.dirname, '../preload/index.cjs'),
       contextIsolation: true,
       sandbox: true,
@@ -96,7 +96,7 @@ export function bootstrap(spawnFn: typeof spawn): void {
           confirmDiscard(window, fileState.isDraft)
             .then((choice) => {
               if (choice === 'discard') return window.destroy()
-              // Only the renderer can save — it owns the content and knows where the
+              // Only the renderer can save - it owns the content and knows where the
               // document belongs. Saving leaves the window open; closing again then
               // goes straight through, with nothing unsaved.
               window.webContents.send(MENU_CHANNELS.action, 'save')
@@ -111,7 +111,7 @@ export function bootstrap(spawnFn: typeof spawn): void {
 
       // Reload from the View menu runs the same guard as closing: a dirty
       // document prompts first, so a reload can never wipe unsaved work. As
-      // with close, choosing to save leaves the window as it is — reloading
+      // with close, choosing to save leaves the window as it is - reloading
       // again then goes straight through, with nothing unsaved.
       const guardedReload = () => {
         const window = mainWindow
@@ -120,7 +120,7 @@ export function bootstrap(spawnFn: typeof spawn): void {
         confirmDiscard(window, fileState.isDraft)
           .then((choice) => {
             // The prompt does not hold the window: it can be closed, or
-            // replaced as the main window, while the choice is being made —
+            // replaced as the main window, while the choice is being made -
             // and a destroyed webContents throws on both calls below.
             if (mainWindow !== window || window.isDestroyed()) return
             if (choice === 'discard') return window.webContents.reload()

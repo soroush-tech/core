@@ -63,7 +63,7 @@ export default function DomainPage() {
               m={0}
             >
               &ldquo; From data model to deployment, frontend to infrastructure, AI to sub-second
-              performance — the domains where complex systems get architected, scaled, and shipped
+              performance - the domains where complex systems get architected, scaled, and shipped
               under load.&ldquo;
             </Typography>
           </Flex>

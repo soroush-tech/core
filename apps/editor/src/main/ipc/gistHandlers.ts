@@ -16,7 +16,7 @@ const PATH_SEPARATOR = /[/\\]/
 
 function validateId(id: unknown): Result<string> {
   // The id reaches a request URL and a key in the draft file, so only the shape
-  // GitHub actually issues is let through — not merely "some non-blank string".
+  // GitHub actually issues is let through - not merely "some non-blank string".
   // A gist that does not exist yet has no id from GitHub to check it against,
   // so the sandbox ids this app mints for one are matched by their own shape.
   const trimmed = typeof id === 'string' ? id.trim() : null
@@ -47,11 +47,11 @@ async function confirmReset(window: BrowserWindow): Promise<boolean> {
   return response === 0
 }
 
-/** Registers the gist IPC handlers. The token is never an argument — main holds it. */
+/** Registers the gist IPC handlers. The token is never an argument - main holds it. */
 export function registerGistHandlers(service: GistService, getWindow: () => BrowserWindow): void {
   /**
    * Tells the renderer the draft moved. The editor and the files panel both
-   * hold a view of it, and only one of them made the change — without this the
+   * hold a view of it, and only one of them made the change - without this the
    * other keeps showing a stale change count.
    */
   const announce = async (gistId: string): Promise<void> => {
@@ -134,7 +134,7 @@ export function registerGistHandlers(service: GistService, getWindow: () => Brow
     }
   )
 
-  /** Resolves `data: false` when the user cancels — cancelling is not a failure. */
+  /** Resolves `data: false` when the user cancels - cancelling is not a failure. */
   ipcMain.handle(GIST_CHANNELS.reset, async (_event, id: unknown): Promise<Result<boolean>> => {
     const gistId = validateId(id)
     if (!gistId.success) return gistId

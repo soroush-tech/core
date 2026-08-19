@@ -17,7 +17,7 @@ describe('computeVisibleIds', () => {
     expect([...ids].sort()).toEqual([ROOT_ID, 'A', 'B'].sort())
   })
 
-  it('reveals a branch’s children only when it is expanded', () => {
+  it("reveals a branch's children only when it is expanded", () => {
     const ids = computeVisibleIds(new Set(['A']), ROOT_ID, adjacency, roots)
     expect(ids.has('C')).toBe(true)
     expect(ids.has('D')).toBe(false) // C itself is not expanded
@@ -43,7 +43,7 @@ describe('computeVisibleIds', () => {
     expect(ids.has('C')).toBe(false)
   })
 
-  it('hides a hidden branch’s subtree (does not recurse through it)', () => {
+  it("hides a hidden branch's subtree (does not recurse through it)", () => {
     const ids = computeVisibleIds(new Set(['A', 'C']), ROOT_ID, adjacency, roots, new Set(['C']))
     expect(ids.has('C')).toBe(false)
     expect(ids.has('D')).toBe(false)
@@ -98,7 +98,7 @@ describe('computeVisibleIds', () => {
     })
 
     it('visits a shared child once when two active areas both reach it', () => {
-      // A and B are both active and both list C — A adds C, then B skips the already-seen C.
+      // A and B are both active and both list C - A adds C, then B skips the already-seen C.
       const ids = computeVisibleIds(new Set(['A', 'B']), ROOT_ID, tree, roots, new Set(), gate)
       expect(ids.has('C')).toBe(true)
     })

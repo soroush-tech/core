@@ -123,7 +123,7 @@ describe('fetchGistFiles', () => {
     // down to what was shown.
     await expect(fetchGistFiles('abc123', 'github_pat_123', fetchFn)).resolves.toEqual({
       success: false,
-      error: 'Could not read all of notes.md — GitHub responded 500',
+      error: 'Could not read all of notes.md - GitHub responded 500',
     })
   })
 
@@ -161,7 +161,7 @@ describe('fetchGistFiles', () => {
     fetchMock.mockResolvedValue(jsonResponse({}, false, 401))
     await expect(fetchGistFiles('abc123', 'stale', fetchFn)).resolves.toEqual({
       success: false,
-      error: 'GitHub rejected the stored token — connect the account again',
+      error: 'GitHub rejected the stored token - connect the account again',
     })
   })
 

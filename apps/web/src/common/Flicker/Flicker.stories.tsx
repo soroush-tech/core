@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Extends [`Flex`](../Flex). Wraps its children in a looping opacity flicker — a short ' +
+          'Extends [`Flex`](../Flex). Wraps its children in a looping opacity flicker - a short ' +
           'blink burst then a steady hold each cycle (`2s`). Used to frame unstable / warning glyphs.',
       },
     },

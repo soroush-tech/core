@@ -8,7 +8,7 @@ export interface GitHubCredentials {
   avatar: string | null
 }
 
-/** Disk access for the credential file — injectable, like the file handlers' `FileIo`. */
+/** Disk access for the credential file - injectable, like the file handlers' `FileIo`. */
 export interface CredentialFileIo {
   readFile: (path: string) => Promise<Buffer>
   writeFile: (path: string, data: Buffer) => Promise<void>
@@ -26,7 +26,7 @@ function toErrorMessage(error: unknown): string {
 }
 
 /**
- * The GitHub token at rest. Only ciphertext ever reaches disk — the file is
+ * The GitHub token at rest. Only ciphertext ever reaches disk - the file is
  * written exclusively through `encryptStringAsync`, and a plaintext write is
  * impossible because the token never leaves this module unencrypted. The
  * renderer only ever sees the `login` the token is paired with.
@@ -57,12 +57,12 @@ export function createCredentialStore(filePath: string, io: CredentialFileIo): C
       if (typeof login !== 'string' || typeof token !== 'string') return null
 
       const credentials = { login, token, avatar: typeof avatar === 'string' ? avatar : null }
-      // The OS rotated the key, or offers a stronger one — restore the file under
+      // The OS rotated the key, or offers a stronger one - restore the file under
       // it. A failed rewrite leaves the old ciphertext, which still decrypts.
       if (shouldReEncrypt) await write(credentials)
       return credentials
     } catch {
-      // No file yet, a key from another OS user, or a corrupt file — all mean signed out.
+      // No file yet, a key from another OS user, or a corrupt file - all mean signed out.
       return null
     }
   }

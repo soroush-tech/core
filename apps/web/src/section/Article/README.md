@@ -18,7 +18,7 @@ Rendered at `/article/:id` by `src/pages/article/@id/+Page.tsx`. The page fetche
 
 | Prop   | Type   | Default | Description                                      |
 | ------ | ------ | ------- | ------------------------------------------------ |
-| `data` | `Gist` | —       | The fetched gist whose `en.md` file is rendered. |
+| `data` | `Gist` | -       | The fetched gist whose `en.md` file is rendered. |
 
 ---
 
@@ -31,7 +31,7 @@ Rendered at `/article/:id` by `src/pages/article/@id/+Page.tsx`. The page fetche
 
 ## Data
 
-- Fetching is owned by the page (`useGistById` — a suspense query); the heading is rendered by
+- Fetching is owned by the page (`useGistById` - a suspense query); the heading is rendered by
   `PageHeader` and the body data is passed to `Article` as a prop.
 - Markdown rendering lives in the [`Preview`](../../theme/Markdown/Preview) component
   (`@soroush.tech/markdown`).

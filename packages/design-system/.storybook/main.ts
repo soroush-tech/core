@@ -1,7 +1,7 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 
 // The package's own Storybook: only this package's stories, rendered against the
-// shipped `baseTheme` — what an npm consumer sees before they theme anything. The
+// shipped `baseTheme` - what an npm consumer sees before they theme anything. The
 // site's Storybook (`apps/web/.storybook`) still globs these same files to render
 // them in the brand light/dark themes; that build is the Chromatic surface.
 const config: StorybookConfig = {

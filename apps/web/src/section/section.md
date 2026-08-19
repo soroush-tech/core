@@ -6,7 +6,7 @@ Conventions for everything in `src/section/`. Sections are large, page-specific 
 
 ## What belongs here
 
-`src/section/` is for **page-specific sections** — self-contained UI regions that belong to exactly one page.
+`src/section/` is for **page-specific sections** - self-contained UI regions that belong to exactly one page.
 
 | Belongs in `src/section/`                         | Belongs elsewhere                                                   |
 | ------------------------------------------------- | ------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ src/section/
     README.md                 ← prop and behaviour documentation
 ```
 
-Storybook stories are optional for sections — they are large, page-specific compositions that are better verified via e2e tests.
+Storybook stories are optional for sections - they are large, page-specific compositions that are better verified via e2e tests.
 
 ---
 
@@ -43,20 +43,20 @@ Storybook stories are optional for sections — they are large, page-specific co
 
 Identical to `src/common/` rules:
 
-- Compose from theme primitives (`View`, `Flex`, `Typography`, `Button`, etc.) — a section may also compose `src/common/` components
-- All colours via theme tokens — no hardcoded hex
+- Compose from theme primitives (`View`, `Flex`, `Typography`, `Button`, etc.) - a section may also compose `src/common/` components
+- All colours via theme tokens - no hardcoded hex
 - Custom CSS (`styled`) only when theme primitives cannot cover the need, with a comment explaining why
 - Export prop interfaces so `+Page.tsx` can import types if needed
-- Extract logic and data the same way as `src/common/`: pure helpers → `utils.ts` (or a flat `utils/` folder, one file per helper + co-located test, when there are several), stateful logic → `hooks/useX.ts` (flat file + co-located test), static data → `SectionName.data.ts` — all co-located. Promote to `src/utils/` or `src/hooks/` only when generic.
+- Extract logic and data the same way as `src/common/`: pure helpers → `utils.ts` (or a flat `utils/` folder, one file per helper + co-located test, when there are several), stateful logic → `hooks/useX.ts` (flat file + co-located test), static data → `SectionName.data.ts` - all co-located. Promote to `src/utils/` or `src/hooks/` only when generic.
 
 ---
 
 ## Layout standard
 
 Every section uses the same two-layer layout so pages stay visually consistent and
-responsive across **tablet and desktop**. This is not optional — match it exactly.
+responsive across **tablet and desktop**. This is not optional - match it exactly.
 
-### 1. Section root — a full-bleed band
+### 1. Section root - a full-bleed band
 
 Use a semantic `View` (or `Flex`) with `as="section"`. **Never use `Paper` as the section
 root, and never fake a surface with `bg="paper"` on the root.** `Paper` is only for a
@@ -66,12 +66,12 @@ genuine elevated card _inside_ the content container.
 <View as="section" py={10} px={4}>
 ```
 
-- `px={4}` — consistent horizontal gutter on every section.
-- `py` — vertical rhythm, `6`–`10` depending on density.
-- `bg` — set a surface token (`terminal`, `default`) only when the section needs a banded
+- `px={4}` - consistent horizontal gutter on every section.
+- `py` - vertical rhythm, `6`-`10` depending on density.
+- `bg` - set a surface token (`terminal`, `default`) only when the section needs a banded
   background; otherwise leave the root transparent.
 
-### 2. Content container — constrained and centered
+### 2. Content container - constrained and centered
 
 Wrap the section's content in a container capped at **`maxWidth="1280px"`** and centered
 with **`mx="auto"`**. Put it on a `View`, or directly on the `Flex`/`Grid` that lays out
@@ -85,10 +85,10 @@ the content.
 </View>
 ```
 
-### 3. Responsive — mobile-first, always cover tablet and desktop
+### 3. Responsive - mobile-first, always cover tablet and desktop
 
 Column counts, gaps, and sizes use styled-system responsive arrays `[mobile, tablet, desktop]`.
-Every multi-column layout **must define a tablet _and_ a desktop value** — never ship a
+Every multi-column layout **must define a tablet _and_ a desktop value** - never ship a
 layout that only adapts at a single breakpoint.
 
 ```tsx
@@ -105,7 +105,7 @@ layout that only adapts at a single breakpoint.
 
 ## Testing
 
-- Unit test the React surface with `renderWithTheme` (`SectionName.test.tsx`) — heading, content, toggles, conditional rendering.
+- Unit test the React surface with `renderWithTheme` (`SectionName.test.tsx`) - heading, content, toggles, conditional rendering.
 - Import `SectionName.data.ts` into the test so it iterates the real data, not a fixture.
 - Imperative or environment-dependent code (D3 force simulation, drag, zoom) that jsdom cannot run is marked `/* v8 ignore */` and validated by the page's Playwright spec (`src/pages/<route>/<route>.e2e.ts`).
 

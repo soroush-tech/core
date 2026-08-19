@@ -20,16 +20,16 @@ import {
   system,
 } from '../index'
 
-/** Valid values for the color prop — derived from theme.text keys. */
+/** Valid values for the color prop - derived from theme.text keys. */
 export type ViewColorToken = keyof Theme['text']
 
-/** Valid values for the bg prop — derived from theme.background keys. */
+/** Valid values for the bg prop - derived from theme.background keys. */
 export type ViewBackgroundToken = keyof Theme['background']
 
-/** Valid values for the borderColor prop — derived from theme.border keys. */
+/** Valid values for the borderColor prop - derived from theme.border keys. */
 export type ViewBorderColorToken = keyof Theme['border']
 
-/** Valid values for the borderWidth prop — derived from theme.borderWidths keys. */
+/** Valid values for the borderWidth prop - derived from theme.borderWidths keys. */
 export type ViewBorderWidthToken = keyof Theme['borderWidths']
 
 /** Valid theme tokens for border-radius. Raw CSS pixel values (e.g. '6px', '9999px') are also accepted. */
@@ -44,9 +44,9 @@ export interface ViewProps
     Omit<BorderProps<Theme>, 'borderColor' | 'borderWidth' | 'borderRadius'>,
     PositionProps<Theme> {
   bg?: ViewBackgroundToken
-  /** Resolves against theme.border — light · primary · dark */
+  /** Resolves against theme.border - light · primary · dark */
   borderColor?: ViewBorderColorToken
-  /** Resolves against theme.borderWidths — none · thin · base · thick */
+  /** Resolves against theme.borderWidths - none · thin · base · thick */
   borderWidth?: ViewBorderWidthToken
   /** Theme tokens: sq · sm · md · lg. Also accepts raw CSS pixel values e.g. '6px', '9999px'. */
   borderRadius?: ViewBorderRadiusToken
@@ -56,7 +56,7 @@ export interface ViewProps
   order?: FlexboxProps<Theme>['order']
 }
 
-// aspectRatio needs no manual wiring since @soroush.tech/styled-system 5.8.0 — it
+// aspectRatio needs no manual wiring since @soroush.tech/styled-system 5.8.0 - it
 // arrives through the `layout` parser and `LayoutProps`.
 const shouldForwardProp = createShouldForwardProp([...props, 'cursor', 'order'])
 

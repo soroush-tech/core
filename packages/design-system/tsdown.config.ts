@@ -2,8 +2,8 @@ import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { defineConfig } from 'tsdown'
 
-// One entry per directory that exposes an index.ts — including nested component
-// folders (Table/TableCell, Markdown/Editor, …) — so the `"./*"` publishConfig
+// One entry per directory that exposes an index.ts - including nested component
+// folders (Table/TableCell, Markdown/Editor, ...) - so the `"./*"` publishConfig
 // wildcard resolves every subpath the monorepo's source wildcard already serves.
 // `utils/test` story helpers and `__mocks__` have no index.ts and are never built.
 const collectFolderEntries = (dir: string): [string, string][] =>

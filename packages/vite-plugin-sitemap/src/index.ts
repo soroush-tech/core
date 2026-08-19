@@ -63,7 +63,7 @@ export interface SitemapOptions {
   /**
    * Emit the sitemap only when `true`; otherwise the plugin is an inert no-op. Disable it for
    * builds that reuse the app's Vite config but emit no `build/client` SSG output for the plugin
-   * to scan — e.g. a Storybook build (`NODE_ENV=storybook`). Default: `true`.
+   * to scan - e.g. a Storybook build (`NODE_ENV=storybook`). Default: `true`.
    */
   enable?: boolean
 }

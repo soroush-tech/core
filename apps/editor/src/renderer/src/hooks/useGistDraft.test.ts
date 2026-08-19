@@ -205,7 +205,7 @@ describe('useGistDraft', () => {
     expect(result.current.draft).toEqual({ files: {} })
   })
 
-  it('picks up a draft staged elsewhere — a save in the editor', async () => {
+  it('picks up a draft staged elsewhere - a save in the editor', async () => {
     const { result } = renderHook(() => useGistDraft('abc123'))
     await waitFor(() => expect(result.current.draft).toEqual(DRAFT))
 

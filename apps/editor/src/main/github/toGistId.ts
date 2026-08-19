@@ -1,11 +1,11 @@
-/** GitHub gist ids are hexadecimal — nothing else belongs in a gist URL. */
+/** GitHub gist ids are hexadecimal - nothing else belongs in a gist URL. */
 const GIST_ID = /^[0-9a-f]{5,64}$/i
 
 /**
  * The sandbox ids this app mints for a gist that does not exist yet: `new:` and
  * a UUID, plus the bare `new` that was the single shared sandbox before each
  * got its own. One of these never reaches a URL, but it is still a key in the
- * draft file, so it is checked by shape rather than by its prefix — which would
+ * draft file, so it is checked by shape rather than by its prefix - which would
  * let anything at all through behind a `new:`.
  */
 const NEW_GIST_ID = /^new(:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?$/i

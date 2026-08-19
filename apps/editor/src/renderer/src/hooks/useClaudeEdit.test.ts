@@ -38,7 +38,7 @@ async function startRun() {
 }
 
 describe('useClaudeEdit', () => {
-  it('reports the text as it is written, and resolves with the run’s own result', async () => {
+  it("reports the text as it is written, and resolves with the run's own result", async () => {
     const { result, pending } = await startRun()
     expect(result.current.isLoading).toBe(true)
     expect(claudeApi.startEdit).toHaveBeenCalledWith('old', 'improve', null)
@@ -64,7 +64,7 @@ describe('useClaudeEdit', () => {
     expect(result.current).toMatchObject({ error: 'not signed in', isLoading: false })
   })
 
-  it('starts the next run clean, without the last one’s error or text', async () => {
+  it("starts the next run clean, without the last one's error or text", async () => {
     const { result } = await startRun()
     await emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'half' })
     await emit({ type: 'RUN_ERROR', runId: 'run-1', error: 'not signed in' })

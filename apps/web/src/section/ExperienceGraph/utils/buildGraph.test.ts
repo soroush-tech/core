@@ -27,7 +27,7 @@ describe('buildGraph', () => {
   const hasLink = (source: string, target: string, kind?: 'group' | 'relation') =>
     g.links.some((l) => l.source === source && l.target === target && l.kind === kind)
 
-  it('produces no root node — areas are the top level', () => {
+  it('produces no root node - areas are the top level', () => {
     expect(g.nodes.some((n) => n.id === ROOT)).toBe(false)
     expect(g.links.some((l) => l.source === ROOT)).toBe(false)
   })
@@ -63,14 +63,14 @@ describe('buildGraph', () => {
     expect(g.topLevelIds).toEqual(['WEB', 'MOBILE', 'DESKTOP', 'BACKEND'])
   })
 
-  it('draws a line to each parent — areas and nodes alike (one identity)', () => {
+  it('draws a line to each parent - areas and nodes alike (one identity)', () => {
     expect([...ids].filter((id) => id === 'JavaScript')).toHaveLength(1)
     expect(hasLink('WEB', 'JavaScript')).toBe(true) // area-parent line
     expect(hasLink('NodeJs', 'JavaScript')).toBe(true) // node-parent line
     expect(hasLink('BACKEND', 'JavaScript')).toBe(false) // Back-end is reached via Node.js
   })
 
-  it('draws a line to each of a multi-parent node’s parents', () => {
+  it("draws a line to each of a multi-parent node's parents", () => {
     expect(hasLink('MOBILE', 'fs')).toBe(true)
     expect(hasLink('BACKEND', 'fs')).toBe(true)
   })
@@ -80,7 +80,7 @@ describe('buildGraph', () => {
     expect(hasLink('React', 'Sentry')).toBe(true)
   })
 
-  it('gates a node by its parents’ tags, overridden by its own area', () => {
+  it("gates a node by its parents' tags, overridden by its own area", () => {
     expect(g.areasByNode.get('JavaScript')?.sort()).toEqual(['BACKEND', 'WEB']) // WEB + NodeJs gate
     expect(g.areasByNode.get('fs')?.sort()).toEqual(['BACKEND', 'MOBILE'])
     expect(g.areasByNode.get('Redux')?.sort()).toEqual(['MOBILE', 'WEB']) // inherited from React
@@ -171,7 +171,7 @@ describe('buildGraph', () => {
     )
   })
 
-  it('allows a relation-anchored (floating) node — no parent, only relations', () => {
+  it('allows a relation-anchored (floating) node - no parent, only relations', () => {
     const f = buildGraph(
       [
         { id: 'WEB', kind: 'area' },
@@ -233,7 +233,7 @@ describe('buildGraph', () => {
     ).toThrow(/non-area "G" in area/)
   })
 
-  it('allows an area as a parent — it draws the line and gates the child', () => {
+  it('allows an area as a parent - it draws the line and gates the child', () => {
     const a = buildGraph(
       [
         { id: 'WEB', kind: 'area' },

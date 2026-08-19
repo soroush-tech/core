@@ -2,11 +2,11 @@ import type { GridProps as SystemGridProps, FlexboxProps } from '@soroush.tech/s
 import { styled, type Theme, createShouldForwardProp, props, grid, flexbox } from '../index'
 import { View, type ViewProps } from '../View'
 
-/** Valid values for the gap / columnGap / rowGap props — derived from theme.space keys. */
+/** Valid values for the gap / columnGap / rowGap props - derived from theme.space keys. */
 export type GapToken = keyof Theme['space']
 
 // gap / columnGap / rowGap need no declaration or wiring here since
-// @soroush.tech/styled-system 5.8.0 — they arrive through View's `space` parser
+// @soroush.tech/styled-system 5.8.0 - they arrive through View's `space` parser
 // and `SpaceProps`.
 export interface GridProps extends ViewProps, SystemGridProps<Theme>, FlexboxProps<Theme> {}
 

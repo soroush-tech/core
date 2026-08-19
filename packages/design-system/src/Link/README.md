@@ -1,6 +1,6 @@
 # Link
 
-Renders as `<a>`. Composes `Typography` — all typographic scale, color, spacing, and layout props are inherited. Adds `underline`, and defaults `color` to `"primary"` and `variant` to `"inherit"`.
+Renders as `<a>`. Composes `Typography` - all typographic scale, color, spacing, and layout props are inherited. Adds `underline`, and defaults `color` to `"primary"` and `variant` to `"inherit"`.
 
 Setting `target="_blank"` automatically injects `rel="noopener noreferrer"` unless `rel` is explicitly provided.
 
@@ -40,7 +40,7 @@ Resolves against `theme.text`. Default: `"primary"`.
 
 ### `variant`
 
-Typographic scale — same values as `Typography`. Default: `"inherit"` (link takes the size and weight of its surrounding text).
+Typographic scale - same values as `Typography`. Default: `"inherit"` (link takes the size and weight of its surrounding text).
 
 | Variant       | fontSize              | fontWeight      |
 | ------------- | --------------------- | --------------- |
@@ -48,8 +48,8 @@ Typographic scale — same values as `Typography`. Default: `"inherit"` (link ta
 | `"body1"`     | 2 (16px)              | normal          |
 | `"body2"`     | 1 (14px)              | normal          |
 | `"caption"`   | 0 (12px)              | normal          |
-| `"h1"`–`"h6"` | 6–1 (48–14px)         | bold / semiBold |
-| …             | see Typography README |                 |
+| `"h1"`-`"h6"` | 6-1 (48-14px)         | bold / semiBold |
+| ...           | see Typography README |                 |
 
 ---
 
@@ -57,7 +57,7 @@ Typographic scale — same values as `Typography`. Default: `"inherit"` (link ta
 
 All standard anchor attributes pass through: `href`, `target`, `rel`, `download`, `hrefLang`, `ping`, `referrerPolicy`.
 
-### `target` / `rel` — security
+### `target` / `rel` - security
 
 When `target="_blank"` is set and `rel` is **not** provided, `rel="noopener noreferrer"` is injected automatically. An explicit `rel` prop is never overridden.
 
@@ -65,12 +65,12 @@ When `target="_blank"` is set and `rel` is **not** provided, `rel="noopener nore
 
 ## Inherited from Typography
 
-`Link` extends `Omit<TypographyProps, 'as'>`. All Typography props are valid — see the [Typography README](../Typography/README.md) for the full list:
+`Link` extends `Omit<TypographyProps, 'as'>`. All Typography props are valid - see the [Typography README](../Typography/README.md) for the full list:
 
-- **Spacing** — `m`, `p`, `mt`, `mb`, `mx`, `my`, …
-- **Layout** — `width`, `maxWidth`, `display`, …
-- **Typography scales** — `fontFamily`, `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`
-- **Color** — `bg`, `opacity`
+- **Spacing** - `m`, `p`, `mt`, `mb`, `mx`, `my`, ...
+- **Layout** - `width`, `maxWidth`, `display`, ...
+- **Typography scales** - `fontFamily`, `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`
+- **Color** - `bg`, `opacity`
 - **Flexbox, Border, Position**
 
 ---
@@ -81,13 +81,13 @@ When `target="_blank"` is set and `rel` is **not** provided, `rel="noopener nore
 // Defaults: color="primary", underline="always", variant="inherit"
 <Link href="/docs">Read the docs</Link>
 
-// Open in new tab — rel injected automatically
+// Open in new tab - rel injected automatically
 <Link href="https://example.com" target="_blank">External site</Link>
 
 // Suppress underline on navigation links
 <Link href="/about" underline="none">About</Link>
 
-// Inline prose — hover underline, muted color
+// Inline prose - hover underline, muted color
 <Typography variant="body1">
   See the <Link href="/docs" underline="hover" color="secondary">docs</Link> for details.
 </Typography>

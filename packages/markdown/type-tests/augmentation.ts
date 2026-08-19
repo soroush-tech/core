@@ -2,7 +2,7 @@
 // consumers through the PUBLISHED d.ts. Runs via `pnpm test:types` (builds dist
 // first, then typechecks this isolated program). Guards that importing the
 // package barrel pulls in the `declare module '@soroush.tech/design-system/theme'`
-// augmentation — i.e. it survives tsdown's d.ts chunking — so
+// augmentation - i.e. it survives tsdown's d.ts chunking - so
 // `theme.components.MarkdownPreview` and friends type-check for npm consumers.
 import '@soroush.tech/markdown'
 import type { Theme, ThemeComponents } from '@soroush.tech/design-system/theme'

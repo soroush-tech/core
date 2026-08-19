@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { renderWithTheme } from 'src/test/utils/wrapper'
 import { ColorPalette } from './ColorPalette'
 
-// Palette-shaped fixtures — the component renders any name + swatch record.
+// Palette-shaped fixtures - the component renders any name + swatch record.
 const samplePalette = {
   get base() {
     return this[500]

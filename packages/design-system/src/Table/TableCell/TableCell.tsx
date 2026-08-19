@@ -19,20 +19,20 @@ import {
 } from '@soroush.tech/design-system'
 import { themeDefault } from '@soroush.tech/design-system/theme'
 
-/** Cell type — inherited from the enclosing section, overridable per cell. */
+/** Cell type - inherited from the enclosing section, overridable per cell. */
 export type TableCellVariant = TableSection
 
 export type TableCellAlign = 'left' | 'right' | 'center' | 'justify' | 'inherit'
 
 export type TableCellSortDirection = 'asc' | 'desc'
 
-/** Valid values for the color prop — derived from theme.text keys. */
+/** Valid values for the color prop - derived from theme.text keys. */
 export type TableCellColorToken = keyof Theme['text']
 
-/** Valid values for the bg prop — derived from theme.background keys. */
+/** Valid values for the bg prop - derived from theme.background keys. */
 export type TableCellBackgroundToken = keyof Theme['background']
 
-/** Valid values for the borderColor prop — derived from theme.border keys. */
+/** Valid values for the borderColor prop - derived from theme.border keys. */
 export type TableCellBorderColorToken = keyof Theme['border']
 
 export interface TableCellProps
@@ -45,27 +45,27 @@ export interface TableCellProps
   color?: TableCellColorToken
   /** Resolves against theme.background */
   bg?: TableCellBackgroundToken
-  /** Resolves against theme.border — light · primary · dark */
+  /** Resolves against theme.border - light · primary · dark */
   borderColor?: TableCellBorderColorToken
-  /** Cell type — overrides the enclosing `TableHead`/`TableBody`/`TableFooter` section. */
+  /** Cell type - overrides the enclosing `TableHead`/`TableBody`/`TableFooter` section. */
   variant?: TableCellVariant
   /** Text alignment of the cell content. Numbers should be right-aligned. Default: `'inherit'`. */
   align?: TableCellAlign
-  /** Cell density — overrides the `Table`'s `size`. Resolves against `theme.sizes`. */
+  /** Cell density - overrides the `Table`'s `size`. Resolves against `theme.sizes`. */
   size?: keyof Theme['sizes']
-  /** Cell padding mode — overrides the `Table`'s `cellPadding`. `'none'` zeroes padding. */
+  /** Cell padding mode - overrides the `Table`'s `cellPadding`. `'none'` zeroes padding. */
   cellPadding?: TableCellPadding
-  /** Sets `aria-sort` on the cell — a11y only, pair with `TableSortLabel` for the control. */
+  /** Sets `aria-sort` on the cell - a11y only, pair with `TableSortLabel` for the control. */
   sortDirection?: TableCellSortDirection
   /**
-   * Truncates overflowing text with an ellipsis — inherits the `Table`'s
+   * Truncates overflowing text with an ellipsis - inherits the `Table`'s
    * `hasEllipsis`. Needs a constrained width (e.g. `maxWidth`) to kick in.
    */
   hasEllipsis?: boolean
   as?: ElementType
 }
 
-// `cellAlign`, not `align` — the intrinsic <td>/<th> `align` attribute
+// `cellAlign`, not `align` - the intrinsic <td>/<th> `align` attribute
 // (left|center|right|justify|char) clashes with our `align` (adds 'inherit');
 // it drives textAlign only and is never forwarded to the DOM.
 interface TableCellBaseProps extends Omit<TableCellProps, 'align'> {
@@ -115,7 +115,7 @@ const alignStyle = ({ cellAlign = 'inherit' }: TableCellBaseProps) => ({ textAli
 const ellipsisStyle = ({ hasEllipsis }: TableCellBaseProps) =>
   hasEllipsis ? { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}
 
-// Row divider — cells carry a default bottom border because `<tr>` borders
+// Row divider - cells carry a default bottom border because `<tr>` borders
 // don't render in the separate border model (used when the Table is rounded).
 // Width/style only: the color cascades from the enclosing Table's borderColor,
 // and a cell's own borderColor prop overrides it.

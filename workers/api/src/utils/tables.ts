@@ -30,7 +30,7 @@ export const parseMonthTable = (name: string): { year: number; month: number } |
 }
 
 /**
- * True when `name`'s month is at least `retentionMonths` behind the month of `now` — i.e. due to
+ * True when `name`'s month is at least `retentionMonths` behind the month of `now` - i.e. due to
  * be archived and dropped. Non-month-table names and future months are never expired.
  */
 export const isExpired = (name: string, now: number | Date, retentionMonths: number): boolean => {

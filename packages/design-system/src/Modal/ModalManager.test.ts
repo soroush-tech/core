@@ -38,7 +38,7 @@ describe('hideFromAria / exposeToAria', () => {
   })
 })
 
-describe('ModalManager — stacking', () => {
+describe('ModalManager - stacking', () => {
   it('returns incrementing indices and tracks the top modal', () => {
     const manager = new ModalManager()
     const first = makeModal()
@@ -77,7 +77,7 @@ describe('ModalManager — stacking', () => {
   })
 })
 
-describe('ModalManager — aria-hidden siblings', () => {
+describe('ModalManager - aria-hidden siblings', () => {
   it('hides background siblings and skips the mount and forbidden tags', () => {
     const sibling = document.createElement('section')
     const script = document.createElement('script')
@@ -115,7 +115,7 @@ describe('ModalManager — aria-hidden siblings', () => {
     // A non-modal popover opens the container without hiding siblings.
     manager.add(popover, container, true)
     expect(sibling.hasAttribute('aria-hidden')).toBe(false)
-    // A real modal reuses it — siblings get hidden and must be restored on teardown.
+    // A real modal reuses it - siblings get hidden and must be restored on teardown.
     manager.add(modal, container)
     expect(sibling.getAttribute('aria-hidden')).toBe('true')
     manager.remove(modal)
@@ -186,9 +186,9 @@ describe('ModalManager — aria-hidden siblings', () => {
     manager.add(upper, container)
 
     manager.remove(upper)
-    // The removed modal is hidden (it may linger via shouldKeepMounted)…
+    // The removed modal is hidden (it may linger via shouldKeepMounted)...
     expect(upper.modalRef.getAttribute('aria-hidden')).toBe('true')
-    // …and the modal below is revealed to assistive tech.
+    // ...and the modal below is revealed to assistive tech.
     expect(lower.modalRef.hasAttribute('aria-hidden')).toBe(false)
   })
 
@@ -209,7 +209,7 @@ describe('ModalManager — aria-hidden siblings', () => {
   })
 })
 
-describe('ModalManager — scroll lock', () => {
+describe('ModalManager - scroll lock', () => {
   it('pads the document body by the window scrollbar width, then restores', () => {
     // A window scrollbar: viewport wider than the document client area.
     Object.defineProperty(window, 'innerWidth', { value: 1024, configurable: true })
@@ -295,7 +295,7 @@ describe('ModalManager — scroll lock', () => {
   })
 })
 
-describe('ModalManager — remove guards', () => {
+describe('ModalManager - remove guards', () => {
   it('returns -1 when removing a modal that was never added', () => {
     const manager = new ModalManager()
     expect(manager.remove(makeModal())).toBe(-1)

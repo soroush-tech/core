@@ -29,6 +29,10 @@ const GIST = {
   isPublic: false,
 }
 
+/** Typography fixtures by code point: written as themselves, the repo-wide
+ * guard would rewrite them and leave these tests proving nothing. */
+const char = (point: number) => String.fromCodePoint(point)
+
 const onApply = vi.fn(() => true)
 
 const renderPanel = (targetText = '', isSelection = false, documentName = 'en.md') =>
@@ -86,7 +90,7 @@ describe('ClaudePanel', () => {
   it('shows the selection summary and a truncated preview', () => {
     renderPanel('x'.repeat(150), true)
     expect(screen.getByText('Selection · 150 characters')).toBeInTheDocument()
-    expect(screen.getByText(`${'x'.repeat(120)}…`)).toBeInTheDocument()
+    expect(screen.getByText(`${'x'.repeat(120)}...`)).toBeInTheDocument()
   })
 
   it('shows the file and a taste of it when nothing is selected', () => {
@@ -116,13 +120,32 @@ describe('ClaudePanel', () => {
     await emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'bett' })
     await emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'er' })
 
-    // Everything so far each time — the document shows it taking shape.
+    // Everything so far each time - the document shows it taking shape.
     expect(onApply.mock.calls).toEqual([['bett'], ['better']])
 
     await emit({ type: 'RUN_FINISHED', runId: 'run-1', text: 'better text' })
 
     // And the run's own answer has the last word.
     expect(onApply).toHaveBeenLastCalledWith('better text')
+  })
+
+  it('writes the answer in plain typography', async () => {
+    renderPanel('old text', true)
+    await ask('improve')
+
+    await emit({
+      type: 'TEXT_MESSAGE_CONTENT',
+      runId: 'run-1',
+      delta: `${char(0x201c)}a${char(0x201d)} ${char(0x2014)} b`,
+    })
+    expect(onApply).toHaveBeenLastCalledWith('"a" - b')
+
+    await emit({
+      type: 'RUN_FINISHED',
+      runId: 'run-1',
+      text: `it${char(0x2019)}s done${char(0x2026)}`,
+    })
+    expect(onApply).toHaveBeenLastCalledWith("it's done...")
   })
 
   it('shows a progress bar while the run is in flight', async () => {
@@ -148,6 +171,19 @@ describe('ClaudePanel', () => {
     expect(screen.getByLabelText('Edit instruction')).toHaveValue('improve')
   })
 
+  it('puts the document back exactly as it was, typography and all', async () => {
+    // Only what Claude writes is normalized. The text the user had is theirs,
+    // and a cancelled run must not quietly rewrite their punctuation.
+    const own = `the user${char(0x2019)}s own ${char(0x2014)} untouched`
+    renderPanel(own, true)
+    await ask('improve')
+
+    await emit({ type: 'TEXT_MESSAGE_CONTENT', runId: 'run-1', delta: 'half an answer' })
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(onApply).toHaveBeenLastCalledWith(own)
+  })
+
   it('surfaces run errors and restores the document', async () => {
     renderPanel('old text', true)
     await ask('improve')
@@ -169,7 +205,7 @@ describe('ClaudePanel', () => {
     await emit({ type: 'RUN_FINISHED', runId: 'run-1', text: 'better text' })
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'The document changed while Claude was working — the edit was not applied.'
+      'The document changed while Claude was working - the edit was not applied.'
     )
     // Asking again should not mean typing the instruction out a second time.
     expect(screen.getByLabelText('Edit instruction')).toHaveValue('improve')
@@ -256,7 +292,7 @@ describe('ClaudePanel', () => {
       expect(instructionField()).toHaveAttribute('placeholder', 'Drop to write from this gist')
 
       fireEvent.dragLeave(instructionField())
-      expect(instructionField()).toHaveAttribute('placeholder', 'Describe the change…')
+      expect(instructionField()).toHaveAttribute('placeholder', 'Describe the change...')
     })
 
     it.each([
@@ -281,7 +317,7 @@ describe('ClaudePanel', () => {
         dataTransfer: { types: ['text/plain'], getData: () => 'hi' },
       })
 
-      expect(instructionField()).toHaveAttribute('placeholder', 'Describe the change…')
+      expect(instructionField()).toHaveAttribute('placeholder', 'Describe the change...')
     })
 
     it('refers to nothing until a gist is dropped', async () => {

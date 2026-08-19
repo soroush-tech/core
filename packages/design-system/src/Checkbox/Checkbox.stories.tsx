@@ -236,7 +236,7 @@ export const Controlled: StoryObj<ControlledArgs> = {
   render: ({ checked, onChange }) => (
     <Flex flexDirection="column" gap={2}>
       <Checkbox color="primary" checked={checked} onChange={onChange}>
-        {checked ? 'Checked' : 'Unchecked'} — click to toggle
+        {checked ? 'Checked' : 'Unchecked'} - click to toggle
       </Checkbox>
       <Typography variant="caption" color="secondary" m={0}>
         State: {String(checked)}

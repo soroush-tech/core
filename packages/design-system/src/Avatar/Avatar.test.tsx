@@ -86,7 +86,7 @@ describe('Avatar', () => {
       expect(screen.queryByText('MS')).not.toBeInTheDocument()
     })
 
-    it('valid src loads — no fallback or children shown', () => {
+    it('valid src loads - no fallback or children shown', () => {
       renderWithTheme(
         <Avatar src="/soroush.svg" fallback="fallback.jpg" alt="Test">
           MS
@@ -118,7 +118,7 @@ describe('Avatar', () => {
       expect(screen.queryByText('MS')).not.toBeInTheDocument()
     })
 
-    it('valid srcSet loads — no fallback or children shown', () => {
+    it('valid srcSet loads - no fallback or children shown', () => {
       renderWithTheme(
         <Avatar srcSet="/soroush.svg" fallback="fallback.jpg" alt="Test">
           MS
@@ -159,7 +159,7 @@ describe('Avatar', () => {
       expect(screen.queryByRole('img')).not.toBeInTheDocument()
     })
 
-    it('resets error state when srcSet changes — retries new URL', async () => {
+    it('resets error state when srcSet changes - retries new URL', async () => {
       const { rerender } = renderWithTheme(
         <Avatar srcSet="broken.jpg" alt="Test">
           MS
@@ -179,7 +179,7 @@ describe('Avatar', () => {
       expect(screen.queryByText('MS')).not.toBeInTheDocument()
     })
 
-    it('resets error state when fallback changes — retries new URL', async () => {
+    it('resets error state when fallback changes - retries new URL', async () => {
       const { rerender } = renderWithTheme(
         <Avatar fallback="broken-fallback.jpg" alt="Test">
           MS
@@ -199,7 +199,7 @@ describe('Avatar', () => {
       expect(screen.queryByText('MS')).not.toBeInTheDocument()
     })
 
-    it('resets error state when src changes — retries new URL', async () => {
+    it('resets error state when src changes - retries new URL', async () => {
       const { rerender } = renderWithTheme(
         <Avatar src="broken.jpg" alt="Test">
           MS

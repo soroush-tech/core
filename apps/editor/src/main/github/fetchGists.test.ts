@@ -94,7 +94,7 @@ describe('fetchGists', () => {
     // every-gist this promised, so it says so rather than looking complete.
     expect(result).toEqual({
       success: false,
-      error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists — more than this can list`,
+      error: `You have more than ${String(GISTS_MAX_PAGES * GISTS_PAGE_SIZE)} gists - more than this can list`,
     })
   })
 
@@ -145,7 +145,7 @@ describe('fetchGists', () => {
     fetchMock.mockResolvedValue(jsonResponse({}, false, 401))
     await expect(fetchGists('stale', fetchFn)).resolves.toEqual({
       success: false,
-      error: 'GitHub rejected the stored token — connect the account again',
+      error: 'GitHub rejected the stored token - connect the account again',
     })
   })
 

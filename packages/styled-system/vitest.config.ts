@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   // Redirect the package's self-references to local source so coverage is
-  // attributed to ./src (not the node_modules symlink). Test-only — it does
+  // attributed to ./src (not the node_modules symlink). Test-only - it does
   // not affect how consumers resolve the package.
   resolve: {
     alias: [

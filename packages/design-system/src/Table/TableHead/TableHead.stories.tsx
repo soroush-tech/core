@@ -35,7 +35,7 @@ const meta: Meta<typeof TableHead> = {
     color: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color — resolves against `theme.text`.',
+      description: 'Text color - resolves against `theme.text`.',
       table: { category: 'Visual' },
     },
     bg,

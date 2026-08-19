@@ -14,7 +14,7 @@ function Harness({ initialValue = '' }: Readonly<{ initialValue?: string }>) {
   )
 }
 
-// Standalone (no Control) — the Editor is a plain controlled field via value/onChange.
+// Standalone (no Control) - the Editor is a plain controlled field via value/onChange.
 function StandaloneHarness({ initialValue = '' }: Readonly<{ initialValue?: string }>) {
   const [value, setValue] = useState(initialValue)
   return <Editor value={value} onChange={setValue} />
@@ -146,7 +146,7 @@ describe('Editor', () => {
     renderWithTheme(<Editor />)
     expect(source()).toHaveValue('')
     fireEvent.change(source(), { target: { value: 'x' } })
-    expect(source()).toHaveValue('') // no onChange — controlled value stays empty
+    expect(source()).toHaveValue('') // no onChange - controlled value stays empty
   })
 
   it('ignores Shift+Tab and other key combos', () => {

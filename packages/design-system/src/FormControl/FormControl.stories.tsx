@@ -30,23 +30,23 @@ const meta: Meta<typeof FormControl> = {
   argTypes: {
     error: {
       control: 'boolean',
-      description: 'Marks the field invalid — trickles to the control and helper text.',
+      description: 'Marks the field invalid - trickles to the control and helper text.',
       table: { category: 'State', defaultValue: { summary: 'false' } },
     },
     disabled: {
       control: 'boolean',
-      description: 'Disables the field — trickles to the control.',
+      description: 'Disables the field - trickles to the control.',
       table: { category: 'State', defaultValue: { summary: 'false' } },
     },
     required: {
       control: 'boolean',
-      description: 'Marks the field required — trickles to the label indicator and control.',
+      description: 'Marks the field required - trickles to the label indicator and control.',
       table: { category: 'State', defaultValue: { summary: 'false' } },
     },
     size: {
       control: { type: 'select' },
       options: formSizeTokens,
-      description: 'Control size — trickles to the control.',
+      description: 'Control size - trickles to the control.',
       table: { category: 'Visual', defaultValue: { summary: 'md' } },
     },
     fullWidth: {
@@ -57,13 +57,13 @@ const meta: Meta<typeof FormControl> = {
     color: {
       control: { type: 'select' },
       options: formColorTokens,
-      description: 'Accent color — trickles to the control.',
+      description: 'Accent color - trickles to the control.',
       table: { category: 'Visual' },
     },
     textColor: {
       control: { type: 'select' },
       options: textColorTokens,
-      description: 'Text color for the label/helper/input — resolves against `theme.text`.',
+      description: 'Text color for the label/helper/input - resolves against `theme.text`.',
       table: { category: 'Visual' },
     },
     p,

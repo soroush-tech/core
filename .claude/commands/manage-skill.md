@@ -4,7 +4,7 @@ The first word of `$ARGUMENTS` is the skill name (kebab-case). The rest is an op
 
 ---
 
-## Step 1 — Detect mode
+## Step 1 - Detect mode
 
 Check whether `.claude/skills/$0/SKILL.md` already exists.
 
@@ -13,41 +13,41 @@ Check whether `.claude/skills/$0/SKILL.md` already exists.
 
 ---
 
-## Step 2 — Determine frontmatter (create only)
+## Step 2 - Determine frontmatter (create only)
 
 Decide the correct frontmatter based on what the skill does:
 
-**`description`** — one sentence: what the skill does + when Claude should auto-load it. Put the key trigger phrase first (budget is 1,536 chars).
+**`description`** - one sentence: what the skill does + when Claude should auto-load it. Put the key trigger phrase first (budget is 1,536 chars).
 
-**`paths`** — set only if the skill is scoped to specific files. Use glob patterns:
+**`paths`** - set only if the skill is scoped to specific files. Use glob patterns:
 
 - Design system / theme work → `@soroush.tech/design-system/**`
 - All TypeScript → `**/*.ts,**/*.tsx`
 - Omit for project-wide knowledge
 
-**`argument-hint`** — short label shown in autocomplete, e.g. `[filename]` or `[component-name]`.
+**`argument-hint`** - short label shown in autocomplete, e.g. `[filename]` or `[component-name]`.
 
-**`disable-model-invocation: true`** — add only if this is a manual workflow with side effects (deploy, commit, send). Reference knowledge should NOT have this.
+**`disable-model-invocation: true`** - add only if this is a manual workflow with side effects (deploy, commit, send). Reference knowledge should NOT have this.
 
-**`user-invocable: false`** — add only if users should never call it directly (pure background context).
+**`user-invocable: false`** - add only if users should never call it directly (pure background context).
 
 ---
 
-## Step 3 — Write content
+## Step 3 - Write content
 
 Rules for skill content:
 
-- **Reference skills** (conventions, patterns, style guides): state the rule + one ✗/✓ code pair. No prose explaining why — the example shows it.
+- **Reference skills** (conventions, patterns, style guides): state the rule + one ✗/✓ code pair. No prose explaining why - the example shows it.
 - **Task skills** (step-by-step actions): numbered steps, imperative verbs, no explanation.
 - Keep SKILL.md under 500 lines.
-- Every line is a recurring token cost — cut anything that doesn't change Claude's behavior.
+- Every line is a recurring token cost - cut anything that doesn't change Claude's behavior.
 - End with: `If $ARGUMENTS names a file, read it and apply the rules. Otherwise apply to the code being discussed.` (for reference skills only).
 
 **Update mode**: add the new rule or change to the appropriate section. Do not touch unrelated rules. Remove any rule made obsolete by the change.
 
 ---
 
-## Step 4 — Write the file
+## Step 4 - Write the file
 
 For **create**: run `mkdir -p .claude/skills/$0` then write `.claude/skills/$0/SKILL.md`.
 

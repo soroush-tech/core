@@ -43,7 +43,7 @@ const meta: Meta<typeof TablePaginationActions> = {
     },
     rowsPerPage: {
       control: { type: 'number', min: -1 },
-      description: 'Rows per page — used to derive the last page.',
+      description: 'Rows per page - used to derive the last page.',
       table: { category: 'Behavior' },
     },
     disabled: {
@@ -56,7 +56,7 @@ const meta: Meta<typeof TablePaginationActions> = {
     size: {
       control: { type: 'select' },
       options: ['sm', 'md', 'lg'],
-      description: 'Button density — resolves against `theme.sizes`.',
+      description: 'Button density - resolves against `theme.sizes`.',
       table: { category: 'Layout', defaultValue: { summary: 'sm' } },
     },
   },

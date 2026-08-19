@@ -26,7 +26,7 @@ test('article page renders the mocked gist and its SEO meta', async ({ page }) =
 // Regression: a gist published after the build has no prerendered page. Client-routing to
 // it must resolve data() in the browser (dataIsomorph) instead of fetching a server-rendered
 // pageContext that doesn't exist on our static host. We reach it by injecting a link and
-// clicking it — Vike intercepts the anchor (event delegation) and navigates client-side,
+// clicking it - Vike intercepts the anchor (event delegation) and navigates client-side,
 // the same path the articles list uses. The gist-by-id mock serves any id (see handlers).
 test('client-routes to an article that was not prerendered without crashing', async ({ page }) => {
   await page.goto('/articles')
@@ -44,8 +44,8 @@ test('client-routes to an article that was not prerendered without crashing', as
 })
 
 // GitHub Pages fallback: a COLD hard-load (page.goto, not in-app nav) of a non-prerendered
-// article. On the static host there is no index.html for it, so GitHub Pages — and `serve` in
-// the e2e preview — return the prerendered 404.html (the _error page). Vike must then boot
+// article. On the static host there is no index.html for it, so GitHub Pages - and `serve` in
+// the e2e preview - return the prerendered 404.html (the _error page). Vike must then boot
 // client routing, re-resolve the URL, run data() in the browser (dataIsomorph) and render the
 // article, instead of leaving the visitor on the 404 screen. Only meaningful against the static
 // preview build (E2E_COVERAGE=true → `pnpm build && pnpm preview:e2e`); the dev server SSRs

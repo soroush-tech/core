@@ -14,7 +14,7 @@ const NO_FILES: GistFile[] = []
  * is selected yet.
  *
  * The result carries the gist it belongs to, so "loading" is derived from it
- * not matching the requested gist rather than set as its own state — switching
+ * not matching the requested gist rather than set as its own state - switching
  * gists then shows the new gist's spinner, never the previous one's files.
  */
 export function useGistFiles(gistId: string | null) {
@@ -45,11 +45,11 @@ export function useGistFiles(gistId: string | null) {
   const isFresh = loaded !== null && loaded.gistId === gistId
   return {
     files: isFresh ? loaded.contents.files : NO_FILES,
-    /** The gist's published description — from the gist itself, not a list row. */
+    /** The gist's published description - from the gist itself, not a list row. */
     description: isFresh ? loaded.contents.description : null,
     error: isFresh ? loaded.error : null,
     isLoading: gistId !== null && !isFresh,
-    /** Refetches the current gist — after publishing, say. */
+    /** Refetches the current gist - after publishing, say. */
     reload: useCallback(() => setReloads((count) => count + 1), []),
   }
 }

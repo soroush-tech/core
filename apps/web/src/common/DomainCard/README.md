@@ -1,6 +1,6 @@
 # DomainCard
 
-A bento-grid card representing a technical domain. Built on `Card`'s `bracketBox` variant with hover effects — bracket corners reveal on hover, images transition from grayscale to full colour, and the background lifts to `background.paper`.
+A bento-grid card representing a technical domain. Built on `Card`'s `bracketBox` variant with hover effects - bracket corners reveal on hover, images transition from grayscale to full colour, and the background lifts to `background.paper`.
 
 ```tsx
 <DomainCard
@@ -19,15 +19,15 @@ A bento-grid card representing a technical domain. Built on `Card`'s `bracketBox
 
 | Prop          | Type            | Default | Description                                        |
 | ------------- | --------------- | ------- | -------------------------------------------------- |
-| `index`       | `number`        | —       | Card number (1–n). Renders as `#01` badge.         |
-| `title`       | `string`        | —       | Domain title (shown as heading).                   |
-| `description` | `string`        | —       | Short domain description.                          |
-| `tags`        | `string[]`      | —       | Technology/keyword chips below the description.    |
-| `image`       | `string`        | —       | Image URL. Omit to render card without image.      |
+| `index`       | `number`        | -       | Card number (1-n). Renders as `#01` badge.         |
+| `title`       | `string`        | -       | Domain title (shown as heading).                   |
+| `description` | `string`        | -       | Short domain description.                          |
+| `tags`        | `string[]`      | -       | Technology/keyword chips below the description.    |
+| `image`       | `string`        | -       | Image URL. Omit to render card without image.      |
 | `imageAlt`    | `string`        | `''`    | Alt text for the image.                            |
-| `featured`    | `boolean`       | `false` | Horizontal layout — fixed 480px image beside text. |
-| `style`       | `CSSProperties` | —       | Forwarded to the root element (e.g. `gridColumn`). |
-| `className`   | `string`        | —       | Forwarded to the root element.                     |
+| `featured`    | `boolean`       | `false` | Horizontal layout - fixed 480px image beside text. |
+| `style`       | `CSSProperties` | -       | Forwarded to the root element (e.g. `gridColumn`). |
+| `className`   | `string`        | -       | Forwarded to the root element.                     |
 
 ---
 

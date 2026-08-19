@@ -1,5 +1,5 @@
 -- Schema for a monthly contact-submissions table. The runtime fills in the month table name
--- (e.g. contacts_2026_06) in place of the placeholder below — see src/tables.ts. This file is the
+-- (e.g. contacts_2026_06) in place of the placeholder below - see src/tables.ts. This file is the
 -- versioned source of truth for the table's shape; change it (and ALTER existing month tables)
 -- when columns change. `created_at` is an ISO 8601 string (sorts chronologically as text).
 CREATE TABLE IF NOT EXISTS __TABLE__ (

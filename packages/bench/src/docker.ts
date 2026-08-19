@@ -26,7 +26,7 @@ export interface SandboxOptions {
   md: boolean
   /**
    * Container path the markdown results table is also written to. Must point
-   * inside a writable mount (see `extraMounts`) — `/repo` and `/app` are
+   * inside a writable mount (see `extraMounts`) - `/repo` and `/app` are
    * read-only and `/bench` is a tmpfs that dies with the container.
    */
   mdFile?: string
@@ -46,9 +46,9 @@ export function buildImageArgs(opts: SandboxOptions): string[] {
 }
 
 /**
- * Argv for the pinned `docker run`. The pinning flags — single-core
+ * Argv for the pinned `docker run`. The pinning flags - single-core
  * `--cpuset-cpus`, a hard `--cpus` quota, and `--memory` with `--memory-swap`
- * set equal (swap off) — are what make timings stable run-to-run regardless of
+ * set equal (swap off) - are what make timings stable run-to-run regardless of
  * host load.
  */
 export function buildRunArgs(opts: SandboxOptions): string[] {

@@ -28,13 +28,13 @@ const meta: Meta<typeof Eyebrow> = {
     letterSpacing: {
       control: { type: 'select' },
       options: letterSpacingTokens,
-      description: 'Letter spacing — resolves from `theme.letterSpacings`.',
+      description: 'Letter spacing - resolves from `theme.letterSpacings`.',
       table: { category: 'Typography', defaultValue: { summary: 'widest' } },
     },
     fontFamily: {
       control: { type: 'select' },
       options: fontFamilyTokens,
-      description: 'Font family — resolves from `theme.fonts`.',
+      description: 'Font family - resolves from `theme.fonts`.',
       table: { category: 'Typography', defaultValue: { summary: 'mono' } },
     },
     gap,
@@ -50,7 +50,7 @@ export const Default: Story = {}
 export const ColorVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <Eyebrow typographyProps={{ color: 'primary' }}>Primary — default</Eyebrow>
+      <Eyebrow typographyProps={{ color: 'primary' }}>Primary - default</Eyebrow>
       <Eyebrow typographyProps={{ color: 'secondary' }}>Secondary</Eyebrow>
       <Eyebrow typographyProps={{ color: 'initial' }}>Initial</Eyebrow>
     </div>

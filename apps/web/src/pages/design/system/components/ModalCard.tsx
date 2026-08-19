@@ -21,7 +21,7 @@ export function ModalCard() {
       title={
         <CardTitle title="MODAL" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-modal--docs`} />
       }
-      caption="The low-level overlay primitive — portals its content, dims the page with a Backdrop, traps focus, locks body scroll, and closes on Escape or backdrop click."
+      caption="The low-level overlay primitive - portals its content, dims the page with a Backdrop, traps focus, locks body scroll, and closes on Escape or backdrop click."
     >
       <Flex flexDirection="row">
         <Button variant="outlined" color="primary" size="sm" onClick={() => setIsOpen(true)}>

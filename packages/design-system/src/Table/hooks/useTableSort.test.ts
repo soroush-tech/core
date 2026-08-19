@@ -9,7 +9,7 @@ describe('useTableSort', () => {
     expect(result.current.age).toMatchObject({ isActive: false, direction: 'asc' })
   })
 
-  it('activates a column and flips its direction on click — first click sorts desc', () => {
+  it('activates a column and flips its direction on click - first click sorts desc', () => {
     const { result } = renderHook(() => useTableSort(['name', 'age']))
     act(() => result.current.name.onClick())
     expect(result.current.name).toMatchObject({ isActive: true, direction: 'desc' })

@@ -34,12 +34,12 @@ const meta: Meta<typeof SidebarItem> = {
       control: 'radio',
       options: ['text', 'outlined', 'plain'],
       description:
-        'Borderless (`text`), bordered (`outlined`), or `plain` — no fill or hover feedback.',
+        'Borderless (`text`), bordered (`outlined`), or `plain` - no fill or hover feedback.',
       table: { category: 'Visual' },
     },
     isSelected: {
       control: 'boolean',
-      description: 'Active state — drives `aria-pressed` and the selected fill.',
+      description: 'Active state - drives `aria-pressed` and the selected fill.',
       table: { category: 'State' },
     },
     disabled: {
@@ -48,7 +48,7 @@ const meta: Meta<typeof SidebarItem> = {
       table: { category: 'State' },
     },
   },
-  // Items live inside a Sidebar — it provides the open/anchor context.
+  // Items live inside a Sidebar - it provides the open/anchor context.
   render: (args) => (
     <Sidebar aria-label="Panels" isOpen>
       <SidebarItem {...args} />

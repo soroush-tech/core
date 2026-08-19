@@ -7,7 +7,7 @@ export interface UseTablePaginationOptions {
   defaultRowsPerPage?: number
 }
 
-/** Paging state — property names mirror `TablePagination`'s props so it spreads in one go. */
+/** Paging state - property names mirror `TablePagination`'s props so it spreads in one go. */
 export interface TablePaginationState {
   page: number
   rowsPerPage: number
@@ -22,7 +22,7 @@ export interface TablePaginationState {
  * ```tsx
  * const pagination = useTablePagination({ defaultRowsPerPage: 10 })
  * <TablePagination count={data.length} {...pagination} />
- * <TableControl data={data} pagination={pagination}>{(row) => …}</TableControl>
+ * <TableControl data={data} pagination={pagination}>{(row) => ...}</TableControl>
  * ```
  */
 export function useTablePagination({

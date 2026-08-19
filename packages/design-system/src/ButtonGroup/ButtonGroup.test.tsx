@@ -109,7 +109,7 @@ describe('ButtonGroup', () => {
   })
 
   // Corner rules live on descendant selectors (`.group > *:first-of-type`), which
-  // jsdom doesn't apply to elements — assert them by scanning the stylesheet.
+  // jsdom doesn't apply to elements - assert them by scanning the stylesheet.
   const groupRule = (testid: string, selectorFragment: string) => {
     const groupClasses = Array.from(screen.getByTestId(testid).classList)
     const allRules = Array.from(document.styleSheets).flatMap((sheet) => Array.from(sheet.cssRules))

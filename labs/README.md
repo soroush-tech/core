@@ -1,7 +1,7 @@
 # labs
 
 Scratch space for **in-repo experiments** that consume the `@soroush.tech/*`
-packages directly from source — quick benchmarks, spikes, repros, and demos you
+packages directly from source - quick benchmarks, spikes, repros, and demos you
 don't want to publish or wire into an app.
 
 Unlike the [`examples`](https://github.com/soroush-tech/examples) repo (which is **excluded** from the workspace and
@@ -35,6 +35,6 @@ Then run `pnpm install` from the repo root to link it.
 
 ## Not committed
 
-Lab subdirectories are **git-ignored** (see [`.gitignore`](./.gitignore)) — they're
+Lab subdirectories are **git-ignored** (see [`.gitignore`](./.gitignore)) - they're
 local scratch, so nothing under `labs/*` is committed. Only this `README.md` and the
 `.gitignore` are tracked. Experiment freely without polluting the repo.

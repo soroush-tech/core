@@ -1,6 +1,6 @@
 /**
  * The drag payload for a gist. A private type rather than `text/plain`, so a
- * drop target only accepts gists dragged out of this app — dropping a text
+ * drop target only accepts gists dragged out of this app - dropping a text
  * selection or a file on it does nothing.
  */
 export const GIST_DRAG_TYPE = 'application/x-soroush-gist'

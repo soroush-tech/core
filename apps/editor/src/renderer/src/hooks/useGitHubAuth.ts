@@ -5,7 +5,7 @@ const SIGNED_OUT: GitHubStatus = { login: null, avatar: null }
 
 /**
  * GitHub account state for the sidebar control. The token is passed straight
- * to main and never held here — only the account it resolves to comes back.
+ * to main and never held here - only the account it resolves to comes back.
  */
 export function useGitHubAuth() {
   const [account, setAccount] = useState<GitHubStatus>(SIGNED_OUT)

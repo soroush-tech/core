@@ -1,8 +1,8 @@
 # Card
 
-A surface component with an optional title, caption, and variant-based visual treatment. Extends `Paper` — all `Paper`, `Flex`, and space/layout props pass through.
+A surface component with an optional title, caption, and variant-based visual treatment. Extends `Paper` - all `Paper`, `Flex`, and space/layout props pass through.
 
-Theme-customizable via `theme.components.Card` — slots `root` / `title` / `caption` for `styleOverrides`, plus `defaultProps.titleProps`/`.captionProps` (token-typed) to restyle the title/caption Typography app-wide; per-instance `titleProps`/`captionProps` always win. See [`docs/customization.md`](../../docs/customization.md#slot-props--customizing-composed-sub-elements).
+Theme-customizable via `theme.components.Card` - slots `root` / `title` / `caption` for `styleOverrides`, plus `defaultProps.titleProps`/`.captionProps` (token-typed) to restyle the title/caption Typography app-wide; per-instance `titleProps`/`captionProps` always win. See [`docs/customization.md`](../../docs/customization.md#slot-props--customizing-composed-sub-elements).
 
 ---
 
@@ -24,7 +24,7 @@ Default: `"paper"`.
 
 ### `icon`
 
-`IconName` — Registry name of an icon rendered as the topmost element of the card. Omit to render no icon.
+`IconName` - Registry name of an icon rendered as the topmost element of the card. Omit to render no icon.
 
 ```tsx
 <Card icon="account_tree" title="Scalability" />
@@ -34,19 +34,19 @@ Default: `"paper"`.
 
 ### `title`
 
-`string` — Rendered as a `caption` Typography with `color="primary"` and `fontFamily="mono"`. Omit to suppress the title entirely.
+`string` - Rendered as a `caption` Typography with `color="primary"` and `fontFamily="mono"`. Omit to suppress the title entirely.
 
 ---
 
 ### `caption`
 
-`string` — Rendered as a `caption` Typography with `color="secondary"`. Omit to suppress.
+`string` - Rendered as a `caption` Typography with `color="secondary"`. Omit to suppress.
 
 ---
 
 ### `iconProps`
 
-`Omit<IconProps, 'name'>` — Spread onto the `Icon` to override its `color`, `size`, spacing, etc.
+`Omit<IconProps, 'name'>` - Spread onto the `Icon` to override its `color`, `size`, spacing, etc.
 
 ```tsx
 <Card icon="smart_toy" iconProps={{ color: 'primary', size: '2.25rem' }} />
@@ -56,7 +56,7 @@ Default: `"paper"`.
 
 ### `titleProps`
 
-`Omit<TypographyProps, 'children'>` — Spread on top of the title Typography defaults. Use to override any Typography prop (e.g. `color`, `fontFamily`, `mb`).
+`Omit<TypographyProps, 'children'>` - Spread on top of the title Typography defaults. Use to override any Typography prop (e.g. `color`, `fontFamily`, `mb`).
 
 ```tsx
 <Card title="System" titleProps={{ color: 'secondary', mb: 2 }} />
@@ -66,7 +66,7 @@ Default: `"paper"`.
 
 ### `captionProps`
 
-`Omit<TypographyProps, 'children'>` — Spread on top of the caption Typography defaults.
+`Omit<TypographyProps, 'children'>` - Spread on top of the caption Typography defaults.
 
 ```tsx
 <Card caption="Architecture" captionProps={{ color: 'primary', mb: 0 }} />
@@ -79,7 +79,7 @@ Default: `"paper"`.
 | Slot    | variant    | color       | mb  | fontFamily |
 | ------- | ---------- | ----------- | --- | ---------- |
 | title   | `overline` | `primary`   | 1   | `mono`     |
-| caption | `caption`  | `secondary` | 5   | —          |
+| caption | `caption`  | `secondary` | 5   | -          |
 
 ---
 
@@ -87,11 +87,11 @@ Default: `"paper"`.
 
 ### `elevation`
 
-Shadow depth — `0` (flat) to `24` (highest). Resolves to `theme.shadows[n]`. Default: `1`.
+Shadow depth - `0` (flat) to `24` (highest). Resolves to `theme.shadows[n]`. Default: `1`.
 
 ---
 
-### `bg` — `theme.background`
+### `bg` - `theme.background`
 
 | Token         | Dark source                      | Light source                        |
 | ------------- | -------------------------------- | ----------------------------------- |
@@ -135,6 +135,6 @@ Default: `"paper"`.
 
 // With additional children
 <Card variant="bracketBox" p={3} title="Tools" caption="Used daily.">
-  <View mt={2}>…</View>
+  <View mt={2}>...</View>
 </Card>
 ```

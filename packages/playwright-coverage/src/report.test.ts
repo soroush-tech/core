@@ -57,7 +57,7 @@ describe('resolveRawDir', () => {
 })
 
 describe('buildSourceFilter', () => {
-  it('include only — matches included paths (absolute, relative, backslash) and rejects others', () => {
+  it('include only - matches included paths (absolute, relative, backslash) and rejects others', () => {
     const filter = buildSourceFilter(opts({ include: ['src/pages/**/+Page.{ts,tsx}'] }))
     if (!filter) throw new Error('expected a source filter')
     const cwd = process.cwd().replace(/\\/g, '/')
@@ -69,7 +69,7 @@ describe('buildSourceFilter', () => {
     expect(filter('src/section/Foo.tsx')).toBe(false)
   })
 
-  it('exclude only (string form) — passes everything except excluded', () => {
+  it('exclude only (string form) - passes everything except excluded', () => {
     const filter = buildSourceFilter(opts({ exclude: '**/*.stories.tsx' }))
     if (!filter) throw new Error('expected a source filter')
 
@@ -77,7 +77,7 @@ describe('buildSourceFilter', () => {
     expect(filter('src/common/Button.stories.tsx')).toBe(false)
   })
 
-  it('include + exclude — exclude wins over a matching include', () => {
+  it('include + exclude - exclude wins over a matching include', () => {
     const filter = buildSourceFilter(
       opts({ include: ['src/**/*.tsx'], exclude: ['**/*.stories.tsx'] })
     )

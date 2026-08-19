@@ -4,7 +4,7 @@ name: CI · Packages
 
 # Called by ci.yml. One row per changed package: install, run its `test:coverage`, upload its
 # lcov under its own Codecov flag. Packages are alike, so they are a matrix rather than a job
-# each — a new package appears here without this file being touched.
+# each - a new package appears here without this file being touched.
 on:
   workflow_call:
     inputs:
@@ -51,7 +51,7 @@ jobs:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
 
-      # Only Chromium is needed — the browser test tier runs headless Chromium.
+      # Only Chromium is needed - the browser test tier runs headless Chromium.
       - name: Install Playwright browsers
         if: matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm --filter ${{ matrix.filter }} exec playwright install --with-deps chromium
@@ -79,7 +79,7 @@ jobs:
         run: ${{ inputs.runner }} --filter ${{ matrix.filter }} run --if-present test:types
 
       # vitest writes lcov paths relative to the member (e.g. SF:src/index.ts), which is
-      # ambiguous across the monorepo — Codecov can't map a lone src/index.ts (five exist)
+      # ambiguous across the monorepo - Codecov can't map a lone src/index.ts (five exist)
       # and silently drops the flag's coverage. Prefix with the member's own directory so paths
       # are repo-relative and unique. Both via env (never spliced into the shell).
       - name: Make lcov paths repo-relative for Codecov
@@ -99,7 +99,7 @@ jobs:
 
   # Performance gate: styled-system's bench suite runs in the pinned Docker
   # sandbox against the last npm release (via soroush-tech/bench-action); any
-  # case below the minimum speed ratio fails the job — and, via ci-ok, the PR.
+  # case below the minimum speed ratio fails the job - and, via ci-ok, the PR.
   # Runs when styled-system or the bench tooling changed (infra changes put
   # every member in the matrix, so they trigger it too). Keyed on the Codecov
   # flag rather than the directory: two members are called `bench`, and the one

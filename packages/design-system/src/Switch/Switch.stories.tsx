@@ -101,7 +101,7 @@ const meta: Meta<typeof Switch> = {
       control: { type: 'inline-radio' },
       options: switchVariantTokens,
       description:
-        '`"outside"` — thumb overflows the track vertically (MUI-style). `"inside"` — thumb is contained within the track (iOS-style). The `size` prop works for both.',
+        '`"outside"` - thumb overflows the track vertically (MUI-style). `"inside"` - thumb is contained within the track (iOS-style). The `size` prop works for both.',
       table: { category: 'Visual', defaultValue: { summary: 'outside' } },
     },
     marked: {
@@ -222,7 +222,7 @@ export const Controlled: StoryObj<ControlledArgs> = {
   render: ({ checked, onChange }) => (
     <Flex flexDirection="column" gap={2}>
       <Switch color="primary" checked={checked} onChange={onChange}>
-        {checked ? 'On' : 'Off'} — click to toggle
+        {checked ? 'On' : 'Off'} - click to toggle
       </Switch>
       <Typography variant="caption" color="secondary" m={0}>
         State: {String(checked)}

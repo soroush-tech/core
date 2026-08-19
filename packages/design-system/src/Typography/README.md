@@ -56,20 +56,20 @@ Resolves against `theme.text`. All 9 semantic tokens are available:
 | `"left"`    | `text-align: left`                                                         |
 | `"center"`  | `text-align: center`                                                       |
 | `"right"`   | `text-align: right`                                                        |
-| `"justify"` | `text-align: justify` — stretches wrapped lines only; last line stays left |
+| `"justify"` | `text-align: justify` - stretches wrapped lines only; last line stays left |
 | `"inherit"` | `text-align: inherit`                                                      |
 
 ---
 
 ### `gutterBottom`
 
-`boolean` — adds `margin-bottom: 0.5em`. Useful between a heading and the following paragraph without needing a space prop.
+`boolean` - adds `margin-bottom: 0.5em`. Useful between a heading and the following paragraph without needing a space prop.
 
 ---
 
 ### `noWrap`
 
-`boolean` — applies `overflow: hidden`, `text-overflow: ellipsis`, `white-space: nowrap`. The element must have a constrained width for truncation to trigger.
+`boolean` - applies `overflow: hidden`, `text-overflow: ellipsis`, `white-space: nowrap`. The element must have a constrained width for truncation to trigger.
 
 ---
 
@@ -87,7 +87,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 
 ## Styled-system props
 
-### Space — `theme.space`
+### Space - `theme.space`
 
 | Prop                              | Shorthand for   |
 | --------------------------------- | --------------- |
@@ -117,7 +117,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 
 ---
 
-### `bg` — `theme.background`
+### `bg` - `theme.background`
 
 | Token         | Dark source                      | Light source                        |
 | ------------- | -------------------------------- | ----------------------------------- |
@@ -129,7 +129,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 
 ---
 
-### Typography — theme scales
+### Typography - theme scales
 
 | Prop            | CSS property   | Scale                          |
 | --------------- | -------------- | ------------------------------ |
@@ -141,9 +141,9 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 | `textAlign`     | text-align     | raw CSS (prefer `align` prop)  |
 | `fontStyle`     | font-style     | raw CSS                        |
 
-> **Constraint:** `textTransform` has no styled-system function — it must live in a `styled(Typography)` CSS template literal or inside a `variant()` definition.
+> **Constraint:** `textTransform` has no styled-system function - it must live in a `styled(Typography)` CSS template literal or inside a `variant()` definition.
 
-**Font family — `theme.fonts`**
+**Font family - `theme.fonts`**
 
 | Key         | Value                                                       |
 | ----------- | ----------------------------------------------------------- |
@@ -151,7 +151,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 | `"heading"` | `'Space Grotesk', sans-serif`                               |
 | `"mono"`    | `'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace` |
 
-**Font size — `theme.fontSizes` (pass index)**
+**Font size - `theme.fontSizes` (pass index)**
 
 | Index | px  |
 | ----- | --- |
@@ -163,7 +163,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 | `5`   | 32  |
 | `6`   | 48  |
 
-**Font weight — `theme.fontWeights` (pass keyword)**
+**Font weight - `theme.fontWeights` (pass keyword)**
 
 | Keyword        | Weight |
 | -------------- | ------ |
@@ -177,7 +177,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 | `"extraBold"`  | 800    |
 | `"black"`      | 900    |
 
-**Line height — `theme.lineHeights` (pass keyword)**
+**Line height - `theme.lineHeights` (pass keyword)**
 
 | Keyword     | Value | Use                |
 | ----------- | ----- | ------------------ |
@@ -188,7 +188,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 | `"relaxed"` | 1.625 | readable long-form |
 | `"loose"`   | 2     | wide airy layouts  |
 
-**Letter spacing — `theme.letterSpacings` (pass keyword)**
+**Letter spacing - `theme.letterSpacings` (pass keyword)**
 
 | Keyword     | Value    |
 | ----------- | -------- |
@@ -207,7 +207,7 @@ Overrides the HTML element chosen by `variant` while keeping its visual styles.
 
 ---
 
-### Border — `theme.radii`
+### Border - `theme.radii`
 
 `border` · `borderWidth` · `borderStyle` · `borderColor` · `borderRadius` · `borderTop` · `borderRight` · `borderBottom` · `borderLeft` · `borderX` · `borderY`
 
@@ -230,7 +230,7 @@ Radii: `"sm"` (4px) · `"md"` (8px) · `"lg"` (16px)
 ## Examples
 
 ```tsx
-// Variant — element + scale
+// Variant - element + scale
 <Typography variant="h1">Heading</Typography>        // → <h1> 48px bold
 <Typography variant="body2" color="secondary" />     // → <p> 14px muted
 <Typography variant="caption" color="disabled" />    // → <span> 12px dimmed
@@ -261,7 +261,7 @@ Radii: `"sm"` (4px) · `"md"` (8px) · `"lg"` (16px)
 // Background from theme.background
 <Typography bg="primary" color="initial" />
 
-// Extend with styled() — textTransform must live here
+// Extend with styled() - textTransform must live here
 const Label = styled(Typography)`
   text-transform: uppercase;
 `

@@ -191,7 +191,7 @@ const ScrollPaperDemo = (args: ModalArgs) => {
         {/* Tall filler so the page scrolls; opening the modal locks body scroll. */}
         {backgroundLines.map((line) => (
           <Typography key={line} variant="body2" color="secondary" m={0}>
-            {line} — background scroll is locked while the modal is open.
+            {line} - background scroll is locked while the modal is open.
           </Typography>
         ))}
       </Flex>
@@ -212,7 +212,7 @@ const ScrollPaperDemo = (args: ModalArgs) => {
             </Typography>
             {paragraphs.map((paragraph) => (
               <Typography key={paragraph} variant="body2" color="secondary" m={0}>
-                {paragraph} — content scrolls within the surface while the page stays put.
+                {paragraph} - content scrolls within the surface while the page stays put.
               </Typography>
             ))}
             <Button onClick={() => setIsOpen(false)}>Close</Button>
@@ -261,7 +261,7 @@ const ScrollBodyDemo = (args: ModalArgs) => {
             </Typography>
             {paragraphs.map((paragraph) => (
               <Typography key={paragraph} variant="body2" color="secondary" m={0}>
-                {paragraph} — the surface and backdrop scroll together within the root.
+                {paragraph} - the surface and backdrop scroll together within the root.
               </Typography>
             ))}
             <Button onClick={() => setIsOpen(false)}>Close</Button>

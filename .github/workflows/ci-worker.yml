@@ -41,7 +41,7 @@ jobs:
         run: ${{ inputs.runner }} --filter ${{ matrix.filter }} test:coverage
 
       # vitest writes lcov paths relative to the member (e.g. SF:src/index.ts), which is
-      # ambiguous across the monorepo — Codecov can't map a lone src/index.ts (five exist)
+      # ambiguous across the monorepo - Codecov can't map a lone src/index.ts (five exist)
       # and silently drops the flag's coverage. Prefix with the member's own directory so paths
       # are repo-relative and unique. Both via env (never spliced into the shell).
       - name: Make lcov paths repo-relative for Codecov

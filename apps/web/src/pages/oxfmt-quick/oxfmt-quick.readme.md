@@ -4,7 +4,7 @@
 
 Formatting a whole repository every time is wasteful, and a `--check` gate that only tells
 you off is worse. `oxfmt-quick` runs [oxfmt](https://oxc.rs/docs/guide/usage/formatter) over
-the files you actually touched, and in a pre-commit hook it re-stages what it formatted — so
+the files you actually touched, and in a pre-commit hook it re-stages what it formatted - so
 unformatted code cannot reach a commit in the first place.
 
 It is to oxfmt what [`pretty-quick`](https://github.com/prettier/pretty-quick) is to
@@ -29,10 +29,10 @@ A non-zero exit aborts the commit.
 
 ## Two modes
 
-**Default** — everything changed since the merge-base with your branch, plus untracked
+**Default** - everything changed since the merge-base with your branch, plus untracked
 files. This is the one you want at the terminal, to tidy what you have been working on.
 
-**`--staged`** — the index only, re-staging what it formats. This is the one you want in a
+**`--staged`** - the index only, re-staging what it formats. This is the one you want in a
 hook: anything unstaged is not going into the commit, so formatting it would be work the
 commit never uses.
 
@@ -53,7 +53,7 @@ commit never uses.
 
 ### Why not just run `oxfmt` on everything?
 
-You can — oxfmt is fast enough that on most repositories you would not notice. The point of
+You can - oxfmt is fast enough that on most repositories you would not notice. The point of
 `oxfmt-quick` is not raw speed, it is the **re-staging**: in a hook, formatting a file is
 only half the job, because the version going into the commit is the one in the index. Run
 plain `oxfmt` from a hook and you format the working tree while the commit keeps the
@@ -80,7 +80,7 @@ too.
 Yes, because it does not implement any of that itself. The file list goes straight to oxfmt,
 which already resolves `.oxfmtrc`, `.gitignore`, `.prettierignore` and `.editorconfig`, and
 skips anything it cannot format. There is no second implementation here to drift out of step
-with it. Gitignored files can never appear anyway — `git diff` reports only tracked files.
+with it. Gitignored files can never appear anyway - `git diff` reports only tracked files.
 
 ### Why does my scanner say it has "shell access"?
 
@@ -92,7 +92,7 @@ environment.
 
 ### Does it support Mercurial?
 
-No — git only. `pretty-quick` supports both; this does not.
+No - git only. `pretty-quick` supports both; this does not.
 
 ### Is it safe on Windows?
 

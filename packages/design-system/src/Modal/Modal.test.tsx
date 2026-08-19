@@ -132,7 +132,7 @@ describe('Modal', () => {
         </Modal>
       </>
     )
-    // Closing the top modal unmounts it while the lower one is still registered —
+    // Closing the top modal unmounts it while the lower one is still registered -
     // the stacked-removal path must not dereference a null portal mount node.
     expect(() =>
       rerender(

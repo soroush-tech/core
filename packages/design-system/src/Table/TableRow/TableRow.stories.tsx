@@ -57,7 +57,7 @@ const meta: Meta<typeof TableRow> = {
       control: { type: 'select' },
       options: buttonColorTokens,
       description:
-        'Palette color for the hover/selected shading — resolves against `theme.palette`.',
+        'Palette color for the hover/selected shading - resolves against `theme.palette`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     bg,

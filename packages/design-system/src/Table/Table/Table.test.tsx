@@ -62,7 +62,7 @@ describe('Table', () => {
       </Table>
     )
     const probe = screen.getByTestId('probe')
-    // size stays unset in context — consumers fall back to theme.defaults.size.
+    // size stays unset in context - consumers fall back to theme.defaults.size.
     expect(probe).not.toHaveAttribute('data-size')
     expect(probe).toHaveAttribute('data-cell-padding', 'normal')
     expect(probe).toHaveAttribute('data-sticky', 'false')

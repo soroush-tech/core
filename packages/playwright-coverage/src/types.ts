@@ -21,7 +21,7 @@ export interface PlaywrightCoverageOptions {
   /** Collect coverage only when `true`; otherwise every piece is an inert no-op. */
   enabled: boolean
   /**
-   * monocart report config — you provide `name`, `outputDir`, `lcov`. `entryFilter` defaults to
+   * monocart report config - you provide `name`, `outputDir`, `lcov`. `entryFilter` defaults to
    * "served from localhost" and `sourcePath` to "repo-relative" when you omit them. Scope which
    * sources land in the report with `include`/`exclude` below (preferred), or set `sourceFilter`
    * here for full monocart control.
@@ -37,7 +37,7 @@ export interface PlaywrightCoverageOptions {
   exclude?: string | string[]
   /** Where per-test raw V8 dumps are written before aggregation. Default: `${outputDir}/.raw`. */
   rawDir?: string
-  /** Only this Playwright browser is instrumented — V8 coverage is Chromium-only. Default: `'chromium'`. */
+  /** Only this Playwright browser is instrumented - V8 coverage is Chromium-only. Default: `'chromium'`. */
   browser?: 'chromium' | 'firefox' | 'webkit'
 }
 

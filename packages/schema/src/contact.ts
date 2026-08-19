@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
-// Optional phone, but if provided must hold 7–15 digits (the E.164 range) with an optional
-// leading `+` and spaces, `-`, `.`, or parentheses as separators — so international forms like
+// Optional phone, but if provided must hold 7-15 digits (the E.164 range) with an optional
+// leading `+` and spaces, `-`, `.`, or parentheses as separators - so international forms like
 // `+49 176 8011 2233` are accepted. Empty is allowed (field is optional).
 const phonePattern = /^\+?(?=(?:\D*\d){7,15}\D*$)[\d\s().-]+$/
 
@@ -28,7 +28,7 @@ const schemaShape = {
 }
 
 /**
- * Validation schema for the contact form — the single source of truth shared by the
+ * Validation schema for the contact form - the single source of truth shared by the
  * frontend (TanStack Form) and the Worker (`POST /contact`).
  */
 export const schema = z.object(schemaShape)

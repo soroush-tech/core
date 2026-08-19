@@ -14,7 +14,7 @@ export interface GlitchTextProps extends TypographyProps {
   inverted?: boolean
 }
 
-// RGB-split glitch — no styled-system prop maps to an animated `text-shadow`. The two split
+// RGB-split glitch - no styled-system prop maps to an animated `text-shadow`. The two split
 // colours are fed in as CSS custom properties (from the `color` / `secondaryColor` props,
 // resolved against theme.text) so the keyframes stay token-driven. The two keyframe sets are
 // offset/timing inverses of each other, so stacked instances don't jitter in lock-step.
@@ -33,7 +33,7 @@ const glitch = keyframes`
 
 /**
  * Typography with a looping RGB-split glitch animation. Accepts every `Typography`
- * prop — pass `variant`, `color`, `fontSize`, `as`, etc. at the call site — plus
+ * prop - pass `variant`, `color`, `fontSize`, `as`, etc. at the call site - plus
  * `color` / `secondaryColor` to pick the two split layers from theme.text, and `inverted`
  * to play the opposite glitch keyframes.
  */

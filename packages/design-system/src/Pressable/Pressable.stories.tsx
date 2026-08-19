@@ -43,14 +43,14 @@ const meta: Meta<typeof Pressable> = {
       control: { type: 'inline-radio' },
       options: pressableFeedbackTokens,
       description:
-        'Feedback shown while held — `none` leaves the content untouched, `opacity` dims it, ' +
+        'Feedback shown while held - `none` leaves the content untouched, `opacity` dims it, ' +
         '`highlight` tints the surface behind it.',
       table: { category: 'Behavior', defaultValue: { summary: 'none' } },
     },
     color: {
       control: { type: 'select' },
       options: buttonColorTokens,
-      description: 'Palette the `highlight` tint derives from — resolves against `theme.palette`.',
+      description: 'Palette the `highlight` tint derives from - resolves against `theme.palette`.',
       table: { category: 'Visual', defaultValue: { summary: 'primary' } },
     },
     activeOpacity: {
@@ -60,7 +60,7 @@ const meta: Meta<typeof Pressable> = {
     },
     disabled: {
       control: 'boolean',
-      description: 'Disables the surface — suppresses press feedback and the pointer cursor.',
+      description: 'Disables the surface - suppresses press feedback and the pointer cursor.',
       table: { category: 'State', defaultValue: { summary: 'false' } },
     },
     href: {
@@ -71,13 +71,13 @@ const meta: Meta<typeof Pressable> = {
     p: {
       control: { type: 'select' },
       options: [0, 1, 2, 3, 4],
-      description: 'Padding — resolves from `theme.space`. Zero by default, like every other box.',
+      description: 'Padding - resolves from `theme.space`. Zero by default, like every other box.',
       table: { category: 'Spacing', type: { summary: 'space' }, defaultValue: { summary: '0' } },
     },
     borderRadius: {
       control: { type: 'select' },
       options: ['sm', 'md', 'lg'],
-      description: 'Border radius — resolves from `theme.radii`. Clips the `highlight` tint.',
+      description: 'Border radius - resolves from `theme.radii`. Clips the `highlight` tint.',
       table: { category: 'Visual', type: { summary: 'sm | md | lg' } },
     },
   },

@@ -1,10 +1,10 @@
 [← Workflows overview](./README.md)
 
-# `cd-web.yml` — CD · Web (Pages + Storybook)
+# `cd-web.yml` - CD · Web (Pages + Storybook)
 
 Builds the web app and deploys it to GitHub Pages, and in parallel builds Storybook and
 deploys it to a Cloudflare Pages site at
-[storybook.soroush.tech](https://storybook.soroush.tech). **Gated on CI success** — it
+[storybook.soroush.tech](https://storybook.soroush.tech). **Gated on CI success** - it
 starts from a `workflow_run` of `CI`, never from a raw `push`.
 
 ```yaml
@@ -74,7 +74,7 @@ Output: `web` (`'true'`/`'false'`). The missing-file fallback means a manual dis
 | 2   | Read Node.js version   | `cat .nvmrc` → `$GITHUB_ENV` (`NODE_VERSION`); fails if `.nvmrc` is missing                                       |
 | 3   | Detect package manager | shell `if` on lockfile → `manager` / `command` / `runner`                                                         |
 | 4   | Setup pnpm             | `pnpm/action-setup@v6`, `if manager == 'pnpm'`                                                                    |
-| 5   | Setup Node             | `actions/setup-node@v7`, `node-version: $NODE_VERSION`, `cache: <manager>` (deps cache — see [Caching](#caching)) |
+| 5   | Setup Node             | `actions/setup-node@v7`, `node-version: $NODE_VERSION`, `cache: <manager>` (deps cache - see [Caching](#caching)) |
 | 6   | Install                | `${manager} ${command}`                                                                                           |
 | 7   | Build project          | `${runner} run build` with the production env below                                                               |
 | 8   | Upload artifact        | `actions/upload-pages-artifact@v5`, `path: ./apps/web/build/client`                                               |
@@ -119,7 +119,7 @@ Runs in parallel with `build`/`deploy`.
 | 4   | Setup Node           | `actions/setup-node@v7`, `node-version: $NODE_VERSION`, `cache: pnpm`                                                                                                                                                                                                                                                                                                                                |
 | 5   | Install              | `pnpm install --frozen-lockfile --ignore-scripts`                                                                                                                                                                                                                                                                                                                                                    |
 | 6   | Build Storybook      | `pnpm --filter @soroush/web build:storybook` → `apps/web/storybook-static` (same VITE build env as `build`)                                                                                                                                                                                                                                                                                          |
-| 7   | Deploy to Cloudflare | `cloudflare/wrangler-action@v4` runs `wrangler pages deploy --branch=main` with `wranglerVersion: '4.119.0'`; project name + output dir come from `apps/web/wrangler.jsonc` (`name` + `pages_build_output_dir`). `packageManager: pnpm` is set explicitly — the lockfile sits at the repo root, so the action's per-directory detection would fall back to npm, which cannot read `workspace:*` deps |
+| 7   | Deploy to Cloudflare | `cloudflare/wrangler-action@v4` runs `wrangler pages deploy --branch=main` with `wranglerVersion: '4.119.0'`; project name + output dir come from `apps/web/wrangler.jsonc` (`name` + `pages_build_output_dir`). `packageManager: pnpm` is set explicitly - the lockfile sits at the repo root, so the action's per-directory detection would fall back to npm, which cannot read `workspace:*` deps |
 
 MSW: Storybook's Vite builder copies `apps/web/public` into `storybook-static`, so
 `mockServiceWorker.js` ships with the build and mocking works on the deployed static
@@ -143,7 +143,7 @@ provisioned out-of-band in Cloudflare, not by this workflow.
 ## Caching
 
 Only the **dependency store** is cached, via `setup-node@v7` with `cache: <manager>`
-in the `build` job and `cache: pnpm` in `storybook` — keyed off the `pnpm-lock.yaml`
+in the `build` job and `cache: pnpm` in `storybook` - keyed off the `pnpm-lock.yaml`
 hash, same mechanism as CI. There
 is no Playwright cache here (no browser tests run during deploy), and the Pages
 artifact is a one-shot upload, not a cache.

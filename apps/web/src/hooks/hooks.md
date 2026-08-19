@@ -8,18 +8,18 @@ Conventions for hooks in `src/hooks/` and co-located component hooks.
 
 | Hook type                                                         | Location                                                     |
 | ----------------------------------------------------------------- | ------------------------------------------------------------ |
-| API / data-fetching hooks                                         | `src/hooks/useHookName.ts` — always here, always shared      |
-| Domain-logic hooks (UI state, derived state, component behaviour) | `src/common/ComponentName/hooks/useHookName.ts` — co-located |
+| API / data-fetching hooks                                         | `src/hooks/useHookName.ts` - always here, always shared      |
+| Domain-logic hooks (UI state, derived state, component behaviour) | `src/common/ComponentName/hooks/useHookName.ts` - co-located |
 
-**API hooks are always generic** — any hook that makes an HTTP call belongs in `src/hooks/` regardless of which component uses it.
+**API hooks are always generic** - any hook that makes an HTTP call belongs in `src/hooks/` regardless of which component uses it.
 
-**Domain-logic hooks are co-located** — a hook that encapsulates behaviour specific to one component (filtering, toggling, derived state) lives next to that component. It is only promoted to `src/hooks/` if a second component needs it.
+**Domain-logic hooks are co-located** - a hook that encapsulates behaviour specific to one component (filtering, toggling, derived state) lives next to that component. It is only promoted to `src/hooks/` if a second component needs it.
 
 ---
 
 ## File structure
 
-Each hook is a **flat file with a co-located test** — no per-hook folder, no `index.ts`:
+Each hook is a **flat file with a co-located test** - no per-hook folder, no `index.ts`:
 
 ```
 src/hooks/
@@ -56,21 +56,21 @@ src/common/
 Every data-fetching hook is built around a private query factory and exports up to three functions:
 
 ```ts
-// 1. Private query factory — single source of truth for queryKey + config
+// 1. Private query factory - single source of truth for queryKey + config
 const getGistsQuery = () => ({
   queryKey: ['gists'],
   config: { url: `/users/soroushm/gists`, method: 'get' },
 })
 
-// 2. Client hook — used in React components (requires Suspense boundary)
+// 2. Client hook - used in React components (requires Suspense boundary)
 export function useGists() {
   return useCustomQuery<Gists>(getGistsQuery())
 }
 
-// 3. SSR prefetch — called in +onBeforeRender.ts to warm the cache before render
+// 3. SSR prefetch - called in +onBeforeRender.ts to warm the cache before render
 export const prefetchGists = () => prefetchQuery(getGistsQuery())
 
-// 4. Raw fetch — called in +onBeforePrerenderStart.ts to enumerate static paths
+// 4. Raw fetch - called in +onBeforePrerenderStart.ts to enumerate static paths
 export function getGists() {
   return client.call<Gists>(getGistsQuery().config)
 }
@@ -78,7 +78,7 @@ export function getGists() {
 
 Export `prefetchHookName` and `getHookName` only when the data is needed during SSR or static prerender. Client-only hooks export `useHookName` alone.
 
-### `useCustomQuery` — always use this, never `useQuery` directly
+### `useCustomQuery` - always use this, never `useQuery` directly
 
 `useCustomQuery` wraps `useSuspenseQuery` and wires the correct Axios client. `prefetchQuery` wires the server client for SSR:
 
@@ -86,7 +86,7 @@ Export `prefetchHookName` and `getHookName` only when the data is needed during 
 import { useCustomQuery, prefetchQuery } from 'src/hooks/useCustomQuery'
 ```
 
-Do not call `useSuspenseQuery`, `useQuery`, or `queryClient.prefetchQuery` directly — always go through these wrappers.
+Do not call `useSuspenseQuery`, `useQuery`, or `queryClient.prefetchQuery` directly - always go through these wrappers.
 
 ### Query keys
 
@@ -99,17 +99,17 @@ queryKey: ['gist', id] // single item
 
 ---
 
-## Testing — integration tests with MSW
+## Testing - integration tests with MSW
 
 Hook tests are **integration tests**: the real hook runs against a real query client; MSW intercepts the HTTP request. Do not mock `useCustomQuery` or `client` in hook tests.
 
 ### Setup (already global)
 
-`src/setupTests.ts` starts the MSW node server before all tests and resets handlers after each — no per-file setup needed.
+`src/setupTests.ts` starts the MSW node server before all tests and resets handlers after each - no per-file setup needed.
 
 ### Wrapper
 
-Use `queryWrapperWithSuspense` from `src/test/utils/wrapper` — provides `Suspense` + `QueryClientProvider` + `ThemeProvider`:
+Use `queryWrapperWithSuspense` from `src/test/utils/wrapper` - provides `Suspense` + `QueryClientProvider` + `ThemeProvider`:
 
 ```ts
 import { queryWrapperWithSuspense as wrapper } from 'src/test/utils/wrapper'
@@ -117,7 +117,7 @@ import { queryWrapperWithSuspense as wrapper } from 'src/test/utils/wrapper'
 
 ### Adding MSW handlers
 
-Shared handlers go in `src/test/mocks/handlers.ts`. For test-specific responses use `server.use()` inline — it is reset automatically after each test:
+Shared handlers go in `src/test/mocks/handlers.ts`. For test-specific responses use `server.use()` inline - it is reset automatically after each test:
 
 ```ts
 import { server } from 'src/test/mocks/server'
@@ -177,7 +177,7 @@ describe('useGists', () => {
 
 ## Rules
 
-- **No JSX, no UI** — hooks return data and state only; never JSX or styled components
-- **No side effects at module level** — all API calls happen inside the hook or exported async functions, never at import time
-- **TypeScript generics** — always pass the response type: `useCustomQuery<T>`, `client.call<T>`
-- **`use` prefix** — hook functions are named `useHookName`; non-hook exports (`prefetchGists`, `getGists`) use plain camelCase
+- **No JSX, no UI** - hooks return data and state only; never JSX or styled components
+- **No side effects at module level** - all API calls happen inside the hook or exported async functions, never at import time
+- **TypeScript generics** - always pass the response type: `useCustomQuery<T>`, `client.call<T>`
+- **`use` prefix** - hook functions are named `useHookName`; non-hook exports (`prefetchGists`, `getGists`) use plain camelCase

@@ -70,7 +70,7 @@ describe('Navbar', () => {
   })
 
   describe('active-link delegation', () => {
-    it('does not pass a color prop — active color is delegated to NavLink', () => {
+    it('does not pass a color prop - active color is delegated to NavLink', () => {
       renderWithTheme(<Navbar items={ITEMS} />)
       expect(capturedProps.every(({ color }) => color === undefined)).toBe(true)
     })

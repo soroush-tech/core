@@ -34,20 +34,20 @@ describe('TablePagination', () => {
 
   it('shows the displayed-rows range with the default label', () => {
     renderPagination(<TablePagination {...defaultProps} />)
-    expect(screen.getByText('21–30 of 100')).toBeInTheDocument()
+    expect(screen.getByText('21-30 of 100')).toBeInTheDocument()
   })
 
   it('labels an unknown count as more-than', () => {
     renderPagination(<TablePagination {...defaultProps} count={-1} />)
-    expect(screen.getByText('21–30 of more than 30')).toBeInTheDocument()
+    expect(screen.getByText('21-30 of more than 30')).toBeInTheDocument()
   })
 
-  it('shows 0–0 for an empty table and full range for rowsPerPage -1', () => {
+  it('shows 0-0 for an empty table and full range for rowsPerPage -1', () => {
     renderPagination(<TablePagination {...defaultProps} count={0} page={0} />)
-    expect(screen.getByText('0–0 of 0')).toBeInTheDocument()
+    expect(screen.getByText('0-0 of 0')).toBeInTheDocument()
 
     renderPagination(<TablePagination {...defaultProps} page={0} rowsPerPage={-1} count={57} />)
-    expect(screen.getByText('1–57 of 57')).toBeInTheDocument()
+    expect(screen.getByText('1-57 of 57')).toBeInTheDocument()
   })
 
   it('supports a custom displayedRowsLabel', () => {

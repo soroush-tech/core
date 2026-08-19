@@ -64,7 +64,7 @@ describe('computePopoverPosition', () => {
 
   it('flips above the anchor when there is no room below', () => {
     // anchor bottom (790) + paper (50) overflows the 784 threshold, so it flips above:
-    // anchor top (780) − paper (50) = 730.
+    // anchor top (780) - paper (50) = 730.
     const result = computePopoverPosition({
       ...base,
       anchorRect: { top: 780, left: 50, width: 10, height: 10 },
@@ -82,7 +82,7 @@ describe('computePopoverPosition', () => {
 
   it('flips to the left of the anchor when there is no room on the right', () => {
     // anchor left (900) + paper (100) overflows the 984 threshold, so it flips to align
-    // the paper's right edge to the anchor's right edge: (900 + 10) − 100 = 810.
+    // the paper's right edge to the anchor's right edge: (900 + 10) - 100 = 810.
     const result = computePopoverPosition({
       ...base,
       anchorRect: { top: 100, left: 900, width: 10, height: 10 },
@@ -111,7 +111,7 @@ describe('computePopoverPosition', () => {
   })
 
   it('clamps to the bottom edge when a too-tall paper fits on neither side', () => {
-    // Paper (900) is taller than the viewport, so flipping cannot help — it clamps its
+    // Paper (900) is taller than the viewport, so flipping cannot help - it clamps its
     // bottom to the threshold: 780 + 10 (anchor bottom) then shifted up by the overflow.
     const result = computePopoverPosition({
       ...base,

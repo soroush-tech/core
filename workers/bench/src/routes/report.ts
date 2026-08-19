@@ -5,13 +5,13 @@ import { OIDC_AUDIENCE, OidcError, verifyActionsOidc } from 'src/services/github
 import { AppNotInstalledError, mintInstallationToken } from 'src/services/githubApp'
 import { BENCH_MARKER, upsertBenchComment } from 'src/services/githubComment'
 
-/** Reject bodies larger than this many bytes before parsing — measured on the received bytes, not the client-supplied `content-length`. */
+/** Reject bodies larger than this many bytes before parsing - measured on the received bytes, not the client-supplied `content-length`. */
 const MAX_BODY_BYTES = 64 * 1024
 
 export const reportSchema = z.object({
   repository: z.string().regex(/^[\w.-]+\/[\w.-]+$/),
   prNumber: z.number().int().positive(),
-  // Only marker-prefixed report bodies are accepted — the relay is not a general commenter.
+  // Only marker-prefixed report bodies are accepted - the relay is not a general commenter.
   body: z.string().startsWith(BENCH_MARKER),
 })
 

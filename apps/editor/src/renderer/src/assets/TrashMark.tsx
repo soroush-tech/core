@@ -2,7 +2,7 @@ import type { SVGProps } from 'react'
 
 /**
  * A waste basket. Lives here rather than in the design system only because its
- * icon set has no "delete" — drawn on the same `0 -960 960 960` grid as the
+ * icon set has no "delete" - drawn on the same `0 -960 960 960` grid as the
  * Material Symbols it sits beside, so it lines up with them.
  */
 export function TrashMark(props: Readonly<SVGProps<SVGSVGElement>>) {

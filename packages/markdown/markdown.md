@@ -2,7 +2,7 @@
 
 `@soroush.tech/markdown` is a companion component library to
 [`@soroush.tech/design-system`](../design-system). **Its components follow the design system's
-conventions verbatim** — read [`../design-system/design-system.md`](../design-system/design-system.md)
+conventions verbatim** - read [`../design-system/design-system.md`](../design-system/design-system.md)
 before working here. That doc is the law for: per-component folder structure, prop types derived
 from `Theme` (never manual unions), `styled(...)` naming + `system()` wiring, `shouldForwardProp`,
 the Storybook argType rules (`controls.include` whitelist, an `argType` per included prop,
@@ -22,21 +22,21 @@ Each lives in its own folder with the files design-system.md requires
 sub-component adds `SubName.README.md` + `SubName.stories.tsx` next to its sibling (as
 `Toolbar/TablePicker` and `Mermaid/DiagramViewer` do):
 
-- **`Control`, `Toolbar` (+ `TablePicker`), `Editor`, `Preview`** — the headless markdown
+- **`Control`, `Toolbar` (+ `TablePicker`), `Editor`, `Preview`** - the headless markdown
   editor/renderer.
-- **`LiveEdit`** — a preview you write on directly: `Preview`-rendered blocks are
+- **`LiveEdit`** - a preview you write on directly: `Preview`-rendered blocks are
   `contentEditable`, and each input serializes the edited block's DOM back to markdown
   (rehype-remark) and splices it into the source. Untouched blocks keep their exact source.
-- **`CodeBlock`** — the fenced-code surface (moved here from the design system; `Preview`/`Mermaid`
+- **`CodeBlock`** - the fenced-code surface (moved here from the design system; `Preview`/`Mermaid`
   are its only consumers).
-- **`Mermaid` (+ `DiagramViewer`)** — renders ` ```mermaid ` blocks as themed, zoomable diagrams.
+- **`Mermaid` (+ `DiagramViewer`)** - renders ` ```mermaid ` blocks as themed, zoomable diagrams.
 
 ## Markdown-specifics
 
 - **Theme slots via augmentation.** Unlike an in-repo design-system component, this package is a
   _consumer_ of the design system, so it registers its `theme.components` slots (`MarkdownEditor`,
   `MarkdownPreview`, `MarkdownToolbar`, `CodeBlock`) by augmenting
-  `@soroush.tech/design-system/theme` in `src/index.ts` — the consumer recipe from design-system
+  `@soroush.tech/design-system/theme` in `src/index.ts` - the consumer recipe from design-system
   `docs/theming.md`. Its own `themeComponents.spec.tsx` locks that wiring (design-system's spec
   covers only design-system components).
 - **No `audit:styled`.** The styled-audit tooling is design-system-only. Markdown's named `styled`
@@ -48,7 +48,7 @@ sub-component adds `SubName.README.md` + `SubName.stories.tsx` next to its sibli
   augmented `theme.mermaid` key (typed `MermaidThemeVariables`). Hex literals appear only in
   test/story fixtures.
 - **`theme.syntax`** (typed `ThemeSyntax`, defined in `CodeBlock/CodeBlock.data.ts`) is likewise a
-  markdown-owned augmentation, not a design-system scale — it exists solely for `CodeBlock`'s
+  markdown-owned augmentation, not a design-system scale - it exists solely for `CodeBlock`'s
   highlight.js token mapping and its own `font` (independent of `theme.fonts.mono`). It's required,
   with no runtime fallback: any theme rendering `CodeBlock` (directly, or via `Preview`/`Mermaid`'s
   fallback) must merge one of the exported `syntaxDark`/`syntaxLight` presets, or its own.

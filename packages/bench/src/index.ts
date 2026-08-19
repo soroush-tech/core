@@ -16,12 +16,12 @@ export type BenchCase = (ctx: BenchContext) => unknown
 
 /**
  * Per-bench run defaults. Each is a default that the matching CLI flag overrides
- * at run time (sandbox/pinning options like `--cpuset`/`--memory` are CLI-only —
+ * at run time (sandbox/pinning options like `--cpuset`/`--memory` are CLI-only -
  * they shape `docker run` before this config is ever loaded).
  */
 export interface BenchOptions {
   /**
-   * Garbage-collection mode: `'once'` (after warmup — mitata's default),
+   * Garbage-collection mode: `'once'` (after warmup - mitata's default),
    * `'inner'` (before each iteration → adds a per-iter GC-timing row), or
    * `false` to disable. Overridden by the `--gc-inner` CLI flag.
    */
@@ -36,11 +36,11 @@ export interface BenchOptions {
    * this file on the host; otherwise pass the flags directly.
    */
   sandbox?: {
-    /** `--cpuset-cpus` — logical CPU(s) to pin to. */
+    /** `--cpuset-cpus` - logical CPU(s) to pin to. */
     cpuset?: string
-    /** `--cpus` — CPU quota. */
+    /** `--cpus` - CPU quota. */
     cpus?: number
-    /** `--memory` — memory cap (swap pinned to the same). */
+    /** `--memory` - memory cap (swap pinned to the same). */
     memory?: string
     /** Sandbox image tag (`--tag`). */
     tag?: string
@@ -120,7 +120,7 @@ function validateOptions(options: BenchOptions): void {
 /**
  * Validates and freezes a benchmark definition. Authored in a `*.bench.ts`
  * file and `export default`-ed; the `soroush-bench` CLI loads that default export
- * inside the pinned container. A plain-object export works too — the harness runs
+ * inside the pinned container. A plain-object export works too - the harness runs
  * it through defineBench (see {@link isBenchConfig}), so no import is required.
  */
 export default function defineBench(config: BenchConfig): Readonly<BenchConfig> {

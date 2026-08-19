@@ -6,7 +6,7 @@ import { FocusTrap } from './'
 
 afterEach(cleanup)
 
-describe('FocusTrap — theme customization', () => {
+describe('FocusTrap - theme customization', () => {
   it('applies theme.components.FocusTrap.styleOverrides.root to the wrapper', () => {
     const theme = createTheme(baseTheme, {
       components: { FocusTrap: { styleOverrides: { root: { display: 'contents' } } } },
@@ -32,7 +32,7 @@ const focusTrigger = () => {
   return trigger
 }
 
-describe('FocusTrap — activation', () => {
+describe('FocusTrap - activation', () => {
   it('moves focus to the first focusable child on activation', () => {
     render(
       <FocusTrap>
@@ -80,7 +80,7 @@ describe('FocusTrap — activation', () => {
   })
 })
 
-describe('FocusTrap — restore', () => {
+describe('FocusTrap - restore', () => {
   it('restores focus to the previously focused element on unmount', () => {
     const trigger = focusTrigger()
     const { unmount } = render(
@@ -107,7 +107,7 @@ describe('FocusTrap — restore', () => {
   })
 })
 
-describe('FocusTrap — enforce focus', () => {
+describe('FocusTrap - enforce focus', () => {
   it('pulls focus back to the first focusable when it escapes the trap', () => {
     render(
       <FocusTrap>
@@ -135,7 +135,7 @@ describe('FocusTrap — enforce focus', () => {
   })
 })
 
-describe('FocusTrap — tab cycling', () => {
+describe('FocusTrap - tab cycling', () => {
   const renderThree = () =>
     render(
       <FocusTrap>

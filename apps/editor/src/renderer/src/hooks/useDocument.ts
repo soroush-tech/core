@@ -26,7 +26,7 @@ export function useDocument() {
   const [error, setError] = useState<string | null>(null)
 
   // Counts wholesale replacements, so work started against one document can
-  // tell that another has taken its place — two documents can hold the same
+  // tell that another has taken its place - two documents can hold the same
   // text, which is what an empty one and a new one always do. Editing and
   // saving stay on the same document, so neither moves it on.
   //
@@ -36,7 +36,7 @@ export function useDocument() {
   const revision = useRef(0)
 
   // Counts renames of the open gist file. The document is the same one, so this
-  // is not a replacement — but a save that staged under the old name did not
+  // is not a replacement - but a save that staged under the old name did not
   // stage what the file is now called.
   const originName = useRef(0)
 
@@ -66,7 +66,7 @@ export function useDocument() {
     const { filePath, origin, content } = documentRef.current
     // The document this save is about, and the name it went by. Either can
     // change while the write is in flight, and what comes back says nothing
-    // about what took its place — marking that clean, or handing it this one's
+    // about what took its place - marking that clean, or handing it this one's
     // path, would be a lie. A rename is the same document under another name,
     // so it moves the name and not the document.
     const saved = revision.current
@@ -119,8 +119,8 @@ export function useDocument() {
 
   /**
    * Clears the way for a document about to be replaced: keep the work or throw
-   * it away. Returns false only when the work could not be kept — a failed
-   * prompt, or a save that did not happen — in which case the document stays.
+   * it away. Returns false only when the work could not be kept - a failed
+   * prompt, or a save that did not happen - in which case the document stays.
    */
   const confirmDiscardIfDirty = useCallback(async (): Promise<boolean> => {
     if (!documentRef.current.isDirty) return true

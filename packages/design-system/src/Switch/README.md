@@ -2,7 +2,7 @@
 
 A sliding toggle control. Supports controlled and uncontrolled usage, six semantic color palettes, two sizes, four visual variants, and custom thumb icons.
 
-**Architecture:** the root element is a `<label>` wrapping a visually-hidden `<input type="checkbox" role="switch">`, a pill-shaped track, and optional label text. Clicking anywhere on the root toggles the switch. All state transitions are driven by CSS — no JavaScript animation.
+**Architecture:** the root element is a `<label>` wrapping a visually-hidden `<input type="checkbox" role="switch">`, a pill-shaped track, and optional label text. Clicking anywhere on the root toggles the switch. All state transitions are driven by CSS - no JavaScript animation.
 
 ---
 
@@ -10,13 +10,13 @@ A sliding toggle control. Supports controlled and uncontrolled usage, six semant
 
 ### `checked`
 
-`boolean` — controlled checked state. Must be paired with `onChange`.
+`boolean` - controlled checked state. Must be paired with `onChange`.
 
 ---
 
 ### `defaultChecked`
 
-`boolean` — initial checked state for uncontrolled usage. Ignored when `checked` is provided.
+`boolean` - initial checked state for uncontrolled usage. Ignored when `checked` is provided.
 
 Default: `false`.
 
@@ -24,7 +24,7 @@ Default: `false`.
 
 ### `disabled`
 
-`boolean` — disables the switch. Applies `opacity: 0.5` and `cursor: not-allowed`.
+`boolean` - disables the switch. Applies `opacity: 0.5` and `cursor: not-allowed`.
 
 Default: `false`.
 
@@ -52,7 +52,7 @@ Default: `"default"`.
 
 ### `bg`
 
-`keyof Theme['background']` — background color of the track in the **unchecked** state.
+`keyof Theme['background']` - background color of the track in the **unchecked** state.
 
 Uses `theme.background` tokens (`default`, `paper`, `elevated`, `overlay`). When not set, the track falls back to `theme.text.disabled`.
 
@@ -77,7 +77,7 @@ Default: `"outside"`.
 
 ### `size`
 
-Applies to both variants. Follows `keyof Theme['sizes']` — the same token vocabulary as `Button` and `TextInput`.
+Applies to both variants. Follows `keyof Theme['sizes']` - the same token vocabulary as `Button` and `TextInput`.
 
 | Value  | `outside` track | `outside` thumb | `inside` track | `inside` thumb |
 | ------ | --------------- | --------------- | -------------- | -------------- |
@@ -91,10 +91,10 @@ Default: `"md"`.
 
 ### `marked`
 
-`boolean` — shows ✓/✕ state indicators.
+`boolean` - shows ✓/✕ state indicators.
 
-- `variant="outside"` — a check mark SVG appears inside the thumb when checked; an ✕ SVG when unchecked. Custom `icon`/`checkedIcon` override the defaults.
-- `variant="inside"` — check and ✕ SVG icons are rendered as DOM elements in the track; no thumb icons are injected.
+- `variant="outside"` - a check mark SVG appears inside the thumb when checked; an ✕ SVG when unchecked. Custom `icon`/`checkedIcon` override the defaults.
+- `variant="inside"` - check and ✕ SVG icons are rendered as DOM elements in the track; no thumb icons are injected.
 
 Default: `false`.
 
@@ -116,55 +116,55 @@ Default: `false`.
 
 ### `icon`
 
-`ReactNode` — custom icon rendered inside the thumb for the **unchecked** state. No default icon is shown without this prop.
+`ReactNode` - custom icon rendered inside the thumb for the **unchecked** state. No default icon is shown without this prop.
 
 ---
 
 ### `checkedIcon`
 
-`ReactNode` — custom icon rendered inside the thumb for the **checked** state. No default icon is shown without this prop.
+`ReactNode` - custom icon rendered inside the thumb for the **checked** state. No default icon is shown without this prop.
 
 ---
 
 ### `onChange`
 
-`(event: ChangeEvent<HTMLInputElement>) => void` — called when the user toggles the switch.
+`(event: ChangeEvent<HTMLInputElement>) => void` - called when the user toggles the switch.
 
 ---
 
 ### `id`
 
-`string` — forwarded to the underlying `<input>` for external label association and form targeting.
+`string` - forwarded to the underlying `<input>` for external label association and form targeting.
 
 ---
 
 ### `required`
 
-`boolean` — marks the field as required in a form.
+`boolean` - marks the field as required in a form.
 
 ---
 
 ### `children`
 
-`ReactNode` — label text rendered next to the track, wrapped in a `<span>`.
+`ReactNode` - label text rendered next to the track, wrapped in a `<span>`.
 
 ---
 
 ### `className`
 
-`string` — applied to the root `<label>` element for external styling overrides.
+`string` - applied to the root `<label>` element for external styling overrides.
 
 ---
 
 ### `disableRipple`
 
-`boolean` — accepted for API parity. The design system does not implement ripple, so this prop has no effect.
+`boolean` - accepted for API parity. The design system does not implement ripple, so this prop has no effect.
 
 ---
 
 ## Styled-system props
 
-### Space — `theme.space` (margin only)
+### Space - `theme.space` (margin only)
 
 | Prop                              | Shorthand for  |
 | --------------------------------- | -------------- |
@@ -203,7 +203,7 @@ The hidden input carries `role="switch"` for screen reader semantics. `aria-chec
 <Switch variant="outside" color="primary" />
 <Switch variant="inside" color="primary" />
 
-// Marked — SVG icons in thumb (outside) or CSS marks in track (inside)
+// Marked - SVG icons in thumb (outside) or CSS marks in track (inside)
 <Switch variant="outside" marked color="primary" />
 <Switch variant="inside" marked color="primary" />
 
@@ -218,7 +218,7 @@ The hidden input carries `role="switch"` for screen reader semantics. `aria-chec
   color="primary"
 />
 
-// Edge — flush with layout boundary
+// Edge - flush with layout boundary
 <Switch edge="start" color="primary">Flush start</Switch>
 
 // Form usage

@@ -17,7 +17,7 @@ interface ContainerState {
   modals: ManagedModal[]
   /** Undoes the scroll-lock styles; `null` until the container is mounted. */
   restore: (() => void) | null
-  /** Siblings already `aria-hidden` before this container opened — left untouched. */
+  /** Siblings already `aria-hidden` before this container opened - left untouched. */
   hiddenSiblings: Element[]
   /** Whether background siblings were `aria-hidden` for this container (skipped for non-modal popovers). */
   ariaHiddenApplied: boolean
@@ -147,7 +147,7 @@ export class ModalManager {
     exposeToAria(modal.modalRef)
 
     const hiddenSiblings = getHiddenSiblings(container)
-    // A non-modal popover (e.g. a select's listbox) must not hide the page — its
+    // A non-modal popover (e.g. a select's listbox) must not hide the page - its
     // trigger stays focused and controls the listbox via `aria-activedescendant`.
     if (!disableAriaHidden) {
       ariaHiddenSiblings(container, modal.mount, modal.modalRef, hiddenSiblings, hideFromAria)

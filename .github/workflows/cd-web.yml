@@ -71,7 +71,7 @@ jobs:
           fi
 
       # --ignore-scripts, as everywhere in CI/CD: no lifecycle script runs at
-      # install — sharp and esbuild ship their binaries as platform packages.
+      # install - sharp and esbuild ship their binaries as platform packages.
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -172,7 +172,7 @@ jobs:
           cache: pnpm
 
       # --ignore-scripts, as everywhere in CI/CD: no lifecycle script runs at
-      # install — sharp and esbuild ship their binaries as platform packages.
+      # install - sharp and esbuild ship their binaries as platform packages.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
@@ -194,7 +194,7 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: '4.119.0'
           # The lockfile lives at the repo root, so the action's per-directory
-          # detection falls back to npm — which cannot read workspace:* deps.
+          # detection falls back to npm - which cannot read workspace:* deps.
           packageManager: pnpm
           workingDirectory: apps/web
           command: pages deploy --branch=main

@@ -20,7 +20,7 @@ const Cell = ({ label }: { label: string }) => (
 )
 
 const MDN_GRID_URL = 'https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout'
-const RAW_CSS = `Raw CSS string — grid layout values are structurally varied and can't be reduced to a fixed token set. See the [MDN Grid reference](${MDN_GRID_URL}) for all valid values.`
+const RAW_CSS = `Raw CSS string - grid layout values are structurally varied and can't be reduced to a fixed token set. See the [MDN Grid reference](${MDN_GRID_URL}) for all valid values.`
 
 const meta: Meta<typeof Grid> = {
   title: 'Theme/Grid',
@@ -30,7 +30,7 @@ const meta: Meta<typeof Grid> = {
     layout: 'padded',
     docs: {
       description: {
-        component: `A \`<div>\` with \`display: grid\` that extends **View**. Layout props (\`gridTemplateColumns\`, \`gridTemplateAreas\`, etc.) accept raw CSS strings — grid structures are too varied for a fixed token set. The \`gap\` prop is the exception: it resolves from \`theme.space\` like all spacing props.\n\n[MDN CSS Grid Layout reference](${MDN_GRID_URL})`,
+        component: `A \`<div>\` with \`display: grid\` that extends **View**. Layout props (\`gridTemplateColumns\`, \`gridTemplateAreas\`, etc.) accept raw CSS strings - grid structures are too varied for a fixed token set. The \`gap\` prop is the exception: it resolves from \`theme.space\` like all spacing props.\n\n[MDN CSS Grid Layout reference](${MDN_GRID_URL})`,
       },
     },
     controls: {
@@ -89,20 +89,20 @@ const meta: Meta<typeof Grid> = {
     gap: {
       ...gap,
       description:
-        'Gap between all rows and columns — resolves from `theme.space`. Unlike the other grid props, this uses theme tokens (not a raw CSS string).',
+        'Gap between all rows and columns - resolves from `theme.space`. Unlike the other grid props, this uses theme tokens (not a raw CSS string).',
     },
     columnGap: {
       control: { type: 'select' },
       options: spaceTokens,
       description:
-        'Gap between columns — resolves from `theme.space`. Use when column and row gaps should differ; prefer `gap` when both axes match.',
+        'Gap between columns - resolves from `theme.space`. Use when column and row gaps should differ; prefer `gap` when both axes match.',
       table: { category: 'Spacing', type: { summary: 'GapToken' }, defaultValue: { summary: '0' } },
     },
     rowGap: {
       control: { type: 'select' },
       options: spaceTokens,
       description:
-        'Gap between rows — resolves from `theme.space`. Use when column and row gaps should differ; prefer `gap` when both axes match.',
+        'Gap between rows - resolves from `theme.space`. Use when column and row gaps should differ; prefer `gap` when both axes match.',
       table: { category: 'Spacing', type: { summary: 'GapToken' }, defaultValue: { summary: '0' } },
     },
     justifyContent: {
@@ -318,7 +318,7 @@ export const AutoRows: Story = {
   render: () => (
     <Grid gridTemplateColumns="1fr" gap={0}>
       <Typography variant="caption" as="div" color="secondary" mb={1}>
-        Without gridAutoRows — row height follows content
+        Without gridAutoRows - row height follows content
       </Typography>
       <Grid gridTemplateColumns="repeat(4, 1fr)" gap={2} mb={4}>
         <Cell label="short" />
@@ -330,7 +330,7 @@ export const AutoRows: Story = {
       </Grid>
 
       <Typography variant="caption" as="div" color="secondary" mb={1}>
-        gridAutoRows="80px" — all rows fixed height
+        gridAutoRows="80px" - all rows fixed height
       </Typography>
       <Grid gridTemplateColumns="repeat(4, 1fr)" gridAutoRows="80px" gap={2}>
         <Cell label="1" />
@@ -350,7 +350,7 @@ export const AutoFlow: Story = {
   render: () => (
     <Grid gridTemplateColumns="1fr" gap={0}>
       <Typography variant="caption" as="div" color="secondary" mb={1}>
-        gridAutoFlow="row" (default) — items fill row by row
+        gridAutoFlow="row" (default) - items fill row by row
       </Typography>
       <Grid gridTemplateColumns="repeat(3, 1fr)" gridAutoFlow="row" gap={2} mb={4}>
         {['A', 'B', 'C', 'D', 'E', 'F'].map((l) => (
@@ -359,7 +359,7 @@ export const AutoFlow: Story = {
       </Grid>
 
       <Typography variant="caption" as="div" color="secondary" mb={1}>
-        gridAutoFlow="column" — items fill column by column
+        gridAutoFlow="column" - items fill column by column
       </Typography>
       <Grid gridTemplateRows="repeat(2, 60px)" gridAutoFlow="column" gap={2}>
         {['A', 'B', 'C', 'D', 'E', 'F'].map((l) => (
@@ -374,13 +374,13 @@ export const SpanningItems: Story = {
   render: () => (
     <Grid gridTemplateColumns="repeat(3, 1fr)" gap={2}>
       <Grid gridColumn="1 / -1" bg="primary" p={2} borderRadius="sm" justifyContent="center">
-        gridColumn="1 / -1" — full width
+        gridColumn="1 / -1" - full width
       </Grid>
       <Cell label="1" />
       <Cell label="2" />
       <Cell label="3" />
       <Grid gridColumn="1 / 3" bg="secondary" p={2} borderRadius="sm" justifyContent="center">
-        gridColumn="1 / 3" — spans 2
+        gridColumn="1 / 3" - spans 2
       </Grid>
       <Cell label="5" />
       <Cell label="6" />

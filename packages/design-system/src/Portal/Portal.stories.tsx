@@ -22,7 +22,7 @@ const meta: Meta<PortalStoryArgs> = {
     target: {
       control: { type: 'inline-radio' },
       options: ['body', 'container'],
-      description: 'Where the Portal mounts its children — the document body or a custom element.',
+      description: 'Where the Portal mounts its children - the document body or a custom element.',
       table: { category: 'Behavior', defaultValue: { summary: 'body' } },
     },
   },

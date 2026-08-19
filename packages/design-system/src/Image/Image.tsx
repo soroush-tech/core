@@ -30,7 +30,7 @@ export interface ImageProps
   fallback?: string
   objectFit?: CSSProperties['objectFit']
   objectPosition?: CSSProperties['objectPosition']
-  /** Corner radius — resolves against `theme.radii`. */
+  /** Corner radius - resolves against `theme.radii`. */
   borderRadius?: keyof Theme['radii']
   /** Called once when all image sources are exhausted. */
   onError?: () => void

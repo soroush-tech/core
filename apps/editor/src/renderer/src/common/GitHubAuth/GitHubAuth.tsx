@@ -8,7 +8,7 @@ import type { useGitHubAuth } from '../../hooks/useGitHubAuth'
 /**
  * The account panel: the token form while signed out, the connected account
  * once a token is stored. Driven by props rather than calling `useGitHubAuth`
- * itself, because the rail row renders from the same session — see
+ * itself, because the rail row renders from the same session - see
  * `EditorSidebar`.
  */
 export type GitHubAuthProps = ReturnType<typeof useGitHubAuth>
@@ -51,14 +51,14 @@ export function GitHubAuth({
       ) : (
         <>
           <Typography variant="caption" color="secondary" m={0}>
-            Paste a fine-grained personal access token with “Gists: Read and write”.
+            Paste a fine-grained personal access token with "Gists: Read and write".
           </Typography>
           <TextInput
             type="password"
             size="sm"
             fullWidth
             value={token}
-            placeholder="github_pat_…"
+            placeholder="github_pat_..."
             onChange={(event) => setToken(event.target.value)}
             inputProps={{ 'aria-label': 'GitHub personal access token' }}
           />

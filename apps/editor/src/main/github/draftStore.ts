@@ -1,6 +1,6 @@
 import type { GistDraft, GistDraftFiles, GistDrafts, Result } from '../../shared/ipc'
 
-/** Disk access for the drafts file — injectable, like the other stores. */
+/** Disk access for the drafts file - injectable, like the other stores. */
 export interface DraftFileIo {
   readFile: (path: string, encoding: 'utf8') => Promise<string>
   writeFile: (path: string, content: string, encoding: 'utf8') => Promise<void>
@@ -9,10 +9,10 @@ export interface DraftFileIo {
 
 export interface DraftStore {
   read: (gistId: string) => Promise<GistDraft>
-  /** Every gist with something staged — how the rail finds work left unfinished. */
+  /** Every gist with something staged - how the rail finds work left unfinished. */
   list: () => Promise<GistDrafts>
   /**
-   * Reads a draft, changes it and writes it back as one step — nothing else
+   * Reads a draft, changes it and writes it back as one step - nothing else
    * touches the file in between, so two panels staging at once cannot drop each
    * other's work. Returns the draft as it now stands.
    */
@@ -44,18 +44,18 @@ function toDraft(stored: unknown): GistDraft {
 /**
  * Unpublished gist edits, kept as plain JSON beside the app's other user data
  * and keyed by gist id. Not encrypted: this is the user's own draft text, not
- * a credential — the token it will eventually be published with lives in
+ * a credential - the token it will eventually be published with lives in
  * `credentialStore` instead.
  */
 export function createDraftStore(filePath: string, io: DraftFileIo): DraftStore {
   // Every operation is a read-modify-write over one file, so they take turns:
   // two overlapping ones would each read the same snapshot and the later write
-  // would drop the earlier change — unpublished work that exists nowhere else.
+  // would drop the earlier change - unpublished work that exists nowhere else.
   let queue: Promise<unknown> = Promise.resolve()
 
   const serially = <T>(task: () => Promise<T>): Promise<T> => {
     // The queue never rejects, so a failed operation cannot stop the ones
-    // behind it — each still waits its turn.
+    // behind it - each still waits its turn.
     const run = queue.then(task)
     queue = run.catch(() => undefined)
     return run
@@ -65,7 +65,7 @@ export function createDraftStore(filePath: string, io: DraftFileIo): DraftStore 
     try {
       return JSON.parse(await io.readFile(filePath, 'utf8')) as Record<string, unknown>
     } catch {
-      // No file yet, or one we cannot parse — either way there is nothing staged.
+      // No file yet, or one we cannot parse - either way there is nothing staged.
       return {}
     }
   }
@@ -73,7 +73,7 @@ export function createDraftStore(filePath: string, io: DraftFileIo): DraftStore 
   /**
    * Writes beside the file and renames over it. A write interrupted halfway
    * would otherwise leave a truncated file, which reads back as no drafts at
-   * all — every gist's staged work gone, without an error.
+   * all - every gist's staged work gone, without an error.
    */
   const writeAll = async (drafts: Record<string, unknown>): Promise<Result<null>> => {
     const temporary = `${filePath}.tmp`

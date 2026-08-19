@@ -2,7 +2,7 @@
 
 The bench-action comment relay Worker (Hono) at `api.bench.soroush.tech`. It lets the
 `soroush-tech/bench-action` CI step post its benchmark report as a **sticky PR comment authored
-by the bench bot** — without any repo handing out a GitHub token. CI runners authenticate with
+by the bench bot** - without any repo handing out a GitHub token. CI runners authenticate with
 their short-lived GitHub Actions **OIDC JWT**; the relay verifies it, mints an installation
 token for the bench GitHub App, and creates or updates the marker-matched comment on the PR.
 
@@ -55,14 +55,14 @@ hidden marker `<!-- soroush-bench-action -->`, and it upserts the single marker-
 | ------ | ------------------ | -------------------------------------------------------------------- |
 | `GET`  | `/v1/health`       | Liveness check → `200 { ok: true }` (rate-limit exempt).             |
 | `POST` | `/v1/report`       | Verify OIDC, mint installation token, upsert the PR report comment.  |
-| `GET`  | `/v1/docs`         | Swagger UI — **only when `DOCS_ENABLED=true`** (404 otherwise).      |
-| `GET`  | `/v1/openapi.json` | OpenAPI 3.1 spec — same gate as `/v1/docs`; never set in production. |
+| `GET`  | `/v1/docs`         | Swagger UI - **only when `DOCS_ENABLED=true`** (404 otherwise).      |
+| `GET`  | `/v1/openapi.json` | OpenAPI 3.1 spec - same gate as `/v1/docs`; never set in production. |
 
 `POST /v1/report` responses: `401` (missing/invalid OIDC token, repository mismatch), `400`
 (bad JSON/payload), `413` (body over 64 KiB), `404` (app not installed on the repo), `429`
 (rate-limited), `502` (GitHub API failure).
 
-Unlike `@soroush/api` there is no CORS/origin guard — the callers are CI runners, not browsers.
+Unlike `@soroush/api` there is no CORS/origin guard - the callers are CI runners, not browsers.
 
 ## Bindings & config
 
@@ -70,14 +70,14 @@ Unlike `@soroush/api` there is no CORS/origin guard — the callers are CI runne
 shared `@soroush.tech/wrangler-tools` bin) so no IDs land in the repo; `config:gen` (run
 automatically on `predev`/`predeploy`) regenerates it. Bindings and vars:
 
-- `RATE_LIMITER` — Workers rate-limit binding, 10 requests / 60s per IP (all routes except
+- `RATE_LIMITER` - Workers rate-limit binding, 10 requests / 60s per IP (all routes except
   `/v1/health` and the docs routes).
-- `BENCH_GH_APP_ID` — the bench GitHub App id (wrangler var; dev placeholder `0` in
+- `BENCH_GH_APP_ID` - the bench GitHub App id (wrangler var; dev placeholder `0` in
   `default.env`, real id in the `cd-worker-bench` deploy environment).
-- `DOCS_ENABLED` — serves the docs routes when `'true'`; local/preview only.
+- `DOCS_ENABLED` - serves the docs routes when `'true'`; local/preview only.
 
 ## Testing
 
-`pnpm --filter @soroush/bench-api test:coverage` — the Hono app is exercised in-process via
+`pnpm --filter @soroush/bench-api test:coverage` - the Hono app is exercised in-process via
 `app.request()` with a stubbed `fetch` (JWKS, GitHub REST) and real WebCrypto signing/verifying;
 100% coverage is required.

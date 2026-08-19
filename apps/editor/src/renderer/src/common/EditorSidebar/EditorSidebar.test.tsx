@@ -294,7 +294,7 @@ describe('EditorSidebar', () => {
       await userEvent.click(row('New gist'))
 
       // The panel stays mounted across every swap, so a choice made for the gist
-      // just created would otherwise still be ticked for the next one — and
+      // just created would otherwise still be ticked for the next one - and
       // publishing someone's notes to the world is not a mistake they can take back.
       expect(await screen.findByRole('checkbox', { name: 'Public gist' })).not.toBeChecked()
     })
@@ -310,7 +310,7 @@ describe('EditorSidebar', () => {
     await userEvent.click(row('Drafts'))
     await userEvent.click(await screen.findByRole('button', { name: 'wip.md' }))
 
-    // The draft opens straight into the files panel — no detour through the list.
+    // The draft opens straight into the files panel - no detour through the list.
     expect(row('Files')).toHaveAttribute('aria-expanded', 'true')
     expect(row('Gists')).toHaveAttribute('aria-expanded', 'false')
     expect(gistsApi.files).toHaveBeenCalledWith('def456')

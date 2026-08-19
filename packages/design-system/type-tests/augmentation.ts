@@ -37,13 +37,13 @@ declare module '@soroush.tech/design-system/theme' {
   }
 }
 
-// Component prop unions widen to the augmented keys…
+// Component prop unions widen to the augmented keys...
 export const brandColor: ButtonColor = 'brand'
 export const xlSize: CheckboxSize = 'xl'
 export const tertiaryBg: ViewBackgroundToken = 'tertiary'
 export const elevationKey: keyof Theme['elevations'] = 'mid'
 
-// …while unknown keys still error.
+// ...while unknown keys still error.
 // @ts-expect-error -- 'bogus' is not a palette color
 export const bogusColor: ButtonColor = 'bogus'
 // @ts-expect-error -- 'xxl' is not a theme size
@@ -59,7 +59,7 @@ export const override: ThemeOverride = {
   palette: { brand: { main: '#00ff88', light: '#66ffb2', dark: '#00b25f', contrastText: '#000' } },
   background: { tertiary: '#101418' },
   elevations: { low: '0 1px 2px', mid: '0 2px 6px', high: '0 6px 18px' },
-  // theme.defaults accepts augmented keys — components then default to them.
+  // theme.defaults accepts augmented keys - components then default to them.
   defaults: { size: 'xl', color: 'brand', bg: 'tertiary' },
   // Per-component customization: built-in and consumer-registered components.
   components: {

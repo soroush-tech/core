@@ -54,7 +54,7 @@ Secondary image URL shown when `src` (and `srcSet`) are absent or fail to load. 
 
 ### `children`
 
-Rendered when no image source is available or all sources have errored — typically initials or an icon.
+Rendered when no image source is available or all sources have errored - typically initials or an icon.
 
 ```tsx
 <Avatar bg="secondary">JD</Avatar>
@@ -78,7 +78,7 @@ Default: `"circular"`.
 
 ### `size`
 
-Preset size — resolves against `theme.avatar`.
+Preset size - resolves against `theme.avatar`.
 
 | Value  | width / height |
 | ------ | -------------- |
@@ -93,7 +93,7 @@ Default: `"md"`.
 
 ### `ring`
 
-`boolean` — adds a CSS outline around the avatar.
+`boolean` - adds a CSS outline around the avatar.
 
 Default: `1px solid theme.border.primary` with `outline-offset: 2px`.
 
@@ -101,7 +101,7 @@ Default: `1px solid theme.border.primary` with `outline-offset: 2px`.
 
 ### `ringColor`
 
-Overrides the ring color — resolves against `theme.border`.
+Overrides the ring color - resolves against `theme.border`.
 
 | Token       | Description            |
 | ----------- | ---------------------- |
@@ -113,7 +113,7 @@ Overrides the ring color — resolves against `theme.border`.
 
 ### `ringWidth`
 
-Overrides the ring width — resolves against `theme.borderWidths`.
+Overrides the ring width - resolves against `theme.borderWidths`.
 
 | Token     | Value         |
 | --------- | ------------- |
@@ -126,7 +126,7 @@ Overrides the ring width — resolves against `theme.borderWidths`.
 
 ## Styled-system props
 
-Avatar extends `Flex` minus all padding props. Outer spacing (`m`, `mt`, `mr`, `mb`, `ml`, `mx`, `my`) adjusts margin via `theme.space`. Padding is intentionally excluded — the image fills the container with `object-fit: cover` and padding would break the fill.
+Avatar extends `Flex` minus all padding props. Outer spacing (`m`, `mt`, `mr`, `mb`, `ml`, `mx`, `my`) adjusts margin via `theme.space`. Padding is intentionally excluded - the image fills the container with `object-fit: cover` and padding would break the fill.
 
 ---
 

@@ -6,8 +6,8 @@ const CENTER = VIEW_SIZE / 2
 /** Reuse saved positions so existing nodes don't jump; new nodes spawn at their
  *  anchor. The root is pinned at the centre. A node the viewer has dragged is in
  *  `pinned`, so it stays fixed where it was dropped. In a root-less graph the areas
- *  (top-level hubs, `group > 0`) are force-positioned — seeded on a ring so they don't
- *  start coincident — and the force layout (their area↔area relations) arranges them. */
+ *  (top-level hubs, `group > 0`) are force-positioned - seeded on a ring so they don't
+ *  start coincident - and the force layout (their area↔area relations) arranges them. */
 export function buildNodes(
   nodes: GraphNode[],
   links: RawLink[],
@@ -40,8 +40,8 @@ export function buildNodes(
 
       const saved = positions.get(n.id)
       if (saved) return { ...n, x: saved.x, y: saved.y }
-      // Spawn at an anchor: a tech node's containment parent, or — for a group node,
-      // which has only outgoing group links — one of its members. A relation-anchored
+      // Spawn at an anchor: a tech node's containment parent, or - for a group node,
+      // which has only outgoing group links - one of its members. A relation-anchored
       // (floating) node has neither, so it falls back to a relation neighbour that is
       // already placed, easing in beside it instead of from the centre.
       const parent = links.find((l) => l.target === n.id && l.kind === undefined)

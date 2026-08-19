@@ -27,7 +27,7 @@ const meta: Meta<typeof FormHelperText> = {
       control: { type: 'select' },
       options: textColorTokens,
       description:
-        'Text color — resolves against `theme.text`. Inherits `textColor` from context when unset; ignored in the error state.',
+        'Text color - resolves against `theme.text`. Inherits `textColor` from context when unset; ignored in the error state.',
       table: { category: 'Visual', defaultValue: { summary: 'secondary' } },
     },
   },

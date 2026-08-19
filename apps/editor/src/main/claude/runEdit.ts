@@ -7,21 +7,36 @@ import { createLineReader, parseStreamLine } from './parseStream'
 export interface EditSelectionRequest {
   selectedText: string
   instruction: string
-  /** Background material — another gist to build on. Empty when there is none. */
+  /** Background material - another gist to build on. Empty when there is none. */
   context?: string
 }
 
+/**
+ * ASCII only, and no quote, backtick or dollar: this is interpolated into the
+ * command line below, where any of those would end the argument or be read by
+ * the shell.
+ *
+ * The punctuation rule asks for what `normalizeTypography` would otherwise have
+ * to repair on the way into the document. It names the characters rather than
+ * demanding ASCII throughout, which would forbid the punctuation Persian and
+ * every other non-Latin script are written with.
+ */
 const EDIT_TASK_PROMPT =
   'Rewrite the TEXT block according to the INSTRUCTION block, both provided on stdin. ' +
   'If the TEXT block is empty, write new content that satisfies the INSTRUCTION block. ' +
   'A CONTEXT block, when present, is earlier work to build on - refer to it, but do not ' +
   'repeat it or rewrite it. ' +
+  'Punctuate with straight quotes, hyphens rather than en or em dashes, three periods ' +
+  'rather than an ellipsis character, and ordinary spaces rather than non-breaking or ' +
+  'zero-width ones. ' +
+  'Write plainly: no stock opener, no summary of what was just written, and never the ' +
+  'shape of it is not just X, it is Y. ' +
   'Output only the rewritten text - no explanations, no commentary, no code fences around the result.'
 
 /**
  * The full CLI invocation as one constant string: every flag is fixed and all
  * user content travels over stdin, so nothing user-controlled ever reaches the
- * shell. Deliberately NOT `--bare` — bare mode skips the OAuth/keychain reads,
+ * shell. Deliberately NOT `--bare` - bare mode skips the OAuth/keychain reads,
  * and reusing the signed-in user's own `claude` login is the point.
  *
  * `--include-partial-messages` is what makes the answer arrive as it is
@@ -45,7 +60,7 @@ export function buildStdin({ selectedText, instruction, context }: EditSelection
 export interface ClaudeRunner {
   /** Spawns a run and reports it through `emit`. Returns once it has started. */
   start: (runId: string, request: EditSelectionRequest) => void
-  /** Kills a run in flight. Unknown ids are ignored — it may have just finished. */
+  /** Kills a run in flight. Unknown ids are ignored - it may have just finished. */
   cancel: (runId: string) => void
 }
 
@@ -128,7 +143,7 @@ export function createClaudeRunner(
       })
 
       child.on('close', (code, signal) => {
-        // Already reported through 'error' — nothing here to add.
+        // Already reported through 'error' - nothing here to add.
         if (!running.delete(runId)) return
         // Before the flush, not after: what the decoder is holding is the tail of
         // an answer nobody is waiting for.

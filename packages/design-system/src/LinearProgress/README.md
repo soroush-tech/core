@@ -1,8 +1,8 @@
 # LinearProgress
 
-Renders a horizontal loading bar — the linear counterpart of `CircularProgress`. Supports `indeterminate` (looping), `determinate` (value-driven), and `query` (reversed loop) variants, plus a `buffer` mode on top of `determinate`. All fills use CSS `currentColor`; the `color` prop resolves to `theme.palette[color].main`.
+Renders a horizontal loading bar - the linear counterpart of `CircularProgress`. Supports `indeterminate` (looping), `determinate` (value-driven), and `query` (reversed loop) variants, plus a `buffer` mode on top of `determinate`. All fills use CSS `currentColor`; the `color` prop resolves to `theme.palette[color].main`.
 
-**Architecture:** the root element is a `<span>` (display block, `thickness` tall, full width, `overflow: hidden`) that establishes the color context. The track, buffer bar, and primary bar are absolutely positioned spans inside it, all painted with `currentColor` at different opacities — no extra color tokens needed. Value-driven bars translate with `transform: translateX(...)` so progress updates animate on the compositor.
+**Architecture:** the root element is a `<span>` (display block, `thickness` tall, full width, `overflow: hidden`) that establishes the color context. The track, buffer bar, and primary bar are absolutely positioned spans inside it, all painted with `currentColor` at different opacities - no extra color tokens needed. Value-driven bars translate with `transform: translateX(...)` so progress updates animate on the compositor.
 
 ---
 
@@ -12,8 +12,8 @@ Renders a horizontal loading bar — the linear counterpart of `CircularProgress
 
 | Value             | Description                                                                           |
 | ----------------- | ------------------------------------------------------------------------------------- |
-| `"indeterminate"` | Continuous looping animation — use when progress is unknown.                          |
-| `"determinate"`   | Bar width driven by `value` — use when progress is measurable.                        |
+| `"indeterminate"` | Continuous looping animation - use when progress is unknown.                          |
+| `"determinate"`   | Bar width driven by `value` - use when progress is measurable.                        |
 | `"query"`         | The `indeterminate` animation played in the reverse direction (root is flipped 180°). |
 
 Default: `"indeterminate"`.
@@ -73,7 +73,7 @@ Has no effect on `"indeterminate"` and `"query"`.
 
 ### `spinning`
 
-`boolean` — sends the filled segment travelling along a `"determinate"` track. The segment's length always equals `value`, and as its leading edge passes the end of the track the remainder re-enters from the beginning (wrap-around) — the linear analog of `CircularProgress`'s rotating determinate arc.
+`boolean` - sends the filled segment travelling along a `"determinate"` track. The segment's length always equals `value`, and as its leading edge passes the end of the track the remainder re-enters from the beginning (wrap-around) - the linear analog of `CircularProgress`'s rotating determinate arc.
 
 Implemented as two value-length segments one full track width apart on a carrier that translates by 100% per cycle, so the wrap is seamless.
 
@@ -101,7 +101,7 @@ Default: `"linear"`.
 
 ### `showTrack`
 
-`boolean` — renders the faint background track (20% opacity `currentColor`), or the dotted leading edge when `buffer` is set. Disable it for a bar that floats on the page background.
+`boolean` - renders the faint background track (20% opacity `currentColor`), or the dotted leading edge when `buffer` is set. Disable it for a bar that floats on the page background.
 
 Default: `true`.
 
@@ -109,7 +109,7 @@ Default: `true`.
 
 ### `round`
 
-`boolean` — rounds the bar's corners into a pill shape (same radius literal `Button`'s `"pill"` shape uses). The root's `overflow: hidden` clips the inner bars to the radius.
+`boolean` - rounds the bar's corners into a pill shape (same radius literal `Button`'s `"pill"` shape uses). The root's `overflow: hidden` clips the inner bars to the radius.
 
 Default: `false`.
 
@@ -137,7 +137,7 @@ When the bar describes the loading progress of a particular page region, point t
 
 ## Styled-system props
 
-### Space — `theme.space` (margin only — padding is blocked)
+### Space - `theme.space` (margin only - padding is blocked)
 
 Padding props (`p`, `pt`, `pr`, `pb`, `pl`, `px`, `py`) are omitted at the type level because padding would offset the absolutely positioned bars inside the root.
 
@@ -177,19 +177,19 @@ Padding props (`p`, `pt`, `pr`, `pb`, `pl`, `px`, `py`) are omitted at the type 
 // Determinate at 75%
 <LinearProgress variant="determinate" value={75} />
 
-// Buffer — 40% played, 70% buffered
+// Buffer - 40% played, 70% buffered
 <LinearProgress variant="determinate" buffer value={40} valueBuffer={70} />
 
-// Query — reversed indeterminate animation
+// Query - reversed indeterminate animation
 <LinearProgress variant="query" />
 
-// Spinning determinate — the value-length segment travels and wraps around
+// Spinning determinate - the value-length segment travels and wraps around
 <LinearProgress variant="determinate" value={40} spinning />
 
 // Custom easing on the transition and travel
 <LinearProgress variant="determinate" value={40} spinning easing="ease-in-out" />
 
-// Custom range (0–200)
+// Custom range (0-200)
 <LinearProgress variant="determinate" value={120} min={0} max={200} />
 
 // Thicker bar

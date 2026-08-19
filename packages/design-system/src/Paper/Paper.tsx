@@ -32,13 +32,13 @@ export type PaperElevation =
   | 24
 
 export interface PaperProps extends FlexProps {
-  /** Shadow depth — 0 (flat) to 24 (highest). Resolves to theme.shadows[n]. Default: 1. */
+  /** Shadow depth - 0 (flat) to 24 (highest). Resolves to theme.shadows[n]. Default: 1. */
   elevation?: PaperElevation
   /** CSS transition for surface animations (e.g. hover elevation change). */
   transition?: CSSProperties['transition']
-  /** Resolves against theme.border — light · primary · dark */
+  /** Resolves against theme.border - light · primary · dark */
   borderColor?: keyof Theme['border']
-  /** Resolves against theme.borderWidths — none · thin · base · thick */
+  /** Resolves against theme.borderWidths - none · thin · base · thick */
   borderWidth?: keyof Theme['borderWidths']
   /** CSS border-style value (e.g. 'solid', 'dashed'). */
   borderStyle?: CSSProperties['borderStyle']
@@ -46,7 +46,7 @@ export interface PaperProps extends FlexProps {
   as?: ElementType
 }
 
-// aspectRatio needs no manual wiring since @soroush.tech/styled-system 5.8.0 — it
+// aspectRatio needs no manual wiring since @soroush.tech/styled-system 5.8.0 - it
 // arrives through View's `layout` parser and `LayoutProps`.
 const shouldForwardProp = createShouldForwardProp([
   'elevation',

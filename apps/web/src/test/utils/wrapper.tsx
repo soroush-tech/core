@@ -23,7 +23,7 @@ const AppWrapper = ({ children }: { children: ReactNode }) => (
   </BrandThemeProvider>
 )
 
-// Raw component exports — for renderHook({ wrapper })
+// Raw component exports - for renderHook({ wrapper })
 export const wrapper = AppWrapper
 
 export const queryWrapperWithSuspense = ({ children }: { children: ReactNode }) => (
@@ -32,7 +32,7 @@ export const queryWrapperWithSuspense = ({ children }: { children: ReactNode }) 
   </Suspense>
 )
 
-// Render helpers — for component tests
+// Render helpers - for component tests
 export const renderWithTheme = (ui: ReactNode, options?: RenderOptions) =>
   render(ui, { wrapper: BrandThemeProvider, ...options })
 

@@ -10,7 +10,7 @@ export const base64UrlEncode = (data: Uint8Array | string): string => {
 /** Decode a base64url string (with or without padding) to bytes. */
 export const base64UrlDecode = (encoded: string): Uint8Array => {
   const binary = atob(encoded.replaceAll('-', '+').replaceAll('_', '/'))
-  // atob output is latin1, so every char is a single BMP code point — never undefined.
+  // atob output is latin1, so every char is a single BMP code point - never undefined.
   return Uint8Array.from(binary, (char) => char.codePointAt(0) as number)
 }
 
@@ -68,8 +68,8 @@ const wrapPkcs1InPkcs8 = (pkcs1: Uint8Array): Uint8Array => {
 
 /**
  * Strip a private-key PEM's armor and decode to PKCS#8 DER for WebCrypto import. Accepts both
- * PKCS#8 (`BEGIN PRIVATE KEY`) and PKCS#1 (`BEGIN RSA PRIVATE KEY`) — the format GitHub App
- * key downloads use — wrapping the latter in a PKCS#8 `PrivateKeyInfo`.
+ * PKCS#8 (`BEGIN PRIVATE KEY`) and PKCS#1 (`BEGIN RSA PRIVATE KEY`) - the format GitHub App
+ * key downloads use - wrapping the latter in a PKCS#8 `PrivateKeyInfo`.
  */
 export const pemToPkcs8Der = (pem: string): Uint8Array => {
   const isPkcs1 = pem.includes('-----BEGIN RSA PRIVATE KEY-----')
