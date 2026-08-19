@@ -16,6 +16,7 @@
     "format:check": "oxfmt --check",
     "gen:publish-options": "node scripts/gen-publish-options.mjs",
     "check:release-notes": "node scripts/check-release-notes.mjs",
+    "check:typography": "aiwg --all",
     "dev": "pnpm --parallel -r dev",
     "dev:editor": "pnpm --filter @soroush/editor dev",
     "dev:web": "pnpm --filter @soroush/web dev",
@@ -48,6 +49,7 @@
     "deploy": "pnpm --filter @soroush/web deploy"
   },
   "devDependencies": {
+    "ai-watermark-guard": "^0.1.0",
     "husky": "^9.1.7",
     "oxfmt": "^0.63.0",
     "oxfmt-quick": "^1.0.0",

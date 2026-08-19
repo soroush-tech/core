@@ -1,0 +1,3 @@
+# Commit messages get the same pass as files. Fixed in place before the commit object exists, so
+# nothing is rewritten afterwards and no signature is disturbed.
+pnpm exec aiwg --message "$1" --fix
