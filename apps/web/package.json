@@ -97,6 +97,7 @@
     "@vitest/browser-playwright": "^4.1.10",
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/ui": "^4.1.10",
+    "ai-watermark-guard": "^0.1.0",
     "chromatic": "^18.2.0",
     "cross-env": "^10.1.0",
     "gh-pages": "^6.3.0",

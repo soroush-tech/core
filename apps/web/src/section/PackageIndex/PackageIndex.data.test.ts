@@ -57,6 +57,13 @@ describe('PackageIndex.data', () => {
     expect(entry?.keywords.length).toBeGreaterThan(0)
   })
 
+  it('includes ai-watermark-guard, which also ships from its own repository', () => {
+    const entry = packages.find((p) => p.name === 'ai-watermark-guard')
+    expect(entry).toBeDefined()
+    expect(entry?.href).toBe('/ai-watermark-guard/')
+    expect(entry?.target).toBeUndefined()
+  })
+
   it('links an unscoped package to its own detail page, not to npm', () => {
     const entry = packages.find((p) => p.name === 'oxfmt-quick')
     expect(entry?.href).toBe('/oxfmt-quick/')
