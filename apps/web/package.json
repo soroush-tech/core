@@ -106,7 +106,7 @@
     "msw": "^2.15.0",
     "msw-storybook-addon": "^3.0.0",
     "oxfmt": "^0.63.0",
-    "oxfmt-quick": "^1.0.0",
+    "oxfmt-quick": "^1.0.1",
     "oxlint": "^1.78.0",
     "serve": "^14.2.6",
     "storybook": "^10.5.8",
