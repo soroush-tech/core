@@ -32,7 +32,7 @@ and no install script runs, so it survives an install with `--ignore-scripts`.
 
 ## Fast enough to run on every commit
 
-A guard that runs on every commit has to be quicker than the pause it adds. Over this [soroush.tech/core](https://github.com/soroush-tech/cor) site's
+A guard that runs on every commit has to be quicker than the pause it adds. Over this [soroush.tech/core](https://github.com/soroush-tech/core) site's
 own repository - 1,605 tracked text files, a full sweep takes about
 **100ms**, where the Vanilla Node.js script it replaced took 230ms.
 
