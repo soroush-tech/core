@@ -162,6 +162,13 @@ export const GITHUB_CHANNELS = {
   openTokenSettings: 'github:open-token-settings',
 } as const
 
+export const UPDATE_CHANNELS = {
+  /** Main → renderer: a new version is downloaded, with its version string. */
+  downloaded: 'update:downloaded',
+  /** Restart into the downloaded version. */
+  install: 'update:install',
+} as const
+
 /** An application-menu item the renderer must act on (it owns the document state). */
 export type MenuAction = 'new' | 'open' | 'save' | 'save-as' | 'undo' | 'redo'
 

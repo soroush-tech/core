@@ -5,6 +5,7 @@ import {
   GIST_CHANNELS,
   GITHUB_CHANNELS,
   MENU_CHANNELS,
+  UPDATE_CHANNELS,
   type ClaudeEvent,
   type GistDraft,
   type GistDraftChange,
@@ -118,6 +119,18 @@ const editorAPI = {
     /** Asks what to do about unsaved changes: save, discard, or cancel. */
     confirmDiscard: (): Promise<Result<UnsavedChoice>> =>
       ipcRenderer.invoke(FILE_CHANNELS.confirmDiscard),
+  },
+  update: {
+    /** Subscribes to "a new version is downloaded and ready"; returns an unsubscribe. */
+    onDownloaded: (callback: (version: string) => void): (() => void) => {
+      const handler = (_event: IpcRendererEvent, version: string) => callback(version)
+      ipcRenderer.on(UPDATE_CHANNELS.downloaded, handler)
+      return () => {
+        ipcRenderer.removeListener(UPDATE_CHANNELS.downloaded, handler)
+      }
+    },
+    /** Restarts into the downloaded version. */
+    install: (): Promise<Result<null>> => ipcRenderer.invoke(UPDATE_CHANNELS.install),
   },
   menu: {
     /** Subscribes to application-menu actions; returns an unsubscribe. */

@@ -55,12 +55,18 @@ const gistsApi = {
   onDraftChanged: vi.fn((_callback: (change: unknown) => void) => vi.fn()),
 }
 
+const updateApi = {
+  onDownloaded: vi.fn((_callback: (version: string) => void) => vi.fn()),
+  install: vi.fn(),
+}
+
 vi.stubGlobal('editorAPI', {
   file: fileApi,
   claude: claudeApi,
   menu: menuApi,
   github: githubApi,
   gists: gistsApi,
+  update: updateApi,
 })
 
 /** Fires an application-menu action the way the preload bridge would. */
