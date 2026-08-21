@@ -1,3 +1,4 @@
+import aiWatermarkGuard from 'ai-watermark-guard/package.json'
 import oxfmtQuick from 'oxfmt-quick/package.json'
 
 export interface PackageEntry {
@@ -66,7 +67,7 @@ const pagedSlugs = new Set(
  * so the card cannot drift from what was published - the version shown is the one this site is
  * built against, which moves when the dependency is bumped.
  */
-const external: PackageJson[] = [oxfmtQuick]
+const external: PackageJson[] = [aiWatermarkGuard, oxfmtQuick]
 
 /** Published packages, discovered from the workspace and the list above, sorted by name. */
 export const packages: PackageEntry[] = [...Object.values(packageJsons), ...external]
