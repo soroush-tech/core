@@ -9,9 +9,16 @@ directories:
 files:
   - out/**
 
+# Artifact names must carry no spaces: electron-builder writes the space→dash
+# form into latest*.yml, but CD uploads the files as they are named on disk and
+# GitHub renames spaces to dots - leaving the manifest pointing at an asset
+# that does not exist, and every update check 404ing. Space-free names make the
+# manifest, the local file and the release asset one and the same.
+
 # One binary for Apple Silicon and Intel. The zip is not optional: macOS
 # auto-update only consumes zips - the dmg is for people.
 mac:
+  artifactName: Soroush-Editor-${version}-${arch}.${ext}
   target:
     - target: dmg
       arch: universal
@@ -35,6 +42,9 @@ win:
   target:
     - target: nsis
       arch: x64
+
+nsis:
+  artifactName: Soroush-Editor-Setup-${version}.${ext}
 
 # Not used to publish - CD builds with --publish never and assembles the
 # release itself (see cd-editor.yml). This block still matters: it is baked

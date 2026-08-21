@@ -4,6 +4,7 @@ import {
   GIST_CHANNELS,
   GITHUB_CHANNELS,
   MENU_CHANNELS,
+  UPDATE_CHANNELS,
 } from '../shared/ipc'
 import type { EditorAPI } from './index'
 
@@ -165,5 +166,27 @@ describe('preload editorAPI', () => {
 
     unsubscribe()
     expect(removeListener).toHaveBeenCalledWith(CLAUDE_CHANNELS.event, handler)
+  })
+
+  it('maps the update install to its channel', async () => {
+    await api.update.install()
+    expect(invoke).toHaveBeenLastCalledWith(UPDATE_CHANNELS.install)
+  })
+
+  it('relays the downloaded version to the subscriber until unsubscribed', () => {
+    const callback = vi.fn()
+    const unsubscribe = api.update.onDownloaded(callback)
+
+    const [channel, handler] = on.mock.lastCall as [
+      string,
+      (event: unknown, version: string) => void,
+    ]
+    expect(channel).toBe(UPDATE_CHANNELS.downloaded)
+
+    handler({}, '0.4.0')
+    expect(callback).toHaveBeenCalledWith('0.4.0')
+
+    unsubscribe()
+    expect(removeListener).toHaveBeenCalledWith(UPDATE_CHANNELS.downloaded, handler)
   })
 })

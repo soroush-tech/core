@@ -7,6 +7,7 @@ import type { GistOrigin } from '../../shared/ipc'
 import { ClaudePanel } from './common/ClaudePanel'
 import { DocumentEditor, type EditorSelection } from './common/DocumentEditor'
 import { EditorSidebar } from './common/EditorSidebar'
+import { UpdateBanner } from './common/UpdateBanner'
 import { useAutosave } from './hooks/useAutosave'
 import { useDocument } from './hooks/useDocument'
 import { useUndoRedo } from './hooks/useUndoRedo'
@@ -140,48 +141,52 @@ export function App() {
   return (
     <ThemeProvider theme={editorTheme}>
       <GlobalStyles />
-      <Flex flexDirection="row" height="100vh">
-        <EditorSidebar
-          onOpenFile={openGistFile}
-          onRenameFile={renameOrigin}
-          onPublished={followPublished}
-        />
-        <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
-          <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>
-            <Typography variant="body2" color="secondary" m={0}>
-              {documentName}
-              {isDirty ? ' •' : ''}
-            </Typography>
-            {/* Ctrl+S does this too, but a gist file has to be saved before it
+      <Flex flexDirection="column" height="100vh">
+        {/* Above everything: a downloaded update concerns the whole app, not a pane of it. */}
+        <UpdateBanner />
+        <Flex flexDirection="row" flex={1} minHeight={0}>
+          <EditorSidebar
+            onOpenFile={openGistFile}
+            onRenameFile={renameOrigin}
+            onPublished={followPublished}
+          />
+          <Flex flexDirection="column" gap={2} p={3} flex={1} minWidth={0}>
+            <Flex flexDirection="row" alignItems="center" justifyContent="space-between" gap={2}>
+              <Typography variant="body2" color="secondary" m={0}>
+                {documentName}
+                {isDirty ? ' •' : ''}
+              </Typography>
+              {/* Ctrl+S does this too, but a gist file has to be saved before it
                 can be published, so the step needs to be visible. */}
-            <Button
-              type="button"
-              variant="outlined"
-              size="sm"
-              disabled={!isDirty}
-              onClick={() => void save()}
-            >
-              {origin ? 'Save to sandbox' : 'Save'}
-            </Button>
-          </Flex>
-          {error && (
-            <Typography role="alert" color="error" m={0}>
-              {error}
-            </Typography>
-          )}
-          {/* The document scrolls inside this row so the chat bar below stays pinned.
+              <Button
+                type="button"
+                variant="outlined"
+                size="sm"
+                disabled={!isDirty}
+                onClick={() => void save()}
+              >
+                {origin ? 'Save to sandbox' : 'Save'}
+              </Button>
+            </Flex>
+            {error && (
+              <Typography role="alert" color="error" m={0}>
+                {error}
+              </Typography>
+            )}
+            {/* The document scrolls inside this row so the chat bar below stays pinned.
             The 4px padding leaves room for TextInput's focus ring (2px outline +
             2px offset outside the box), which the scroll container would clip. */}
-          <Flex flexDirection="row" gap={3} flex={1} minHeight={0} overflow="auto" p={0.5}>
-            <DocumentEditor value={content} onChange={change} onSelectionChange={setSelection} />
+            <Flex flexDirection="row" gap={3} flex={1} minHeight={0} overflow="auto" p={0.5}>
+              <DocumentEditor value={content} onChange={change} onSelectionChange={setSelection} />
+            </Flex>
+            <ClaudePanel
+              targetText={targetText}
+              isSelection={hasSelection}
+              documentName={documentName}
+              onStart={beginEdit}
+              onApply={applyEdit}
+            />
           </Flex>
-          <ClaudePanel
-            targetText={targetText}
-            isSelection={hasSelection}
-            documentName={documentName}
-            onStart={beginEdit}
-            onApply={applyEdit}
-          />
         </Flex>
       </Flex>
     </ThemeProvider>

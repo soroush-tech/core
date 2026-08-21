@@ -14,6 +14,7 @@ import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
 import { registerGistHandlers } from './ipc/gistHandlers'
 import { registerGitHubHandlers } from './ipc/githubHandlers'
 import { installApplicationMenu } from './menu'
+import { startAutoUpdates, type Updater } from './updater'
 import { MENU_CHANNELS } from '../shared/ipc'
 
 let mainWindow: BrowserWindow | null = null
@@ -47,11 +48,11 @@ function createWindow(devRendererUrl: string | undefined): void {
 }
 
 /**
- * Wires the whole main process: CSP headers, IPC handlers, and window
- * lifecycle. `spawnFn` is injected so unit tests never touch a real child
- * process; index.ts passes the real `spawn`.
+ * Wires the whole main process: CSP headers, IPC handlers, auto-updates, and
+ * window lifecycle. `spawnFn` and `updater` are injected so unit tests never
+ * touch a real child process or updater; index.ts passes the real ones.
  */
-export function bootstrap(spawnFn: typeof spawn): void {
+export function bootstrap(spawnFn: typeof spawn, updater: Updater): void {
   // Set by electron-vite in dev; production loads the built renderer from disk.
   const devRendererUrl = process.env.ELECTRON_RENDERER_URL
 
@@ -108,6 +109,10 @@ export function bootstrap(spawnFn: typeof spawn): void {
       })
 
       createWindow(devRendererUrl)
+
+      // After the window exists: the "downloaded" notice goes to whichever
+      // window is current when the download lands.
+      startAutoUpdates(app.isPackaged, updater, () => mainWindow)
 
       // Reload from the View menu runs the same guard as closing: a dirty
       // document prompts first, so a reload can never wipe unsaved work. As

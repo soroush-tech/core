@@ -10,6 +10,7 @@ import { confirmDiscard, registerFileHandlers } from './ipc/fileHandlers'
 import { registerGistHandlers } from './ipc/gistHandlers'
 import { registerGitHubHandlers } from './ipc/githubHandlers'
 import { installApplicationMenu } from './menu'
+import { startAutoUpdates, type Updater } from './updater'
 
 const { appEvents, whenReady, quit, onHeadersReceived, FakeBrowserWindow } = vi.hoisted(() => {
   const appEvents = new Map<string, (...args: never[]) => void>()
@@ -51,6 +52,7 @@ vi.mock('electron', () => ({
   app: {
     whenReady,
     quit,
+    isPackaged: false,
     getPath: vi.fn(() => 'C:\\userData'),
     on: (event: string, handler: (...args: never[]) => void) => {
       appEvents.set(event, handler)
@@ -72,14 +74,16 @@ vi.mock('./ipc/fileHandlers', () => ({
   confirmDiscard: vi.fn(),
   registerFileHandlers: vi.fn(),
 }))
+vi.mock('./updater', () => ({ startAutoUpdates: vi.fn() }))
 
 const { bootstrap } = await import('./bootstrap')
 
 const spawnFn = vi.fn() as unknown as typeof spawn
+const updater = { name: 'the injected updater' } as unknown as Updater
 const flushWhenReady = () => new Promise<void>((resolve) => setTimeout(resolve, 0))
 
 const start = async () => {
-  bootstrap(spawnFn)
+  bootstrap(spawnFn, updater)
   await flushWhenReady()
 }
 
@@ -209,6 +213,15 @@ describe('bootstrap', () => {
     createRunner(emit)
 
     expect(createClaudeRunner).toHaveBeenCalledWith(spawnFn, emit)
+  })
+
+  it('starts auto-updates with the injected updater, against the current window', async () => {
+    await start()
+    const [isPackaged, passedUpdater, getWindow] = vi.mocked(startAutoUpdates).mock.calls[0]
+    // The mock app is not packaged; what matters is that app.isPackaged is forwarded.
+    expect(isPackaged).toBe(false)
+    expect(passedUpdater).toBe(updater)
+    expect(getWindow()).toBe(FakeBrowserWindow.created[0])
   })
 
   it('stores GitHub credentials under the app userData directory', async () => {
