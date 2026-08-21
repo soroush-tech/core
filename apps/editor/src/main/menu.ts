@@ -1,5 +1,6 @@
-import { Menu, type MenuItemConstructorOptions } from 'electron'
+import { BrowserWindow, Menu, type MenuItemConstructorOptions } from 'electron'
 import type { MenuAction } from '../shared/ipc'
+import { showAboutDialog } from './about'
 
 /**
  * The application menu. File actions and Undo/Redo run in the renderer (it
@@ -79,6 +80,16 @@ export function createMenuTemplate(
       ],
     },
     { role: 'windowMenu' },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          id: 'help-about',
+          label: 'About Soroush Editor',
+          click: () => showAboutDialog(BrowserWindow.getFocusedWindow()),
+        },
+      ],
+    },
   ]
 }
 

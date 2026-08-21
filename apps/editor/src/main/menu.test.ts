@@ -1,12 +1,18 @@
-import type { MenuItemConstructorOptions } from 'electron'
+import type { BrowserWindow, MenuItemConstructorOptions } from 'electron'
+import { showAboutDialog } from './about'
 import { createMenuTemplate, installApplicationMenu } from './menu'
 
-const { buildFromTemplate, setApplicationMenu } = vi.hoisted(() => ({
+const { buildFromTemplate, setApplicationMenu, getFocusedWindow } = vi.hoisted(() => ({
   buildFromTemplate: vi.fn((template: unknown) => ({ template })),
   setApplicationMenu: vi.fn(),
+  getFocusedWindow: vi.fn<() => BrowserWindow | null>(() => null),
 }))
 
-vi.mock('electron', () => ({ Menu: { buildFromTemplate, setApplicationMenu } }))
+vi.mock('electron', () => ({
+  Menu: { buildFromTemplate, setApplicationMenu },
+  BrowserWindow: { getFocusedWindow },
+}))
+vi.mock('./about', () => ({ showAboutDialog: vi.fn() }))
 
 const findItem = (template: MenuItemConstructorOptions[], id: string) => {
   const items = template.flatMap((menu) => (menu.submenu as MenuItemConstructorOptions[]) ?? [])
@@ -57,6 +63,18 @@ describe('createMenuTemplate', () => {
 
   it('gives Reload no accelerator, so only the menu itself can reload', () => {
     expect(findItem(template, 'view-reload').accelerator).toBeUndefined()
+  })
+
+  it('shows the About dialog owned by the focused window', () => {
+    const focused = {} as BrowserWindow
+    getFocusedWindow.mockReturnValueOnce(focused)
+    ;(findItem(template, 'help-about').click as () => void)()
+    expect(showAboutDialog).toHaveBeenCalledWith(focused)
+  })
+
+  it('shows the About dialog unowned when no window has focus', () => {
+    ;(findItem(template, 'help-about').click as () => void)()
+    expect(showAboutDialog).toHaveBeenCalledWith(null)
   })
 
   it('ships no native reload role, whose Ctrl+R would bypass the guard', () => {
