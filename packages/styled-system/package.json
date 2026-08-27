@@ -322,11 +322,11 @@
     "@soroush.tech/bench": "workspace:*",
     "@soroush.tech/eslint-config": "workspace:*",
     "@types/prop-types": "^15.7.15",
-    "@vitest/coverage-v8": "^4.1.10",
-    "oxlint": "^1.78.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "oxlint": "^1.80.0",
     "prop-types": "^15.8.1",
     "tsdown": "^0.22.14",
     "typescript": "~7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }
