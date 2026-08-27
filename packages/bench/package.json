@@ -26,7 +26,7 @@
   "type": "module",
   "sideEffects": false,
   "engines": {
-    "node": ">=24.19.0"
+    "node": ">=24.20.0"
   },
   "bin": {
     "soroush-bench": "./dist/bin.mjs"
@@ -67,12 +67,12 @@
   },
   "devDependencies": {
     "@soroush.tech/eslint-config": "workspace:*",
-    "@types/node": "^26.1.2",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@types/node": "^26.4.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "mitata": "^1.0.34",
-    "oxlint": "^1.78.0",
+    "oxlint": "^1.80.0",
     "tsdown": "^0.22.14",
     "typescript": "~7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }

@@ -78,7 +78,7 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "mermaid": "^11.16.1",
+    "mermaid": "^11.17.2",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "rehype-parse": "^9.0.1",
@@ -96,20 +96,20 @@
     "@soroush.tech/design-system": "workspace:*",
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/hooks": "workspace:*",
-    "@storybook/react-vite": "^10.5.8",
+    "@storybook/react-vite": "^10.5.10",
     "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/node": "^26.1.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@types/react-dom": "^19.2.5",
+    "@vitest/coverage-v8": "^4.1.11",
     "jsdom": "^29.1.1",
-    "oxlint": "^1.78.0",
+    "oxlint": "^1.80.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "storybook": "^10.5.8",
+    "storybook": "^10.5.10",
     "tsdown": "^0.22.14",
     "typescript": "~7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }

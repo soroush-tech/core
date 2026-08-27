@@ -49,16 +49,16 @@
     "deploy": "pnpm --filter @soroush/web deploy"
   },
   "devDependencies": {
-    "ai-watermark-guard": "^0.1.0",
+    "ai-watermark-guard": "^0.2.0",
     "husky": "^9.1.7",
-    "oxfmt": "^0.63.0",
+    "oxfmt": "^0.65.0",
     "oxfmt-quick": "^1.0.1",
-    "oxlint": "^1.78.0"
+    "oxlint": "^1.80.0"
   },
   "packageManager": "pnpm@10.13.1",
   "pnpm": {
     "overrides": {
-      "webpack": ">=5"
+      "webpack": ">=5.110.0"
     }
   }
 }
