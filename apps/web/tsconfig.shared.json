@@ -3,7 +3,8 @@
     "typeRoots": ["./@types", "./node_modules/@types"],
     "paths": {
       "src/*": ["./src/*"],
-      "packages/*": ["../../packages/*"]
+      "packages/*": ["../../packages/*"],
+      "npm/*": ["./node_modules/*"]
     }
   }
 }

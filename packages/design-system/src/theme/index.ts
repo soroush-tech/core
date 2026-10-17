@@ -1,6 +1,0 @@
-export * from './themes'
-export * from './ThemeProvider'
-export * from './utils/themeDefault'
-export * from './hooks/useTheme'
-export * from './hooks/useDefaultProps'
-export * from './hoc/withTheme'

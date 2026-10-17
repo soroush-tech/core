@@ -1,11 +1,11 @@
-import * as pkg from 'packages/design-system/package.json'
+import * as pkg from 'npm/@soroush.tech/design-system/package.json'
 import type { PackageHeroProps } from 'src/section/PackageHero'
 
-/** Hero content for the @soroush.tech/design-system page, sourced from its package.json. */
+/** Hero content for the @soroush.tech/design-system page, sourced from its published package.json. */
 export const hero: PackageHeroProps = {
   name: pkg.name,
   tagline: pkg.description,
   install: `npm i ${pkg.name}`,
   npmUrl: `https://www.npmjs.com/package/${pkg.name}`,
-  repoUrl: 'https://github.com/soroush-tech/core/tree/main/packages/design-system',
+  repoUrl: 'https://github.com/soroush-tech/design-system/tree/main/packages/design-system',
 }

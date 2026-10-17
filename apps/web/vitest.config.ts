@@ -46,6 +46,7 @@ export default defineConfig({
       { find: /^msw$/, replacement: resolve(__dirname, 'node_modules/msw') },
       { find: 'src', replacement: resolve(__dirname, './src') },
       { find: 'packages', replacement: resolve(__dirname, '../../packages') },
+      { find: 'npm', replacement: resolve(__dirname, './node_modules') },
     ],
   },
   test: {
@@ -80,6 +81,7 @@ export default defineConfig({
             { find: /^msw$/, replacement: resolve(__dirname, 'node_modules/msw') },
             { find: 'src', replacement: resolve(__dirname, './src') },
             { find: 'packages', replacement: resolve(__dirname, '../../packages') },
+            { find: 'npm', replacement: resolve(__dirname, './node_modules') },
           ],
         },
         plugins: mockPlugins,

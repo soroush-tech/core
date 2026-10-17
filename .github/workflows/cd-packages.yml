@@ -20,10 +20,7 @@ on:
         options:
           - all
           - bench
-          - design-system
-          - markdown
           - playwright-coverage
-          - styled-system
           - vite-plugin-msw-server
         # gen:publish-options end
 

@@ -13,7 +13,6 @@ All packages are scoped **`@soroush.tech/*`**, and the directory name matches th
 | `@soroush.tech/vite-plugin-sitemap`    | private   | Build-only Vite plugin: emits `sitemap.xml` from Vike's prerendered HTML.                               |
 | `@soroush.tech/vite-plugin-msw-server` | published | Runs an `msw`/node mock server inside Vite for server-side rendering and SSG prerendering.              |
 | `@soroush.tech/playwright-coverage`    | published | Collects per-test V8 coverage from Playwright e2e runs and aggregates it to lcov via monocart.          |
-| `@soroush.tech/styled-system`          | published | First-class-TypeScript rewrite of styled-system - the canonical implementation, exposed via subpaths.   |
 
 ## Consuming a package
 

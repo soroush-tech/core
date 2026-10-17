@@ -1,5 +1,9 @@
 import aiWatermarkGuard from 'ai-watermark-guard/package.json'
 import oxfmtQuick from 'oxfmt-quick/package.json'
+// Their `exports` don't expose package.json, so read the installed file through the `npm` alias
+import designSystem from 'npm/@soroush.tech/design-system/package.json'
+import markdown from 'npm/@soroush.tech/markdown/package.json'
+import styledSystem from 'npm/@soroush.tech/styled-system/package.json'
 
 export interface PackageEntry {
   /** Full scoped package name (from package.json `name`). */
@@ -67,7 +71,7 @@ const pagedSlugs = new Set(
  * so the card cannot drift from what was published - the version shown is the one this site is
  * built against, which moves when the dependency is bumped.
  */
-const external: PackageJson[] = [aiWatermarkGuard, oxfmtQuick]
+const external: PackageJson[] = [aiWatermarkGuard, oxfmtQuick, designSystem, markdown, styledSystem]
 
 /** Published packages, discovered from the workspace and the list above, sorted by name. */
 export const packages: PackageEntry[] = [...Object.values(packageJsons), ...external]

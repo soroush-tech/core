@@ -57,6 +57,9 @@ export default defineConfig({
       // Repo-root packages dir, so package pages can import a package's README as a raw
       // string (`packages/<name>/README.md?raw`) instead of a brittle `../../../../` path.
       packages: resolve(__dirname, '../../packages'),
+      // This app's installed npm packages, for the files a package publishes but doesn't export
+      // (`npm/@soroush.tech/<name>/README.md?raw`, `.../package.json`).
+      npm: resolve(__dirname, './node_modules'),
     },
   },
   server: {
