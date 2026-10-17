@@ -1,6 +1,6 @@
 # PageHeader
 
-Gradient-backed page section wrapper. Renders a `Paper` surface (`bg="primary"`, relative, centered column) with a left linear-gradient backdrop and a centered `maxWidth="1280px"` content container. Shared by the `Hero`, `Articles`, and `Article` sections.
+Gradient-backed page section wrapper. Renders a `Paper` surface (`bg="primary"`, relative, centered column) with a left linear-gradient backdrop and a `LayoutFrame` that caps the content at 1280px (the Paper's own padding is the margin). Shared by the `Hero`, `Articles`, and `Article` sections.
 
 ## Usage
 

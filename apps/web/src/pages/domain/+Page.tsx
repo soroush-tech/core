@@ -5,6 +5,7 @@ import { View } from '@soroush.tech/design-system/View'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { DomainCard } from 'src/common/DomainCard'
+import { LayoutFrame } from 'src/common/LayoutFrame'
 import { domains } from './domain.data'
 
 const pulseAnim = keyframes`
@@ -36,7 +37,8 @@ const PulseDot = styled(View, { label: 'PulseDot' })`
 export default function DomainPage() {
   return (
     <Layout blueprintProps={{ scanline: true }}>
-      <View maxWidth="1280px" mx="auto" px={4} pt={6} pb={8}>
+      {/* 1280px including the margins */}
+      <LayoutFrame layout={{ maxWidth: '1280px' }} width="100%" pt={6} pb={8}>
         <View mb={8}>
           <Flex flexDirection="row" alignItems="center" gap={1} mb={2}>
             <PulseDot />
@@ -80,7 +82,7 @@ export default function DomainPage() {
             ))}
           </BentoGrid>
         </View>
-      </View>
+      </LayoutFrame>
     </Layout>
   )
 }

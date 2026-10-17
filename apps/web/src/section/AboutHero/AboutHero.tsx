@@ -76,22 +76,19 @@ export function AboutHero() {
       position="relative"
       overflow="hidden"
       alignItems="center"
-      px={4}
       py={10}
     >
       <MatrixGradient />
 
       <Grid
-        gridTemplateColumns={['1fr', '1fr', '7fr 5fr']}
+        layout={{ gutter: 6 }}
         gap={6}
         alignItems="center"
         position="relative"
         zIndex={1}
         width="100%"
-        maxWidth="1280px"
-        mx="auto"
       >
-        <View>
+        <View span={{ xs: 4, sm: 8, md: 7 }}>
           <View height="1px" width="3rem" bg="primary" mb={4} />
           <Typography
             variant="h1"
@@ -140,7 +137,7 @@ export function AboutHero() {
           </Flex>
         </View>
 
-        <View position="relative">
+        <View position="relative" span={{ xs: 4, sm: 8, md: 5 }}>
           <OffsetBlock bg="paper" />
           <ImageFrame bg="secondary">
             <picture>

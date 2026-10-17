@@ -24,10 +24,10 @@ Rendered at `/article/:id` by `src/pages/article/@id/+Page.tsx`. The page fetche
 
 ## Structure
 
-| Region  | Element              | Notes                                        |
-| ------- | -------------------- | -------------------------------------------- |
-| Body    | `Paper as="section"` | `bg="paper"`, `maxWidth="1280px"`, centered  |
-| Body MD | `Preview`            | Markdown elements mapped to theme primitives |
+| Region  | Element                    | Notes                                        |
+| ------- | -------------------------- | -------------------------------------------- |
+| Body    | `LayoutFrame as="section"` | Theme margins, 1280px including them         |
+| Body MD | `Preview`                  | Markdown elements mapped to theme primitives |
 
 ## Data
 

@@ -34,6 +34,15 @@ const darkShadows = Array.from({ length: 25 }, (_, elevation) =>
   generateBoxShadow(elevation, blackAlpha[400])
 )
 
+// The site's page frame on the layout grid: a 32px margin at every size and 1280px of
+// content (max-width is border-box, so it carries both margins: 1280 + 2 × 32).
+const layout: Theme['layout'] = {
+  xs: { content: { margin: 4 } },
+  md: { content: { margin: 4 } },
+  lg: { content: { maxWidth: '1344px' } },
+  xl: { content: { maxWidth: '1344px' } },
+}
+
 export const light: Theme = createTheme(baseTheme, {
   name: 'light',
   colorScheme: 'light',
@@ -132,6 +141,7 @@ export const light: Theme = createTheme(baseTheme, {
     font: baseTheme.fonts.mono,
   },
   shadows: lightShadows,
+  layout,
 })
 
 export const dark: Theme = createTheme(baseTheme, {
@@ -232,6 +242,7 @@ export const dark: Theme = createTheme(baseTheme, {
     font: baseTheme.fonts.mono,
   },
   shadows: darkShadows,
+  layout,
 })
 
 const themes = {

@@ -8,6 +8,9 @@ import { Navbar } from 'src/common/Navbar'
 import { Quote } from '@soroush.tech/design-system/Quote'
 import { alpha } from '@soroush.tech/design-system/utils'
 
+// One column at xs, two at sm and md, four from lg
+const COLUMN = { xs: 4, sm: 4, md: 6, lg: 3 }
+
 const DIRECTORIES = [
   { href: '/design/system/', label: 'Design System' },
   { href: '/domain/', label: 'Delivery Domain' },
@@ -49,103 +52,93 @@ const TerminalText = styled('span', { label: 'TerminalText' })`
 
 export function Footer() {
   return (
-    <FooterRoot as="footer" bg="terminal" px={6} py={6}>
-      <View maxWidth="1280px" mx="auto">
-        <Grid
-          gridTemplateColumns={['1fr', 'repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(4, 1fr)']}
-          gap={6}
-        >
-          {/* Col 1 - Logo + tagline (drops to the bottom in the 2-col tablet view) */}
-          <View order={[0, 1, 1, 0]}>
-            <Flex flexDirection="row" alignItems="center" gap={2} mb={3}>
-              <Logo size={72} />
-              <Typography
-                as="span"
-                fontSize={1}
-                fontWeight="bold"
-                letterSpacing="tighter"
-                color="initial"
-              >
-                SOROUSH.TECH
-              </Typography>
-            </Flex>
+    <FooterRoot as="footer" bg="terminal" py={6}>
+      {/* The footer's own frame: 48px margins around 1280px of content (1280 + 2 × 48) */}
+      <Grid layout={{ margin: 6, gutter: 6, maxWidth: '1376px' }} gap={6}>
+        {/* Col 1 - Logo + tagline (drops to the bottom in the 2-col tablet view) */}
+        <View order={[0, 1, 1, 0]} span={COLUMN}>
+          <Flex flexDirection="row" alignItems="center" gap={2} mb={3}>
+            <Logo size={72} />
             <Typography
-              variant="caption"
-              color="secondary"
-              lineHeight="relaxed"
-              display={['none', 'block']}
+              as="span"
+              fontSize={1}
+              fontWeight="bold"
+              letterSpacing="tighter"
+              color="initial"
             >
-              A proprietary system designed for the orchestration of high-performance digital
-              environments. Built for speed, scaled for eternity.
+              SOROUSH.TECH
             </Typography>
-          </View>
+          </Flex>
+          <Typography
+            variant="caption"
+            color="secondary"
+            lineHeight="relaxed"
+            display={['none', 'block']}
+          >
+            A proprietary system designed for the orchestration of high-performance digital
+            environments. Built for speed, scaled for eternity.
+          </Typography>
+        </View>
 
-          {/* Col 2 - Directories (internal NavLinks) */}
-          <View>
-            <Typography
-              variant="caption"
-              letterSpacing="widest"
-              color="primary"
-              display="block"
-              mb={3}
-              fontFamily="mono"
-              textTransform="uppercase"
-            >
-              Directories
-            </Typography>
-            <Navbar
-              aria-label="Directories"
-              items={DIRECTORIES}
-              direction="vertical"
-              gap={2}
-              variant="caption"
-              underline="none"
-            />
-          </View>
+        {/* Col 2 - Directories (internal NavLinks) */}
+        <View span={COLUMN}>
+          <Typography
+            variant="caption"
+            letterSpacing="widest"
+            color="primary"
+            display="block"
+            mb={3}
+            fontFamily="mono"
+            textTransform="uppercase"
+          >
+            Directories
+          </Typography>
+          <Navbar
+            aria-label="Directories"
+            items={DIRECTORIES}
+            direction="vertical"
+            gap={2}
+            variant="caption"
+            underline="none"
+          />
+        </View>
 
-          {/* Col 3 - Connectivity (external links) */}
-          <View>
-            <Typography
-              variant="caption"
-              letterSpacing="widest"
-              color="primary"
-              display="block"
-              mb={3}
-              fontFamily="mono"
-              textTransform="uppercase"
-            >
-              Connectivity
-            </Typography>
-            <Navbar
-              aria-label="Connectivity"
-              items={CONNECTIVITY}
-              direction="vertical"
-              gap={2}
-              variant="caption"
-              underline="none"
-            />
-          </View>
+        {/* Col 3 - Connectivity (external links) */}
+        <View span={COLUMN}>
+          <Typography
+            variant="caption"
+            letterSpacing="widest"
+            color="primary"
+            display="block"
+            mb={3}
+            fontFamily="mono"
+            textTransform="uppercase"
+          >
+            Connectivity
+          </Typography>
+          <Navbar
+            aria-label="Connectivity"
+            items={CONNECTIVITY}
+            direction="vertical"
+            gap={2}
+            variant="caption"
+            underline="none"
+          />
+        </View>
 
-          {/* Col 4 - Terminal readout + copyright (stays after the logo in tablet) */}
-          <View order={[0, 2, 2, 0]}>
-            <Quote bg="primary" p={3} mb={4} display={['none', 'block']}>
-              <Typography
-                variant="caption"
-                color="primary"
-                display="block"
-                mb={1}
-                fontFamily="mono"
-              >
-                SYSTEM_OUTPUT
-              </Typography>
-              <TerminalText>Running diagnostic sequence... OK</TerminalText>
-            </Quote>
-            <Typography variant="caption" color="secondary" fontFamily="mono">
-              © 2026 SOROUSH.TECH. ALL RIGHTS RESERVED.
+        {/* Col 4 - Terminal readout + copyright (stays after the logo in tablet) */}
+        <View order={[0, 2, 2, 0]} span={COLUMN}>
+          <Quote bg="primary" p={3} mb={4} display={['none', 'block']}>
+            <Typography variant="caption" color="primary" display="block" mb={1} fontFamily="mono">
+              SYSTEM_OUTPUT
             </Typography>
-          </View>
-        </Grid>
-      </View>
+            <TerminalText>Running diagnostic sequence... OK</TerminalText>
+          </Quote>
+          <Typography variant="caption" color="secondary" fontFamily="mono">
+            © 2026 SOROUSH.TECH. ALL RIGHTS RESERVED.
+          </Typography>
+        </View>
+      </Grid>
     </FooterRoot>
   )
 }

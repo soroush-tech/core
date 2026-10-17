@@ -10,14 +10,14 @@ None. The section renders static content.
 
 ## Composition
 
-| Region        | Built from                                                             |
-| ------------- | ---------------------------------------------------------------------- |
-| Section root  | `View as="section" bg="primary"`                                       |
-| Two columns   | `Flex` (`column` → `row`), each child `flex={1}`                       |
-| Image panel   | `View position="relative" aspectRatio={1}` + `Image objectFit="cover"` |
-| Dimming layer | `View bg="backdrop"` absolute overlay                                  |
-| Stat box      | `View bg="default"` + `Typography` (green `99.9%` + caption)           |
-| Steps         | `Flex` rows: `Typography` number + `h3` title + `body2`                |
+| Region        | Built from                                                              |
+| ------------- | ----------------------------------------------------------------------- |
+| Section root  | `View as="section" bg="primary"`                                        |
+| Two columns   | `Flex layout`, halves `span` full width at `xs`, side by side from `sm` |
+| Image panel   | `View position="relative" aspectRatio={1}` + `Image objectFit="cover"`  |
+| Dimming layer | `View bg="backdrop"` absolute overlay                                   |
+| Stat box      | `View bg="default"` + `Typography` (green `99.9%` + caption)            |
+| Steps         | `Flex` rows: `Typography` number + `h3` title + `body2`                 |
 
 ## Asset
 

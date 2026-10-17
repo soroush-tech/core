@@ -29,9 +29,16 @@ const domains: Array<{ icon: IconName; tag: string; title: string; body: string 
 
 export function CurrentFocus() {
   return (
-    <View as="section" py={10} px={4}>
-      <View maxWidth="1280px" mx="auto">
-        <Flex flexDirection="row" alignItems="center" flexWrap="wrap" gap={4} mb={8}>
+    <View as="section" py={10}>
+      <Grid layout={{ gutter: 4 }} gap={4}>
+        <Flex
+          span={{ xs: 4, sm: 8, md: 12 }}
+          flexDirection="row"
+          alignItems="center"
+          flexWrap="wrap"
+          gap={4}
+          mb={4}
+        >
           <Eyebrow>
             <Typography variant="h2" color="initial" fontWeight="bold" m={0}>
               Current Focus
@@ -39,12 +46,16 @@ export function CurrentFocus() {
           </Eyebrow>
         </Flex>
 
-        <Grid gridTemplateColumns={['1fr', '1fr', 'repeat(3, 1fr)']} gap={4}>
-          {domains.map(({ icon, tag, title, body }) => (
-            <IconCard key={tag} icon={icon} title={title} body={body} />
-          ))}
-        </Grid>
-      </View>
+        {domains.map(({ icon, tag, title, body }) => (
+          <IconCard
+            key={tag}
+            icon={icon}
+            title={title}
+            body={body}
+            span={{ xs: 4, sm: 8, md: 4 }}
+          />
+        ))}
+      </Grid>
     </View>
   )
 }

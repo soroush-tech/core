@@ -6,15 +6,9 @@ import { stats } from './StructuralIntegrity.data'
 
 export function StructuralIntegrity() {
   return (
-    <View as="section" bg="paper" py={10} px={4}>
-      <Grid
-        gridTemplateColumns={['1fr', '1fr', 'repeat(2, 1fr)']}
-        gap={8}
-        alignItems="start"
-        maxWidth="1280px"
-        mx="auto"
-      >
-        <View>
+    <View as="section" bg="paper" py={10}>
+      <Grid layout={{ gutter: 8 }} gap={8} alignItems="start">
+        <View span={{ xs: 4, sm: 8, md: 6 }}>
           <Typography
             variant="overline"
             as="p"
@@ -42,7 +36,7 @@ export function StructuralIntegrity() {
           </Typography>
         </View>
 
-        <Flex gap={8}>
+        <Flex gap={8} span={{ xs: 4, sm: 8, md: 6 }}>
           <View bg="default" p={4}>
             <Typography variant="body1" fontSize={3} color="secondary" lineHeight="relaxed" m={0}>
               &ldquo;Architecture is not just about the final structure; it&rsquo;s about the

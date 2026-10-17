@@ -1,8 +1,8 @@
-import { View } from '@soroush.tech/design-system/View'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Avatar } from '@soroush.tech/design-system/Avatar'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { NavLink } from 'src/common/NavLink'
+import { LayoutFrame } from 'src/common/LayoutFrame'
 import { useGists } from 'src/hooks/useGists'
 import { readingTime } from 'src/utils/readingTime'
 import { authorName } from 'src/utils/authorName'
@@ -12,7 +12,8 @@ import { Card } from '@soroush.tech/design-system/Card'
 export function Articles() {
   const { data } = useGists()
   return (
-    <View as="section" maxWidth="1280px" width="100%" mx="auto" mt={3} mb={4} px={4}>
+    // 1280px including the margins
+    <LayoutFrame as="section" layout={{ maxWidth: '1280px' }} width="100%" mt={3} mb={4}>
       {data.map((gist) => (
         <Card
           variant="bracketBox"
@@ -63,6 +64,6 @@ export function Articles() {
           </Flex>
         </Card>
       ))}
-    </View>
+    </LayoutFrame>
   )
 }

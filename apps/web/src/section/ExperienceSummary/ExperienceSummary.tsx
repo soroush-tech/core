@@ -13,15 +13,9 @@ const ProgressFill = styled(View, { label: 'ProgressFill' })`
 
 export function ExperienceSummary() {
   return (
-    <View as="section" bg="primary" py={10} px={4}>
-      <Grid
-        gridTemplateColumns={['1fr', '1fr', 'repeat(2, 1fr)']}
-        gap={8}
-        alignItems="start"
-        maxWidth="1280px"
-        mx="auto"
-      >
-        <View>
+    <View as="section" bg="primary" py={10}>
+      <Grid layout={{ gutter: 8 }} gap={8} alignItems="start">
+        <View span={{ xs: 4, sm: 8, md: 6 }}>
           <Typography variant="h2" color="initial" fontWeight="bold" mb={6}>
             Professional Summary
           </Typography>
@@ -76,7 +70,7 @@ export function ExperienceSummary() {
           </Grid>
         </View>
 
-        <View bg="terminal" p={5}>
+        <View bg="terminal" p={5} span={{ xs: 4, sm: 8, md: 6 }}>
           <Flex flexDirection="row" justifyContent="space-between" alignItems="center" mb={6}>
             <Typography
               variant="caption"

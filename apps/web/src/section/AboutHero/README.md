@@ -13,7 +13,7 @@ None. The section renders static content.
 | Region       | Built from                                                     |
 | ------------ | -------------------------------------------------------------- |
 | Section root | `Flex as="section" bg="primary"` (`minHeight: 100vh`, centred) |
-| Layout grid  | `Grid` (`1fr` → `7fr 5fr` on desktop), capped at `1280px`      |
+| Layout grid  | `Grid layout`: full width, then 7 + 5 of 12 columns from `md`  |
 | Accent rule  | `View height="1px" bg="primary"`                               |
 | Headline     | `Typography variant="h1"` at raw `fontSize` 3.75rem → 6rem     |
 | CTAs         | `Button` `contained` (+ `terminal` glyph) and `outlined`       |

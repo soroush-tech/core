@@ -13,7 +13,7 @@ None. The section renders static content.
 | Region          | Built from                                                              |
 | --------------- | ----------------------------------------------------------------------- |
 | Section root    | `View as="section" bg="terminal"` (relative, overflow hidden)           |
-| Centered column | `View maxWidth="896px" textAlign="center"` (z-index above decoration)   |
+| Centered column | `LayoutFrame textAlign="center"` (z-index above decoration)             |
 | Eyebrow         | `Typography variant="caption"` primary, widest tracking                 |
 | Headline        | `Typography variant="h1"` black weight                                  |
 | Lead paragraph  | `Typography body1` at `fontSize={3}` (20px)                             |

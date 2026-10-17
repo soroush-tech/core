@@ -4,6 +4,7 @@ import { Typography } from '@soroush.tech/design-system/Typography'
 import { Link } from '@soroush.tech/design-system/Link'
 import { DomainCard } from 'src/common/DomainCard'
 import { PageHeader } from 'src/common/PageHeader'
+import { LayoutFrame } from 'src/common/LayoutFrame'
 import { packages } from './PackageIndex.data'
 
 /**
@@ -35,32 +36,30 @@ export function PackageIndex() {
           scope.
         </Typography>
       </PageHeader>
-      <View as="section" px={4} py={4}>
-        <View maxWidth="1280px" mx="auto">
-          <Grid gridTemplateColumns="1fr" gap={2}>
-            {packages.map((pkg, index) => (
-              <Link
-                key={pkg.name}
-                href={pkg.href}
-                target={pkg.target}
-                aria-label={pkg.name}
-                underline="none"
-                display="block"
-                color="inherit"
-              >
-                <DomainCard
-                  featured
-                  index={index + 1}
-                  badge={`v${pkg.version}`}
-                  title={pkg.name}
-                  description={pkg.description}
-                  tags={pkg.keywords}
-                />
-              </Link>
-            ))}
-          </Grid>
-        </View>
-      </View>
+      <LayoutFrame as="section" width="100%" py={4}>
+        <Grid gridTemplateColumns="1fr" gap={2}>
+          {packages.map((pkg, index) => (
+            <Link
+              key={pkg.name}
+              href={pkg.href}
+              target={pkg.target}
+              aria-label={pkg.name}
+              underline="none"
+              display="block"
+              color="inherit"
+            >
+              <DomainCard
+                featured
+                index={index + 1}
+                badge={`v${pkg.version}`}
+                title={pkg.name}
+                description={pkg.description}
+                tags={pkg.keywords}
+              />
+            </Link>
+          ))}
+        </Grid>
+      </LayoutFrame>
     </>
   )
 }

@@ -13,6 +13,7 @@ import { contact } from '@soroush.tech/schema'
 import { fields, success, type ContactField } from './ContactInquire.data'
 import { makeDecoyId } from './utils'
 import { Field } from 'src/common/Field'
+import { LayoutFrame } from 'src/common/LayoutFrame'
 import { useContactInquire } from 'src/hooks/useContactInquire'
 import { useContactSubmit } from 'src/hooks/useContactSubmit'
 import { useTurnstile } from 'src/hooks/useTurnstile'
@@ -102,9 +103,9 @@ export function ContactInquire() {
   const requestId = submit.data ? submit.data.id : decoyId
 
   return (
-    <View as="section" py={6} px={4}>
+    <LayoutFrame as="section" width="100%" py={6}>
       {cameFromApp && (
-        <View mb={4} maxWidth="1280px" mx="auto">
+        <View mb={4}>
           <Button
             variant="text"
             size="sm"
@@ -116,8 +117,6 @@ export function ContactInquire() {
         </View>
       )}
       <Paper
-        maxWidth="1280px"
-        mx="auto"
         id="contact"
         position="relative"
         overflow="hidden"
@@ -308,6 +307,6 @@ export function ContactInquire() {
           </Form>
         )}
       </Paper>
-    </View>
+    </LayoutFrame>
   )
 }

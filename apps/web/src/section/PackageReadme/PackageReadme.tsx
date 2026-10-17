@@ -1,5 +1,5 @@
-import { View } from '@soroush.tech/design-system/View'
 import { Preview } from '@soroush.tech/markdown'
+import { LayoutFrame } from 'src/common/LayoutFrame'
 import { stripReadmeChrome } from './utils'
 
 export interface PackageReadmeProps {
@@ -14,8 +14,9 @@ export interface PackageReadmeProps {
  */
 export function PackageReadme({ readme }: Readonly<PackageReadmeProps>) {
   return (
-    <View as="section" maxWidth="1280px" minWidth={0} mx="auto" p={4} mt={3} mb={4}>
+    // 1280px including the margins
+    <LayoutFrame as="section" layout={{ maxWidth: '1280px' }} minWidth={0} py={4} mt={3} mb={4}>
       <Preview>{stripReadmeChrome(readme)}</Preview>
-    </View>
+    </LayoutFrame>
   )
 }

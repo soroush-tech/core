@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { Card } from '@soroush.tech/design-system/Card'
+import { Card, type CardProps } from '@soroush.tech/design-system/Card'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { type IconName } from '@soroush.tech/design-system/Icon'
 
@@ -12,16 +12,19 @@ export interface IconCardProps {
   body: string
   /** Optional extra content rendered after the body (e.g. a tag or meta line). */
   children?: ReactNode
+  /** Layout-grid columns the card takes inside a `<Grid layout>`. */
+  span?: CardProps['span']
 }
 
 /**
  * @description Shared icon + title + body card used across the about-page sections.
  * Built on `Card`'s `interactive` variant with a fixed look.
  */
-export function IconCard({ icon, title, body, children }: Readonly<IconCardProps>) {
+export function IconCard({ icon, title, body, children, span }: Readonly<IconCardProps>) {
   return (
     <Card
       variant="interactive"
+      span={span}
       icon={icon}
       iconProps={{ color: 'primary', size: '2.25rem' }}
       title={title}

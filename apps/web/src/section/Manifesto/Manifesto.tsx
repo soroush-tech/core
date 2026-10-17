@@ -4,6 +4,9 @@ import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { beliefs } from './Manifesto.data'
 
+// Stacked at xs, side by side from sm
+const HALF = { xs: 4, sm: 4, md: 6 }
+
 // palette.primary.main / contrastText are not in the background / text scales, so the
 // neon panel and its on-primary text colour are applied via styled (Eyebrow precedent).
 const GreenPanel = styled(Flex, { label: 'GreenPanel' })`
@@ -18,15 +21,9 @@ const OnPrimaryBar = styled(View, { label: 'OnPrimaryBar' })`
 
 export function Manifesto() {
   return (
-    <View as="section" bg="primary" py={10} px={4}>
-      <Flex
-        flexDirection={['column', 'row']}
-        alignItems="center"
-        gap={8}
-        maxWidth="1280px"
-        mx="auto"
-      >
-        <GreenPanel flex={1} width="100%" py={4} px={6} position="relative" overflow="hidden">
+    <View as="section" bg="primary" py={10}>
+      <Flex layout={{ gutter: 8 }} alignItems="center" gap={8}>
+        <GreenPanel span={HALF} py={4} px={6} position="relative" overflow="hidden">
           <Flex gap={5}>
             <Typography
               variant="h2"
@@ -56,7 +53,7 @@ export function Manifesto() {
           </Flex>
         </GreenPanel>
 
-        <Flex flex={1} width="100%" gap={6}>
+        <Flex span={HALF} gap={6}>
           <Flex gap={4}>
             {beliefs.map(({ label, labelColor, body }) => (
               <View key={label} bg="paper" p={4}>

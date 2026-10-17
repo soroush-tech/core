@@ -41,14 +41,15 @@ const values: Array<{ icon: IconName; title: string; body: string }> = [
 
 export function CoreValues() {
   return (
-    <View as="section" py={10} px={4}>
-      <View maxWidth="1280px" mx="auto">
+    <View as="section" py={10}>
+      <Grid layout={{ gutter: 1 }} gap={1}>
         <Flex
+          span={{ xs: 4, sm: 8, md: 12 }}
           flexDirection={['column', 'row']}
           justifyContent="space-between"
           alignItems={['flex-start', 'flex-end']}
           gap={3}
-          mb={4}
+          mb={3}
         >
           <Eyebrow>
             <Typography variant="h2" color="initial" fontWeight="bold" letterSpacing="tighter">
@@ -57,12 +58,10 @@ export function CoreValues() {
           </Eyebrow>
         </Flex>
 
-        <Grid gridTemplateColumns={['1fr', 'repeat(2, 1fr)', 'repeat(3, 1fr)']} gap={1}>
-          {values.map(({ icon, title, body }) => (
-            <IconCard key={title} icon={icon} title={title} body={body} />
-          ))}
-        </Grid>
-      </View>
+        {values.map(({ icon, title, body }) => (
+          <IconCard key={title} icon={icon} title={title} body={body} span={4} />
+        ))}
+      </Grid>
     </View>
   )
 }

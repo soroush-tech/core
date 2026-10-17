@@ -10,14 +10,15 @@ import { domains } from './DeliveryDomains.data'
 
 export function DeliveryDomains() {
   return (
-    <View as="section" py={6} px={4}>
-      <View maxWidth="1280px" mx="auto">
+    <View as="section" py={6}>
+      <Grid layout={{ gutter: 1 }} gap={1}>
         <Flex
+          span={{ xs: 4, sm: 8, md: 12 }}
           flexDirection={['column', 'row']}
           justifyContent="space-between"
           alignItems={['flex-start', 'flex-end']}
           gap={6}
-          mb={8}
+          mb={7}
         >
           <View maxWidth="42rem">
             <Eyebrow>
@@ -53,22 +54,26 @@ export function DeliveryDomains() {
           </Link>
         </Flex>
 
-        <Grid gridTemplateColumns={['1fr', '1fr', 'repeat(3, 1fr)']} gap={1}>
-          {domains.map(({ icon, title, body, stack }) => (
-            <IconCard key={title} icon={icon} title={title} body={body}>
-              <Typography
-                variant="caption"
-                color="secondary"
-                letterSpacing="tight"
-                textTransform="uppercase"
-                m={0}
-              >
-                {stack}
-              </Typography>
-            </IconCard>
-          ))}
-        </Grid>
-      </View>
+        {domains.map(({ icon, title, body, stack }) => (
+          <IconCard
+            key={title}
+            icon={icon}
+            title={title}
+            body={body}
+            span={{ xs: 4, sm: 8, md: 4 }}
+          >
+            <Typography
+              variant="caption"
+              color="secondary"
+              letterSpacing="tight"
+              textTransform="uppercase"
+              m={0}
+            >
+              {stack}
+            </Typography>
+          </IconCard>
+        ))}
+      </Grid>
     </View>
   )
 }

@@ -7,20 +7,19 @@ import { pillars } from './CorePhilosophy.data'
 
 export function CorePhilosophy() {
   return (
-    <View as="section" py={10} px={4}>
-      <View maxWidth="1280px" mx="auto">
-        <Eyebrow>
+    <View as="section" py={10}>
+      {/* 12 columns at sm (the theme has 8) so the three cards stay three across */}
+      <Grid layout={{ gutter: 1, sm: { columns: 12 } }} gap={1}>
+        <Eyebrow span={{ xs: 4, sm: 12 }} mb={7}>
           <Typography variant="h2" color="initial" letterSpacing="tighter">
             ARCHITECTURAL DECISIONS &amp; AI INTEGRATION
           </Typography>
         </Eyebrow>
 
-        <Grid mt={8} gridTemplateColumns={['1fr', 'repeat(3, 1fr)']} gap={1}>
-          {pillars.map(({ title, description, icon }) => (
-            <IconCard key={title} icon={icon} title={title} body={description} />
-          ))}
-        </Grid>
-      </View>
+        {pillars.map(({ title, description, icon }) => (
+          <IconCard key={title} icon={icon} title={title} body={description} span={4} />
+        ))}
+      </Grid>
     </View>
   )
 }

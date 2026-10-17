@@ -6,28 +6,18 @@ import circuit from 'src/assets/methodology-circuit.png?w=256;384;512&format=avi
 import { Eyebrow } from 'src/common/Eyebrow'
 import { steps } from './Methodology.data'
 
-// Square slot is ~half the 1280px row (≈616px) once the flex switches column→row at
-// the 40em (640px) breakpoint; full viewport width below that.
-const CIRCUIT_SIZES = '(min-width: 640px) min(50vw, 616px), 100vw'
+// Square slot is ~half the 1280px row (≈616px) once the halves sit side by side at the
+// sm (600px) breakpoint; full viewport width below that.
+const CIRCUIT_SIZES = '(min-width: 600px) min(50vw, 616px), 100vw'
+
+// Stacked at xs, side by side from sm
+const HALF = { xs: 4, sm: 4, md: 6 }
 
 export function Methodology() {
   return (
-    <View as="section" py={10} px={4}>
-      <Flex
-        flexDirection={['column', 'row']}
-        alignItems="center"
-        gap={6}
-        maxWidth="1280px"
-        mx="auto"
-      >
-        <Flex
-          position="relative"
-          flex={1}
-          width="100%"
-          aspectRatio={1}
-          overflow="hidden"
-          bg="default"
-        >
+    <View as="section" py={10}>
+      <Flex layout={{ gutter: 6 }} alignItems="center" gap={6}>
+        <Flex position="relative" span={HALF} aspectRatio={1} overflow="hidden" bg="default">
           <picture>
             {Object.entries(circuit.sources).map(([format, srcSet]) => (
               <source key={format} srcSet={srcSet} type={`image/${format}`} sizes={CIRCUIT_SIZES} />
@@ -66,7 +56,7 @@ export function Methodology() {
           </View>
         </Flex>
 
-        <Flex flex={1} width="100%" gap={6}>
+        <Flex span={HALF} gap={6}>
           <Eyebrow>
             <Typography
               variant="h2"

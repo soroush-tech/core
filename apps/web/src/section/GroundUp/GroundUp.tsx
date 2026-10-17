@@ -1,10 +1,11 @@
 import { View } from '@soroush.tech/design-system/View'
 import { Typography } from '@soroush.tech/design-system/Typography'
+import { LayoutFrame } from 'src/common/LayoutFrame'
 
 export function GroundUp() {
   return (
-    <View as="section" bg="terminal" py={10} px={4} position="relative" overflow="hidden">
-      <View maxWidth="1280px" mx="auto" position="relative" zIndex={1} textAlign="center">
+    <View as="section" bg="terminal" py={10} position="relative" overflow="hidden">
+      <LayoutFrame position="relative" zIndex={1} textAlign="center">
         <Typography
           variant="caption"
           as="p"
@@ -35,7 +36,7 @@ export function GroundUp() {
           focusing on Developer Experience (DX) in fast forward environment, he ensures that systems
           are not only robust for the machine but sustainable for the human who maintain them.
         </Typography>
-      </View>
+      </LayoutFrame>
     </View>
   )
 }
