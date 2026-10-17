@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Typography } from '@soroush.tech/design-system/Typography'
-import { minHeight } from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { minHeight } from 'src/test/utils/storiesArgs'
 import { PageHeader } from './PageHeader'
 
 const meta: Meta<typeof PageHeader> = {

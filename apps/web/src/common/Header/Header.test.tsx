@@ -152,9 +152,7 @@ describe('Header', () => {
     it('closes the drawer on Escape', () => {
       renderWithTheme(<Header />)
       openMenu()
-      fireEvent.keyDown(document.querySelector('[role="presentation"]') as HTMLElement, {
-        key: 'Escape',
-      })
+      fireEvent.keyDown(document, { key: 'Escape' })
       expect(screen.queryByRole('navigation', { name: 'Mobile' })).toBeNull()
     })
   })

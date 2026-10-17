@@ -41,7 +41,12 @@ export function DrawerCard() {
           </Button>
         ))}
       </Flex>
-      <Drawer isOpen={anchor !== null} onClose={() => setAnchor(null)} anchor={anchor ?? 'left'}>
+      <Drawer
+        id="drawer-card-demo"
+        isOpen={anchor !== null}
+        onClose={() => setAnchor(null)}
+        anchor={anchor ?? 'left'}
+      >
         <View p={5} minWidth="240px">
           <Typography variant="overline" color="primary" fontFamily="mono" display="block" mb={2}>
             DRAWER_{(anchor ?? 'left').toUpperCase()}

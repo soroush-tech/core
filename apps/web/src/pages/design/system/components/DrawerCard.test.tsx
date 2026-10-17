@@ -15,7 +15,8 @@ describe('DrawerCard', () => {
 
   it('is closed initially', () => {
     renderWithTheme(<DrawerCard />)
-    expect(screen.queryByText('DRAWER_LEFT')).not.toBeInTheDocument()
+    // A popover drawer's content is always in the page, hidden while closed
+    expect(screen.getByText('DRAWER_LEFT')).not.toBeVisible()
   })
 
   it('opens the drawer at the clicked anchor', () => {

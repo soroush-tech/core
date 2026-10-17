@@ -5,7 +5,7 @@ import {
   fontWeightTokens,
   textColorTokens,
   typographyVariantTokens,
-} from '@soroush.tech/design-system/utils/test/storiesOptions'
+} from 'src/test/utils/storiesOptions'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { GlitchText } from './GlitchText'
 

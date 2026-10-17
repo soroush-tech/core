@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { height } from '@soroush.tech/design-system/utils/test/storiesArgs'
+import { height } from 'src/test/utils/storiesArgs'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { Blueprint } from './Blueprint'
 

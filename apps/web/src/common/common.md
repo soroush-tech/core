@@ -144,7 +144,7 @@ Minimum coverage per component:
 
 Follow the same story structure as `@soroush.tech/design-system/` components:
 
-- Import option arrays from `@soroush.tech/design-system/utils/test/storiesOptions.ts` - never hardcode inline
+- Import option arrays from `src/test/utils/storiesOptions.ts` and shared argTypes from `src/test/utils/storiesArgs.ts` - never hardcode inline; add a token list or argType there when a story needs a new one
 - Use `controls.include` whitelist - no autodiscovery
 - Every prop in `controls.include` must have a matching `argType` with `control`, `description`, and `table.category`
 - Category names: **Content · Layout · Visual · Behaviour · Spacing**

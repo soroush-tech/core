@@ -123,7 +123,12 @@ export function Header({ position = 'fixed' }: Readonly<HeaderProps>) {
         </MobileMenuButton>
       </Flex>
 
-      <Drawer isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} anchor="right">
+      <Drawer
+        id="mobile-menu"
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        anchor="right"
+      >
         <Flex
           flexDirection="column"
           gap={2}
