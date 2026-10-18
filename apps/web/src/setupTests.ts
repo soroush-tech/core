@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { beforeAll, afterEach, afterAll, vi } from 'vitest'
 import { server } from 'src/test/mocks/server'
-import { installPopover } from 'src/test/utils/popover'
+import { installPopover } from '@soroush.tech/design-system/testing'
 
 installPopover()
 
