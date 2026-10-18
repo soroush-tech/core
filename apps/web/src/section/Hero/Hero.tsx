@@ -11,6 +11,7 @@ export function Hero() {
 
       <Typography
         variant="h1"
+        fontSize={[5, 6]}
         color="initial"
         letterSpacing="tighter"
         textTransform="uppercase"

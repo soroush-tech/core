@@ -98,7 +98,13 @@ export function Header({ position = 'fixed' }: Readonly<HeaderProps>) {
 
         <Flex flexDirection="row" alignItems="center" gap={3}>
           <Flex flexDirection="row" alignItems="center" gap={2}>
-            <Typography variant="caption" letterSpacing="widest" color="primary">
+            {/* Hidden on phones so the bar fits; the switch keeps its aria-label */}
+            <Typography
+              variant="caption"
+              letterSpacing="widest"
+              color="primary"
+              display={['none', 'block']}
+            >
               MODE
             </Typography>
             <Switch
