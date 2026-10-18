@@ -26,7 +26,7 @@ const AIHighlightCard = styled(Paper, { label: 'AIHighlightCard' })`
 export function TechStack() {
   return (
     <View as="section" bg="terminal" py={10}>
-      <Grid layout={{ gutter: 2 }} gap={2}>
+      <Grid layout gap={2}>
         {/* Title card - spans 2 cols on large screens */}
         <Paper bg="paper" p={6} elevation={0} justifyContent="flex-end" span={WIDE}>
           <Typography variant="h2" color="initial">

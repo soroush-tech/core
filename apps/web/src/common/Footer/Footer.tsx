@@ -53,8 +53,7 @@ const TerminalText = styled('span', { label: 'TerminalText' })`
 export function Footer() {
   return (
     <FooterRoot as="footer" bg="terminal" py={6}>
-      {/* The footer's own frame: 48px margins around 1280px of content (1280 + 2 × 48) */}
-      <Grid layout={{ margin: 6, gutter: 6, maxWidth: '1376px' }} gap={6}>
+      <Grid layout gap={6}>
         {/* Col 1 - Logo + tagline (drops to the bottom in the 2-col tablet view) */}
         <View order={[0, 1, 1, 0]} span={COLUMN}>
           <Flex flexDirection="row" alignItems="center" gap={2} mb={3}>

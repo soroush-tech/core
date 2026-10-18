@@ -7,7 +7,7 @@ import { stats } from './StructuralIntegrity.data'
 export function StructuralIntegrity() {
   return (
     <View as="section" bg="paper" py={10}>
-      <Grid layout={{ gutter: 8 }} gap={8} alignItems="start">
+      <Grid layout gap={8} alignItems="start">
         <View span={{ xs: 4, sm: 8, md: 6 }}>
           <Typography
             variant="overline"

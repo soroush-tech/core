@@ -30,15 +30,8 @@ const domains: Array<{ icon: IconName; tag: string; title: string; body: string 
 export function CurrentFocus() {
   return (
     <View as="section" py={10}>
-      <Grid layout={{ gutter: 4 }} gap={4}>
-        <Flex
-          span={{ xs: 4, sm: 8, md: 12 }}
-          flexDirection="row"
-          alignItems="center"
-          flexWrap="wrap"
-          gap={4}
-          mb={4}
-        >
+      <Grid layout rowGap={4} columnGap={{ xs: 4, lg: 3 }}>
+        <Flex span="full" flexDirection="row" alignItems="center" flexWrap="wrap" gap={4} mb={4}>
           <Eyebrow>
             <Typography variant="h2" color="initial" fontWeight="bold" m={0}>
               Current Focus

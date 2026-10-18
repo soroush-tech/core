@@ -23,7 +23,7 @@ All content is static and specific to the site:
 
 ## Layout
 
-The gradient-backed `<section>` shell - the `Paper` surface, linear-gradient backdrop, and centered `maxWidth="1280px"` container - comes from `src/common/PageHeader`. Hero passes its content as `children` and sets `minHeight="620px"`.
+The gradient-backed `<section>` shell - the `Paper` surface, linear-gradient backdrop, and `View layout` frame - comes from `src/common/PageHeader`. Hero passes its content as `children` and sets `minHeight="620px"`.
 
 ## Typography mapping
 

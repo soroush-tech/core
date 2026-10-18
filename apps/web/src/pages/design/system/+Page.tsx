@@ -1,6 +1,5 @@
 import { Headline } from 'src/common/Headline'
 import { Layout } from 'src/common/Layout'
-import { LayoutFrame } from 'src/common/LayoutFrame'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { View } from '@soroush.tech/design-system/View'
@@ -36,17 +35,7 @@ import { TypographyColorCard } from './components/TypographyColorCard'
 export default function SystemDesignPage() {
   return (
     <Layout blueprintProps={{ variant: 'dot', scanline: true, as: 'main', pb: 6 }}>
-      {/* This page's own frame: 24 / 40 / 48px margins around 1280px of content (1280 + 2 × 48) */}
-      <LayoutFrame
-        layout={{
-          margin: 6,
-          maxWidth: '1376px',
-          xs: { margin: 3 },
-          sm: { margin: 5 },
-        }}
-        width="100%"
-        pt={4}
-      >
+      <View layout pt={4}>
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <View mb={8}>
           <Typography
@@ -155,7 +144,7 @@ export default function SystemDesignPage() {
             <PopoverCard />
           </Flex>
         </View>
-      </LayoutFrame>
+      </View>
     </Layout>
   )
 }

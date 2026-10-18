@@ -13,7 +13,7 @@ const DecorativeText = styled(Typography, { label: 'DecorativeText' })`
 
 export function CallToAction() {
   return (
-    <View as="section" position="relative" overflow="hidden" py={10} px={4}>
+    <View as="section" position="relative" overflow="hidden" py={10}>
       <Flex
         position="absolute"
         top={0}
@@ -31,7 +31,13 @@ export function CallToAction() {
         </DecorativeText>
       </Flex>
 
-      <View maxWidth="896px" mx="auto" textAlign="center" position="relative" zIndex={1}>
+      {/* A narrower frame: 896px of content inside the theme margins, at every size */}
+      <View
+        layout={{ mode: 'fixed', maxWidth: '960px' }}
+        textAlign="center"
+        position="relative"
+        zIndex={1}
+      >
         <Flex alignItems="center" gap={5}>
           <Typography
             variant="h1"

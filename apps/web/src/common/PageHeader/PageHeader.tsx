@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import { View } from '@soroush.tech/design-system/View'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { Paper, type PaperProps } from '@soroush.tech/design-system/Paper'
-import { LayoutFrame } from 'src/common/LayoutFrame'
 
 // background: linear-gradient has no styled-system equivalent
 const PageHeaderGradient = styled(View, { label: 'PageHeaderGradient' })`
@@ -28,10 +27,10 @@ export function PageHeader({ title, children, ...props }: Readonly<PageHeaderPro
       flexDirection="column"
       minHeight="320px"
       justifyContent="center"
+      px={0}
       {...props}
     >
-      {/* The Paper's own padding is the margin; the frame caps the content at 1280px */}
-      <LayoutFrame layout={{ margin: 0, maxWidth: '1280px' }} width="100%">
+      <View layout>
         {title && (
           <Typography
             variant="h1"
@@ -46,7 +45,7 @@ export function PageHeader({ title, children, ...props }: Readonly<PageHeaderPro
         )}
 
         {children}
-      </LayoutFrame>
+      </View>
       <PageHeaderGradient position="absolute" top={0} right={0} width="50%" height="100%" />
     </Paper>
   )

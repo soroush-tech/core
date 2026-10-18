@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { styled } from '@soroush.tech/design-system'
-import { Card } from '@soroush.tech/design-system/Card'
+import { Card, type CardProps } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Image } from '@soroush.tech/design-system/Image'
 import { Typography } from '@soroush.tech/design-system/Typography'
@@ -21,6 +21,8 @@ export interface DomainCardProps {
   images?: Images
   imageAlt?: string
   featured?: boolean
+  /** Grid columns the card takes - `span="full"` for the whole row. */
+  span?: CardProps['span']
   style?: CSSProperties
   className?: string
   /** Optional footer content rendered on the card below the tags (e.g. an action button). */
@@ -69,6 +71,7 @@ export function DomainCard({
   images,
   imageAlt,
   featured = false,
+  span,
   style,
   className,
   children,
@@ -88,6 +91,7 @@ export function DomainCard({
       borderStyle="solid"
       borderColor="light"
       p={4}
+      span={span}
       style={style}
       className={className}
     >

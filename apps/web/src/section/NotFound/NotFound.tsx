@@ -11,12 +11,13 @@ export function NotFound() {
     <Flex
       as="section"
       position="relative"
-      p={4}
+      py={4}
       flex={1}
       alignItems="center"
       justifyContent="center"
     >
-      <View maxWidth="960px" width="100%">
+      {/* A narrower frame: 960px of content inside the theme margins, at every size */}
+      <View layout={{ mode: 'fixed', maxWidth: '1024px' }}>
         <Card bg="glass" variant="bracketBox" py={6} px={4} gap={4} position="relative">
           <Flex
             position="absolute"

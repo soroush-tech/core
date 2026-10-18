@@ -11,9 +11,9 @@ import { domains } from './DeliveryDomains.data'
 export function DeliveryDomains() {
   return (
     <View as="section" py={6}>
-      <Grid layout={{ gutter: 1 }} gap={1}>
+      <Grid layout gap={1}>
         <Flex
-          span={{ xs: 4, sm: 8, md: 12 }}
+          span="full"
           flexDirection={['column', 'row']}
           justifyContent="space-between"
           alignItems={['flex-start', 'flex-end']}

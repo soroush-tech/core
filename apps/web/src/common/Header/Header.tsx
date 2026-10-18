@@ -57,70 +57,76 @@ export function Header({ position = 'fixed' }: Readonly<HeaderProps>) {
       top={0}
       left={0}
       height="64px"
-      px={6}
-      flexDirection="row"
-      justifyContent="space-between"
-      alignItems="center"
+      px={0}
       color="appBar"
       blur
       borderBottom={`1px solid ${alpha(theme.border.primary, 0.2)}`}
     >
-      <Flex flexDirection="row" alignItems="center" gap={2}>
-        <Link href="https://soroush.tech" underline="none" display="inline-flex">
-          <Logo size={48} />
-        </Link>
-        <Typography
-          as="span"
-          fontSize={2}
-          fontWeight="bold"
-          letterSpacing="tighter"
-          color="initial"
-        >
-          SOROUSH™
-        </Typography>
-      </Flex>
-
-      <DesktopNav>
-        <Navbar
-          aria-label="Main"
-          items={NAV_ITEMS}
-          direction="horizontal"
-          gap={4}
-          variant="button"
-          letterSpacing="tight"
-        />
-      </DesktopNav>
-
-      <Flex flexDirection="row" alignItems="center" gap={3}>
+      {/* The bar spans the viewport; its content sits on the page frame */}
+      <Flex
+        layout
+        height="100%"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Flex flexDirection="row" alignItems="center" gap={2}>
-          <Typography variant="caption" letterSpacing="widest" color="primary">
-            MODE
-          </Typography>
-          <Switch
-            checked={isDark}
-            onChange={toggleTheme}
-            variant="inside"
-            color="primary"
-            size="sm"
-            aria-label="Toggle theme"
-          />
-          {isDark ? (
-            <MoonIcon width={14} height={14} color={theme.text.primary} />
-          ) : (
-            <SunIcon width={14} height={14} color={theme.text.primary} />
-          )}
-        </Flex>
-        <MobileMenuButton>
-          <Button
-            variant="text"
-            size="sm"
-            aria-label="Open menu"
-            aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen(true)}
+          <Link href="https://soroush.tech" underline="none" display="inline-flex">
+            <Logo size={48} />
+          </Link>
+          <Typography
+            as="span"
+            fontSize={2}
+            fontWeight="bold"
+            letterSpacing="tighter"
+            color="initial"
           >
-            <Icon name="menu" color="initial" />
-          </Button>
-        </MobileMenuButton>
+            SOROUSH™
+          </Typography>
+        </Flex>
+
+        <DesktopNav>
+          <Navbar
+            aria-label="Main"
+            items={NAV_ITEMS}
+            direction="horizontal"
+            gap={4}
+            variant="button"
+            letterSpacing="tight"
+          />
+        </DesktopNav>
+
+        <Flex flexDirection="row" alignItems="center" gap={3}>
+          <Flex flexDirection="row" alignItems="center" gap={2}>
+            <Typography variant="caption" letterSpacing="widest" color="primary">
+              MODE
+            </Typography>
+            <Switch
+              checked={isDark}
+              onChange={toggleTheme}
+              variant="inside"
+              color="primary"
+              size="sm"
+              aria-label="Toggle theme"
+            />
+            {isDark ? (
+              <MoonIcon width={14} height={14} color={theme.text.primary} />
+            ) : (
+              <SunIcon width={14} height={14} color={theme.text.primary} />
+            )}
+          </Flex>
+          <MobileMenuButton>
+            <Button
+              variant="text"
+              size="sm"
+              aria-label="Open menu"
+              aria-expanded={isMenuOpen}
+              onClick={() => setIsMenuOpen(true)}
+            >
+              <Icon name="menu" color="initial" />
+            </Button>
+          </MobileMenuButton>
+        </Flex>
       </Flex>
 
       <Drawer

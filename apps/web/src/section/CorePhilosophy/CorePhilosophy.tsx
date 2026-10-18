@@ -9,8 +9,8 @@ export function CorePhilosophy() {
   return (
     <View as="section" py={10}>
       {/* 12 columns at sm (the theme has 8) so the three cards stay three across */}
-      <Grid layout={{ gutter: 1, sm: { columns: 12 } }} gap={1}>
-        <Eyebrow span={{ xs: 4, sm: 12 }} mb={7}>
+      <Grid layout={{ sm: { columns: 12 } }} gap={1}>
+        <Eyebrow span="full" mb={7}>
           <Typography variant="h2" color="initial" letterSpacing="tighter">
             ARCHITECTURAL DECISIONS &amp; AI INTEGRATION
           </Typography>

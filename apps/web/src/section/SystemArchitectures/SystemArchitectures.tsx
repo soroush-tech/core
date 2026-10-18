@@ -38,7 +38,7 @@ export function SystemArchitectures() {
   return (
     <View as="section" py={10}>
       <Grid
-        layout={{ gutter: 2 }}
+        layout
         gridTemplateRows={['auto', 'auto', 'repeat(2, 1fr)']}
         gap={2}
         height={['auto', 'auto', '800px']}

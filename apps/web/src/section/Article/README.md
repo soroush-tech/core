@@ -26,7 +26,7 @@ Rendered at `/article/:id` by `src/pages/article/@id/+Page.tsx`. The page fetche
 
 | Region  | Element                    | Notes                                        |
 | ------- | -------------------------- | -------------------------------------------- |
-| Body    | `LayoutFrame as="section"` | Theme margins, 1280px including them         |
+| Body    | `View as="section" layout` | The theme frame (margins and max width)      |
 | Body MD | `Preview`                  | Markdown elements mapped to theme primitives |
 
 ## Data

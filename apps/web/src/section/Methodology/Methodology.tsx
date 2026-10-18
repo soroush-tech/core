@@ -1,5 +1,6 @@
 import { View } from '@soroush.tech/design-system/View'
 import { Flex } from '@soroush.tech/design-system/Flex'
+import { Grid } from '@soroush.tech/design-system/Grid'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { Image } from '@soroush.tech/design-system/Image'
 import circuit from 'src/assets/methodology-circuit.png?w=256;384;512&format=avif;webp;png&as=picture'
@@ -16,7 +17,7 @@ const HALF = { xs: 4, sm: 4, md: 6 }
 export function Methodology() {
   return (
     <View as="section" py={10}>
-      <Flex layout={{ gutter: 6 }} alignItems="center" gap={6}>
+      <Grid layout gap={6} alignItems="center">
         <Flex position="relative" span={HALF} aspectRatio={1} overflow="hidden" bg="default">
           <picture>
             {Object.entries(circuit.sources).map(([format, srcSet]) => (
@@ -86,7 +87,7 @@ export function Methodology() {
             ))}
           </Flex>
         </Flex>
-      </Flex>
+      </Grid>
     </View>
   )
 }

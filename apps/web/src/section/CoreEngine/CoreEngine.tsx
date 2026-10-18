@@ -7,12 +7,8 @@ import { Paper } from '@soroush.tech/design-system/Paper'
 import { Icon } from '@soroush.tech/design-system/Icon'
 import { specs } from './CoreEngine.data'
 
-const FULL = { xs: 4, sm: 8, md: 12 }
-
-// 1px hairline gaps: gap uses the thin border-width token (no 1px space token) and
-// the grid's background shows through the gaps as hairlines between the tiles
+// 1px hairline gaps: the grid's background shows through the gaps as hairlines between the tiles
 const HairlineGrid = styled(Grid, { label: 'HairlineGrid' })`
-  gap: ${({ theme }) => theme.borderWidths.thin};
   background-color: ${({ theme }) => theme.border.light};
 `
 
@@ -27,7 +23,7 @@ export function CoreEngine() {
   return (
     <View as="section" bg="terminal" py={10}>
       <Grid layout>
-        <Flex span={FULL} alignItems="center" gap={2} mb={10} textAlign="center">
+        <Flex span="full" alignItems="center" gap={2} mb={10} textAlign="center">
           <Typography variant="overline" color="primary" fontWeight="bold" letterSpacing="widest">
             MODERN TOOLING
           </Typography>
@@ -42,9 +38,8 @@ export function CoreEngine() {
           </Typography>
         </Flex>
 
-        {/* Its own layout grid, edge to edge (fluid - an auto-margin grid item would shrink to
-            fit): the hairlines are its background showing through */}
-        <HairlineGrid span={FULL} layout={{ margin: 0, gutter: '1px', mode: 'fluid' }}>
+        {/* Its own layout grid, edge to edge: the hairlines are its background showing through */}
+        <HairlineGrid span="full" layout={{ margin: 0 }} gap={0.125}>
           {specs.map(({ name, icon }) => (
             <EngineTile
               key={name}

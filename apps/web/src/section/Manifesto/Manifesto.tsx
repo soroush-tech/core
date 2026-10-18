@@ -1,6 +1,7 @@
 import { styled } from '@soroush.tech/design-system'
 import { View } from '@soroush.tech/design-system/View'
 import { Flex } from '@soroush.tech/design-system/Flex'
+import { Grid } from '@soroush.tech/design-system/Grid'
 import { Typography } from '@soroush.tech/design-system/Typography'
 import { beliefs } from './Manifesto.data'
 
@@ -22,7 +23,7 @@ const OnPrimaryBar = styled(View, { label: 'OnPrimaryBar' })`
 export function Manifesto() {
   return (
     <View as="section" bg="primary" py={10}>
-      <Flex layout={{ gutter: 8 }} alignItems="center" gap={8}>
+      <Grid layout gap={8} alignItems="center">
         <GreenPanel span={HALF} py={4} px={6} position="relative" overflow="hidden">
           <Flex gap={5}>
             <Typography
@@ -75,7 +76,7 @@ export function Manifesto() {
             ))}
           </Flex>
         </Flex>
-      </Flex>
+      </Grid>
     </View>
   )
 }

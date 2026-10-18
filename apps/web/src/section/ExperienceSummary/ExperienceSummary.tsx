@@ -14,7 +14,7 @@ const ProgressFill = styled(View, { label: 'ProgressFill' })`
 export function ExperienceSummary() {
   return (
     <View as="section" bg="primary" py={10}>
-      <Grid layout={{ gutter: 8 }} gap={8} alignItems="start">
+      <Grid layout gap={8} alignItems="start">
         <View span={{ xs: 4, sm: 8, md: 6 }}>
           <Typography variant="h2" color="initial" fontWeight="bold" mb={6}>
             Professional Summary

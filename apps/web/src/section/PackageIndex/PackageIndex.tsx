@@ -4,7 +4,6 @@ import { Typography } from '@soroush.tech/design-system/Typography'
 import { Link } from '@soroush.tech/design-system/Link'
 import { DomainCard } from 'src/common/DomainCard'
 import { PageHeader } from 'src/common/PageHeader'
-import { LayoutFrame } from 'src/common/LayoutFrame'
 import { packages } from './PackageIndex.data'
 
 /**
@@ -36,7 +35,7 @@ export function PackageIndex() {
           scope.
         </Typography>
       </PageHeader>
-      <LayoutFrame as="section" width="100%" py={4}>
+      <View as="section" layout py={4}>
         <Grid gridTemplateColumns="1fr" gap={2}>
           {packages.map((pkg, index) => (
             <Link
@@ -59,7 +58,7 @@ export function PackageIndex() {
             </Link>
           ))}
         </Grid>
-      </LayoutFrame>
+      </View>
     </>
   )
 }

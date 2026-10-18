@@ -80,14 +80,7 @@ export function AboutHero() {
     >
       <MatrixGradient />
 
-      <Grid
-        layout={{ gutter: 6 }}
-        gap={6}
-        alignItems="center"
-        position="relative"
-        zIndex={1}
-        width="100%"
-      >
+      <Grid layout gap={6} alignItems="center" position="relative" zIndex={1} width="100%">
         <View span={{ xs: 4, sm: 8, md: 7 }}>
           <View height="1px" width="3rem" bg="primary" mb={4} />
           <Typography

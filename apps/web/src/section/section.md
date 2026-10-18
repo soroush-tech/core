@@ -63,43 +63,47 @@ root, and never fake a surface with `bg="paper"` on the root.** `Paper` is only 
 genuine elevated card _inside_ the content container.
 
 ```tsx
-<View as="section" py={10} px={4}>
+<View as="section" py={10}>
 ```
 
-- `px={4}` - consistent horizontal gutter on every section.
+- No `px` - the inline margins come from the frame inside (step 2).
 - `py` - vertical rhythm, `6`-`10` depending on density.
 - `bg` - set a surface token (`terminal`, `default`) only when the section needs a banded
   background; otherwise leave the root transparent.
 
-### 2. Content container - constrained and centered
+### 2. Content - on the theme's layout
 
-Wrap the section's content in a container capped at **`maxWidth="1280px"`** and centered
-with **`mx="auto"`**. Put it on a `View`, or directly on the `Flex`/`Grid` that lays out
-the content.
+The page frame (margins, max width) and the columns come from `theme.layout`
+(`src/theme/themes.ts`), never from values written on the section. Follow the design
+system's "Layout: one way per intent" table:
+
+| Intent                       | Write                                        | Not                                     |
+| ---------------------------- | -------------------------------------------- | --------------------------------------- |
+| Content on the frame         | `<View layout>` / `<Flex layout>`            | `maxWidth` + `mx="auto"` + `px`         |
+| Content on the columns       | `<Grid layout gap={N}>`                      | hand-written tracks, `Flex` with widths |
+| A child taking N columns     | `span={{ xs: 4, md: 6 }}`                    | `gridColumn="span 6"`                   |
+| A child taking the whole row | `span="full"`                                | `gridColumn: '1 / -1'`, `style`         |
+| A narrower section           | `layout={{ mode: 'fixed', maxWidth }}`       | a nested `maxWidth` + `mx="auto"` box   |
+| A grid with its own tracks   | a plain `Grid` (`auto-fill`, ...) in a frame | `layout` plus `gridTemplateColumns`     |
 
 ```tsx
-<View as="section" py={10} px={4}>
-  <View maxWidth="1280px" mx="auto">
-    {/* content */}
-  </View>
+<View as="section" py={10}>
+  <Grid layout gap={2}>
+    <View span="full">{/* heading */}</View>
+    <View span={{ xs: 4, md: 6 }}>{/* half on desktop */}</View>
+    <View span={{ xs: 4, md: 6 }}>{/* half on desktop */}</View>
+  </Grid>
 </View>
 ```
 
+Never put `layout` on a wrapper around several sections (the page `Layout`, a page-wide
+`Flex`): each frame would sit inside another and the margins would apply twice.
+
 ### 3. Responsive - mobile-first, always cover tablet and desktop
 
-Column counts, gaps, and sizes use styled-system responsive arrays `[mobile, tablet, desktop]`.
-Every multi-column layout **must define a tablet _and_ a desktop value** - never ship a
-layout that only adapts at a single breakpoint.
-
-```tsx
-<Grid gridTemplateColumns={['1fr', '1fr 1fr', 'repeat(4, 1fr)']} gap={6}>
-```
-
-| Index | Viewport | Breakpoint |
-| ----- | -------- | ---------- |
-| 0     | mobile   | base       |
-| 1     | tablet   | ≥ 40em     |
-| 2     | desktop  | ≥ 52em     |
+The theme has 4 columns at `xs`, 8 from `sm` and 12 from `md`. A `span` or other responsive
+value set at a breakpoint holds from there up. Every multi-column layout **must define a
+tablet _and_ a desktop value** - never ship a layout that only adapts at a single breakpoint.
 
 ---
 
