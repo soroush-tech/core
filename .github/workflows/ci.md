@@ -28,7 +28,7 @@ concurrency:
 ```mermaid
 flowchart TD
     prepare --> lint
-    lint --> packages["packages → ci-packages.yml<br/>package matrix + bench"]
+    lint --> packages["packages → ci-packages.yml<br/>package matrix"]
     lint --> worker["worker → ci-worker.yml<br/>worker matrix"]
     lint --> app["app → ci-app.yml<br/>web + editor"]
     prepare --> packages
@@ -171,7 +171,7 @@ Each area's jobs live in a workflow of its own, called from here:
 
 | Caller job | Calls                                                                                                      | Gated on          |
 | ---------- | ---------------------------------------------------------------------------------------------------------- | ----------------- |
-| `packages` | [`ci-packages.yml`](./ci-packages.md) - the package matrix + `bench`                                       | `has_packages`    |
+| `packages` | [`ci-packages.yml`](./ci-packages.md) - the package matrix                                                 | `has_packages`    |
 | `worker`   | [`ci-worker.yml`](./ci-worker.md) - the worker matrix                                                      | `has_workers`     |
 | `app`      | [`ci-app.yml`](./ci-app.md), which calls [`ci-web.yml`](./ci-web.md) and [`ci-editor.yml`](./ci-editor.md) | `web` or `editor` |
 
@@ -182,8 +182,9 @@ and one required check - and gives each area a file whose own marker says what e
 Three things about a caller job that are easy to get wrong:
 
 - It cannot declare `environment:`, `timeout-minutes:`, `runs-on:` or `env:` - those belong to the
-  jobs inside the called workflow. Its `permissions:` is a **ceiling**, so `packages` grants
-  `pull-requests: write` for `bench` while the matrix rows re-declare `contents: read`.
+  jobs inside the called workflow. Its `permissions:` is a **ceiling**, so `app` grants
+  `id-token: write` for the tokenless coverage uploads while the jobs inside re-declare their own,
+  narrower sets.
 - **`secrets: inherit` is mandatory, not stylistic.** `CODECOV_TOKEN` is scoped to the `CI`
   environment; naming it explicitly at the call site evaluates it in this workflow's
   environment-less context and passes an empty string - a green upload step that uploads nothing.
