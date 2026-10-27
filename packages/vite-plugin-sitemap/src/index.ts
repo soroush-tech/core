@@ -80,9 +80,11 @@ export default function sitemap({ enable = true }: SitemapOptions = {}): Plugin 
     },
     buildApp: {
       order: 'post',
-      async handler() {
+      // The hook's type wants a promise back; the scan itself is synchronous.
+      handler() {
         const count = generate(clientDir)
         if (count) console.log(`✓ sitemap: wrote ${count} URLs to build/client/sitemap.xml`)
+        return Promise.resolve()
       },
     },
   }
