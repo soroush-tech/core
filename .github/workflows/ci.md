@@ -294,7 +294,7 @@ install; otherwise the store is restored and `--frozen-lockfile` just links.
 env:
   PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
 # restore (after the setup action installed - nothing writes this path during an install)
-- uses: actions/cache/restore@v5
+- uses: actions/cache/restore@v6
   id: playwright-cache
   with:
     path: ${{ github.workspace }}/ms-playwright
@@ -302,7 +302,7 @@ env:
 # ... then on a miss `playwright install --with-deps`,
 #   on a hit `playwright install-deps` (Linux only) ...
 # save (only on a miss, even if later steps fail)
-- uses: actions/cache/save@v5
+- uses: actions/cache/save@v6
   if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
   with:
     path: ${{ github.workspace }}/ms-playwright

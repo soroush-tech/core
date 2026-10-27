@@ -83,7 +83,7 @@ jobs:
         run: node scripts/assemble-changes.mjs filters >> "$GITHUB_OUTPUT"
 
       - name: Detect changed entities
-        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
         with:
           filters: ${{ steps.discover.outputs.filters }} # JSON is valid YAML

@@ -45,7 +45,7 @@ jobs:
       # As in ci-web.yml: after the install, which touches nothing on this path.
       - name: Restore cache - Playwright binaries
         if: matrix.browsers
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
@@ -63,7 +63,7 @@ jobs:
 
       - name: Save cache - Playwright binaries
         if: always() && matrix.browsers && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
@@ -89,7 +89,7 @@ jobs:
         run: sed -i "s#^SF:#SF:$AREA/$DIR/#" "$AREA/$DIR/coverage/lcov.info"
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./${{ matrix.area }}/${{ matrix.dir }}/coverage/lcov.info
@@ -139,7 +139,7 @@ jobs:
       - name: Mint bot token
         id: bot-token
         if: vars.BENCH_BOT_APP_ID != ''
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.BENCH_BOT_APP_ID }}
           private-key: ${{ secrets.BENCH_BOT_PRIVATE_KEY }}

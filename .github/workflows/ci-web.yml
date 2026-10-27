@@ -47,7 +47,7 @@ jobs:
       # After the install rather than before it: nothing writes this path during install,
       # and the restore only has to precede the browser-install and save steps below.
       - name: Restore cache - Playwright binaries
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
@@ -65,7 +65,7 @@ jobs:
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
@@ -93,7 +93,7 @@ jobs:
           ${{ inputs.runner }} run test:coverage:web
 
       - name: Upload Web Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
@@ -108,7 +108,7 @@ jobs:
           ${{ inputs.runner }} run test:coverage:unit
 
       - name: Upload Unit Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
@@ -123,7 +123,7 @@ jobs:
           ${{ inputs.runner }} run test:coverage:browser
 
       - name: Upload Browser Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
@@ -138,7 +138,7 @@ jobs:
           ${{ inputs.runner }} run test:coverage:storybook
 
       - name: Upload Storybook Coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./apps/web/coverage/lcov.info
@@ -190,7 +190,7 @@ jobs:
       # As in the `web` job: restoring after the install is equivalent, and it leaves the
       # shared setup in one piece.
       - name: Restore cache - Playwright binaries
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: playwright-cache
         with:
           path: ${{ github.workspace }}/ms-playwright
@@ -206,7 +206,7 @@ jobs:
 
       - name: Save cache - Playwright binaries
         if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ${{ github.workspace }}/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
@@ -220,7 +220,7 @@ jobs:
 
       - name: Upload E2E Coverage to Codecov
         if: matrix.coverage
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           use_oidc: true # tokenless upload (public repo) so e2e needs no CI-environment secret
           files: ./apps/web/coverage/e2e/lcov.info
