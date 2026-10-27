@@ -37,10 +37,10 @@ const mockFs = () => {
   })
 }
 
-const run = (plugin: ReturnType<typeof sitemap>) => {
+const run = async (plugin: ReturnType<typeof sitemap>) => {
   ;(plugin.configResolved as (config: Pick<ResolvedConfig, 'root'>) => void)({ root: ROOT })
-  const closeBundle = plugin.closeBundle as { handler: () => void }
-  closeBundle.handler()
+  const buildApp = plugin.buildApp as { handler: () => Promise<void> }
+  await buildApp.handler()
 }
 
 beforeEach(() => {
@@ -67,12 +67,12 @@ describe('sitemap', () => {
     expect(plugin.name).toBe('vite-plugin-sitemap')
     // No hooks registered - nothing to run, nothing to scan.
     expect(plugin.apply).toBeUndefined()
-    expect(plugin.closeBundle).toBeUndefined()
+    expect(plugin.buildApp).toBeUndefined()
   })
 
-  it('writes a sitemap of indexable pages, skipping noindex and non-html files', () => {
+  it('writes a sitemap of indexable pages, skipping noindex and non-html files', async () => {
     mockFs()
-    run(sitemap())
+    await run(sitemap())
 
     expect(writeFileSyncMock).toHaveBeenCalledOnce()
     const [target, xml] = writeFileSyncMock.mock.calls[0] as [string, string]
@@ -87,10 +87,10 @@ describe('sitemap', () => {
     expect(console.log).toHaveBeenCalledOnce()
   })
 
-  it('writes nothing when there are no indexable pages', () => {
+  it('writes nothing when there are no indexable pages', async () => {
     readdirSyncMock.mockReturnValue(['assets/app.js'])
     readFileSyncMock.mockReturnValue('')
-    run(sitemap())
+    await run(sitemap())
 
     expect(writeFileSyncMock).not.toHaveBeenCalled()
     expect(console.log).not.toHaveBeenCalled()
