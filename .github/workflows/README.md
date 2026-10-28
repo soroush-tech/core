@@ -84,7 +84,7 @@ job actually failed or was cancelled.
 flowchart TD
     prepare["prepare<br/>• node version (.nvmrc)<br/>• package manager<br/>• playwright version<br/>• changed entities → changes.json<br/>• upload changes.json"]
     lint["lint<br/>lint + typecheck (recursive)"]
-    packages["packages → ci-packages.yml<br/>matrix + bench<br/>if has_packages == true"]
+    packages["packages → ci-packages.yml<br/>matrix<br/>if has_packages == true"]
     worker["worker → ci-worker.yml<br/>matrix<br/>if has_workers == true"]
     app["app → ci-app.yml<br/>→ ci-web.yml (web + e2e)<br/>→ ci-editor.yml (unit + Electron)<br/>if web or editor"]
     ciok["ci-ok<br/>branch-protection gate<br/>(if: always)"]

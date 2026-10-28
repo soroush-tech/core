@@ -45,7 +45,7 @@ jobs:
       # upgrade fetches and nothing else does. It sits after the install because the install
       # runs --ignore-scripts: the binary is fetched by the explicit rebuild step below.
       - name: Restore cache - Electron binary
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/electron
           key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
@@ -76,7 +76,7 @@ jobs:
         run: sed -i "s#^SF:#SF:apps/editor/#" apps/editor/coverage/lcov.info
 
       - name: Upload Editor Coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           use_oidc: true # tokenless, so this job needs no CI-environment secret
           files: ./apps/editor/coverage/lcov.info
@@ -105,7 +105,7 @@ jobs:
           command: ${{ inputs.command }}
 
       - name: Restore cache - Electron binary
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/electron
           key: ${{ runner.os }}-electron-${{ hashFiles('apps/editor/package.json') }}
@@ -153,7 +153,7 @@ jobs:
         run: sed -i "s#^SF:#SF:apps/editor/#" apps/editor/coverage/e2e/lcov.info
 
       - name: Upload Editor E2E Coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           use_oidc: true
           files: ./apps/editor/coverage/e2e/lcov.info

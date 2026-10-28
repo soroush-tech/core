@@ -2,8 +2,7 @@
 
 # `ci-packages.yml` - CI · Packages
 
-Called by [`ci.yml`](./ci.md), never triggered on its own. Holds the package matrix and the
-performance gate.
+Called by [`ci.yml`](./ci.md), never triggered on its own. Holds the package matrix.
 
 ```yaml
 # ci:validates pkg__*
@@ -41,12 +40,3 @@ Packages without the script are skipped.
 `matrix.browsers` rows install Chromium first, sharing the `Linux-playwright-<version>` cache with
 the web app's jobs. A member sets it by declaring `playwright` **and** having no `test:e2e` script
 of its own - that's what separates `design-system`'s browser tier from the editor's Electron suite.
-
-## Job: `bench`
-
-The performance gate: `packages/styled-system/bench` runs in the pinned Docker sandbox via
-[`soroush-tech/bench-action`](https://github.com/soroush-tech/bench-action) against the last npm
-release, failing below 80% of the baseline. Gated on the matrix rather than its own filter, keyed on
-`flag` - `dir` would match `workers/bench` too. Results post as one sticky PR comment under a token
-minted from the org's GitHub App, so the comment carries the brand bot identity; with the app
-unconfigured the step is skipped and the gate falls back to `GITHUB_TOKEN`.

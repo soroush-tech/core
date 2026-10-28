@@ -52,12 +52,12 @@ const generate = (clientDir: string): number => {
 }
 
 /**
- * Emits `sitemap.xml` from Vike's prerendered output. Runs after the bundle closes
- * (`order: 'post'`, once prerendering has written `build/client/**\/*.html`) and scans
- * the same HTML that gets deployed, so the sitemap matches the live pages. A page is
- * skipped when its `<meta name="robots">` contains `noindex`, with no hardcoded list to
- * maintain. The empty scan that precedes prerender (e.g. the client-build pass) writes
- * nothing.
+ * Emits `sitemap.xml` from Vike's prerendered output. Runs in the `buildApp` hook with
+ * `order: 'post'`: Vike pre-renders from its own `order: 'post'` `buildApp` hook on an
+ * `enforce: 'pre'` plugin, which Vite runs first, so `build/client/**\/*.html` exists by
+ * now. It scans the same HTML that gets deployed, so the sitemap matches the live pages. A
+ * page is skipped when its `<meta name="robots">` contains `noindex`, with no hardcoded
+ * list to maintain. An empty scan (nothing pre-rendered) writes nothing.
  */
 export interface SitemapOptions {
   /**
@@ -78,11 +78,13 @@ export default function sitemap({ enable = true }: SitemapOptions = {}): Plugin 
     configResolved({ root }) {
       clientDir = resolve(root, 'build/client')
     },
-    closeBundle: {
+    buildApp: {
       order: 'post',
+      // The hook's type wants a promise back; the scan itself is synchronous.
       handler() {
         const count = generate(clientDir)
         if (count) console.log(`✓ sitemap: wrote ${count} URLs to build/client/sitemap.xml`)
+        return Promise.resolve()
       },
     },
   }
