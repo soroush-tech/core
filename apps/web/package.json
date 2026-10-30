@@ -50,7 +50,7 @@
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
-    "@soroush.tech/design-system": "2.0.0",
+    "@soroush.tech/design-system": "2.1.0",
     "@soroush.tech/hooks": "workspace:*",
     "@soroush.tech/markdown": "1.2.3",
     "@soroush.tech/schema": "workspace:*",

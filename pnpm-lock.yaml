@@ -39,14 +39,14 @@ importers:
         specifier: ^1.64.1
         version: 1.64.1
       '@soroush.tech/design-system':
-        specifier: 2.0.0
-        version: 2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 2.1.0
+        version: 2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@soroush.tech/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@soroush.tech/markdown':
         specifier: 1.2.3
-        version: 1.2.3(@soroush.tech/design-system@2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 1.2.3(@soroush.tech/design-system@2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@soroush.tech/playwright-coverage':
         specifier: workspace:*
         version: link:../../packages/playwright-coverage
@@ -126,14 +126,14 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       '@soroush.tech/design-system':
-        specifier: 2.0.0
-        version: 2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 2.1.0
+        version: 2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@soroush.tech/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
       '@soroush.tech/markdown':
         specifier: 1.2.3
-        version: 1.2.3(@soroush.tech/design-system@2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 1.2.3(@soroush.tech/design-system@2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@soroush.tech/schema':
         specifier: workspace:*
         version: link:../../packages/schema
@@ -2780,8 +2780,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@soroush.tech/design-system@2.0.0':
-    resolution: {integrity: sha512-+3tMLAOep5JT0O3dm6Rp/DXtiNngky6xD2aV6aEev544iBCCkv23wI+0NzibnH+MsVzFlKa5xV8z80fnBgFahA==}
+  '@soroush.tech/design-system@2.1.0':
+    resolution: {integrity: sha512-ke0tjQ/WNLKQmSPUtY81al+TGxH8ojQg4rDlsVHqS+SJIiWU+F1cC19oTi4SwgdTbCFKx1A+2jAt4oxWRUPNKA==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -9194,7 +9194,7 @@ snapshots:
   '@soroush.tech/ai-watermark-guard-win32-x64@0.1.0':
     optional: true
 
-  '@soroush.tech/design-system@2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@soroush.tech/design-system@2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.1)
@@ -9208,9 +9208,9 @@ snapshots:
       - prop-types
       - supports-color
 
-  '@soroush.tech/markdown@1.2.3(@soroush.tech/design-system@2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@soroush.tech/markdown@1.2.3(@soroush.tech/design-system@2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@soroush.tech/design-system': 2.0.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@soroush.tech/design-system': 2.1.0(@emotion/is-prop-valid@1.4.0)(@types/react@19.3.0)(prop-types@15.8.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       mermaid: 12.2.0
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
