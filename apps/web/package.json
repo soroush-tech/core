@@ -75,6 +75,7 @@
     "@emotion/jest": "^11.14.2",
     "@emotion/server": "^11.11.0",
     "@playwright/test": "^1.64.1",
+    "@soroush.studio/vite-wire": "^0.1.0",
     "@soroush.tech/eslint-config": "workspace:*",
     "@soroush.tech/playwright-coverage": "workspace:*",
     "@soroush.tech/vite-plugin-msw-server": "workspace:*",

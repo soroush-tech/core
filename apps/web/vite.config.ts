@@ -9,6 +9,7 @@ import watch from '@soroush.tech/vite-plugin-watch'
 import mswServer from '@soroush.tech/vite-plugin-msw-server'
 import sitemap from '@soroush.tech/vite-plugin-sitemap'
 import { codecovVitePlugin } from '@codecov/vite-plugin'
+import { studioVite } from '@soroush.studio/vite-wire'
 
 // Opt-in: precompressed assets are only served by a static server configured for
 // them (nginx gzip_static/brotli_static, etc.). GitHub Pages ignores them, so this
@@ -22,6 +23,7 @@ const mswEnabled = process.env.VITE_APP_MSW_ACTIVE === 'true'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    studioVite(),
     svgr(),
     imagetools(),
     watch({
