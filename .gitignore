@@ -62,3 +62,8 @@ test-results
 .vitest-attachments
 __screenshots__/
 examples/
+
+# design studio capture cache
+.studio-cache/
+.studio-cache-perf/
+.studio-cache-main/
