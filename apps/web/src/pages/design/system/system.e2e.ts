@@ -12,9 +12,13 @@ test('design system page renders all sections', async ({ page }) => {
     page.getByRole('heading', { level: 2, name: '02 . Content & Data Display' })
   ).toBeVisible()
   await expect(page.getByRole('heading', { level: 2, name: '03 . Inputs & Forms' })).toBeVisible()
-  await expect(page.getByRole('heading', { level: 2, name: '04 . Feedback' })).toBeVisible()
   await expect(
-    page.getByRole('heading', { level: 2, name: '05 . Overlay & Behavior' })
+    page.getByRole('heading', { level: 2, name: '04 . Navigation & Menus' })
+  ).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name: '05 . Feedback' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name: '06 . Animation' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 2, name: '07 . Overlay & Behavior' })
   ).toBeVisible()
 })
 

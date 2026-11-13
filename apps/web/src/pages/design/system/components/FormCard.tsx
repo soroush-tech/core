@@ -8,6 +8,7 @@ import { FormControl } from '@soroush.tech/design-system/FormControl'
 import { FormHelperText } from '@soroush.tech/design-system/FormHelperText'
 import { FormLabel } from '@soroush.tech/design-system/FormLabel'
 import { MenuItem } from '@soroush.tech/design-system/MenuItem'
+import { NumberInput } from '@soroush.tech/design-system/NumberInput'
 import { Select } from '@soroush.tech/design-system/Select'
 import { TextInput } from '@soroush.tech/design-system/TextInput'
 import { View } from '@soroush.tech/design-system/View'
@@ -54,6 +55,18 @@ export function FormCard() {
               <MenuItem value="bravo">Bravo</MenuItem>
               <MenuItem value="cipher">Cipher</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>RETRY_LIMIT</FormLabel>
+            <NumberInput
+              variant="outlined"
+              defaultValue={3}
+              min={0}
+              max={10}
+              incrementLabel="Increase retry limit"
+              decrementLabel="Decrease retry limit"
+            />
+            <FormHelperText>Between 0 and 10 attempts.</FormHelperText>
           </FormControl>
           <FormControl error fullWidth>
             <FormLabel>ACCESS_CODE</FormLabel>
