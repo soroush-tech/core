@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -18,9 +18,7 @@ export function ModalCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle title="MODAL" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-modal--docs`} />
-      }
+      title={<CardTitle title="MODAL" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/modal/`} />}
       caption="The low-level overlay primitive - portals its content, dims the page with a Backdrop, traps focus, locks body scroll, and closes on Escape or backdrop click."
     >
       <Flex flexDirection="row">

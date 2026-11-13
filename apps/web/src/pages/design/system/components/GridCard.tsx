@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Grid } from '@soroush.tech/design-system/Grid'
@@ -12,9 +12,7 @@ export function GridCard() {
       p={5}
       flex="1"
       variant="bracketBox"
-      title={
-        <CardTitle title="GRID" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-grid--docs`} />
-      }
+      title={<CardTitle title="GRID" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/grid/`} />}
       caption="Extends View with display:grid. Adds gap and the full set of CSS Grid layout props."
     >
       <Grid gridTemplateColumns="repeat(3, 1fr)" gap={2} mb={3}>

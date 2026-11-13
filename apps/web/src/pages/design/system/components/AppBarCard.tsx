@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { AppBar, type AppBarSize } from '@soroush.tech/design-system/AppBar'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -18,10 +18,7 @@ export function AppBarCard() {
       flex={1}
       variant="bracketBox"
       title={
-        <CardTitle
-          title="APP_BAR"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-appbar--docs`}
-        />
+        <CardTitle title="APP_BAR" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/app-bar/`} />
       }
       caption="A top-level header container with a theme elevation shadow. size presets the padding; blur applies a frosted-glass backdrop filter."
     >

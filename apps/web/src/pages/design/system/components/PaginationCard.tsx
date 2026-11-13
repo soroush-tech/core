@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Pagination } from '@soroush.tech/design-system/Pagination'
@@ -22,7 +22,7 @@ export function PaginationCard() {
       title={
         <CardTitle
           title="PAGINATION"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-pagination-pagination--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/pagination/`}
         />
       }
       caption="1-based page navigation with ellipsis ranges and optional first/last controls. Both instances below share one controlled page state."

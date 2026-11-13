@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -12,12 +12,7 @@ export function ButtonCard() {
       p={5}
       flex="1"
       variant="bracketBox"
-      title={
-        <CardTitle
-          title="BUTTON"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-button--docs`}
-        />
-      }
+      title={<CardTitle title="BUTTON" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/button/`} />}
       caption="Sharp, uppercase, bold. Three visual variants (contained, outlined, text), six semantic palettes, and three sizes."
     >
       <Flex flexDirection="column" gap={3}>

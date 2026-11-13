@@ -1,6 +1,6 @@
 import mascotDebugger from 'src/assets/soroush_mascot_debugger.png'
 import mascotExplorer from 'src/assets/soroush_mascot_explorer.png'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Image } from '@soroush.tech/design-system/Image'
@@ -17,9 +17,7 @@ export function ImageCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle title="IMAGE" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-image--docs`} />
-      }
+      title={<CardTitle title="IMAGE" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/image/`} />}
       caption="A styled-system <img> primitive with objectFit/objectPosition and built-in source recovery - a failing src advances to fallback before onError fires."
     >
       <Flex flexDirection="row" gap={4} flexWrap="wrap">

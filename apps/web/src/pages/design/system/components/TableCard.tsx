@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import {
   Table,
@@ -28,12 +28,7 @@ export function TableCard() {
       p={5}
       width="100%"
       variant="bracketBox"
-      title={
-        <CardTitle
-          title="TABLE"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-table-table--docs`}
-        />
-      }
+      title={<CardTitle title="TABLE" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/table/`} />}
       caption="Semantic table primitives with context-driven th/td cells, sortable headers, hoverable rows, and a footer pagination control."
     >
       <TableContainer>

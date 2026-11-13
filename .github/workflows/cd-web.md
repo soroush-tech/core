@@ -81,16 +81,15 @@ Output: `web` (`'true'`/`'false'`). The missing-file fallback means a manual dis
 
 Build env (from repo `secrets`/`vars`):
 
-| Var                      | Kind    | Purpose                              |
-| ------------------------ | ------- | ------------------------------------ |
-| `VITE_BASE_URL`          | var     | site base URL                        |
-| `VITE_GITHUB_KEY`        | secret  | GitHub API token for gist fetches    |
-| `VITE_API_URL`           | var     | worker API base                      |
-| `VITE_STORYBOOK_URL`     | var     | Storybook site (design-system links) |
-| `VITE_CONTACT_HONEYPOT`  | var     | contact-form honeypot field name     |
-| `VITE_TURNSTILE_SITEKEY` | secret  | Turnstile widget sitekey             |
-| `CODECOV_TOKEN`          | secret  | present for parity                   |
-| `APP_ENV`                | literal | `production`                         |
+| Var                      | Kind    | Purpose                           |
+| ------------------------ | ------- | --------------------------------- |
+| `VITE_BASE_URL`          | var     | site base URL                     |
+| `VITE_GITHUB_KEY`        | secret  | GitHub API token for gist fetches |
+| `VITE_API_URL`           | var     | worker API base                   |
+| `VITE_CONTACT_HONEYPOT`  | var     | contact-form honeypot field name  |
+| `VITE_TURNSTILE_SITEKEY` | secret  | Turnstile widget sitekey          |
+| `CODECOV_TOKEN`          | secret  | present for parity                |
+| `APP_ENV`                | literal | `production`                      |
 
 ---
 

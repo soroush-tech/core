@@ -6,19 +6,19 @@ import { View } from '@soroush.tech/design-system/View'
 
 export interface CardTitleProps {
   title: string
-  storybookHref?: string
+  docsHref?: string
 }
 
-export function CardTitle({ title, storybookHref }: Readonly<CardTitleProps>) {
+export function CardTitle({ title, docsHref }: Readonly<CardTitleProps>) {
   return (
     <View mb={1}>
       <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
         <Typography variant="overline" color="primary" fontFamily="mono" m={0}>
           {title}
         </Typography>
-        {storybookHref !== undefined && (
+        {docsHref !== undefined && (
           <Link
-            href={storybookHref}
+            href={docsHref}
             target="_blank"
             variant="caption"
             underline="hover"
@@ -27,7 +27,7 @@ export function CardTitle({ title, storybookHref }: Readonly<CardTitleProps>) {
             alignItems="center"
             gap={1}
           >
-            STORYBOOK
+            DOCS
             <Icon name="external_link" color="inherit" size={12} />
           </Link>
         )}

@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Checkbox } from '@soroush.tech/design-system/Checkbox'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -17,7 +17,7 @@ export function BinaryControlsCard() {
       title={
         <CardTitle
           title="BINARY_CONTROLS"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-checkbox--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/checkbox/`}
         />
       }
       caption="Checkbox, Radio, and Switch are all label-wrapped native inputs. Checkbox supports indeterminate state. Radio enforces group exclusivity via name. Switch transitions are CSS-only."

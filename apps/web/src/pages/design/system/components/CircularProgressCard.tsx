@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import {
   CircularProgress,
@@ -41,7 +41,7 @@ export function CircularProgressCard() {
       title={
         <CardTitle
           title="CIRCULAR_PROGRESS"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-circularprogress--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/circular-progress/`}
         />
       }
       caption="Indeterminate loops continuously with configurable easing. Determinate is value-driven (0-100) on a 10s loop."

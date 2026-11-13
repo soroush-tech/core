@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -24,9 +24,7 @@ export function FormCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle title="FORM" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-form--docs`} />
-      }
+      title={<CardTitle title="FORM" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/form/`} />}
       caption="Form provides field-wide defaults via context; Field bridges to TanStack Form and composes FormControl, FormLabel, and FormHelperText - shown standalone below in the error state."
     >
       <Form

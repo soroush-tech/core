@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import {
@@ -67,7 +67,7 @@ export function LinearProgressCard() {
       title={
         <CardTitle
           title="LINEAR_PROGRESS"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-linearprogress--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/linear-progress/`}
         />
       }
       caption="The horizontal counterpart of CircularProgress. Value-driven rows follow a shared 10s loop; spinning sends the value segment travelling along the track, wrapping past the end."

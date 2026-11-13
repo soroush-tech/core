@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Paper } from '@soroush.tech/design-system/Paper'
@@ -14,9 +14,7 @@ export function PaperCard() {
       bg="paper"
       p={5}
       width={['100%', '400px']}
-      title={
-        <CardTitle title="PAPER" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-paper--docs`} />
-      }
+      title={<CardTitle title="PAPER" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/paper/`} />}
       caption="Paper is an Surface components and shadow styles emulate physical surfaces and depth."
     >
       <Flex flexDirection="column" gap={3}>
