@@ -71,7 +71,7 @@ export function Header({ position = 'fixed' }: Readonly<HeaderProps>) {
         alignItems="center"
       >
         <Flex flexDirection="row" alignItems="center" gap={2}>
-          <Link href="https://soroush.tech" underline="none" display="inline-flex">
+          <Link href="https://soroush.tech/" underline="none" display="inline-flex">
             <Logo size={48} />
           </Link>
           <Typography

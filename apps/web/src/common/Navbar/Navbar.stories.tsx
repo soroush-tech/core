@@ -5,9 +5,9 @@ import { Navbar } from './Navbar'
 
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/articles', label: 'Articles' },
+  { href: '/about/', label: 'About' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/articles/', label: 'Articles' },
 ]
 
 const meta = {
@@ -49,6 +49,6 @@ export const Default: Story = {
 }
 
 export const WithActiveLink: Story = {
-  parameters: { urlPathname: '/about' },
+  parameters: { urlPathname: '/about/' },
   args: { direction: 'horizontal', gap: 4, variant: 'button' },
 }
