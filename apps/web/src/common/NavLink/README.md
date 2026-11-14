@@ -3,7 +3,7 @@
 A navigation link that composes `Link` and automatically marks itself active when the current URL matches its `href`. Used in `Header` and `Footer` for site navigation.
 
 ```tsx
-<NavLink href="/about" variant="button" letterSpacing="tight">
+<NavLink href="/about/" variant="button" letterSpacing="tight">
   About
 </NavLink>
 ```

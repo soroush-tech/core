@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { MenuItem } from '@soroush.tech/design-system/MenuItem'
@@ -21,12 +21,7 @@ export function SelectCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle
-          title="SELECT"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-select--docs`}
-        />
-      }
+      title={<CardTitle title="SELECT" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/select/`} />}
       caption="Select renders a combobox trigger with a themeable portaled listbox of MenuItem options. NativeSelect is the real-<select> counterpart with the same Form/FormControl integration."
     >
       <Flex flexDirection={['column', 'row']} gap={5}>

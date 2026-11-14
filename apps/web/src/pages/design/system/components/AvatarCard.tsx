@@ -1,7 +1,7 @@
 import avatar1x from 'src/assets/avatar/soroush_mascot_avatar@1x.png'
 import avatar2x from 'src/assets/avatar/soroush_mascot_avatar@2x.png'
 import avatar3x from 'src/assets/avatar/soroush_mascot_avatar@3x.png'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Avatar } from '@soroush.tech/design-system/Avatar'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -25,12 +25,7 @@ export function AvatarCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle
-          title="AVATAR"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-avatar--docs`}
-        />
-      }
+      title={<CardTitle title="AVATAR" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/avatar/`} />}
       caption="User image, initials, or icon in a consistently sized container. Three shapes (circular, rounded, square), four preset sizes, optional ring outline, and an automatic image-error fallback chain."
     >
       <Flex flexDirection="column" gap={5} flexWrap="wrap">

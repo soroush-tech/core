@@ -22,6 +22,13 @@ describe('FormCard', () => {
     expect(trigger).toHaveTextContent('Bravo')
   })
 
+  it('renders the retry limit as a labelled spinbutton in the form context', () => {
+    renderWithTheme(<FormCard />)
+    const retry = screen.getByRole('spinbutton', { name: 'RETRY_LIMIT' })
+    expect(retry).toHaveValue('3')
+    expect(retry).toHaveAccessibleDescription('Between 0 and 10 attempts.')
+  })
+
   it('accepts input in the TanStack-bound field', () => {
     renderWithTheme(<FormCard />)
     const input = screen.getByPlaceholderText('e.g. NIGHTHAWK')

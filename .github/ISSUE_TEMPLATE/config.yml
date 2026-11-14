@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/soroush-tech/core/discussions
     about: Please use Discussions for questions, ideas, or general feedback.
   - name: Documentation
-    url: https://soroush.tech/storybook
+    url: https://docs.soroush.tech/
     about: Check the docs before opening an issue.

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -19,10 +19,7 @@ export function PopoverCard() {
       flex={1}
       variant="bracketBox"
       title={
-        <CardTitle
-          title="POPOVER"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-popover--docs`}
-        />
+        <CardTitle title="POPOVER" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/popover/`} />
       }
       caption="Anchors floating content to an element, portaled above the page. Built on Modal, so backdrop, focus management, and Escape/click-away close come for free."
     >

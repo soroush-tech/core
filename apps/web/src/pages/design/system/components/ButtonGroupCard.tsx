@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Button } from '@soroush.tech/design-system/Button'
 import { ButtonGroup, type ButtonGroupProps } from '@soroush.tech/design-system/ButtonGroup'
 import { Card } from '@soroush.tech/design-system/Card'
@@ -29,7 +29,7 @@ export function ButtonGroupCard() {
       title={
         <CardTitle
           title="BUTTON_GROUP"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-buttongroup--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/button-group/`}
         />
       }
       caption="ButtonGroup joins Button children into one cluster and broadcasts variant/color/size via context. ToggleButtonGroup adds selection state - exclusive here, so re-clicking clears it."

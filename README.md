@@ -22,15 +22,15 @@ It is organized as a **pnpm workspace monorepo**: the website and a desktop
 markdown editor are apps among their own shared tooling packages and backend
 workers.
 
-[https://soroush.tech](https://soroush.tech)
+[https://soroush.tech/](https://soroush.tech/)
 
 ---
 
 <p align="center">
-  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech"><img alt="Lighthouse Performance" src="https://img.shields.io/badge/Performance-99-success?logo=lighthouse&logoColor=white"></a>
-  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech"><img alt="Lighthouse Accessibility" src="https://img.shields.io/badge/Accessibility-100-success?logo=lighthouse&logoColor=white"></a>
-  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech"><img alt="Lighthouse Best Practices" src="https://img.shields.io/badge/Best_Practices-100-success?logo=lighthouse&logoColor=white"></a>
-  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech"><img alt="Lighthouse SEO" src="https://img.shields.io/badge/SEO-100-success?logo=lighthouse&logoColor=white"></a>
+  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech/"><img alt="Lighthouse Performance" src="https://img.shields.io/badge/Performance-99-success?logo=lighthouse&logoColor=white"></a>
+  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech/"><img alt="Lighthouse Accessibility" src="https://img.shields.io/badge/Accessibility-100-success?logo=lighthouse&logoColor=white"></a>
+  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech/"><img alt="Lighthouse Best Practices" src="https://img.shields.io/badge/Best_Practices-100-success?logo=lighthouse&logoColor=white"></a>
+  <a href="https://pagespeed.web.dev/analysis?url=https://soroush.tech/"><img alt="Lighthouse SEO" src="https://img.shields.io/badge/SEO-100-success?logo=lighthouse&logoColor=white"></a>
 </p>
 
 **SEO** is handled in-house:
@@ -181,7 +181,7 @@ Globs live in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) (`apps/*`,
 
 **Masoud Soroush**  
 Email: [masoud@soroush.tech](mailto:masoud@soroush.tech)  
-Website: [soroush.tech](https://soroush.tech)
+Website: [soroush.tech](https://soroush.tech/)
 
 ---
 

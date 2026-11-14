@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -8,6 +8,7 @@ import { FormControl } from '@soroush.tech/design-system/FormControl'
 import { FormHelperText } from '@soroush.tech/design-system/FormHelperText'
 import { FormLabel } from '@soroush.tech/design-system/FormLabel'
 import { MenuItem } from '@soroush.tech/design-system/MenuItem'
+import { NumberInput } from '@soroush.tech/design-system/NumberInput'
 import { Select } from '@soroush.tech/design-system/Select'
 import { TextInput } from '@soroush.tech/design-system/TextInput'
 import { View } from '@soroush.tech/design-system/View'
@@ -24,9 +25,7 @@ export function FormCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle title="FORM" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-form--docs`} />
-      }
+      title={<CardTitle title="FORM" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/form/`} />}
       caption="Form provides field-wide defaults via context; Field bridges to TanStack Form and composes FormControl, FormLabel, and FormHelperText - shown standalone below in the error state."
     >
       <Form
@@ -56,6 +55,18 @@ export function FormCard() {
               <MenuItem value="bravo">Bravo</MenuItem>
               <MenuItem value="cipher">Cipher</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>RETRY_LIMIT</FormLabel>
+            <NumberInput
+              variant="outlined"
+              defaultValue={3}
+              min={0}
+              max={10}
+              incrementLabel="Increase retry limit"
+              decrementLabel="Decrease retry limit"
+            />
+            <FormHelperText>Between 0 and 10 attempts.</FormHelperText>
           </FormControl>
           <FormControl error fullWidth>
             <FormLabel>ACCESS_CODE</FormLabel>

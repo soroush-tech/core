@@ -6,7 +6,7 @@ Navigation landmark (`<nav>`) wrapping `NavLink` items from a static config arra
 <Navbar
   items={[
     { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
+    { href: '/about/', label: 'About' },
   ]}
   direction="horizontal"
   gap={4}
@@ -56,9 +56,9 @@ Active → `color="primary"` · Inactive → `color="secondary"`
 ```tsx
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/articles', label: 'Articles' },
+  { href: '/about/', label: 'About' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/articles/', label: 'Articles' },
 ]
 
 <Navbar

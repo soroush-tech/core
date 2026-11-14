@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
@@ -12,10 +12,7 @@ export function FlexCard() {
       flex="1"
       variant="bracketBox"
       title={
-        <CardTitle
-          title="VIEW / FLEX"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-flex--docs`}
-        />
+        <CardTitle title="VIEW / FLEX" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/flex/`} />
       }
       caption="View is the base layout primitive - a div with all styled-system props. Flex extends it with display:flex and column direction by default."
     >

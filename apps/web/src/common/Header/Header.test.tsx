@@ -40,7 +40,7 @@ describe('Header', () => {
       renderWithTheme(<Header />)
       expect(screen.getByRole('link', { name: 'Soroush logo' })).toHaveAttribute(
         'href',
-        'https://soroush.tech'
+        'https://soroush.tech/'
       )
     })
 

@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Link } from '@soroush.tech/design-system/Link'
@@ -13,9 +13,7 @@ export function LinkCard() {
       p={5}
       width={['100%', '400px']}
       variant="bracketBox"
-      title={
-        <CardTitle title="LINK" storybookHref={`${STORYBOOK_URL}?path=/docs/theme-link--docs`} />
-      }
+      title={<CardTitle title="LINK" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/link/`} />}
       caption='Renders as an a tag and composes Typography. Auto-injects noopener noreferrer for "_blank".'
     >
       <Flex flexDirection="column" gap={4}>

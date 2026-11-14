@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { TextInput } from '@soroush.tech/design-system/TextInput'
@@ -17,7 +17,7 @@ export function TextInputCard() {
       title={
         <CardTitle
           title="TEXT_INPUT"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-textinput--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/text-input/`}
         />
       }
       caption="Theme-aware text input. Supports controlled and uncontrolled usage, multiline, error state, and disabled state."

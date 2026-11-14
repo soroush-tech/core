@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Button } from '@soroush.tech/design-system/Button'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Drawer, type DrawerAnchor } from '@soroush.tech/design-system/Drawer'
@@ -20,12 +20,7 @@ export function DrawerCard() {
       p={5}
       flex={1}
       variant="bracketBox"
-      title={
-        <CardTitle
-          title="DRAWER"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-drawer--docs`}
-        />
-      }
+      title={<CardTitle title="DRAWER" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/drawer/`} />}
       caption="A temporary panel that slides in from a screen edge, built on Modal - portal, backdrop, focus trap, scroll lock, and Escape/backdrop-click close are inherited."
     >
       <Flex flexDirection="row" gap={2} flexWrap="wrap">

@@ -45,12 +45,12 @@ type Story = StoryObj<typeof meta>
 
 export const Inactive: Story = {
   parameters: { urlPathname: '/' },
-  args: { href: '/about', children: 'About', variant: 'button' },
+  args: { href: '/about/', children: 'About', variant: 'button' },
 }
 
 export const Active: Story = {
-  parameters: { urlPathname: '/about' },
-  args: { href: '/about', children: 'About', variant: 'button' },
+  parameters: { urlPathname: '/about/' },
+  args: { href: '/about/', children: 'About', variant: 'button' },
 }
 
 export const ActiveHome: Story = {
@@ -59,8 +59,8 @@ export const ActiveHome: Story = {
 }
 
 export const ActiveSubpath: Story = {
-  parameters: { urlPathname: '/articles/hello-world' },
-  args: { href: '/articles', children: 'Articles', variant: 'caption' },
+  parameters: { urlPathname: '/articles/hello-world/' },
+  args: { href: '/articles/', children: 'Articles', variant: 'caption' },
 }
 
 export const UndefinedHref: Story = {

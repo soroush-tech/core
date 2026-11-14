@@ -1,4 +1,4 @@
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
 import { Typography } from '@soroush.tech/design-system/Typography'
@@ -15,7 +15,7 @@ export function TypographyCard() {
       title={
         <CardTitle
           title="TYPOGRAPHY"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-typography--docs`}
+          docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/typography/`}
         />
       }
       caption="The variant prop controls both the HTML element and the visual scale."

@@ -2,7 +2,7 @@ import avatar1x from 'src/assets/avatar/soroush_mascot_avatar@1x.png'
 import avatar2x from 'src/assets/avatar/soroush_mascot_avatar@2x.png'
 import avatar3x from 'src/assets/avatar/soroush_mascot_avatar@3x.png'
 import portrait from 'src/assets/masoud_soroush.png?w=320;480;640;768;960;1200&format=avif;webp;png&as=picture'
-import { STORYBOOK_URL } from 'src/config'
+import { DESIGN_SYSTEM_DOCS_URL } from 'src/pages/design/system/const'
 import { Avatar } from '@soroush.tech/design-system/Avatar'
 import { Card } from '@soroush.tech/design-system/Card'
 import { Flex } from '@soroush.tech/design-system/Flex'
@@ -25,10 +25,7 @@ export function SkeletonCard() {
       flex={1}
       variant="bracketBox"
       title={
-        <CardTitle
-          title="SKELETON"
-          storybookHref={`${STORYBOOK_URL}?path=/docs/theme-skeleton--docs`}
-        />
+        <CardTitle title="SKELETON" docsHref={`${DESIGN_SYSTEM_DOCS_URL}/components/skeleton/`} />
       }
       caption="Loading placeholders in three shapes. pulse fades opacity so mixed sizes stay in lockstep; wave anchors its shimmer to the viewport. REAL_LOAD is the loaded post the skeletons stand in for."
     >
