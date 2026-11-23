@@ -11,6 +11,8 @@ export interface CliOptions {
   md: boolean
   /** Container path the markdown results table is also written to. */
   mdFile?: string
+  /** Container path the JSON results are written to. */
+  jsonFile?: string
   rounds: number
   gcInner: boolean
   /** Case key the ratio gate compares every other case against. */
@@ -84,6 +86,7 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
   const mounts: string[] = fileSandbox.mount ? [...fileSandbox.mount] : []
   let md = false
   let mdFile: string | undefined
+  let jsonFile: string | undefined
   let gcInner = false
   let baselineCase: string | undefined
   let minRatio: number | undefined
@@ -119,6 +122,10 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
       case '--md-file':
         i += 1
         mdFile = requireValue(argv[i], '--md-file')
+        break
+      case '--json-file':
+        i += 1
+        jsonFile = requireValue(argv[i], '--json-file')
         break
       case '--rounds':
         i += 1
@@ -156,7 +163,7 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
   if ((baselineCase === undefined) !== (minRatio === undefined)) {
     throw new Error('bench: --baseline-case and --min-ratio must be given together')
   }
-  return { benchFile, ...opts, mounts, md, mdFile, gcInner, baselineCase, minRatio }
+  return { benchFile, ...opts, mounts, md, mdFile, jsonFile, gcInner, baselineCase, minRatio }
 }
 
 /** Maps parsed options + host paths into the concrete sandbox run options. */
@@ -181,6 +188,7 @@ export function resolveSandboxOptions(
     extraMounts: cli.mounts,
     md: cli.md,
     mdFile: cli.mdFile,
+    jsonFile: cli.jsonFile,
     rounds: cli.rounds,
     gcInner: cli.gcInner,
     baselineCase: cli.baselineCase,
