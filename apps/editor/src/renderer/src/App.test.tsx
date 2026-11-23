@@ -521,6 +521,11 @@ describe('App', () => {
       success: true,
       data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
     })
+    // The startup document is a sandbox file, so autosave stages it every two
+    // seconds. A save that never lands keeps it dirty however slow the run is -
+    // otherwise a loaded machine lets autosave clean it before the load, and
+    // there is nothing left to confirm discarding.
+    gistsApi.stage.mockReturnValue(new Promise(() => {}))
     render(<App />)
     await userEvent.type(screen.getByLabelText('Markdown source'), 'mine')
 

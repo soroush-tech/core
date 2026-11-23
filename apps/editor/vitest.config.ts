@@ -6,6 +6,10 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    // The App suite drives the whole editor through userEvent in jsdom; a test
+    // there can take ~3s alone, so it passes the 5s default while the pre-commit
+    // hook runs every workspace's suite at once.
+    testTimeout: 15000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
