@@ -97,7 +97,9 @@ export const openApiDocument = {
         },
         responses: {
           '200': reportOkResponse,
-          '400': errorResponse('Invalid JSON or payload (marker missing, bad repository shape)'),
+          '400': errorResponse(
+            'Invalid JSON or payload (no marker first line, bad repository shape)'
+          ),
           '401': errorResponse(
             'Missing/invalid OIDC token, or payload repository differs from the verified claim'
           ),

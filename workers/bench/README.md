@@ -45,9 +45,10 @@ The relay closes that gap with two trust anchors:
   App and exchanges an App JWT for an installation token scoped to that one repo. Repos the
   app is not installed on get a `404 App not installed` (the action's fallback signal).
 
-The relay is deliberately not a general commenter: it only accepts bodies starting with the
-hidden marker `<!-- soroush-bench-action -->`, and it upserts the single marker-matched comment
-(update in place) instead of stacking a new comment per push.
+The relay is deliberately not a general commenter: it only accepts bodies whose first line is the
+hidden marker `<!-- soroush-bench-action -->` (optionally keyed: `<!-- soroush-bench-action:<id> -->`),
+and it upserts the bot comment opening with the same marker line (update in place) instead of
+stacking a new comment per push - so two bench jobs with different keys keep separate comments.
 
 ## Routes
 

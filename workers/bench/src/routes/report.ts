@@ -3,7 +3,7 @@ import { z } from 'zod'
 import type { Env } from 'src/env'
 import { OIDC_AUDIENCE, OidcError, verifyActionsOidc } from 'src/services/githubOidc'
 import { AppNotInstalledError, mintInstallationToken } from 'src/services/githubApp'
-import { BENCH_MARKER, upsertBenchComment } from 'src/services/githubComment'
+import { MARKER_LINE, upsertBenchComment } from 'src/services/githubComment'
 
 /** Reject bodies larger than this many bytes before parsing - measured on the received bytes, not the client-supplied `content-length`. */
 const MAX_BODY_BYTES = 64 * 1024
@@ -11,8 +11,8 @@ const MAX_BODY_BYTES = 64 * 1024
 export const reportSchema = z.object({
   repository: z.string().regex(/^[\w.-]+\/[\w.-]+$/),
   prNumber: z.number().int().positive(),
-  // Only marker-prefixed report bodies are accepted - the relay is not a general commenter.
-  body: z.string().startsWith(BENCH_MARKER),
+  // Only bodies opening with a marker line are accepted - the relay is not a general commenter.
+  body: z.string().regex(MARKER_LINE),
 })
 
 export const reportRoute = new Hono<{ Bindings: Env }>()

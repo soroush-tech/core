@@ -16,13 +16,15 @@ self-hosted runners sharing one egress IP.
 ## Endpoint
 
 `POST /v1/report` - `Authorization: Bearer <GitHub Actions OIDC JWT>` (audience
-`soroush-bench-action`), JSON `{ repository: "owner/repo", prNumber, body }`; `body` must start
-with the `<!-- soroush-bench-action -->` marker and stay under 64 KiB.
+`soroush-bench-action`), JSON `{ repository: "owner/repo", prNumber, body }`; `body`'s first line
+must be the `<!-- soroush-bench-action -->` marker - or that marker keyed by a comment id,
+`<!-- soroush-bench-action:<id> -->` with `<id>` in `[a-z0-9-]{1,64}` - and it must stay under
+64 KiB.
 
 | Status | Meaning                                                               |
 | ------ | --------------------------------------------------------------------- |
 | 200    | `{ ok, commentId }` - comment upserted as the bot                     |
-| 400    | invalid JSON / payload (marker missing, bad repo shape)               |
+| 400    | invalid JSON / payload (no marker line, bad repo shape)               |
 | 401    | missing/invalid OIDC token, or payload repo ≠ verified `repository`   |
 | 404    | App not installed on the caller's repo - the action's fallback signal |
 | 413    | payload too large                                                     |
@@ -31,8 +33,8 @@ with the `<!-- soroush-bench-action -->` marker and stay under 64 KiB.
 
 Flow: verify the JWT against GitHub's JWKS (`services/githubOidc.ts`; the `repository` claim is
 the only trusted caller identity) → mint an App installation token (`services/githubApp.ts`;
-App JWT is RS256 via `crypto.subtle`, zero deps) → upsert the marker-matched comment
-(`services/githubComment.ts`).
+App JWT is RS256 via `crypto.subtle`, zero deps) → upsert the bot comment whose first line is
+the same marker line (`services/githubComment.ts`), so each keyed bench job keeps its own comment.
 
 Swagger UI (`/v1/docs`) + OpenAPI (`/v1/openapi.json`, from `src/openapi.ts` - the report
 request body derives from the route's zod schema) are served only when `DOCS_ENABLED=true`

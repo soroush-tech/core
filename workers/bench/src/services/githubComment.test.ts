@@ -63,6 +63,35 @@ describe('upsertBenchComment', () => {
     expect(writeInit.method).toBe('POST')
   })
 
+  it("updates only the comment with the report's own keyed marker line", async () => {
+    const keyed = '<!-- soroush-bench-action:browser -->'
+    const listed = [
+      { id: 2, body: `${BENCH_MARKER}\nnode report`, user: { type: 'Bot' } },
+      { id: 4, body: `${keyed}\r\nold browser report`, user: { type: 'Bot' } },
+    ]
+    const fetch = stubFetchSequence(
+      new Response(JSON.stringify(listed)),
+      new Response(JSON.stringify({ id: 4 }))
+    )
+
+    expect(await upsertBenchComment('tok', 'o', 'r', 5, `${keyed}\nnew`)).toBe(4)
+    expect((fetch.mock.calls[1] as [string])[0]).toBe(`${GITHUB_API}/repos/o/r/issues/comments/4`)
+  })
+
+  it('posts an unkeyed report fresh rather than taking over a keyed comment', async () => {
+    const listed = [
+      { id: 4, body: '<!-- soroush-bench-action:browser -->\nreport', user: { type: 'Bot' } },
+      { id: 6, body: `## old\n${BENCH_MARKER}`, user: { type: 'Bot' } },
+    ]
+    const fetch = stubFetchSequence(
+      new Response(JSON.stringify(listed)),
+      new Response(JSON.stringify({ id: 9 }))
+    )
+
+    expect(await upsertBenchComment('tok', 'o', 'r', 5, `${BENCH_MARKER}\nnew`)).toBe(9)
+    expect((fetch.mock.calls[1] as [string, RequestInit])[1].method).toBe('POST')
+  })
+
   it('throws when the comment list fails', async () => {
     stubFetchSequence(new Response('', { status: 403 }))
     await expect(upsertBenchComment('tok', 'o', 'r', 5, BENCH_MARKER)).rejects.toThrow(
