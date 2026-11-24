@@ -17,16 +17,20 @@ on:
       manager: { required: true, type: string }
       command: { required: true, type: string }
       runner: { required: true, type: string }
+      playwright_version: { required: true, type: string }
 
 jobs:
-  # The jsdom unit and integration suites. No display, no Electron - just the renderer and main
-  # process under test.
+  # The unit and integration suites: jsdom, plus the `unit-browser` project (the App suite) in
+  # headless Chromium. No display, no Electron - just the renderer and main process under test.
   unit:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write # tokenless (OIDC) Codecov upload
     timeout-minutes: 15
+    # Pin the browser download location so the cache path/key is stable, the same as the web app's.
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
@@ -64,10 +68,34 @@ jobs:
             *) echo "Unsupported runner: $RUNNER" >&2; exit 1 ;;
           esac
 
+      - name: Restore cache - Playwright binaries
+        uses: actions/cache/restore@v6
+        id: playwright-cache
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
+      # Only Chromium: the `unit-browser` project runs headless Chromium.
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @soroush/editor exec playwright install --with-deps chromium
+
+      # On a cache hit the binaries are restored, but Linux system libs live outside the cache.
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @soroush/editor exec playwright install-deps chromium
+
+      - name: Save cache - Playwright binaries
+        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ github.workspace }}/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ inputs.playwright_version }}
+
       - name: Run Editor Unit Tests with Coverage
         shell: bash
         run: |
-          echo "### 🧪 Editor - \`test:coverage:editor\` (jsdom unit)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 🧪 Editor - \`test:coverage:editor\` (jsdom + Chromium unit)" >> "$GITHUB_STEP_SUMMARY"
           ${{ inputs.runner }} run test:coverage:editor
 
       # vitest writes lcov paths relative to the app (SF:src/main/menu.ts). Prefix them so Codecov
