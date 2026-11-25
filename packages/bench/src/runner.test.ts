@@ -3,6 +3,7 @@ import defineBench from './index'
 import {
   checkRatio,
   formatDeltas,
+  formatJson,
   formatMarkdown,
   formatRatioFailure,
   installSpecs,
@@ -253,5 +254,35 @@ describe('medianRounds', () => {
     expect(medianRounds([[{ label: 'a', avg: 5, p75: 5 }]])).toEqual([
       { label: 'a', avg: 5, p75: 5, alloc: undefined },
     ])
+  })
+})
+
+describe('formatJson', () => {
+  // Three packages: the report must not assume a local-vs-previous pair.
+  const rows = [
+    { label: 'css :: local', avg: 125, p75: 130, alloc: 40 },
+    { label: 'css :: previous', avg: 100, p75: 105, alloc: 32 },
+    { label: 'css :: other', avg: 50, p75: 55 },
+  ]
+
+  it('gives every case its key and its speed vs the baseline', () => {
+    expect(JSON.parse(formatJson('css', rows, 'previous'))).toEqual({
+      name: 'css',
+      baseline: 'previous',
+      cases: [
+        { label: 'css :: local', key: 'local', avg: 125, p75: 130, alloc: 40, ratioPct: 80 },
+        { label: 'css :: previous', key: 'previous', avg: 100, p75: 105, alloc: 32, ratioPct: 100 },
+        { label: 'css :: other', key: 'other', avg: 50, p75: 55, ratioPct: 200 },
+      ],
+    })
+  })
+
+  it('leaves out the baseline and the ratios without a baseline, or with one not found', () => {
+    const expected = {
+      name: 'css',
+      cases: rows.map((row) => ({ ...row, key: row.label.split(' :: ')[1] })),
+    }
+    expect(JSON.parse(formatJson('css', rows))).toEqual(expected)
+    expect(JSON.parse(formatJson('css', rows, 'nope'))).toEqual(expected)
   })
 })

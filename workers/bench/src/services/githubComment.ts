@@ -7,11 +7,22 @@ import { API_HEADERS, GITHUB_API } from 'src/services/githubApp'
 export const BENCH_MARKER = '<!-- soroush-bench-action -->'
 
 /**
- * Creates or updates the marker-matched report comment on the PR using an installation token,
- * so the comment is authored by the bench bot. Only bot-authored comments are matched - a PR
- * participant pasting the marker into their own comment must not capture the report - while
- * still converging with the action's own `github-actions[bot]` fallback comment. Returns the
- * comment id; throws on any non-2xx.
+ * What a report body must open with: a first line holding the plain marker, or the marker keyed
+ * by the job's comment id (`<!-- soroush-bench-action:browser -->`), so several bench jobs on
+ * one PR each keep their own comment.
+ */
+export const MARKER_LINE = /^<!-- soroush-bench-action(?::[a-z0-9-]{1,64})? -->(?:\r?\n|$)/
+
+/** A body's first line - the key its sticky comment is found by. */
+export const markerLine = (body: string): string => body.split(/\r?\n/, 1)[0]
+
+/**
+ * Creates or updates the report comment on the PR using an installation token, so the comment
+ * is authored by the bench bot. The comment to update is the one starting with the same marker
+ * line, so a keyed report never takes over another job's comment. Only bot-authored comments are
+ * matched - a PR participant pasting the marker into their own comment must not capture the
+ * report - while still converging with the action's own `github-actions[bot]` fallback comment.
+ * Returns the comment id; throws on any non-2xx.
  */
 export const upsertBenchComment = async (
   installationToken: string,
@@ -34,8 +45,10 @@ export const upsertBenchComment = async (
     body?: string
     user?: { type?: string }
   }[]
+  const key = markerLine(body)
   const existing = comments.find(
-    (comment) => comment.user?.type === 'Bot' && comment.body?.includes(BENCH_MARKER) === true
+    (comment) =>
+      comment.user?.type === 'Bot' && comment.body !== undefined && markerLine(comment.body) === key
   )
 
   const written = existing

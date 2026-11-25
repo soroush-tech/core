@@ -72,6 +72,33 @@ vi.stubGlobal('editorAPI', {
 /** Fires an application-menu action the way the preload bridge would. */
 const dispatchMenu = (action: MenuAction) => act(async () => menuListener!(action))
 
+/** One gist, `A snippet`, holding a single `notes.md` that reads `# from a gist`. */
+const mockNotesGist = () => {
+  gistsApi.list.mockResolvedValue({
+    success: true,
+    data: [
+      {
+        id: 'abc123',
+        description: 'A snippet',
+        filename: 'notes.md',
+        fileCount: 1,
+        isPublic: false,
+      },
+    ],
+  })
+  gistsApi.files.mockResolvedValue({
+    success: true,
+    data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
+  })
+}
+
+/** Opens `notes.md` from the Gists panel, as a user would. */
+const openNotesGist = async () => {
+  await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
+  await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
+  await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
   claudeApi.startEdit.mockResolvedValue({ success: true, data: 'run-1' })
@@ -271,27 +298,10 @@ describe('App', () => {
   })
 
   it('loads a gist file into the document, unbacked by any file path', async () => {
-    gistsApi.list.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          id: 'abc123',
-          description: 'A snippet',
-          filename: 'notes.md',
-          fileCount: 1,
-          isPublic: false,
-        },
-      ],
-    })
-    gistsApi.files.mockResolvedValue({
-      success: true,
-      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
-    })
+    mockNotesGist()
     render(<App />)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
-    await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+    await openNotesGist()
 
     expect(await screen.findByLabelText('Markdown source')).toHaveValue('# from a gist')
     // The title names the gist file, and saving it means the sandbox.
@@ -299,27 +309,10 @@ describe('App', () => {
   })
 
   it('saves a gist file into the sandbox rather than to disk', async () => {
-    gistsApi.list.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          id: 'abc123',
-          description: 'A snippet',
-          filename: 'notes.md',
-          fileCount: 1,
-          isPublic: false,
-        },
-      ],
-    })
-    gistsApi.files.mockResolvedValue({
-      success: true,
-      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
-    })
+    mockNotesGist()
     render(<App />)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
-    await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+    await openNotesGist()
     await userEvent.type(await screen.findByLabelText('Markdown source'), '!')
 
     await dispatchMenu('save')
@@ -334,28 +327,11 @@ describe('App', () => {
   })
 
   it('leaves the document dirty when staging fails', async () => {
-    gistsApi.list.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          id: 'abc123',
-          description: 'A snippet',
-          filename: 'notes.md',
-          fileCount: 1,
-          isPublic: false,
-        },
-      ],
-    })
-    gistsApi.files.mockResolvedValue({
-      success: true,
-      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
-    })
+    mockNotesGist()
     gistsApi.stage.mockResolvedValue({ success: false, error: 'EACCES' })
     render(<App />)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
-    await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+    await openNotesGist()
     await userEvent.type(await screen.findByLabelText('Markdown source'), '!')
 
     await dispatchMenu('save')
@@ -364,27 +340,10 @@ describe('App', () => {
   })
 
   it('saves through the button as well as the menu', async () => {
-    gistsApi.list.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          id: 'abc123',
-          description: 'A snippet',
-          filename: 'notes.md',
-          fileCount: 1,
-          isPublic: false,
-        },
-      ],
-    })
-    gistsApi.files.mockResolvedValue({
-      success: true,
-      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
-    })
+    mockNotesGist()
     render(<App />)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
-    await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+    await openNotesGist()
 
     // A clean document has nothing to save.
     expect(await screen.findByRole('button', { name: 'Save to sandbox' })).toBeDisabled()
@@ -473,28 +432,11 @@ describe('App', () => {
   })
 
   it('still writes a gist file to disk on Save As', async () => {
-    gistsApi.list.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          id: 'abc123',
-          description: 'A snippet',
-          filename: 'notes.md',
-          fileCount: 1,
-          isPublic: false,
-        },
-      ],
-    })
-    gistsApi.files.mockResolvedValue({
-      success: true,
-      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
-    })
+    mockNotesGist()
     fileApi.save.mockResolvedValue({ success: true, data: { filePath: 'C:\\notes.md' } })
     render(<App />)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
-    await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+    await openNotesGist()
 
     await dispatchMenu('save-as')
 
@@ -505,28 +447,16 @@ describe('App', () => {
 
   it('keeps the document when a dirty gist load is cancelled', async () => {
     fileApi.confirmDiscard.mockResolvedValue({ success: false, error: 'no window' })
-    gistsApi.list.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          id: 'abc123',
-          description: 'A snippet',
-          filename: 'notes.md',
-          fileCount: 1,
-          isPublic: false,
-        },
-      ],
-    })
-    gistsApi.files.mockResolvedValue({
-      success: true,
-      data: { description: null, files: [{ filename: 'notes.md', content: '# from a gist' }] },
-    })
+    mockNotesGist()
+    // The startup document is a sandbox file, so autosave stages it every two
+    // seconds. A save that never lands keeps it dirty however slow the run is -
+    // otherwise a loaded machine lets autosave clean it before the load, and
+    // there is nothing left to confirm discarding.
+    gistsApi.stage.mockReturnValue(new Promise(() => {}))
     render(<App />)
     await userEvent.type(screen.getByLabelText('Markdown source'), 'mine')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Gists' }))
-    await userEvent.click(await screen.findByRole('button', { name: /A snippet/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'notes.md' }))
+    await openNotesGist()
 
     expect(screen.getByLabelText('Markdown source')).toHaveValue('mine')
   })

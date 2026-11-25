@@ -70,6 +70,29 @@ describe('POST /v1/report', () => {
     expect(await res.json()).toEqual({ ok: false, error: 'Invalid payload' })
   })
 
+  it.each([
+    ['a marker that is not the first line', `## Results\n${BENCH_MARKER}`],
+    ['text after the marker on its line', `${BENCH_MARKER} extra\n\n## Results`],
+    ['a key outside [a-z0-9-]', '<!-- soroush-bench-action:Browser -->\n\n## Results'],
+    ['an empty key', '<!-- soroush-bench-action: -->\n\n## Results'],
+    ['a key over 64 characters', `<!-- soroush-bench-action:${'a'.repeat(65)} -->\n\n## Results`],
+  ])('rejects a body opening with %s', async (_case, body) => {
+    const res = await post(JSON.stringify({ repository: 'o/r', prNumber: 5, body }))
+    expect(res.status).toBe(400)
+    expect(upsert).not.toHaveBeenCalled()
+  })
+
+  it('accepts a body keyed by a comment id', async () => {
+    verify.mockResolvedValue('o/r')
+    mint.mockResolvedValue('installation-token')
+    upsert.mockResolvedValue(78)
+    const body = '<!-- soroush-bench-action:browser-2 -->\n\n## Results'
+
+    const res = await post(JSON.stringify({ repository: 'o/r', prNumber: 5, body }))
+    expect(res.status).toBe(200)
+    expect(upsert).toHaveBeenCalledWith('installation-token', 'o', 'r', 5, body)
+  })
+
   it('maps an OIDC failure to 401', async () => {
     verify.mockRejectedValue(new OidcError('bad'))
     const res = await post(validBody())

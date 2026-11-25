@@ -127,6 +127,16 @@ export function formatMarkdown(rows: CaseRow[]): string {
   return [`| ${header.join(' | ')} |`, `| ${align.join(' | ')} |`, ...body].join('\n')
 }
 
+/** A case's key: the part of its label after the `name :: ` prefix. */
+export function caseKey(label: string): string {
+  return label.includes('::') ? label.slice(label.lastIndexOf('::') + 2).trim() : label
+}
+
+/** The row the ratio gate compares against, matched by case key or by full label. */
+export function findBaseline(rows: CaseRow[], baselineCase: string): CaseRow | undefined {
+  return rows.find((r) => r.label === baselineCase || caseKey(r.label) === baselineCase)
+}
+
 /** One case that fell below the minimum speed ratio vs the baseline. */
 export interface RatioBreach {
   label: string
@@ -149,9 +159,7 @@ export function checkRatio(
   baselineCase: string,
   minRatioPct: number
 ): RatioBreach[] {
-  const caseKey = (label: string): string =>
-    label.includes('::') ? label.slice(label.lastIndexOf('::') + 2).trim() : label
-  const baseline = rows.find((r) => r.label === baselineCase || caseKey(r.label) === baselineCase)
+  const baseline = findBaseline(rows, baselineCase)
   if (baseline === undefined) {
     const labels = rows.map((r) => r.label).join(', ')
     throw new Error(`bench: baseline case "${baselineCase}" not found among: ${labels}`)
@@ -216,4 +224,41 @@ export function medianRounds(rounds: CaseRow[][]): CaseRow[] {
       gc: gcs.length > 0 ? median(gcs) : undefined,
     }
   })
+}
+
+/** One case in the `--json-file` results. */
+export interface JsonCase extends CaseRow {
+  /** The case key (the label without its `name :: ` prefix). */
+  key: string
+  /** Speed as a percentage of the baseline's (`baseline.avg / avg`); only with a baseline. */
+  ratioPct?: number
+}
+
+/** The `--json-file` results: the raw numbers behind the markdown table. */
+export interface JsonReport {
+  /** The bench config's `name`. */
+  name: string
+  /** Key of the baseline case, when one was given and found. */
+  baseline?: string
+  /** One entry per case, in registration order. */
+  cases: JsonCase[]
+}
+
+/**
+ * Renders the run as JSON for a CI driver - unformatted numbers (nanoseconds,
+ * bytes) so it can lay out its own report. With a baseline case each entry
+ * carries its speed ratio vs that baseline, the number the gate checks.
+ */
+export function formatJson(name: string, rows: CaseRow[], baselineCase?: string): string {
+  const baseline = baselineCase === undefined ? undefined : findBaseline(rows, baselineCase)
+  const report: JsonReport = {
+    name,
+    ...(baseline === undefined ? {} : { baseline: caseKey(baseline.label) }),
+    cases: rows.map((row) => ({
+      ...row,
+      key: caseKey(row.label),
+      ...(baseline === undefined ? {} : { ratioPct: (baseline.avg / row.avg) * 100 }),
+    })),
+  }
+  return JSON.stringify(report, null, 2)
 }

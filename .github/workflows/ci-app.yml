@@ -44,3 +44,4 @@ jobs:
       manager: ${{ inputs.manager }}
       command: ${{ inputs.command }}
       runner: ${{ inputs.runner }}
+      playwright_version: ${{ inputs.playwright_version }}

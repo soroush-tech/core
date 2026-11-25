@@ -3,7 +3,8 @@
 # `ci-editor.yml` - CI · Editor
 
 Called by [`ci-app.yml`](./ci-app.md), never triggered on its own. The desktop editor's two
-tiers: the jsdom unit suite and the Playwright-Electron e2e.
+tiers: the unit suite (jsdom, plus the App suite in headless Chromium) and the Playwright-Electron
+e2e.
 
 ```yaml
 # ci:validates app__editor
@@ -14,8 +15,8 @@ Editing this file re-runs the editor and nothing else.
 
 ## Inputs
 
-`node_version`, `manager`, `command`, `runner`. No `playwright_version` - see below. No
-`secrets: inherit`: both uploads are tokenless.
+`node_version`, `manager`, `command`, `runner`, `playwright_version` - the last keys the `unit`
+job's Chromium cache. No `secrets: inherit`: both uploads are tokenless.
 
 ## Jobs: `unit` and `e2e`
 
@@ -32,7 +33,7 @@ run explicitly: it downloads into the restored cache and unpacks into
 
 | Job    | Runs                                                                         | Flag         |
 | ------ | ---------------------------------------------------------------------------- | ------------ |
-| `unit` | `test:coverage:editor`                                                       | `editor`     |
+| `unit` | Chromium (cached by `playwright_version`), then `test:coverage:editor`       | `editor`     |
 | `e2e`  | `playwright install-deps chromium` + `xvfb`, then `test:coverage:e2e:editor` | `editor-e2e` |
 
 Each prefixes its lcov paths with `apps/editor/` before uploading, so Codecov maps them by exact
@@ -43,8 +44,10 @@ Three things this file is careful about:
 - **Two jobs, two workspaces.** Vitest's `coverage.clean` wipes `apps/editor/coverage/`, and the e2e
   report lives at `coverage/e2e/` inside it. In one job the steps had to be ordered so the e2e run
   did not delete its own lcov; separate jobs settle that by construction.
-- **No browser download.** Electron bundles its own Chromium; `install-deps` fetches only the shared
-  libraries it links against. `xvfb` supplies the display the runner does not have.
+- **A browser download in `unit` only.** The `unit-browser` project (`*.browser.test.*`, the App
+  suite) runs in Playwright's headless Chromium, cached under `ms-playwright` like the web app's.
+  `e2e` downloads no browser: Electron bundles its own Chromium, and `install-deps` fetches only
+  the shared libraries it links against. `xvfb` supplies the display the runner does not have.
 - **No `environment: CI`.** Both uploads go through OIDC, so neither job needs an environment-scoped
   secret, and neither can add a second approval prompt to a run whose gated jobs are already
   waiting.

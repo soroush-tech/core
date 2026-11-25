@@ -9,6 +9,7 @@ import defineBench, { isBenchConfig, type BenchConfig } from './index'
 import {
   checkRatio,
   formatDeltas,
+  formatJson,
   formatMarkdown,
   formatRatioFailure,
   installSpecs,
@@ -90,6 +91,7 @@ const argValue = (flag: string): string | undefined => {
   return at >= 0 ? process.argv[at + 1] : undefined
 }
 const mdFile = argValue('--md-file')
+const jsonFile = argValue('--json-file')
 const baselineCase = argValue('--baseline-case')
 const minRatio = argValue('--min-ratio')
 
@@ -161,6 +163,12 @@ if (rounds > 1) {
 // driver can read it back out of the sandbox).
 if (mdFile !== undefined) {
   writeFileSync(mdFile, `${formatMarkdown(finalRows)}\n`)
+}
+
+// --json-file: the same results as unformatted numbers, for a CI driver that
+// lays out its own report.
+if (jsonFile !== undefined) {
+  writeFileSync(jsonFile, `${formatJson(config.name, finalRows, baselineCase)}\n`)
 }
 
 // --baseline-case/--min-ratio: the ratio gate. A breach prints which cases
