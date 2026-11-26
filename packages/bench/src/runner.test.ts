@@ -2,7 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import defineBench from './index'
 import {
   checkRatio,
+  createEnv,
   formatDeltas,
+  formatEnvHeader,
   formatJson,
   formatMarkdown,
   formatRatioFailure,
@@ -10,6 +12,7 @@ import {
   loadModules,
   median,
   medianRounds,
+  missingBaselineWarning,
   registerCases,
 } from './runner'
 
@@ -284,5 +287,61 @@ describe('formatJson', () => {
     }
     expect(JSON.parse(formatJson('css', rows))).toEqual(expected)
     expect(JSON.parse(formatJson('css', rows, 'nope'))).toEqual(expected)
+  })
+
+  it('records what produced the run as env, after the name', () => {
+    const env = { bench: '2.4.0', node: 'v24.22.3', cpus: 1, cpuset: '0', memory: '512m' }
+    const report = JSON.parse(formatJson('css', rows, undefined, env))
+    expect(report.env).toEqual(env)
+    expect(Object.keys(report)).toEqual(['name', 'env', 'cases'])
+  })
+})
+
+describe('missingBaselineWarning', () => {
+  const rows = [
+    { label: 'css :: local', avg: 125, p75: 130 },
+    { label: 'css :: previous', avg: 100, p75: 105 },
+  ]
+
+  it('is empty when the baseline is found', () => {
+    expect(missingBaselineWarning(rows, 'previous')).toBe('')
+  })
+
+  it('names the case keys that exist when it is not', () => {
+    expect(missingBaselineWarning(rows, 'nope')).toBe(
+      'bench: baseline case "nope" not found among: local, previous - no ratios in the results'
+    )
+  })
+})
+
+describe('createEnv', () => {
+  it('adds the driver-passed limits to the harness facts', () => {
+    const sandbox = '{"cpus":1,"cpuset":"0","memory":"512m"}'
+    expect(createEnv('2.4.0', 'v24.22.3', sandbox)).toEqual({
+      bench: '2.4.0',
+      node: 'v24.22.3',
+      cpus: 1,
+      cpuset: '0',
+      memory: '512m',
+    })
+  })
+
+  it('keeps only the harness facts when the driver passes none', () => {
+    expect(createEnv('2.4.0', 'v24.22.3')).toEqual({ bench: '2.4.0', node: 'v24.22.3' })
+  })
+})
+
+describe('formatEnvHeader', () => {
+  it('names every fact', () => {
+    const env = { bench: '2.4.0', node: 'v24.22.3', cpus: 1, cpuset: '0', memory: '512m' }
+    expect(formatEnvHeader(env)).toBe(
+      'soroush-bench 2.4.0 · node v24.22.3 · cpus 1 · cpuset 0 · memory 512m'
+    )
+  })
+
+  it('leaves out what is unknown', () => {
+    expect(formatEnvHeader({ bench: '2.4.0', node: 'v24.22.3' })).toBe(
+      'soroush-bench 2.4.0 · node v24.22.3'
+    )
   })
 })

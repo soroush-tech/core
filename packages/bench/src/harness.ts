@@ -8,16 +8,22 @@ import { bench, boxplot, run, summary } from 'mitata'
 import defineBench, { isBenchConfig, type BenchConfig } from './index'
 import {
   checkRatio,
+  createEnv,
   formatDeltas,
+  formatEnvHeader,
   formatJson,
   formatMarkdown,
   formatRatioFailure,
   installSpecs,
   loadModules,
   medianRounds,
+  missingBaselineWarning,
   registerCases,
   type CaseRow,
 } from './runner'
+
+/** This package's version, inlined at build time (tsdown `define`). */
+declare const __BENCH_VERSION__: string
 
 /** Writable tmpfs the sandbox mounts; aliased package versions install here. */
 const INSTALL_DIR = '/bench'
@@ -95,6 +101,10 @@ const jsonFile = argValue('--json-file')
 const baselineCase = argValue('--baseline-case')
 const minRatio = argValue('--min-ratio')
 
+// What produced this run - printed first, and recorded as the JSON's `env`.
+const env = createEnv(__BENCH_VERSION__, process.version, argValue('--sandbox-env'))
+console.log(formatEnvHeader(env))
+
 // gc: `--gc-inner` forces 'inner'; otherwise config.options.gc (mitata default 'once').
 const gcMode = process.argv.includes('--gc-inner') ? 'inner' : options.gc
 const registrar =
@@ -168,7 +178,14 @@ if (mdFile !== undefined) {
 // --json-file: the same results as unformatted numbers, for a CI driver that
 // lays out its own report.
 if (jsonFile !== undefined) {
-  writeFileSync(jsonFile, `${formatJson(config.name, finalRows, baselineCase)}\n`)
+  writeFileSync(jsonFile, `${formatJson(config.name, finalRows, baselineCase, env)}\n`)
+}
+
+// --baseline-case alone: a report with ratios and no gate. A baseline that
+// matched nothing only warns, since a report run must not fail.
+if (baselineCase !== undefined && minRatio === undefined) {
+  const warning = missingBaselineWarning(finalRows, baselineCase)
+  if (warning) console.warn(`\n${warning}`)
 }
 
 // --baseline-case/--min-ratio: the ratio gate. A breach prints which cases

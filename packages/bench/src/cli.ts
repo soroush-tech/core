@@ -15,7 +15,7 @@ export interface CliOptions {
   jsonFile?: string
   rounds: number
   gcInner: boolean
-  /** Case key the ratio gate compares every other case against. */
+  /** Case key every other case is compared against; with `minRatio`, the ratio gate. */
   baselineCase?: string
   /** Minimum speed vs the baseline, in percent; below it the run fails. */
   minRatio?: number
@@ -159,9 +159,9 @@ export function parseCliArgs(argv: string[], fileSandbox: SandboxDefaults = {}):
   if (benchFile === undefined) {
     throw new Error('bench: a bench file path is required')
   }
-  // The gate needs both a reference case and a target to compare against.
-  if ((baselineCase === undefined) !== (minRatio === undefined)) {
-    throw new Error('bench: --baseline-case and --min-ratio must be given together')
+  // --baseline-case alone reports ratios with no gate; the gate needs a baseline.
+  if (minRatio !== undefined && baselineCase === undefined) {
+    throw new Error('bench: --min-ratio needs --baseline-case to compare against')
   }
   return { benchFile, ...opts, mounts, md, mdFile, jsonFile, gcInner, baselineCase, minRatio }
 }

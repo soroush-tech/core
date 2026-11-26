@@ -1,4 +1,9 @@
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'tsdown'
+
+const { version } = JSON.parse(readFileSync(new URL('package.json', import.meta.url), 'utf8')) as {
+  version: string
+}
 
 export default defineConfig([
   // The importable library API: dual ESM/CJS with declarations.
@@ -19,5 +24,8 @@ export default defineConfig([
     dts: false,
     clean: false,
     noExternal: ['mitata'],
+    // The harness records which bench produced a run. It can't read package.json
+    // at run time: bench-action vendors the harness without it.
+    define: { __BENCH_VERSION__: JSON.stringify(version) },
   },
 ])

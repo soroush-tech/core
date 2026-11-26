@@ -90,6 +90,13 @@ describe('parseCliArgs', () => {
     })
   })
 
+  it('accepts --baseline-case alone, for ratios with no gate', () => {
+    expect(parseCliArgs(['--baseline-case', 'up', 'f.bench.ts'])).toMatchObject({
+      baselineCase: 'up',
+      minRatio: undefined,
+    })
+  })
+
   it('accepts a fractional --min-ratio', () => {
     expect(
       parseCliArgs(['--baseline-case', 'up', '--min-ratio', '87.5', 'f.bench.ts']).minRatio
@@ -115,8 +122,7 @@ describe('parseCliArgs', () => {
     [['--min-ratio', '0', 'f'], /--min-ratio must be a positive number/],
     [['--min-ratio', '-5', 'f'], /--min-ratio must be a positive number/],
     [['--min-ratio', 'abc', 'f'], /--min-ratio must be a positive number/],
-    [['--baseline-case', 'up', 'f'], /--baseline-case and --min-ratio must be given together/],
-    [['--min-ratio', '80', 'f'], /--baseline-case and --min-ratio must be given together/],
+    [['--min-ratio', '80', 'f'], /--min-ratio needs --baseline-case to compare against/],
     [['--nope', 'f'], /unknown option --nope/],
     [['a', 'b'], /only one bench file/],
     [[], /a bench file path is required/],

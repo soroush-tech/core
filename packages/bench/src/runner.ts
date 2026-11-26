@@ -137,6 +137,17 @@ export function findBaseline(rows: CaseRow[], baselineCase: string): CaseRow | u
   return rows.find((r) => r.label === baselineCase || caseKey(r.label) === baselineCase)
 }
 
+/**
+ * The warning a report-only run (`--baseline-case` without `--min-ratio`)
+ * prints when its baseline matched no case: the results then carry no ratios.
+ * Empty string when the baseline was found.
+ */
+export function missingBaselineWarning(rows: CaseRow[], baselineCase: string): string {
+  if (findBaseline(rows, baselineCase) !== undefined) return ''
+  const keys = rows.map((r) => caseKey(r.label)).join(', ')
+  return `bench: baseline case "${baselineCase}" not found among: ${keys} - no ratios in the results`
+}
+
 /** One case that fell below the minimum speed ratio vs the baseline. */
 export interface RatioBreach {
   label: string
@@ -234,10 +245,42 @@ export interface JsonCase extends CaseRow {
   ratioPct?: number
 }
 
+/** What produced a run: the results' `env`, and the header line printed before them. */
+export interface BenchEnv {
+  /** The `@soroush.tech/bench` version whose harness ran. */
+  bench: string
+  /** The sandbox's Node version (`process.version`). */
+  node: string
+  /** The sandbox limits; absent when the driver didn't pass them. */
+  cpus?: number
+  cpuset?: string
+  memory?: string
+}
+
+/**
+ * Builds the run's {@link BenchEnv} from the harness's own facts plus the
+ * `--sandbox-env` JSON the driver passes (the sandbox limits), if any.
+ */
+export function createEnv(bench: string, node: string, sandboxEnv?: string): BenchEnv {
+  const sandbox = sandboxEnv === undefined ? {} : (JSON.parse(sandboxEnv) as Partial<BenchEnv>)
+  return { bench, node, ...sandbox }
+}
+
+/** One line naming what produced the run, e.g. `soroush-bench 2.4.0 · node v24.22.3 · ...`. */
+export function formatEnvHeader(env: BenchEnv): string {
+  const parts = [`soroush-bench ${env.bench}`, `node ${env.node}`]
+  if (env.cpus !== undefined) parts.push(`cpus ${env.cpus}`)
+  if (env.cpuset !== undefined) parts.push(`cpuset ${env.cpuset}`)
+  if (env.memory !== undefined) parts.push(`memory ${env.memory}`)
+  return parts.join(' · ')
+}
+
 /** The `--json-file` results: the raw numbers behind the markdown table. */
 export interface JsonReport {
   /** The bench config's `name`. */
   name: string
+  /** What produced the run. */
+  env?: BenchEnv
   /** Key of the baseline case, when one was given and found. */
   baseline?: string
   /** One entry per case, in registration order. */
@@ -249,10 +292,16 @@ export interface JsonReport {
  * bytes) so it can lay out its own report. With a baseline case each entry
  * carries its speed ratio vs that baseline, the number the gate checks.
  */
-export function formatJson(name: string, rows: CaseRow[], baselineCase?: string): string {
+export function formatJson(
+  name: string,
+  rows: CaseRow[],
+  baselineCase?: string,
+  env?: BenchEnv
+): string {
   const baseline = baselineCase === undefined ? undefined : findBaseline(rows, baselineCase)
   const report: JsonReport = {
     name,
+    ...(env === undefined ? {} : { env }),
     ...(baseline === undefined ? {} : { baseline: caseKey(baseline.label) }),
     cases: rows.map((row) => ({
       ...row,
